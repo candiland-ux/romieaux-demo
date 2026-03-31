@@ -97,6 +97,7 @@ body{background:var(--cr);color:var(--tx);font-family:var(--fs);min-height:100vh
 .ib2{font-family:var(--fm);font-size:8px;padding:3px 7px;border-radius:8px;letter-spacing:1px;text-transform:uppercase;}
 .bs{background:var(--sdl);color:var(--sd);}
 .bg{background:rgba(45,107,45,.1);color:var(--gn);}
+.bv{background:rgba(138,106,72,.1);color:var(--ts);}
 .ba{background:rgba(180,140,40,.1);color:#8a6a10;}
 .br{background:rgba(139,26,26,.1);color:var(--rd);}
 .dc{margin:0 20px 10px;background:var(--pn);border:1px solid var(--bd);border-radius:12px;overflow:hidden;}
@@ -248,34 +249,62 @@ body{background:var(--cr);color:var(--tx);font-family:var(--fs);min-height:100vh
     </div>
   </div>
   <div class="lf">
-    <button class="btn bsd" onclick="nav('s-login')">Start Planning →</button>
-    <button class="btn bwk" onclick="nav('s-login')">Sign In</button>
+    <button class="btn bsd" onclick="nav('s-signup')">Create Account</button>
+    <button class="btn bwk" onclick="nav('s-signin')">Sign In</button>
+    <button style="background:none;border:none;font-family:var(--fs);font-size:13px;color:var(--sd);cursor:pointer;padding:6px;" onclick="nav('s-pricing')">View Pricing →</button>
     <div style="text-align:center;font-family:var(--fm);font-size:8px;color:var(--ts);letter-spacing:2px;text-transform:uppercase;">Free explorer tier · No credit card</div>
   </div>
 </div>
 
-<!-- ===== AUTH ===== -->
-<div id="s-login" class="screen">
-  <div class="tb dk"><button class="bk w" onclick="nav('s-land')">← Back</button><div class="wm w">ROMIEAUX™</div><div></div></div>
-  <div style="background:var(--cr2);padding:38px 24px 28px;">
-    <div style="font-family:var(--fd);font-size:24px;font-style:italic;color:var(--ink);margin-bottom:5px;">R</div>
+<!-- ===== SIGN UP ===== -->
+<div id="s-signup" class="screen">
+  <div class="tb"><button class="bk" onclick="nav('s-land')">← Back</button><div class="wm">ROMIEAUX™</div><div></div></div>
+  <div style="background:var(--cr2);padding:28px 24px 20px;">
+    <div style="font-family:var(--fd);font-size:24px;font-style:italic;color:var(--rg);margin-bottom:5px;">R</div>
     <div style="font-family:var(--fd);font-size:27px;font-weight:700;color:var(--ink);">Create your account.</div>
-    <div style="font-size:13px;color:var(--ts);margin-top:6px;">Your Travel Blueprint lives here and grows with every trip.</div>
+    <div style="font-size:13px;color:var(--tm);margin-top:6px;">Your Travel Blueprint lives here and grows with every trip.</div>
   </div>
-  <div class="scr" style="padding-top:20px;">
-    <div style="padding:0 24px;margin-bottom:13px;"><label style="font-family:var(--fm);font-size:9px;letter-spacing:2px;color:var(--ts);text-transform:uppercase;margin-bottom:7px;display:block;">Your first name</label><input type="text" placeholder="Jordan" style="width:100%;padding:12px 0;background:transparent;border:none;border-bottom:1.5px solid var(--bd);font-family:var(--fs);font-size:15px;color:var(--tx);outline:none;"></div>
-    <div style="padding:0 24px;margin-bottom:13px;"><label style="font-family:var(--fm);font-size:9px;letter-spacing:2px;color:var(--ts);text-transform:uppercase;margin-bottom:7px;display:block;">Email address</label><input type="email" placeholder="jordan@email.com" style="width:100%;padding:12px 0;background:transparent;border:none;border-bottom:1.5px solid var(--bd);font-family:var(--fs);font-size:15px;color:var(--tx);outline:none;"></div>
-    <div style="padding:0 24px;margin-bottom:13px;"><label style="font-family:var(--fm);font-size:9px;letter-spacing:2px;color:var(--ts);text-transform:uppercase;margin-bottom:7px;display:block;">Password</label><input type="password" placeholder="••••••••" style="width:100%;padding:12px 0;background:transparent;border:none;border-bottom:1.5px solid var(--bd);font-family:var(--fs);font-size:15px;color:var(--tx);outline:none;"></div>
-    <div style="display:flex;align-items:center;gap:12px;padding:6px 24px;margin-bottom:6px;"><div style="flex:1;height:1px;background:var(--bd);"></div><div style="font-family:var(--fm);font-size:9px;color:var(--ts);letter-spacing:2px;">or</div><div style="flex:1;height:1px;background:var(--bd);"></div></div>
-    <div style="display:flex;align-items:center;justify-content:center;gap:10px;margin:0 24px 9px;padding:13px;background:var(--pn);border:1.5px solid var(--bd);border-radius:40px;cursor:pointer;font-family:var(--fs);font-size:14px;color:var(--tx);" onclick="showToast('Google OAuth 2.0')">🔵 &nbsp;Continue with Google</div>
-    <div style="display:flex;align-items:center;justify-content:center;gap:10px;margin:0 24px;padding:13px;background:var(--pn);border:1.5px solid var(--bd);border-radius:40px;cursor:pointer;font-family:var(--fs);font-size:14px;color:var(--tx);" onclick="showToast('Magic link sent')">✨ &nbsp;Send magic link</div>
+  <div class="scr" style="padding-top:16px;">
+    <div style="display:flex;align-items:center;justify-content:center;gap:10px;margin:0 24px 9px;padding:14px;background:var(--ink);border-radius:40px;cursor:pointer;font-family:var(--fs);font-size:14px;color:var(--cr);" onclick="showToast('Google OAuth 2.0')"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 01-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18A10.96 10.96 0 001 12c0 1.77.42 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>&nbsp;&nbsp;Continue with Google</div>
+    <div style="display:flex;align-items:center;justify-content:center;gap:10px;margin:0 24px 9px;padding:14px;background:var(--ink);border-radius:40px;cursor:pointer;font-family:var(--fs);font-size:14px;color:var(--cr);" onclick="showToast('Apple Sign In')"><svg width="16" height="18" viewBox="0 0 17 20" fill="white"><path d="M13.25 10.06c-.02-2.14 1.75-3.17 1.83-3.22-1-1.46-2.55-1.66-3.1-1.68-1.32-.13-2.57.77-3.24.77-.67 0-1.7-.75-2.8-.73-1.44.02-2.77.84-3.51 2.13-1.5 2.6-.38 6.45 1.08 8.56.71 1.03 1.56 2.19 2.68 2.15 1.07-.04 1.48-.7 2.78-.7 1.3 0 1.67.7 2.78.67 1.16-.02 1.89-1.05 2.6-2.08.82-1.19 1.16-2.35 1.18-2.41-.03-.01-2.26-.87-2.28-3.46zM11.12 3.5c.59-.72 1-1.71.88-2.7-.86.03-1.89.57-2.5 1.29-.55.64-1.03 1.65-.9 2.63.95.07 1.93-.49 2.52-1.22z"/></svg>&nbsp;&nbsp;Continue with Apple</div>
+    <div style="display:flex;align-items:center;gap:12px;padding:10px 24px;"><div style="flex:1;height:1px;background:var(--bd);"></div><div style="font-family:var(--fm);font-size:9px;color:var(--ts);letter-spacing:2px;">or sign up with email</div><div style="flex:1;height:1px;background:var(--bd);"></div></div>
+    <div style="padding:0 24px;margin-bottom:13px;"><label style="font-family:var(--fm);font-size:9px;letter-spacing:2px;color:var(--ts);text-transform:uppercase;margin-bottom:7px;display:block;">Your first name</label><input type="text" placeholder="Jordan" style="width:100%;padding:12px 0;background:transparent;border:none;border-bottom:1.5px solid var(--bd);font-family:var(--fs);font-size:15px;color:var(--tx);outline:none;box-sizing:border-box;"></div>
+    <div style="padding:0 24px;margin-bottom:13px;"><label style="font-family:var(--fm);font-size:9px;letter-spacing:2px;color:var(--ts);text-transform:uppercase;margin-bottom:7px;display:block;">Email address</label><input type="email" placeholder="jordan@email.com" style="width:100%;padding:12px 0;background:transparent;border:none;border-bottom:1.5px solid var(--bd);font-family:var(--fs);font-size:15px;color:var(--tx);outline:none;box-sizing:border-box;"></div>
+    <div style="padding:0 24px;margin-bottom:16px;"><label style="font-family:var(--fm);font-size:9px;letter-spacing:2px;color:var(--ts);text-transform:uppercase;margin-bottom:7px;display:block;">Password</label><input type="password" placeholder="••••••••" style="width:100%;padding:12px 0;background:transparent;border:none;border-bottom:1.5px solid var(--bd);font-family:var(--fs);font-size:15px;color:var(--tx);outline:none;box-sizing:border-box;"></div>
+    <div style="padding:0 24px 8px;">
+      <button class="btn bsd" style="width:100%;" onclick="nav('s-bp-energy')">Create Account →</button>
+    </div>
+    <div style="display:flex;align-items:center;justify-content:center;gap:10px;margin:0 24px 9px;padding:13px;background:var(--pn);border:1.5px solid var(--bd);border-radius:40px;cursor:pointer;font-family:var(--fs);font-size:13px;color:var(--tm);" onclick="showToast('Magic link sent to your email')">✨ &nbsp;Send magic link instead</div>
+    <div style="text-align:center;padding:6px 24px 24px;font-size:13px;color:var(--ts);">Already have an account? <span style="color:var(--rg);cursor:pointer;font-weight:600;" onclick="nav('s-signin')">Sign In</span></div>
   </div>
-  <div class="ab"><button class="btn bgh" style="flex:1;" onclick="nav('s-land')">Back</button><button class="btn bink" style="flex:2;" onclick="nav('s-bp-energy')">Continue →</button></div>
 </div>
+
+<!-- ===== SIGN IN ===== -->
+<div id="s-signin" class="screen">
+  <div class="tb"><button class="bk" onclick="nav('s-land')">← Back</button><div class="wm">ROMIEAUX™</div><div></div></div>
+  <div style="background:var(--cr2);padding:28px 24px 20px;">
+    <div style="font-family:var(--fd);font-size:24px;font-style:italic;color:var(--rg);margin-bottom:5px;">R</div>
+    <div style="font-family:var(--fd);font-size:27px;font-weight:700;color:var(--ink);">Welcome back.</div>
+    <div style="font-size:13px;color:var(--tm);margin-top:6px;">Your Blueprint is waiting.</div>
+  </div>
+  <div class="scr" style="padding-top:16px;">
+    <div style="display:flex;align-items:center;justify-content:center;gap:10px;margin:0 24px 9px;padding:14px;background:var(--ink);border-radius:40px;cursor:pointer;font-family:var(--fs);font-size:14px;color:var(--cr);" onclick="showToast('Google OAuth 2.0')"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 01-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18A10.96 10.96 0 001 12c0 1.77.42 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>&nbsp;&nbsp;Continue with Google</div>
+    <div style="display:flex;align-items:center;justify-content:center;gap:10px;margin:0 24px 9px;padding:14px;background:var(--ink);border-radius:40px;cursor:pointer;font-family:var(--fs);font-size:14px;color:var(--cr);" onclick="showToast('Apple Sign In')"><svg width="16" height="18" viewBox="0 0 17 20" fill="white"><path d="M13.25 10.06c-.02-2.14 1.75-3.17 1.83-3.22-1-1.46-2.55-1.66-3.1-1.68-1.32-.13-2.57.77-3.24.77-.67 0-1.7-.75-2.8-.73-1.44.02-2.77.84-3.51 2.13-1.5 2.6-.38 6.45 1.08 8.56.71 1.03 1.56 2.19 2.68 2.15 1.07-.04 1.48-.7 2.78-.7 1.3 0 1.67.7 2.78.67 1.16-.02 1.89-1.05 2.6-2.08.82-1.19 1.16-2.35 1.18-2.41-.03-.01-2.26-.87-2.28-3.46zM11.12 3.5c.59-.72 1-1.71.88-2.7-.86.03-1.89.57-2.5 1.29-.55.64-1.03 1.65-.9 2.63.95.07 1.93-.49 2.52-1.22z"/></svg>&nbsp;&nbsp;Continue with Apple</div>
+    <div style="display:flex;align-items:center;gap:12px;padding:10px 24px;"><div style="flex:1;height:1px;background:var(--bd);"></div><div style="font-family:var(--fm);font-size:9px;color:var(--ts);letter-spacing:2px;">or sign in with email</div><div style="flex:1;height:1px;background:var(--bd);"></div></div>
+    <div style="padding:0 24px;margin-bottom:13px;"><label style="font-family:var(--fm);font-size:9px;letter-spacing:2px;color:var(--ts);text-transform:uppercase;margin-bottom:7px;display:block;">Email address</label><input type="email" placeholder="jordan@email.com" style="width:100%;padding:12px 0;background:transparent;border:none;border-bottom:1.5px solid var(--bd);font-family:var(--fs);font-size:15px;color:var(--tx);outline:none;box-sizing:border-box;"></div>
+    <div style="padding:0 24px;margin-bottom:16px;"><label style="font-family:var(--fm);font-size:9px;letter-spacing:2px;color:var(--ts);text-transform:uppercase;margin-bottom:7px;display:block;">Password</label><input type="password" placeholder="••••••••" style="width:100%;padding:12px 0;background:transparent;border:none;border-bottom:1.5px solid var(--bd);font-family:var(--fs);font-size:15px;color:var(--tx);outline:none;box-sizing:border-box;"></div>
+    <div style="padding:0 24px 8px;">
+      <button class="btn bsd" style="width:100%;" onclick="nav('s-bp-energy')">Sign In →</button>
+    </div>
+    <div style="display:flex;align-items:center;justify-content:center;gap:10px;margin:0 24px 9px;padding:13px;background:var(--pn);border:1.5px solid var(--bd);border-radius:40px;cursor:pointer;font-family:var(--fs);font-size:13px;color:var(--tm);" onclick="showToast('Magic link sent to your email')">✨ &nbsp;Send magic link instead</div>
+    <div style="text-align:center;padding:6px 24px 24px;font-size:13px;color:var(--ts);">New here? <span style="color:var(--rg);cursor:pointer;font-weight:600;" onclick="nav('s-signup')">Create Account</span></div>
+  </div>
+</div>
+
 
 <!-- ===== BLUEPRINT: ENERGY STATE (New — Architecture 3.1.1) ===== -->
 <div id="s-bp-energy" class="screen" style="background:var(--cr2);">
-  <div class="tb dk"><button class="bk w" onclick="nav('s-login')">← Back</button><div class="wm w">ROMIEAUX™</div><div></div></div>
+  <div class="tb dk"><button class="bk w" onclick="nav('s-signup')">← Back</button><div class="wm w">ROMIEAUX™</div><div></div></div>
   <div class="qs">
     <div class="dots"><div class="dot da"></div><div class="dot dow"></div><div class="dot dow"></div><div class="dot dow"></div><div class="dot dow"></div></div>
     <div style="font-family:var(--fm);font-size:8px;letter-spacing:4px;color:var(--rg);text-transform:uppercase;margin-bottom:14px;">Travel Blueprint — Identity</div>
@@ -335,13 +364,13 @@ body{background:var(--cr);color:var(--tx);font-family:var(--fs);min-height:100vh
 <!-- ===== COMPATIBILITY SNAPSHOT ===== -->
 <div id="s-bp-compat" class="screen" style="background:var(--cr);">
   <div class="tb"><button class="bk" onclick="nav('s-bp-who')">← Back</button><div class="wm">ROMIEAUX™</div><div></div></div>
-  <div class="qs">
-    <div style="font-family:var(--fm);font-size:8px;letter-spacing:4px;color:var(--sd);text-transform:uppercase;margin-bottom:16px;">Compatibility Intelligence — Active</div>
+  <div style="padding:24px 24px 16px;flex:1;overflow-y:auto;">
+    <div style="font-family:var(--fm);font-size:8px;letter-spacing:4px;color:var(--rg);text-transform:uppercase;margin-bottom:16px;">Compatibility Intelligence — Active</div>
     <div class="qt" style="color:var(--tx)" id="compat-title">Traveling with your partner.</div>
     <div class="qsub" style="color:var(--tm)" id="compat-sub">No other platform analyzes travel compatibility. Romieaux™ maps budget gaps, energy mismatches, and pacing — with prompts to resolve them before the trip.</div>
-    <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:24px;" id="compat-features"></div>
+    <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:18px;" id="compat-features"></div>
     <div style="background:var(--sdl);border:1px solid rgba(176,138,80,.25);border-radius:10px;padding:13px 15px;">
-      <div style="font-family:var(--fm);font-size:8px;letter-spacing:2px;color:var(--sd);text-transform:uppercase;margin-bottom:4px;">Zero Competition</div>
+      <div style="font-family:var(--fm);font-size:8px;letter-spacing:2px;color:var(--rg);text-transform:uppercase;margin-bottom:4px;">Zero Competition</div>
       <div style="font-size:13px;color:var(--tm);line-height:1.6;">Romieaux™ scores 27/27 capabilities. The next closest competitor scores 5/27.</div>
     </div>
   </div>
@@ -349,19 +378,20 @@ body{background:var(--cr);color:var(--tx);font-family:var(--fs);min-height:100vh
 </div>
 
 <!-- ===== BUDGET (Architecture 4.7) ===== -->
-<div id="s-bp-budget" class="screen" style="background:var(--cr2);">
-  <div class="tb dk"><button class="bk w" onclick="nav('s-bp-who')">← Back</button><div class="wm w">ROMIEAUX™</div><div></div></div>
+<div id="s-bp-budget" class="screen" style="background:var(--cr);">
+  <div class="tb"><button class="bk" onclick="nav('s-bp-who')">← Back</button><div class="wm">ROMIEAUX™</div><div></div></div>
   <div class="qs">
     <div class="dots"><div class="dot dd"></div><div class="dot dd"></div><div class="dot dd"></div><div class="dot da"></div><div class="dot dow"></div></div>
-    <div style="font-family:var(--fm);font-size:8px;letter-spacing:4px;color:var(--rg);text-transform:uppercase;margin-bottom:14px;">Trip Alignment — Cost Posture</div>
-    <div class="qt" style="color:var(--ink)">How are you approaching spend?</div>
-    <div class="qsub" style="color:var(--tm)">No judgment — Romieaux™ optimizes to your full potential within whatever you set.</div>
-    <div class="opts">
-      <button class="opt dk" onclick="pick(this,'budget','budget','s-bp-mode')">Budget-first — every dollar matters</button>
-      <button class="opt dk" onclick="pick(this,'budget','balanced','s-bp-mode')">Balanced — smart choices, occasional splurge</button>
-      <button class="opt dk" onclick="pick(this,'budget','flexible','s-bp-mode')">Flexible — right experience over right price</button>
-      <button class="opt dk" onclick="pick(this,'budget','agnostic','s-bp-mode')">Cost-agnostic — the best version of this trip</button>
+    <div style="font-family:var(--fm);font-size:8px;letter-spacing:4px;color:var(--rg);text-transform:uppercase;margin-bottom:14px;">Travel Blueprint — Budget</div>
+    <div class="qt" style="color:var(--ink)">What feels right for this trip?</div>
+    <div class="qsub" style="color:var(--tm)">Per person, all-in. Romieaux™ shapes every dining, stay, and activity recommendation around this number.</div>
+    <div style="display:flex;align-items:center;gap:4px;border-bottom:2px solid var(--sd);padding-bottom:8px;margin-bottom:16px;">
+      <span style="font-family:var(--fd);font-size:32px;font-weight:700;color:var(--ink);">$</span>
+      <input type="text" id="budget-input" placeholder="0" inputmode="numeric" style="width:100%;padding:4px 0;background:transparent;border:none;font-family:var(--fd);font-size:32px;font-weight:700;color:var(--ink);outline:none;" oninput="checkBudget()">
     </div>
+    <div id="budget-alert" style="display:none;margin-bottom:16px;"></div>
+    <button class="btn bsd" id="budget-go" style="width:100%;display:none;margin-bottom:12px;" onclick="S.budget='set';nav('s-bp-mode')">Set Budget →</button>
+    <button style="width:100%;padding:14px;border-radius:40px;border:none;background:transparent;font-family:var(--fs);font-size:14px;color:var(--ts);cursor:pointer;transition:color .2s;" onclick="S.budget='agnostic';S.budgetAmt='';nav('s-bp-mode')">Skip — I'd rather not set a limit</button>
   </div>
 </div>
 
@@ -416,7 +446,8 @@ body{background:var(--cr);color:var(--tx);font-family:var(--fs);min-height:100vh
     <div style="padding:0 24px 20px;">
       <button class="opt lt" style="margin-bottom:9px;" onclick="setDM('own',this)">I already have a destination</button>
       <button class="opt lt" style="margin-bottom:9px;" onclick="setDM('suggest',this)">Recommend somewhere for me</button>
-      <button class="opt lt" onclick="setDM('surprise',this)">Surprise me — just go</button>
+      <button class="opt lt" style="margin-bottom:9px;" onclick="setDM('surprise',this)">Surprise me — just go</button>
+      <button class="opt lt" onclick="nav('s-discover')">🧭 Help me explore — I'm undecided</button>
     </div>
     <div id="dest-own" style="display:none;padding:0 24px 24px;">
       <input id="dest-in" type="text" placeholder="e.g. Kyoto, Patagonia, Morocco…" oninput="onDT(this.value)" style="width:100%;padding:13px 20px;border:1.5px solid var(--bd);border-radius:40px;font-family:var(--fs);font-size:15px;color:var(--tx);background:transparent;outline:none;">
@@ -431,6 +462,63 @@ body{background:var(--cr);color:var(--tx);font-family:var(--fs);min-height:100vh
         <button style="background:transparent;border:none;cursor:pointer;width:100%;padding:9px;font-family:var(--fs);font-size:12px;color:var(--ts);margin-top:3px;" onclick="nextSug()">Suggest another →</button>
       </div>
     </div>
+  </div>
+</div>
+
+<!-- ===== TRIP DETAILS: DATES & FLIGHTS ===== -->
+<div id="s-tripdetails" class="screen" style="background:var(--cr);">
+  <div class="tb"><button class="bk" onclick="nav('s-dest')">← Back</button><div class="wm">ROMIEAUX™</div><div></div></div>
+  <div class="scr" style="padding:24px;">
+    <div style="font-family:var(--fm);font-size:8px;letter-spacing:4px;color:var(--rg);text-transform:uppercase;margin-bottom:10px;">Trip Details</div>
+    <div class="qt" style="color:var(--ink)">When are you going?</div>
+    <div class="qsub" style="color:var(--tm)">Romieaux™ uses your dates and flights to schedule activities, set reminders, and avoid wasting your first and last days.</div>
+
+    <div style="font-family:var(--fm);font-size:9px;letter-spacing:2px;color:var(--rg);text-transform:uppercase;margin-bottom:8px;">Travel Dates</div>
+    <div style="display:flex;gap:12px;margin-bottom:6px;">
+      <div style="flex:1;">
+        <label style="font-family:var(--fm);font-size:9px;letter-spacing:1px;color:var(--ts);text-transform:uppercase;margin-bottom:6px;display:block;">Depart</label>
+        <input type="date" id="td-depart" onchange="calcDuration()" style="width:100%;padding:12px;border:1.5px solid var(--bd);border-radius:10px;font-family:var(--fs);font-size:14px;color:var(--tx);background:var(--pn);outline:none;box-sizing:border-box;">
+      </div>
+      <div style="flex:1;">
+        <label style="font-family:var(--fm);font-size:9px;letter-spacing:1px;color:var(--ts);text-transform:uppercase;margin-bottom:6px;display:block;">Return</label>
+        <input type="date" id="td-return" onchange="calcDuration()" style="width:100%;padding:12px;border:1.5px solid var(--bd);border-radius:10px;font-family:var(--fs);font-size:14px;color:var(--tx);background:var(--pn);outline:none;box-sizing:border-box;">
+      </div>
+    </div>
+    <div id="td-duration" style="display:none;background:var(--sdl);border-radius:10px;padding:10px 14px;margin-bottom:16px;font-size:13px;color:var(--sd);text-align:center;font-family:var(--fd);font-weight:600;"></div>
+
+    <div style="font-family:var(--fm);font-size:9px;letter-spacing:2px;color:var(--rg);text-transform:uppercase;margin-bottom:8px;margin-top:10px;">Outbound Flight <span style="color:var(--ts);text-transform:none;letter-spacing:0;">(optional)</span></div>
+    <div style="background:var(--pn);border:1px solid var(--bd);border-radius:12px;padding:14px;margin-bottom:14px;">
+      <div style="display:flex;gap:10px;margin-bottom:10px;">
+        <div style="flex:1;"><label style="font-family:var(--fm);font-size:8px;letter-spacing:1px;color:var(--ts);text-transform:uppercase;margin-bottom:4px;display:block;">From</label><input type="text" placeholder="LAX" maxlength="3" style="width:100%;padding:10px;border:1px solid var(--bd);border-radius:8px;font-family:var(--fm);font-size:16px;font-weight:600;color:var(--tx);background:transparent;outline:none;text-transform:uppercase;text-align:center;box-sizing:border-box;" oninput="this.value=this.value.toUpperCase()"></div>
+        <div style="display:flex;align-items:center;color:var(--sd);font-size:18px;padding-top:16px;">→</div>
+        <div style="flex:1;"><label style="font-family:var(--fm);font-size:8px;letter-spacing:1px;color:var(--ts);text-transform:uppercase;margin-bottom:4px;display:block;">To</label><input type="text" placeholder="NAP" maxlength="3" style="width:100%;padding:10px;border:1px solid var(--bd);border-radius:8px;font-family:var(--fm);font-size:16px;font-weight:600;color:var(--tx);background:transparent;outline:none;text-transform:uppercase;text-align:center;box-sizing:border-box;" oninput="this.value=this.value.toUpperCase()"></div>
+      </div>
+      <div style="display:flex;gap:10px;">
+        <div style="flex:1;"><label style="font-family:var(--fm);font-size:8px;letter-spacing:1px;color:var(--ts);text-transform:uppercase;margin-bottom:4px;display:block;">Flight #</label><input type="text" placeholder="DL 482" style="width:100%;padding:10px;border:1px solid var(--bd);border-radius:8px;font-family:var(--fs);font-size:14px;color:var(--tx);background:transparent;outline:none;box-sizing:border-box;"></div>
+        <div style="flex:1;"><label style="font-family:var(--fm);font-size:8px;letter-spacing:1px;color:var(--ts);text-transform:uppercase;margin-bottom:4px;display:block;">Arrives (local)</label><input type="time" style="width:100%;padding:10px;border:1px solid var(--bd);border-radius:8px;font-family:var(--fs);font-size:14px;color:var(--tx);background:transparent;outline:none;box-sizing:border-box;"></div>
+      </div>
+    </div>
+
+    <div style="font-family:var(--fm);font-size:9px;letter-spacing:2px;color:var(--rg);text-transform:uppercase;margin-bottom:8px;">Return Flight <span style="color:var(--ts);text-transform:none;letter-spacing:0;">(optional)</span></div>
+    <div style="background:var(--pn);border:1px solid var(--bd);border-radius:12px;padding:14px;margin-bottom:18px;">
+      <div style="display:flex;gap:10px;margin-bottom:10px;">
+        <div style="flex:1;"><label style="font-family:var(--fm);font-size:8px;letter-spacing:1px;color:var(--ts);text-transform:uppercase;margin-bottom:4px;display:block;">From</label><input type="text" placeholder="NAP" maxlength="3" style="width:100%;padding:10px;border:1px solid var(--bd);border-radius:8px;font-family:var(--fm);font-size:16px;font-weight:600;color:var(--tx);background:transparent;outline:none;text-transform:uppercase;text-align:center;box-sizing:border-box;" oninput="this.value=this.value.toUpperCase()"></div>
+        <div style="display:flex;align-items:center;color:var(--sd);font-size:18px;padding-top:16px;">→</div>
+        <div style="flex:1;"><label style="font-family:var(--fm);font-size:8px;letter-spacing:1px;color:var(--ts);text-transform:uppercase;margin-bottom:4px;display:block;">To</label><input type="text" placeholder="LAX" maxlength="3" style="width:100%;padding:10px;border:1px solid var(--bd);border-radius:8px;font-family:var(--fm);font-size:16px;font-weight:600;color:var(--tx);background:transparent;outline:none;text-transform:uppercase;text-align:center;box-sizing:border-box;" oninput="this.value=this.value.toUpperCase()"></div>
+      </div>
+      <div style="display:flex;gap:10px;">
+        <div style="flex:1;"><label style="font-family:var(--fm);font-size:8px;letter-spacing:1px;color:var(--ts);text-transform:uppercase;margin-bottom:4px;display:block;">Flight #</label><input type="text" placeholder="DL 483" style="width:100%;padding:10px;border:1px solid var(--bd);border-radius:8px;font-family:var(--fs);font-size:14px;color:var(--tx);background:transparent;outline:none;box-sizing:border-box;"></div>
+        <div style="flex:1;"><label style="font-family:var(--fm);font-size:8px;letter-spacing:1px;color:var(--ts);text-transform:uppercase;margin-bottom:4px;display:block;">Departs (local)</label><input type="time" style="width:100%;padding:10px;border:1px solid var(--bd);border-radius:8px;font-family:var(--fs);font-size:14px;color:var(--tx);background:transparent;outline:none;box-sizing:border-box;"></div>
+      </div>
+    </div>
+
+    <div style="background:var(--sdl);border:1px solid rgba(176,138,80,.25);border-radius:10px;padding:13px 15px;margin-bottom:18px;">
+      <div style="font-family:var(--fm);font-size:8px;letter-spacing:2px;color:var(--rg);text-transform:uppercase;margin-bottom:4px;">Why this matters</div>
+      <div style="font-size:12px;color:var(--tm);line-height:1.6;">Land at 4pm? Romieaux skips museums and schedules check-in, a short walk, and a dinner reservation at golden hour. Last day adjusts for checkout and departure.</div>
+    </div>
+
+    <button class="btn bsd" style="width:100%;margin-bottom:10px;" onclick="nav('s-blueprint')">Build My Trip →</button>
+    <button style="width:100%;padding:12px;border-radius:40px;border:none;background:transparent;font-family:var(--fs);font-size:14px;color:var(--ts);cursor:pointer;" onclick="nav('s-blueprint')">Skip — I'll add details later</button>
   </div>
 </div>
 
@@ -457,13 +545,15 @@ body{background:var(--cr);color:var(--tx);font-family:var(--fs);min-height:100vh
 
 <!-- ===== DASHBOARD (Architecture 6) ===== -->
 <div id="s-dash" class="screen">
-  <div class="dh"><div class="dh-glow"></div><div class="dh-logo">Romieaux™</div><div class="dh-g">Good evening, <em>Jordan.</em></div><div style="font-size:13px;color:var(--ts);position:relative;z-index:1;margin-top:4px;" id="d-sub">Your trip is loading…</div><div class="tp" onclick="nav('s-itin')"><span id="d-emo" style="font-size:15px;">🌍</span><span style="font-family:var(--fd);font-size:13px;color:var(--ink);" id="d-tn">Your trip</span><span style="font-size:11px;color:var(--ts);">›</span></div></div>
+  <div class="dh"><div class="dh-glow"></div><div style="display:flex;justify-content:space-between;align-items:center;position:relative;z-index:1;"><div class="dh-logo">Romieaux™</div><div style="font-size:18px;cursor:pointer;" onclick="nav('s-settings')">⚙️</div></div><div class="dh-g">Good evening, <em>Jordan.</em></div><div style="font-size:13px;color:var(--ts);position:relative;z-index:1;margin-top:4px;" id="d-sub">Your trip is loading…</div><div class="tp" onclick="nav('s-itin')"><span id="d-emo" style="font-size:15px;">🌍</span><span style="font-family:var(--fd);font-size:13px;color:var(--ink);" id="d-tn">Your trip</span><span style="font-size:11px;color:var(--ts);">›</span></div></div>
   <div class="ctabs"><button class="ctab act" id="ctab1">City 1</button><button class="ctab" id="ctab2">City 2</button><button class="ctab" onclick="showToast('Add another city')">+ City</button></div>
   <div class="scr">
     <!-- Trip Alignment Summary -->
     <div style="margin:14px 20px 0;background:var(--pn);border:1px solid var(--bd);border-radius:12px;padding:15px;">
       <div style="font-family:var(--fm);font-size:8px;letter-spacing:3px;color:var(--sd);text-transform:uppercase;margin-bottom:7px;">Trip Alignment Summary</div>
       <div style="display:inline-flex;align-items:center;gap:6px;padding:4px 10px;background:var(--sdl);border-radius:20px;margin-bottom:9px;font-family:var(--fm);font-size:8px;color:var(--sd);letter-spacing:1px;text-transform:uppercase;" id="trip-vibe">✦ Trip Vibe: Loading…</div>
+      <div style="display:inline-flex;align-items:center;gap:6px;padding:4px 10px;background:var(--rgl);border-radius:20px;margin-bottom:9px;margin-left:4px;font-family:var(--fm);font-size:8px;color:var(--rg);letter-spacing:1px;text-transform:uppercase;" id="trip-budget">💰 Budget: —</div>
+      <div style="display:inline-flex;align-items:center;gap:6px;padding:4px 10px;background:var(--sdl);border-radius:20px;margin-bottom:9px;margin-left:4px;font-family:var(--fm);font-size:8px;color:var(--sd);letter-spacing:1px;text-transform:uppercase;" id="trip-dates">📅 Dates: Not set</div>
       <div style="font-size:13px;color:var(--tm);line-height:1.7;" id="align-txt">Loading…</div>
       <div style="display:flex;gap:8px;margin-top:12px;">
         <button class="btn bgh" style="flex:1;padding:10px;" onclick="nav('s-ready')">Readiness →</button>
@@ -484,6 +574,7 @@ body{background:var(--cr);color:var(--tx);font-family:var(--fs);min-height:100vh
       <div class="mc" onclick="nav('s-payment')"><div class="mci">📋</div><div class="mcn">Payment Checklist</div><div class="mcs">Booking links &amp; status</div><div class="mct ts2">4 of 8</div></div>
       <div class="mc" onclick="nav('s-memory')"><div class="mci">📖</div><div class="mcn">Memory Book</div><div class="mcs">Photos, reflections, archive</div><div class="mct ts2">Active</div></div>
       <div class="mc" onclick="nav('s-reminders')"><div class="mci">🔔</div><div class="mcn">Reminders</div><div class="mcs">Concierge mode: Balanced</div><div class="mct ts2">Active</div></div>
+      <div class="mc" onclick="nav('s-budget-track')"><div class="mci">📊</div><div class="mcn">Budget Tracker</div><div class="mcs">Spend vs. budget</div><div class="mct ts2" id="bt-ct">On track</div></div>
     </div>
 
     <!-- EXPLORER BUNDLE -->
@@ -631,7 +722,17 @@ body{background:var(--cr);color:var(--tx);font-family:var(--fs);min-height:100vh
 <div id="s-group" class="screen">
   <div class="tb"><button class="bk" onclick="nav('s-dash')">← Home</button><div class="wm">GROUP PLANNING</div><div></div></div>
   <div class="scr">
-    <div class="sh" style="padding-top:14px;"><div class="shl">Trip Members</div><div class="sht" id="grp-t">Your Trip</div></div><div id="member-list"></div>
+    <div style="background:var(--cr2);padding:20px;">
+      <div style="font-family:var(--fm);font-size:8px;letter-spacing:3px;color:var(--rg);text-transform:uppercase;margin-bottom:6px;">Share This Trip</div>
+      <div style="font-family:var(--fd);font-size:20px;font-weight:700;color:var(--ink);margin-bottom:4px;" id="grp-t">Your Trip</div>
+      <div style="font-size:12px;color:var(--ts);margin-bottom:14px;">Invite travelers to collaborate. The Trip Owner's subscription covers intelligence for everyone.</div>
+      <div style="display:flex;gap:8px;">
+        <button class="btn bsd" style="flex:1;padding:12px;" onclick="document.getElementById('invite-sheet').style.display='flex'">Invite Traveler +</button>
+        <button class="btn bgh" style="padding:12px 16px;" onclick="showToast('Share link copied to clipboard')">🔗 Copy Link</button>
+      </div>
+    </div>
+    <div class="sh" style="padding-top:14px;"><div class="shl">Trip Members</div></div>
+    <div id="member-list"></div>
     <div class="sh"><div class="shl">Active Poll — Day 4</div></div>
     <div style="padding:0 20px 4px;">
       <div class="po" onclick="this.classList.add('v');showToast('Vote cast!')"><div style="flex:1;"><div style="font-family:var(--fd);font-size:15px;color:var(--tx);">Private boat to Capri</div><div class="po-bar" style="margin-top:5px;"><div class="po-fill" style="width:61%;"></div></div></div><div style="font-family:var(--fm);font-size:10px;color:var(--sd);">3 votes</div></div>
@@ -640,6 +741,30 @@ body{background:var(--cr);color:var(--tx);font-family:var(--fs);min-height:100vh
     <div style="margin:12px 20px;padding:14px;background:var(--pn);border:1px solid var(--bd);border-radius:12px;text-align:center;"><div style="font-size:13px;color:var(--ts);padding:6px 0;">Group chat active.</div><button class="btn bgh" style="width:100%;margin-top:10px;" onclick="showToast('Opening group chat…')">Open Chat →</button></div>
   </div>
   <div class="nt"><button class="nb" onclick="nav('s-dash')"><span class="ni">🏠</span><div class="nl">Home</div></button><button class="nb" onclick="nav('s-itin')"><span class="ni">📋</span><div class="nl">Itinerary</div></button><button class="nb" onclick="nav('s-ready')"><span class="ni">✈️</span><div class="nl">Readiness</div></button><button class="nb" onclick="nav('s-memory')"><span class="ni">📖</span><div class="nl">Memory</div></button></div>
+</div>
+
+<!-- Invite Sheet -->
+<div id="invite-sheet" style="position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:400;display:none;align-items:flex-end;justify-content:center;" onclick="this.style.display='none'">
+  <div style="background:var(--cr);width:100%;max-width:480px;border-radius:20px 20px 0 0;padding:24px;" onclick="event.stopPropagation()">
+    <div style="width:36px;height:4px;background:var(--bd);border-radius:4px;margin:0 auto 18px;"></div>
+    <div style="font-family:var(--fd);font-size:20px;font-weight:700;color:var(--ink);margin-bottom:4px;">Invite a Traveler</div>
+    <div style="font-size:13px;color:var(--ts);margin-bottom:16px;">They'll get a link to join your trip.</div>
+    <label style="font-family:var(--fm);font-size:9px;letter-spacing:2px;color:var(--ts);text-transform:uppercase;margin-bottom:7px;display:block;">Email or phone</label>
+    <input type="text" placeholder="alex@email.com" style="width:100%;padding:12px 0;background:transparent;border:none;border-bottom:1.5px solid var(--bd);font-family:var(--fs);font-size:15px;color:var(--tx);outline:none;box-sizing:border-box;margin-bottom:16px;">
+    <div style="font-family:var(--fm);font-size:9px;letter-spacing:2px;color:var(--rg);text-transform:uppercase;margin-bottom:10px;">Their role</div>
+    <div style="display:flex;gap:8px;margin-bottom:20px;">
+      <div id="role-editor" class="po v" onclick="selectRole('editor')" style="flex:1;flex-direction:column;align-items:center;padding:14px 10px;">
+        <div style="font-family:var(--fd);font-size:14px;font-weight:600;color:var(--tx);">Editor</div>
+        <div style="font-size:11px;color:var(--ts);margin-top:3px;text-align:center;">Can add activities, vote, and edit the itinerary</div>
+      </div>
+      <div id="role-viewer" class="po" onclick="selectRole('viewer')" style="flex:1;flex-direction:column;align-items:center;padding:14px 10px;">
+        <div style="font-family:var(--fd);font-size:14px;font-weight:600;color:var(--tx);">Viewer</div>
+        <div style="font-size:11px;color:var(--ts);margin-top:3px;text-align:center;">Can see the itinerary and vote in polls</div>
+      </div>
+    </div>
+    <button class="btn bsd" style="width:100%;" onclick="document.getElementById('invite-sheet').style.display='none';showToast('Invite sent!')">Send Invite →</button>
+    <div style="text-align:center;margin-top:12px;"><button style="background:none;border:none;font-family:var(--fs);font-size:13px;color:var(--ts);cursor:pointer;" onclick="document.getElementById('invite-sheet').style.display='none'">Cancel</button></div>
+  </div>
 </div>
 
 <!-- ===== READINESS (Architecture 6.8) ===== -->
@@ -674,7 +799,7 @@ body{background:var(--cr);color:var(--tx);font-family:var(--fs);min-height:100vh
     <!-- Travel Evolution Stats (Architecture 37) -->
     <div class="sg"><div class="sgi"><div class="sgn">3</div><div class="sgl">Trips</div></div><div class="sgi"><div class="sgn">7</div><div class="sgl">Countries</div></div><div class="sgi"><div class="sgn">14</div><div class="sgl">Cities</div></div><div class="sgi"><div class="sgn">38</div><div class="sgl">Days Abroad</div></div></div>
     <!-- Travel Evolution Dashboard Link -->
-    <div style="margin:0 20px 14px;padding:14px;background:var(--sdl);border:1px solid rgba(176,138,80,.25);border-radius:12px;cursor:pointer;" onclick="showToast('Travel Evolution Dashboard opening…')">
+    <div style="margin:0 20px 14px;padding:14px;background:var(--sdl);border:1px solid rgba(176,138,80,.25);border-radius:12px;cursor:pointer;" onclick="nav('s-evolution')">
       <div style="display:flex;align-items:center;justify-content:space-between;"><div><div style="font-family:var(--fm);font-size:8px;letter-spacing:2px;color:var(--sd);text-transform:uppercase;margin-bottom:3px;">Travel Evolution</div><div style="font-family:var(--fd);font-size:15px;color:var(--tx);">See how your travel style has evolved</div></div><div style="color:var(--sd);">→</div></div>
       <div style="font-size:11px;color:var(--ts);margin-top:5px;">Blueprint version history · Milestones · Travel Life Map</div>
     </div>
@@ -725,10 +850,192 @@ body{background:var(--cr);color:var(--tx);font-family:var(--fs);min-height:100vh
   </div>
 </div>
 
+<!-- ===== ACCOUNT SETTINGS (Architecture 38) ===== -->
+<div id="s-settings" class="screen">
+  <div class="tb"><button class="bk" onclick="nav('s-dash')">← Home</button><div class="wm">SETTINGS</div><div></div></div>
+  <div class="scr">
+    <div style="background:var(--cr2);padding:20px;">
+      <div style="display:flex;align-items:center;gap:14px;">
+        <div style="width:52px;height:52px;border-radius:50%;background:#4a6b5a;display:flex;align-items:center;justify-content:center;font-size:22px;">👤</div>
+        <div><div style="font-family:var(--fd);font-size:18px;font-weight:700;color:var(--ink);">Jordan</div><div style="font-size:12px;color:var(--ts);">jordan@email.com</div><div style="font-size:11px;color:var(--rg);margin-top:2px;">Explorer (Free)</div></div>
+      </div>
+    </div>
+    <div class="sh"><div class="shl">Travel Blueprint</div><div class="sht">Your Identity</div></div>
+    <div style="padding:0 20px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:14px 0;border-bottom:1px solid var(--bd);cursor:pointer;" onclick="showToast('Edit energy state')"><div><div style="font-family:var(--fd);font-size:14px;font-weight:600;color:var(--tx);">Trip Mindset</div><div style="font-size:12px;color:var(--ts);margin-top:2px;" id="set-energy">Slow & restorative</div></div><div style="color:var(--ts);">›</div></div>
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:14px 0;border-bottom:1px solid var(--bd);cursor:pointer;" onclick="showToast('Edit music preferences')"><div><div style="font-family:var(--fd);font-size:14px;font-weight:600;color:var(--tx);">Music Preferences</div><div style="font-size:12px;color:var(--ts);margin-top:2px;">Jazz, Soul, Ambient</div></div><div style="color:var(--ts);">›</div></div>
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:14px 0;border-bottom:1px solid var(--bd);cursor:pointer;" onclick="showToast('Edit engagement mode')"><div><div style="font-family:var(--fd);font-size:14px;font-weight:600;color:var(--tx);">Engagement Mode</div><div style="font-size:12px;color:var(--ts);margin-top:2px;" id="set-mode">Deeply Curated</div></div><div style="color:var(--ts);">›</div></div>
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:14px 0;border-bottom:1px solid var(--bd);cursor:pointer;" onclick="showToast('Edit accessibility preferences')"><div><div style="font-family:var(--fd);font-size:14px;font-weight:600;color:var(--tx);">Accessibility Needs</div><div style="font-size:12px;color:var(--ts);margin-top:2px;">None configured</div></div><div style="color:var(--ts);">›</div></div>
+    </div>
+    <div class="sh"><div class="shl">Subscription</div><div class="sht">Your Plan</div></div>
+    <div style="padding:0 20px;">
+      <div style="background:var(--pn);border:1px solid var(--bd);border-radius:12px;padding:16px;margin-bottom:12px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;"><div><div style="font-family:var(--fd);font-size:16px;font-weight:600;color:var(--tx);">Explorer (Free)</div><div style="font-size:12px;color:var(--ts);margin-top:2px;">8 core modules included</div></div><div style="font-family:var(--fd);font-size:18px;font-weight:700;color:var(--sd);">$0</div></div>
+        <button class="btn bsd" style="width:100%;margin-top:14px;padding:12px;" onclick="nav('s-pricing')">Upgrade Plan →</button>
+      </div>
+    </div>
+    <div class="sh"><div class="shl">Account</div></div>
+    <div style="padding:0 20px;">
+      <div style="padding:14px 0;border-bottom:1px solid var(--bd);cursor:pointer;" onclick="showToast('Edit profile')"><div style="font-size:14px;color:var(--tx);">Edit Profile</div></div>
+      <div style="padding:14px 0;border-bottom:1px solid var(--bd);cursor:pointer;" onclick="showToast('Notification preferences')"><div style="font-size:14px;color:var(--tx);">Notifications</div></div>
+      <div style="padding:14px 0;border-bottom:1px solid var(--bd);cursor:pointer;" onclick="showToast('Privacy settings')"><div style="font-size:14px;color:var(--tx);">Privacy &amp; Data</div></div>
+      <div style="padding:14px 0;border-bottom:1px solid var(--bd);cursor:pointer;" onclick="showToast('Connected apps')"><div style="font-size:14px;color:var(--tx);">Connected Apps (Spotify, Google)</div></div>
+      <div style="padding:14px 0;cursor:pointer;" onclick="nav('s-land')"><div style="font-size:14px;color:var(--rd);">Sign Out</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== TRAVEL EVOLUTION DASHBOARD (Architecture 37) ===== -->
+<div id="s-evolution" class="screen">
+  <div class="tb"><button class="bk" onclick="nav('s-memory')">← Memory</button><div class="wm">EVOLUTION</div><div></div></div>
+  <div class="scr">
+    <div style="background:var(--cr2);padding:22px 20px;">
+      <div style="font-family:var(--fm);font-size:8px;letter-spacing:3px;color:var(--rg);text-transform:uppercase;margin-bottom:6px;">Travel Evolution Dashboard</div>
+      <div style="font-family:var(--fd);font-size:22px;font-weight:700;color:var(--ink);line-height:1.2;">How you've grown as a traveler.</div>
+      <div style="font-size:13px;color:var(--tm);margin-top:4px;">Your Blueprint evolves with every trip. Here's the story so far.</div>
+    </div>
+    <div class="sg"><div class="sgi"><div class="sgn">3</div><div class="sgl">Trips</div></div><div class="sgi"><div class="sgn">7</div><div class="sgl">Countries</div></div><div class="sgi"><div class="sgn">14</div><div class="sgl">Cities</div></div><div class="sgi"><div class="sgn">38</div><div class="sgl">Days</div></div></div>
+    <div class="sh"><div class="shl">Identity Over Time</div><div class="sht">Blueprint Versions</div></div>
+    <div style="padding:0 20px;">
+      <div style="display:flex;gap:12px;padding:14px 0;border-bottom:1px solid var(--bd);"><div style="width:36px;height:36px;border-radius:8px;background:var(--sdl);display:flex;align-items:center;justify-content:center;font-family:var(--fd);font-size:14px;font-weight:700;color:var(--sd);">v3</div><div><div style="font-family:var(--fd);font-size:14px;font-weight:600;color:var(--tx);">Current — Slow &amp; Restorative</div><div style="font-size:11px;color:var(--ts);margin-top:2px;">After Bali · Oct 2025 — Shifted from adventure to intentional rest</div></div></div>
+      <div style="display:flex;gap:12px;padding:14px 0;border-bottom:1px solid var(--bd);"><div style="width:36px;height:36px;border-radius:8px;background:var(--sdl);display:flex;align-items:center;justify-content:center;font-family:var(--fd);font-size:14px;font-weight:700;color:var(--sd);">v2</div><div><div style="font-family:var(--fd);font-size:14px;font-weight:600;color:var(--tx);">Full &amp; Adventurous</div><div style="font-size:11px;color:var(--ts);margin-top:2px;">After Iceland · Mar 2025 — High energy, exploration-first</div></div></div>
+      <div style="display:flex;gap:12px;padding:14px 0;border-bottom:1px solid var(--bd);"><div style="width:36px;height:36px;border-radius:8px;background:var(--sdl);display:flex;align-items:center;justify-content:center;font-family:var(--fd);font-size:14px;font-weight:700;color:var(--sd);">v1</div><div><div style="font-family:var(--fd);font-size:14px;font-weight:600;color:var(--tx);">Curious &amp; Cultural</div><div style="font-size:11px;color:var(--ts);margin-top:2px;">First Blueprint · Jan 2025 — "I want to learn something"</div></div></div>
+    </div>
+    <div class="sh"><div class="shl">Milestones</div><div class="sht">Travel Life Map</div></div>
+    <div style="padding:0 20px;">
+      <div style="display:flex;gap:12px;padding:12px 0;border-bottom:1px solid var(--bd);"><span style="font-size:18px;">🏔</span><div><div style="font-family:var(--fd);font-size:14px;font-weight:600;color:var(--tx);">First Solo Trip</div><div style="font-size:11px;color:var(--ts);">Iceland · March 2025</div></div></div>
+      <div style="display:flex;gap:12px;padding:12px 0;border-bottom:1px solid var(--bd);"><span style="font-size:18px;">🌏</span><div><div style="font-family:var(--fd);font-size:14px;font-weight:600;color:var(--tx);">5 Countries Visited</div><div style="font-size:11px;color:var(--ts);">Unlocked September 2025</div></div></div>
+      <div style="display:flex;gap:12px;padding:12px 0;border-bottom:1px solid var(--bd);"><span style="font-size:18px;">🧘</span><div><div style="font-family:var(--fd);font-size:14px;font-weight:600;color:var(--tx);">Identity Shift Detected</div><div style="font-size:11px;color:var(--ts);">Adventure → Restorative after Bali</div></div></div>
+      <div style="display:flex;gap:12px;padding:12px 0;border-bottom:1px solid var(--bd);"><span style="font-size:18px;">📖</span><div><div style="font-family:var(--fd);font-size:14px;font-weight:600;color:var(--tx);">30 Days Abroad</div><div style="font-size:11px;color:var(--ts);">Unlocked October 2025</div></div></div>
+    </div>
+    <div class="sh"><div class="shl">Patterns</div><div class="sht">What ROAM Sees</div></div>
+    <div style="padding:0 20px 20px;">
+      <div style="background:var(--pn);border:1px solid var(--bd);border-radius:12px;padding:16px;">
+        <div style="font-size:13px;color:var(--tm);line-height:1.7;">You tend to over-schedule day 1 and under-plan the last two days. Your best-rated meals happen when you walk in without a reservation. You spend 40% more than you budget — consider setting budgets 30% higher.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== BUDGET TRACKER (Architecture 23) ===== -->
+<div id="s-budget-track" class="screen">
+  <div class="tb"><button class="bk" onclick="nav('s-dash')">← Home</button><div class="wm">BUDGET TRACKER</div><div></div></div>
+  <div class="scr">
+    <div style="background:var(--cr2);padding:20px;">
+      <div style="font-family:var(--fm);font-size:8px;letter-spacing:3px;color:var(--rg);text-transform:uppercase;margin-bottom:6px;">Budget Intelligence</div>
+      <div style="font-family:var(--fd);font-size:22px;font-weight:700;color:var(--ink);" id="bt-title">Trip Budget</div>
+      <div style="display:flex;align-items:baseline;gap:8px;margin-top:8px;">
+        <div style="font-family:var(--fd);font-size:36px;font-weight:700;color:var(--ink);" id="bt-spent">$1,847</div>
+        <div style="font-size:14px;color:var(--ts);">of <span id="bt-total" style="font-weight:600;">$3,000</span></div>
+      </div>
+      <div class="pg" style="margin-top:12px;height:8px;"><div class="pgf" style="width:62%;background:var(--sd);"></div></div>
+      <div style="display:flex;justify-content:space-between;margin-top:6px;font-size:11px;color:var(--ts);"><span>62% spent</span><span>$1,153 remaining</span></div>
+    </div>
+    <div class="sh"><div class="shl">Breakdown by Category</div></div>
+    <div style="padding:0 20px;" id="bt-cats">
+      <div style="display:flex;align-items:center;padding:13px 0;border-bottom:1px solid var(--bd);"><span style="font-size:16px;width:28px;">🏨</span><div style="flex:1;"><div style="font-family:var(--fd);font-size:14px;font-weight:600;color:var(--tx);">Stays</div><div class="pg" style="margin-top:4px;"><div class="pgf" style="width:75%;background:var(--rg);"></div></div></div><div style="text-align:right;margin-left:12px;"><div style="font-family:var(--fm);font-size:12px;color:var(--tx);">$892</div><div style="font-size:10px;color:var(--ts);">of $1,200</div></div></div>
+      <div style="display:flex;align-items:center;padding:13px 0;border-bottom:1px solid var(--bd);"><span style="font-size:16px;width:28px;">🍽</span><div style="flex:1;"><div style="font-family:var(--fd);font-size:14px;font-weight:600;color:var(--tx);">Dining</div><div class="pg" style="margin-top:4px;"><div class="pgf" style="width:58%;background:var(--sd);"></div></div></div><div style="text-align:right;margin-left:12px;"><div style="font-family:var(--fm);font-size:12px;color:var(--tx);">$412</div><div style="font-size:10px;color:var(--ts);">of $700</div></div></div>
+      <div style="display:flex;align-items:center;padding:13px 0;border-bottom:1px solid var(--bd);"><span style="font-size:16px;width:28px;">🎭</span><div style="flex:1;"><div style="font-family:var(--fd);font-size:14px;font-weight:600;color:var(--tx);">Activities</div><div class="pg" style="margin-top:4px;"><div class="pgf" style="width:45%;background:var(--gn);"></div></div></div><div style="text-align:right;margin-left:12px;"><div style="font-family:var(--fm);font-size:12px;color:var(--tx);">$298</div><div style="font-size:10px;color:var(--ts);">of $650</div></div></div>
+      <div style="display:flex;align-items:center;padding:13px 0;border-bottom:1px solid var(--bd);"><span style="font-size:16px;width:28px;">🚄</span><div style="flex:1;"><div style="font-family:var(--fd);font-size:14px;font-weight:600;color:var(--tx);">Transport</div><div class="pg" style="margin-top:4px;"><div class="pgf" style="width:55%;background:var(--sd);"></div></div></div><div style="text-align:right;margin-left:12px;"><div style="font-family:var(--fm);font-size:12px;color:var(--tx);">$245</div><div style="font-size:10px;color:var(--ts);">of $450</div></div></div>
+    </div>
+    <div class="sh"><div class="shl">Romieaux Intelligence</div></div>
+    <div style="padding:0 20px 20px;">
+      <div style="background:var(--sdl);border:1px solid rgba(176,138,80,.25);border-radius:12px;padding:14px;margin-bottom:10px;">
+        <div style="font-family:var(--fm);font-size:8px;letter-spacing:2px;color:var(--rg);text-transform:uppercase;margin-bottom:4px;">Budget Alert</div>
+        <div style="font-size:13px;color:var(--tm);line-height:1.6;">At current pace, you'll finish ~$200 over budget. Consider choosing the local trattoria over Le Sirenuse for one dinner — saves $140 with equal reviews from past Romieaux travelers.</div>
+      </div>
+      <div style="background:var(--pn);border:1px solid var(--bd);border-radius:12px;padding:14px;">
+        <div style="font-family:var(--fm);font-size:8px;letter-spacing:2px;color:var(--sd);text-transform:uppercase;margin-bottom:4px;">Smart Swap Available</div>
+        <div style="font-size:13px;color:var(--tm);line-height:1.6;">Water taxi to Positano: $45 vs. SITA bus: $2. Same views, different vibe. Want to swap?</div>
+        <div style="display:flex;gap:8px;margin-top:10px;"><button class="btn bgh" style="flex:1;padding:10px;" onclick="showToast('Keeping water taxi')">Keep</button><button class="btn bsd" style="flex:1;padding:10px;" onclick="showToast('Swapped to bus — $43 saved!')">Swap</button></div>
+      </div>
+    </div>
+  </div>
+  <div class="nt"><button class="nb" onclick="nav('s-dash')"><span class="ni">🏠</span><div class="nl">Home</div></button><button class="nb" onclick="nav('s-itin')"><span class="ni">📋</span><div class="nl">Itinerary</div></button><button class="nb" onclick="nav('s-ready')"><span class="ni">✈️</span><div class="nl">Readiness</div></button><button class="nb" onclick="nav('s-memory')"><span class="ni">📖</span><div class="nl">Memory</div></button></div>
+</div>
+
+<!-- ===== PRICING (Architecture 1.4) ===== -->
+<div id="s-pricing" class="screen">
+  <div class="tb"><button class="bk" onclick="nav('s-land')">← Back</button><div class="wm">PRICING</div><div></div></div>
+  <div class="scr">
+    <div style="padding:24px 20px 14px;text-align:center;">
+      <div style="font-family:var(--fd);font-size:24px;font-weight:700;color:var(--ink);margin-bottom:6px;">Choose Your Journey</div>
+      <div style="font-size:13px;color:var(--tm);">Start free. Unlock more as you grow.</div>
+    </div>
+    <div style="padding:0 20px;">
+      <div style="background:var(--pn);border:1.5px solid var(--bd);border-radius:14px;padding:18px;margin-bottom:12px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;"><div style="font-family:var(--fd);font-size:18px;font-weight:700;color:var(--ink);">Explorer</div><div style="font-family:var(--fd);font-size:22px;font-weight:700;color:var(--sd);">Free</div></div>
+        <div style="font-size:12px;color:var(--tm);margin-top:6px;line-height:1.6;">8 core modules: Activities, Dining, Transport, Stays, Safety, Payment, Memory Book, Reminders. Budget Tracker included.</div>
+        <button class="btn bgh" style="width:100%;margin-top:12px;padding:11px;" onclick="nav('s-signup')">Get Started</button>
+      </div>
+      <div style="background:var(--pn);border:1.5px solid var(--sd);border-radius:14px;padding:18px;margin-bottom:12px;position:relative;">
+        <div style="position:absolute;top:-10px;right:16px;background:var(--rg);color:#fff;font-family:var(--fm);font-size:8px;letter-spacing:1px;padding:3px 10px;border-radius:10px;text-transform:uppercase;">Popular</div>
+        <div style="font-family:var(--fd);font-size:18px;font-weight:700;color:var(--ink);margin-bottom:4px;">Lifestyle Bundles</div>
+        <div style="font-size:12px;color:var(--tm);line-height:1.5;margin-bottom:8px;">Explorer · Smart Traveler · Family · Solo · Couples &amp; Celebrations</div>
+        <div style="font-family:var(--fd);font-size:22px;font-weight:700;color:var(--sd);">$9.99<span style="font-size:13px;color:var(--ts);font-weight:400;">/mo each</span></div>
+        <div style="font-size:12px;color:var(--tm);margin-top:6px;line-height:1.6;">Add the modules you need. Mix and match bundles.</div>
+        <button class="btn bsd" style="width:100%;margin-top:12px;padding:11px;" onclick="showToast('Choose your bundles')">Choose Bundles →</button>
+      </div>
+      <div style="background:var(--pn);border:1.5px solid var(--bd);border-radius:14px;padding:18px;margin-bottom:12px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;"><div style="font-family:var(--fd);font-size:18px;font-weight:700;color:var(--ink);">All-Access</div><div><div style="font-family:var(--fd);font-size:22px;font-weight:700;color:var(--sd);">$29<span style="font-size:13px;color:var(--ts);font-weight:400;">/mo</span></div><div style="font-size:10px;color:var(--ts);text-align:right;">or $299/yr</div></div></div>
+        <div style="font-size:12px;color:var(--tm);margin-top:6px;line-height:1.6;">All 26 modules. All 18 engines. Full post-trip intelligence. Best value for frequent travelers.</div>
+        <button class="btn bink" style="width:100%;margin-top:12px;padding:11px;" onclick="showToast('All-Access selected')">Go All-Access →</button>
+      </div>
+      <div style="background:var(--pn);border:1.5px solid var(--bd);border-radius:14px;padding:18px;margin-bottom:12px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;"><div style="font-family:var(--fd);font-size:18px;font-weight:700;color:var(--ink);">Per-Trip</div><div style="font-family:var(--fd);font-size:18px;font-weight:700;color:var(--sd);">$49–$399</div></div>
+        <div style="font-size:12px;color:var(--tm);margin-top:6px;line-height:1.6;">No subscription. Unlock planning for a single trip — Essential ($49), Curated ($149), or Signature ($399).</div>
+        <button class="btn bgh" style="width:100%;margin-top:12px;padding:11px;" onclick="showToast('Choose trip tier')">Plan a Single Trip →</button>
+      </div>
+      <div style="background:var(--pn);border:1.5px solid var(--bd);border-radius:14px;padding:18px;margin-bottom:12px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;"><div style="font-family:var(--fd);font-size:18px;font-weight:700;color:var(--ink);">Romieaux Pro</div><div style="font-family:var(--fd);font-size:22px;font-weight:700;color:var(--sd);">$99<span style="font-size:13px;color:var(--ts);font-weight:400;">/mo</span></div></div>
+        <div style="font-size:12px;color:var(--tm);margin-top:6px;line-height:1.6;">For travel advisors &amp; agencies. Multi-client dashboards, white-label itineraries, API access, priority support.</div>
+        <button class="btn bgh" style="width:100%;margin-top:12px;padding:11px;" onclick="showToast('Contact sales for Pro')">Contact Sales →</button>
+      </div>
+      <div style="background:linear-gradient(160deg,var(--cr2),var(--n2));border:1.5px solid var(--sd);border-radius:14px;padding:18px;margin-bottom:20px;">
+        <div style="font-family:var(--fd);font-size:18px;font-weight:700;color:var(--ink);">Private Circle</div>
+        <div style="font-family:var(--fm);font-size:9px;letter-spacing:2px;color:var(--rg);margin-top:2px;text-transform:uppercase;">Invitation Only</div>
+        <div style="font-size:12px;color:var(--tm);margin-top:6px;line-height:1.6;">Dedicated concierge, bespoke experiences, real-time human escalation, luxury partner access. By invitation or referral.</div>
+        <button class="btn bgh" style="width:100%;margin-top:12px;padding:11px;" onclick="showToast('Request invitation')">Request Invitation →</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== GUIDED DISCOVERY (Architecture 5) ===== -->
+<div id="s-discover" class="screen">
+  <div class="tb"><button class="bk" onclick="nav('s-dest')">← Back</button><div class="wm">DISCOVER</div><div></div></div>
+  <div class="scr">
+    <div style="padding:24px 20px 14px;">
+      <div style="font-family:var(--fm);font-size:8px;letter-spacing:4px;color:var(--rg);text-transform:uppercase;margin-bottom:10px;">Guided Discovery</div>
+      <div style="font-family:var(--fd);font-size:24px;font-weight:700;color:var(--ink);line-height:1.2;margin-bottom:6px;">Let's find your place.</div>
+      <div style="font-size:13px;color:var(--tm);line-height:1.6;">Tap anything that speaks to you. Romieaux™ narrows as you go.</div>
+    </div>
+    <div class="sh"><div class="shl">What draws you?</div></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:0 20px;">
+      <div class="disc-card" onclick="toggleDisc(this)" style="background:linear-gradient(135deg,#4a6b5a,#2d4a3e);border-radius:14px;padding:18px;cursor:pointer;position:relative;overflow:hidden;transition:all .2s;"><div style="font-size:28px;margin-bottom:8px;">🌊</div><div style="font-family:var(--fd);font-size:15px;font-weight:600;color:#fff;">Coastlines</div><div style="font-size:11px;color:rgba(255,255,255,.6);margin-top:3px;">Water, cliffs, salt air</div></div>
+      <div class="disc-card" onclick="toggleDisc(this)" style="background:linear-gradient(135deg,#6b5a2d,#4a3a14);border-radius:14px;padding:18px;cursor:pointer;position:relative;overflow:hidden;transition:all .2s;"><div style="font-size:28px;margin-bottom:8px;">🏛</div><div style="font-family:var(--fd);font-size:15px;font-weight:600;color:#fff;">Ancient History</div><div style="font-size:11px;color:rgba(255,255,255,.6);margin-top:3px;">Ruins, temples, layers</div></div>
+      <div class="disc-card" onclick="toggleDisc(this)" style="background:linear-gradient(135deg,#3a4a6b,#1e2e4a);border-radius:14px;padding:18px;cursor:pointer;position:relative;overflow:hidden;transition:all .2s;"><div style="font-size:28px;margin-bottom:8px;">🍜</div><div style="font-family:var(--fd);font-size:15px;font-weight:600;color:#fff;">Street Food</div><div style="font-size:11px;color:rgba(255,255,255,.6);margin-top:3px;">Local, unfiltered, real</div></div>
+      <div class="disc-card" onclick="toggleDisc(this)" style="background:linear-gradient(135deg,#5a4a3a,#3a2a1a);border-radius:14px;padding:18px;cursor:pointer;position:relative;overflow:hidden;transition:all .2s;"><div style="font-size:28px;margin-bottom:8px;">🏔</div><div style="font-family:var(--fd);font-size:15px;font-weight:600;color:#fff;">Mountains</div><div style="font-size:11px;color:rgba(255,255,255,.6);margin-top:3px;">Altitude, silence, trails</div></div>
+      <div class="disc-card" onclick="toggleDisc(this)" style="background:linear-gradient(135deg,#6b4a5a,#4a2a3a);border-radius:14px;padding:18px;cursor:pointer;position:relative;overflow:hidden;transition:all .2s;"><div style="font-size:28px;margin-bottom:8px;">🎵</div><div style="font-family:var(--fd);font-size:15px;font-weight:600;color:#fff;">Live Music</div><div style="font-size:11px;color:rgba(255,255,255,.6);margin-top:3px;">Jazz bars, festivals, venues</div></div>
+      <div class="disc-card" onclick="toggleDisc(this)" style="background:linear-gradient(135deg,#4a5a3a,#2a3a1a);border-radius:14px;padding:18px;cursor:pointer;position:relative;overflow:hidden;transition:all .2s;"><div style="font-size:28px;margin-bottom:8px;">🌿</div><div style="font-family:var(--fd);font-size:15px;font-weight:600;color:#fff;">Wellness</div><div style="font-size:11px;color:rgba(255,255,255,.6);margin-top:3px;">Spas, yoga, restoration</div></div>
+    </div>
+    <div id="disc-result" style="display:none;padding:20px;">
+      <div style="background:var(--pn);border:1.5px solid var(--sd);border-radius:14px;padding:18px;">
+        <div style="font-family:var(--fm);font-size:8px;letter-spacing:3px;color:var(--rg);text-transform:uppercase;margin-bottom:6px;">Based on your selections</div>
+        <div style="font-family:var(--fd);font-size:20px;font-weight:700;color:var(--ink);margin-bottom:4px;" id="disc-dest">Amalfi Coast, Italy</div>
+        <div style="font-size:13px;color:var(--tm);line-height:1.6;margin-bottom:4px;" id="disc-why">Dramatic coastlines, ancient ruins at Pompeii, and one of Europe's best street food cultures — all within a one-hour radius.</div>
+        <div style="font-size:12px;color:var(--sd);margin-bottom:14px;" id="disc-when">Best timing: May or September · Avg. budget: $3,200 pp</div>
+        <button class="btn bsd" style="width:100%;margin-bottom:8px;" onclick="S.destKey='romantic';S.destName=document.getElementById('disc-dest').textContent;nav('s-tripdetails')">Plan This Trip →</button>
+        <button style="width:100%;padding:10px;background:none;border:none;font-family:var(--fs);font-size:13px;color:var(--ts);cursor:pointer;" onclick="discNext()">Show me another match →</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <script>
-var S={energy:'rested',tripType:'romantic',group:'partner',intention:'rest',season:'building',budget:'balanced',mode:'curated',destKey:null,destName:null};
+var S={energy:'rested',tripType:'romantic',group:'partner',intention:'rest',season:'building',budget:'balanced',budgetAmt:'',mode:'curated',destKey:null,destName:null};
 var sugIdx=0;
 
 // ===== DESTINATION DATA =====
@@ -879,19 +1186,58 @@ function nav(id){
   document.querySelectorAll('.screen').forEach(function(s){s.classList.remove('active');});
   var el=document.getElementById(id);if(el)el.classList.add('active');
   window.scrollTo(0,0);
-  if(id==='s-dash'||id==='s-itin'||id==='s-activities'||id==='s-dining'||id==='s-transport'||id==='s-stays'||id==='s-safety'||id==='s-ready'||id==='s-reminders'||id==='s-payment'||id==='s-group'||id==='s-posttrip'||id==='s-smartcheck')render();
+  if(id==='s-dash'||id==='s-itin'||id==='s-activities'||id==='s-dining'||id==='s-transport'||id==='s-stays'||id==='s-safety'||id==='s-ready'||id==='s-reminders'||id==='s-payment'||id==='s-group'||id==='s-posttrip'||id==='s-smartcheck'||id==='s-budget-track'||id==='s-settings')render();
   if(id==='s-blueprint')runBP();
   if(id==='s-bp-compat')buildCompat();
 }
 function pick(el,k,v,dest){if(el){el.parentElement.querySelectorAll('.opt').forEach(function(o){o.classList.remove('sel');});el.classList.add('sel');}S[k]=v;if(k==='tripType')S.destKey=ttk(v);setTimeout(function(){nav(dest);},el?220:0);}
 function pickMerge(el,energy,intention,season,dest){if(el){el.parentElement.querySelectorAll('.opt').forEach(function(o){o.classList.remove('sel');});el.classList.add('sel');}S.energy=energy;S.intention=intention;S.season=season;setTimeout(function(){nav(dest);},220);}
+function setBudget(val){document.getElementById('budget-input').value=val;S.budgetAmt=val;}
+function checkBudget(){
+  var raw=document.getElementById('budget-input').value.replace(/[^0-9]/g,'');
+  S.budgetAmt=document.getElementById('budget-input').value;
+  var btn=document.getElementById('budget-go');
+  var alert=document.getElementById('budget-alert');
+  if(!raw||raw.length===0){if(btn)btn.style.display='none';if(alert)alert.style.display='none';return;}
+  var amt=parseInt(raw);
+  if(btn)btn.style.display='block';
+  // Smart budget intelligence
+  var destRanges={romantic:{low:1500,avg:'$2,500–$5,000',dest:'Amalfi Coast',alt:'Oaxaca, Mexico',altWhy:'Your energy and intention are a strong match for Oaxaca — where street food, mezcal culture, and mountain valley scenery deliver the full experience at a fraction of European costs.',altBudget:'$800 gets you the full experience'},reset:{low:1200,avg:'$1,800–$3,500',dest:'Bali',alt:'Chiang Mai, Thailand',altWhy:'Your reset intention maps perfectly to Chiang Mai — exceptional wellness infrastructure, world-class temples, and $15 massages. Same restoration, lower cost floor.',altBudget:'$600 covers everything comfortably'}};
+  var dr=destRanges[S.destKey||'romantic']||destRanges.romantic;
+  if(amt>0&&amt<dr.low){
+    if(alert){
+      alert.style.display='block';
+      alert.innerHTML='<div style="background:var(--rgl);border:1.5px solid var(--rg);border-radius:14px;padding:16px;margin-bottom:4px;">'
+        +'<div style="font-family:var(--fm);font-size:8px;letter-spacing:2px;color:var(--rg);text-transform:uppercase;margin-bottom:6px;">Budget Intelligence</div>'
+        +'<div style="font-family:var(--fd);font-size:15px;font-weight:700;color:var(--ink);margin-bottom:6px;">Most '+dr.dest+' travelers spend '+dr.avg+' per person.</div>'
+        +'<div style="font-size:13px;color:var(--tm);line-height:1.6;margin-bottom:14px;">At $'+amt.toLocaleString()+', significant trade-offs are needed — hostels instead of hotels, public transit only, limited dining. Romieaux™ can still build this trip, but it will look different.</div>'
+        +'<div style="background:var(--pn);border:1px solid var(--bd);border-radius:10px;padding:13px;margin-bottom:10px;">'
+        +'<div style="font-family:var(--fm);font-size:8px;letter-spacing:2px;color:var(--sd);text-transform:uppercase;margin-bottom:4px;">Option 1 — Build it anyway</div>'
+        +'<div style="font-size:12px;color:var(--tm);line-height:1.5;">Romieaux will optimize every dollar. You\'ll get the destination — just a different version of it.</div>'
+        +'</div>'
+        +'<div style="background:var(--sdl);border:1px solid rgba(176,138,80,.25);border-radius:10px;padding:13px;cursor:pointer;" onclick="showToast(\'Switching to '+dr.alt+'\');S.destName=\''+dr.alt+'\';S.destKey=\''+( dr.alt.indexOf('Chiang')>-1?'reset':'romantic')+'\';">'
+        +'<div style="font-family:var(--fm);font-size:8px;letter-spacing:2px;color:var(--sd);text-transform:uppercase;margin-bottom:4px;">Option 2 — Better-fit destination</div>'
+        +'<div style="font-family:var(--fd);font-size:15px;font-weight:600;color:var(--ink);margin-bottom:4px;">Consider '+dr.alt+'</div>'
+        +'<div style="font-size:12px;color:var(--tm);line-height:1.5;">'+dr.altWhy+'</div>'
+        +'<div style="font-size:12px;color:var(--sd);font-weight:600;margin-top:6px;">'+dr.altBudget+' →</div>'
+        +'</div>'
+        +'</div>';
+    }
+    if(btn)btn.textContent='Build with $'+amt.toLocaleString()+' →';
+  }else{
+    if(alert)alert.style.display='none';
+    if(btn)btn.textContent='Set Budget →';
+  }
+}
+function setBudgetGo(val){document.getElementById('budget-input').value=val;S.budgetAmt=val;S.budget='set';nav('s-bp-mode');}
 function tg(el){el.classList.toggle('sel');document.getElementById('ob-go').style.display=document.querySelectorAll('#s-bp-music .gb.sel').length?'block':'none';}
 function fc(el){el.closest('div').querySelectorAll('.chip').forEach(function(c){c.classList.remove('sel');});el.classList.add('sel');}
-function setDM(m,el){document.querySelectorAll('#s-dest .opt').forEach(function(o){o.classList.remove('sel');});el.classList.add('sel');document.getElementById('dest-own').style.display='none';document.getElementById('dest-sug').style.display='none';if(m==='own'){document.getElementById('dest-own').style.display='block';}else if(m==='suggest'){sugIdx=0;bSug();document.getElementById('dest-sug').style.display='block';}else{S.destKey=ttk(S.tripType);S.destName=D[S.destKey].name;showToast('Romieaux choosing your destination… 🌍');setTimeout(function(){nav('s-blueprint');},900);}}
+function setDM(m,el){document.querySelectorAll('#s-dest .opt').forEach(function(o){o.classList.remove('sel');});el.classList.add('sel');document.getElementById('dest-own').style.display='none';document.getElementById('dest-sug').style.display='none';if(m==='own'){document.getElementById('dest-own').style.display='block';}else if(m==='suggest'){sugIdx=0;bSug();document.getElementById('dest-sug').style.display='block';}else{S.destKey=ttk(S.tripType);S.destName=D[S.destKey].name;showToast('Romieaux choosing your destination… 🌍');setTimeout(function(){nav('s-tripdetails');},900);}}
 function bSug(){var l=SUGS[S.tripType]||SUGS.romantic;var s=l[sugIdx%l.length];$('sug-n',s.n);$('sug-w',s.w);S.destKey=s.k;S.destName=s.n;}
 function nextSug(){sugIdx++;bSug();}
 function onDT(v){document.getElementById('dest-go').style.display=v.length>2?'block':'none';S.destKey=ntk(v);S.destName=v||null;}
-function goDest(){nav('s-blueprint');}
+function goDest(){nav('s-tripdetails');}
+function calcDuration(){var d=document.getElementById('td-depart').value;var r=document.getElementById('td-return').value;var el=document.getElementById('td-duration');if(d&&r){var diff=Math.round((new Date(r)-new Date(d))/(1000*60*60*24));if(diff>0){el.textContent=diff+' nights · '+(diff+1)+' days';el.style.display='block';S.tripDays=diff;}else{el.style.display='none';}}else{el.style.display='none';}}
 function ttk(t){return t==='reset'?'reset':'romantic';}
 function ntk(n){n=(n||'').toLowerCase();return(n.indexOf('bali')>-1||n.indexOf('ubud')>-1)?'reset':'romantic';}
 function $(id,v){var e=document.getElementById(id);if(e)e.innerHTML=v;}
@@ -900,14 +1246,48 @@ function ckToggle(el){el.classList.toggle('done');var t=el.parentElement.querySe
 
 function render(){
   var k=S.destKey||ttk(S.tripType);var t=D[k]||D.romantic;var dn=S.destName||t.name;
-  $('d-emo',t.emoji);$('d-tn',dn);$('d-sub',t.sub.split('·')[0].trim()+' · '+dn);
+  $('d-emo',t.emoji);$('d-tn',dn);var durTxt=S.tripDays?(S.tripDays+' nights · '):'';$('d-sub',durTxt+t.sub.split('·')[0].trim()+' · '+dn);
   $('ctab1',t.city1);$('ctab2',t.city2);$('align-txt',t.alignTxt);$('d-dest',dn);
   $('act-ct',t.actCt);$('din-ct',t.dinCt);$('stay-ct',t.stayCt);
-  $('ib-eye',t.eye);$('ib-t',t.title);$('ib-s',t.sub);
+  $('ib-eye',t.eye);$('ib-t',t.title);var dayCount=S.tripDays||t.days.length;$('ib-s',dayCount+' days · '+t.sub);
   var vibes={romantic:'✦ Romantic & Slow-Paced',reset:'✦ Restorative & Intentional',cultural:'✦ Curious & Immersive',adventure:'✦ High-Energy & Exploratory',friends:'✦ Social & Celebratory',honeymoon:'✦ Intimate & Luxurious',milestone:'✦ Celebratory & Meaningful',workcation:'✦ Productive & Balanced'};
   $('trip-vibe',vibes[S.tripType]||vibes.romantic);
+  var budgetLabels={budget:'Budget-First',balanced:'Balanced',flexible:'Flexible',agnostic:'No Limit',set:''};
+  var bDisplay=S.budget==='agnostic'?'No Limit Set':S.budgetAmt?'$'+S.budgetAmt+' per person':'Balanced';
+  $('trip-budget','💰 '+bDisplay);
+  var dep=document.getElementById('td-depart');var ret=document.getElementById('td-return');
+  if(dep&&ret&&dep.value&&ret.value){var d1=new Date(dep.value);var d2=new Date(ret.value);var mn=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];$('trip-dates','📅 '+mn[d1.getUTCMonth()]+' '+d1.getUTCDate()+' – '+mn[d2.getUTCMonth()]+' '+d2.getUTCDate()+' · '+(S.tripDays||'?')+' nights');}else{$('trip-dates','📅 Dates: Not set');}
   // Days
-  $('days',t.days.map(function(d){return '<div class="dc"><div class="dch"><div><div class="dcn">'+d.n+'</div><div class="dcl">'+d.l+'</div></div><div class="dcb '+d.bc+'">'+d.b+'</div></div>'+d.acts.map(function(a){var fl=a.f?'<div class="af '+a.fc+'">'+a.f+'</div>':'';return '<div class="ar"><div class="at">'+a.t+'</div><div class="adot"></div><div class="ab2"><div class="an">'+a.n+'</div><div class="as2">'+a.s+'</div>'+fl+'</div></div>';}).join('')+'</div>';}).join(''));
+  // Days - extend to match trip length
+  var totalDays=S.tripDays||t.days.length;
+  var allDays=[];
+  for(var di=0;di<totalDays;di++){
+    if(di<t.days.length){
+      var orig=t.days[di];
+      allDays.push(orig);
+    }else{
+      // Generate additional days from activities
+      var dayNum=di+1;
+      var isLast=di===totalDays-1;
+      var acts=[];
+      if(isLast){
+        acts=[{t:'10:00 AM',n:'Late checkout & pack',s:'No rush — Romieaux cleared the morning',f:'',fc:''},{t:'12:00 PM',n:'Final lunch',s:'Local favorite near hotel',f:'📸 Last meal photo for Memory Book',fc:'ft'},{t:'3:00 PM',n:'Transfer to airport',s:'Pre-arranged · Arrives 2hrs before flight',f:'',fc:''}];
+        allDays.push({n:'Day '+dayNum+' · Departure',l:'Heading Home',b:'Travel Day',bc:'bwn',acts:acts});
+      }else{
+        var pool=t.activities||[];
+        var ai1=pool[(di*2)%pool.length]||{i:'🌅',n:'Morning exploration',s:'Local area walk'};
+        var ai2=pool[(di*2+1)%pool.length]||{i:'🍽',n:'Lunch spot',s:'Romieaux recommended'};
+        acts=[
+          {t:'9:00 AM',n:ai1.n,s:ai1.s,f:'',fc:''},
+          {t:'1:00 PM',n:ai2.n,s:ai2.s,f:'',fc:''},
+          {t:'7:30 PM',n:'Dinner',s:'Romieaux-curated restaurant',f:'',fc:''}
+        ];
+        var vibes=['Exploration','Culture','Slow Day','Active','Discovery','Relaxation'];
+        allDays.push({n:'Day '+dayNum+' · '+vibes[(di-2)%vibes.length],l:dn,b:'Paced Well ✓',bc:'bok',acts:acts});
+      }
+    }
+  }
+  $('days',allDays.map(function(d){return '<div class="dc"><div class="dch"><div><div class="dcn">'+d.n+'</div><div class="dcl">'+d.l+'</div></div><div class="dcb '+d.bc+'">'+d.b+'</div></div>'+d.acts.map(function(a){var fl=a.f?'<div class="af '+a.fc+'">'+a.f+'</div>':'';return '<div class="ar"><div class="at">'+a.t+'</div><div class="adot"></div><div class="ab2"><div class="an">'+a.n+'</div><div class="as2">'+a.s+'</div>'+fl+'</div></div>';}).join('')+'</div>';}).join(''));
   $('acts-list',t.activities.map(row).join(''));
   $('din-list',t.dining.map(row).join(''));
   $('trans-list',t.transport.map(row).join(''));
@@ -926,13 +1306,20 @@ function render(){
   // Group
   var members=t.name.indexOf('Italy')>-1?[{e:'👤',c:'4a6b5a',n:'Jordan',r:'Owner'},{e:'👤',c:'6b4a2d',n:'Alex S.',r:'Editor'},{e:'👤',c:'3a4a6b',n:'Marcus W.',r:'Editor'},{e:'👤',c:'6b3a4a',n:'Sarah P.',r:'Viewer'},{e:'👤',c:'5a5a3a',n:'Chris K.',r:'Viewer'}]:[{e:'👤',c:'4a6b5a',n:'Jordan',r:'Owner'}];
   $('grp-t','Your Trip · '+members.length+' Traveler'+(members.length>1?'s':''));$('grp-ct',members.length+' travelers');
-  $('member-list',members.map(function(m){return '<div style="display:flex;align-items:center;gap:12px;padding:12px 20px;border-bottom:1px solid var(--bd);"><div style="width:34px;height:34px;border-radius:50%;background:#'+m.c+';display:flex;align-items:center;justify-content:center;font-size:14px;">'+m.e+'</div><div style="flex:1;"><div style="font-family:var(--fd);font-size:14px;color:var(--tx);">'+m.n+'</div></div><div class="ib2 '+(m.r==='Owner'?'bs':'tg')+'">'+m.r+'</div></div>';}).join(''));
+  $('member-list',members.map(function(m){var roleClass=m.r==='Owner'?'bs':m.r==='Editor'?'tg':'bv';var roleAction=m.r==='Owner'?'':'onclick="cycleRole(this)"';return '<div style="display:flex;align-items:center;gap:12px;padding:13px 20px;border-bottom:1px solid var(--bd);"><div style="width:36px;height:36px;border-radius:50%;background:#'+m.c+';display:flex;align-items:center;justify-content:center;font-size:14px;">'+m.e+'</div><div style="flex:1;"><div style="font-family:var(--fd);font-size:14px;font-weight:600;color:var(--tx);">'+m.n+'</div>'+(m.r==='Owner'?'<div style="font-size:11px;color:var(--ts);margin-top:1px;">Subscription covers all members</div>':'')+'</div><div class="ib2 '+roleClass+'" style="cursor:'+(m.r==='Owner'?'default':'pointer')+';" '+roleAction+'>'+m.r+'</div></div>';}).join(''));
   // Post-trip
   $('pt-t',t.title);
   $('pt-costs',t.postCosts.map(function(c){return '<div style="display:flex;align-items:center;justify-content:space-between;padding:11px 20px;border-bottom:1px solid var(--bd);"><div style="font-size:13px;color:var(--tx);">'+c.cat+'</div><div style="display:flex;align-items:center;gap:10px;"><div style="width:80px;height:3px;background:var(--bd);border-radius:3px;overflow:hidden;"><div style="width:'+c.pct+'%;height:100%;background:var(--sd);"></div></div><div style="font-family:var(--fm);font-size:11px;color:var(--tm);">'+c.amt+'</div></div></div>';}).join(''));
   // Smart Check
   var scItems=SC_DATA[k]||SC_DATA.romantic;var scEl=document.getElementById('sc-list');
   if(scEl)scEl.innerHTML=scItems.map(function(item){return '<div style="display:flex;gap:16px;padding:18px 20px;border-bottom:1px solid var(--bd);"><div style="width:44px;height:44px;border-radius:10px;background:'+item.color+';flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:20px;">'+item.ico+'</div><div style="flex:1;"><div style="font-family:var(--fm);font-size:8px;letter-spacing:2px;color:'+item.tc+';text-transform:uppercase;margin-bottom:4px;">'+item.label+'</div><div style="font-family:var(--fd);font-size:16px;font-weight:500;color:var(--tx);margin-bottom:5px;">'+item.title+'</div><div style="font-size:13px;color:var(--tm);line-height:1.5;">'+item.desc+'</div></div></div>';}).join('');
+  // Settings
+  var energyLabels={burnt:'Slow & restorative',rested:'Full & adventurous',curious:'Rich & cultural',rebuilding:'Purposeful',focused:'Focused'};
+  var modeLabels={essential:'Essential',lightly:'Lightly Tailored',curated:'Deeply Curated',concierge:'Concierge-Enhanced'};
+  var se=document.getElementById('set-energy');if(se)se.textContent=energyLabels[S.energy]||'Slow & restorative';
+  var sm=document.getElementById('set-mode');if(sm)sm.textContent=modeLabels[S.mode]||'Deeply Curated';
+  // Budget Tracker
+  var btt=document.getElementById('bt-title');if(btt)btt.textContent=dn+' Budget';
 }
 
 function buildCompat(){
@@ -981,6 +1368,12 @@ function openPW(icon,moduleName,bundleName){
 }
 function closePW(e){if(!e||e.target===document.getElementById('pw-overlay'))document.getElementById('pw-overlay').classList.remove('show');}
 function showToast(msg){var t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(function(){t.classList.remove('show');},2600);}
+function selectRole(r){document.getElementById('role-editor').classList.toggle('v',r==='editor');document.getElementById('role-viewer').classList.toggle('v',r==='viewer');}
+function cycleRole(el){var roles=['Editor','Viewer'];var cur=el.textContent;var next=roles[(roles.indexOf(cur)+1)%roles.length];el.textContent=next;el.className='ib2 '+(next==='Editor'?'tg':'bv');showToast('Role changed to '+next);}
+function toggleDisc(el){el.classList.toggle('disc-sel');el.style.outline=el.classList.contains('disc-sel')?'3px solid var(--rg)':'none';var sel=document.querySelectorAll('.disc-sel').length;if(sel>=2){document.getElementById('disc-result').style.display='block';discMatch();}else{document.getElementById('disc-result').style.display='none';}}
+var discIdx=0;var DISC=[{n:'Amalfi Coast, Italy',w:'Dramatic coastlines, ancient ruins at Pompeii, and one of Europe\'s best street food cultures — all within a one-hour radius.',t:'Best timing: May or September · Avg. budget: $3,200 pp',k:'romantic'},{n:'Oaxaca, Mexico',w:'Mountain valley culture, mezcal heritage, street food capital of the Americas. Deep history meets modern creative energy.',t:'Best timing: October–December · Avg. budget: $1,800 pp',k:'romantic'},{n:'Ubud, Bali',w:'Rice terraces, temple ceremonies, wellness retreats, and extraordinary food — at a fraction of European costs.',t:'Best timing: April–October · Avg. budget: $2,100 pp',k:'reset'},{n:'Kyoto, Japan',w:'Zen gardens, ancient temples, tea ceremony, and Michelin-level street food. History lives here.',t:'Best timing: March–May or October–November · Avg. budget: $4,200 pp',k:'romantic'}];
+function discMatch(){var d=DISC[discIdx%DISC.length];document.getElementById('disc-dest').textContent=d.n;document.getElementById('disc-why').textContent=d.w;document.getElementById('disc-when').textContent=d.t;}
+function discNext(){discIdx++;discMatch();}
 render();
 </script>
 </body>
