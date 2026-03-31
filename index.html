@@ -351,11 +351,11 @@ body{background:var(--cr);color:var(--tx);font-family:var(--fs);min-height:100vh
     <div class="qt" style="color:var(--tx)">Who are you traveling with?</div>
     <div class="qsub" style="color:var(--tm)">This activates the right modules — compatibility for couples, group collaboration for friends, family filters for kids, solo safety intelligence.</div>
     <div class="opts">
-      <button class="opt lt" onclick="pick(this,'group','solo','s-bp-budget')">Solo</button>
+      <button class="opt lt" onclick="pick(this,'group','solo','s-bp-mode')">Solo</button>
       <button class="opt lt" onclick="pick(this,'group','partner','s-bp-compat')">My Partner</button>
       <button class="opt lt" onclick="pick(this,'group','friends','s-bp-compat')">Friends</button>
-      <button class="opt lt" onclick="pick(this,'group','family_kids','s-bp-budget')">Family (With Kids)</button>
-      <button class="opt lt" onclick="pick(this,'group','family_adults','s-bp-budget')">Family (Adults Only)</button>
+      <button class="opt lt" onclick="pick(this,'group','family_kids','s-bp-mode')">Family (With Kids)</button>
+      <button class="opt lt" onclick="pick(this,'group','family_adults','s-bp-mode')">Family (Adults Only)</button>
       <button class="opt lt" onclick="pick(this,'group','mixed','s-bp-compat')">Mixed Group</button>
     </div>
   </div>
@@ -374,30 +374,29 @@ body{background:var(--cr);color:var(--tx);font-family:var(--fs);min-height:100vh
       <div style="font-size:13px;color:var(--tm);line-height:1.6;">Romieaux™ scores 27/27 capabilities. The next closest competitor scores 5/27.</div>
     </div>
   </div>
-  <div class="ab"><button class="btn bgh" style="flex:1;" onclick="nav('s-bp-who')">Back</button><button class="btn bink" style="flex:2;" onclick="nav('s-bp-budget')">Continue →</button></div>
+  <div class="ab"><button class="btn bgh" style="flex:1;" onclick="nav('s-bp-who')">Back</button><button class="btn bink" style="flex:2;" onclick="nav('s-bp-mode')">Continue →</button></div>
 </div>
 
 <!-- ===== BUDGET (Architecture 4.7) ===== -->
 <div id="s-bp-budget" class="screen" style="background:var(--cr);">
-  <div class="tb"><button class="bk" onclick="nav('s-bp-who')">← Back</button><div class="wm">ROMIEAUX™</div><div></div></div>
+  <div class="tb"><button class="bk" onclick="nav('s-dest')">← Back</button><div class="wm">ROMIEAUX™</div><div></div></div>
   <div class="qs">
-    <div class="dots"><div class="dot dd"></div><div class="dot dd"></div><div class="dot dd"></div><div class="dot da"></div><div class="dot dow"></div></div>
-    <div style="font-family:var(--fm);font-size:8px;letter-spacing:4px;color:var(--rg);text-transform:uppercase;margin-bottom:14px;">Travel Blueprint — Budget</div>
+    <div style="font-family:var(--fm);font-size:8px;letter-spacing:4px;color:var(--rg);text-transform:uppercase;margin-bottom:14px;">Trip Planning — Budget</div>
     <div class="qt" style="color:var(--ink)">What feels right for this trip?</div>
-    <div class="qsub" style="color:var(--tm)">Per person, all-in. Romieaux™ shapes every dining, stay, and activity recommendation around this number.</div>
+    <div class="qsub" style="color:var(--tm)" id="budget-dest-hint">Per person, all-in. Romieaux™ shapes every dining, stay, and activity recommendation around this number.</div>
     <div style="display:flex;align-items:center;gap:4px;border-bottom:2px solid var(--sd);padding-bottom:8px;margin-bottom:16px;">
       <span style="font-family:var(--fd);font-size:32px;font-weight:700;color:var(--ink);">$</span>
       <input type="text" id="budget-input" placeholder="0" inputmode="numeric" style="width:100%;padding:4px 0;background:transparent;border:none;font-family:var(--fd);font-size:32px;font-weight:700;color:var(--ink);outline:none;" oninput="checkBudget()">
     </div>
     <div id="budget-alert" style="display:none;margin-bottom:16px;"></div>
-    <button class="btn bsd" id="budget-go" style="width:100%;display:none;margin-bottom:12px;" onclick="S.budget='set';nav('s-bp-mode')">Set Budget →</button>
-    <button style="width:100%;padding:14px;border-radius:40px;border:none;background:transparent;font-family:var(--fs);font-size:14px;color:var(--ts);cursor:pointer;transition:color .2s;" onclick="S.budget='agnostic';S.budgetAmt='';nav('s-bp-mode')">Skip — I'd rather not set a limit</button>
+    <button class="btn bsd" id="budget-go" style="width:100%;display:none;margin-bottom:12px;" onclick="S.budget='set';nav('s-tripdetails')">Set Budget →</button>
+    <button style="width:100%;padding:14px;border-radius:40px;border:none;background:transparent;font-family:var(--fs);font-size:14px;color:var(--ts);cursor:pointer;transition:color .2s;" onclick="S.budget='agnostic';S.budgetAmt='';nav('s-tripdetails')">Skip — I'd rather not set a limit</button>
   </div>
 </div>
 
 <!-- ===== ENGAGEMENT MODE (Architecture 4.10) ===== -->
 <div id="s-bp-mode" class="screen" style="background:var(--cr2);">
-  <div class="tb dk"><button class="bk w" onclick="nav('s-bp-budget')">← Back</button><div class="wm w">ROMIEAUX™</div><div></div></div>
+  <div class="tb dk"><button class="bk w" onclick="nav('s-bp-who')">← Back</button><div class="wm w">ROMIEAUX™</div><div></div></div>
   <div class="qs">
     <div class="dots"><div class="dot dd"></div><div class="dot dd"></div><div class="dot dd"></div><div class="dot dd"></div><div class="dot da"></div></div>
     <div style="font-family:var(--fm);font-size:8px;letter-spacing:4px;color:var(--rg);text-transform:uppercase;margin-bottom:14px;">Travel Blueprint — Engagement Mode</div>
@@ -467,7 +466,7 @@ body{background:var(--cr);color:var(--tx);font-family:var(--fs);min-height:100vh
 
 <!-- ===== TRIP DETAILS: DATES & FLIGHTS ===== -->
 <div id="s-tripdetails" class="screen" style="background:var(--cr);">
-  <div class="tb"><button class="bk" onclick="nav('s-dest')">← Back</button><div class="wm">ROMIEAUX™</div><div></div></div>
+  <div class="tb"><button class="bk" onclick="nav('s-bp-budget')">← Back</button><div class="wm">ROMIEAUX™</div><div></div></div>
   <div class="scr" style="padding:24px;">
     <div style="font-family:var(--fm);font-size:8px;letter-spacing:4px;color:var(--rg);text-transform:uppercase;margin-bottom:10px;">Trip Details</div>
     <div class="qt" style="color:var(--ink)">When are you going?</div>
@@ -1025,7 +1024,7 @@ body{background:var(--cr);color:var(--tx);font-family:var(--fs);min-height:100vh
         <div style="font-family:var(--fd);font-size:20px;font-weight:700;color:var(--ink);margin-bottom:4px;" id="disc-dest">Amalfi Coast, Italy</div>
         <div style="font-size:13px;color:var(--tm);line-height:1.6;margin-bottom:4px;" id="disc-why">Dramatic coastlines, ancient ruins at Pompeii, and one of Europe's best street food cultures — all within a one-hour radius.</div>
         <div style="font-size:12px;color:var(--sd);margin-bottom:14px;" id="disc-when">Best timing: May or September · Avg. budget: $3,200 pp</div>
-        <button class="btn bsd" style="width:100%;margin-bottom:8px;" onclick="S.destKey='romantic';S.destName=document.getElementById('disc-dest').textContent;nav('s-tripdetails')">Plan This Trip →</button>
+        <button class="btn bsd" style="width:100%;margin-bottom:8px;" onclick="S.destKey='romantic';S.destName=document.getElementById('disc-dest').textContent;nav('s-bp-budget')">Plan This Trip →</button>
         <button style="width:100%;padding:10px;background:none;border:none;font-family:var(--fs);font-size:13px;color:var(--ts);cursor:pointer;" onclick="discNext()">Show me another match →</button>
       </div>
     </div>
@@ -1187,12 +1186,14 @@ function nav(id){
   var el=document.getElementById(id);if(el)el.classList.add('active');
   window.scrollTo(0,0);
   if(id==='s-dash'||id==='s-itin'||id==='s-activities'||id==='s-dining'||id==='s-transport'||id==='s-stays'||id==='s-safety'||id==='s-ready'||id==='s-reminders'||id==='s-payment'||id==='s-group'||id==='s-posttrip'||id==='s-smartcheck'||id==='s-budget-track'||id==='s-settings')render();
+  if(id==='s-bp-budget')initBudgetScreen();
   if(id==='s-blueprint')runBP();
   if(id==='s-bp-compat')buildCompat();
 }
 function pick(el,k,v,dest){if(el){el.parentElement.querySelectorAll('.opt').forEach(function(o){o.classList.remove('sel');});el.classList.add('sel');}S[k]=v;if(k==='tripType')S.destKey=ttk(v);setTimeout(function(){nav(dest);},el?220:0);}
 function pickMerge(el,energy,intention,season,dest){if(el){el.parentElement.querySelectorAll('.opt').forEach(function(o){o.classList.remove('sel');});el.classList.add('sel');}S.energy=energy;S.intention=intention;S.season=season;setTimeout(function(){nav(dest);},220);}
 function setBudget(val){document.getElementById('budget-input').value=val;S.budgetAmt=val;}
+function initBudgetScreen(){var dn=S.destName||'your destination';var hint=document.getElementById('budget-dest-hint');if(hint)hint.textContent='Per person, all-in for '+dn+'. Romieaux™ shapes every dining, stay, and activity recommendation around this number.';document.getElementById('budget-input').value='';document.getElementById('budget-go').style.display='none';document.getElementById('budget-alert').style.display='none';}
 function checkBudget(){
   var raw=document.getElementById('budget-input').value.replace(/[^0-9]/g,'');
   S.budgetAmt=document.getElementById('budget-input').value;
@@ -1202,14 +1203,15 @@ function checkBudget(){
   var amt=parseInt(raw);
   if(btn)btn.style.display='block';
   // Smart budget intelligence
-  var destRanges={romantic:{low:1500,avg:'$2,500–$5,000',dest:'Amalfi Coast',alt:'Oaxaca, Mexico',altWhy:'Your energy and intention are a strong match for Oaxaca — where street food, mezcal culture, and mountain valley scenery deliver the full experience at a fraction of European costs.',altBudget:'$800 gets you the full experience'},reset:{low:1200,avg:'$1,800–$3,500',dest:'Bali',alt:'Chiang Mai, Thailand',altWhy:'Your reset intention maps perfectly to Chiang Mai — exceptional wellness infrastructure, world-class temples, and $15 massages. Same restoration, lower cost floor.',altBudget:'$600 covers everything comfortably'}};
+  var destRanges={romantic:{low:1500,avg:'$2,500–$5,000',alt:'Oaxaca, Mexico',altWhy:'Your energy and intention are a strong match for Oaxaca — where street food, mezcal culture, and mountain valley scenery deliver the full experience at a fraction of European costs.',altBudget:'$800 gets you the full experience'},reset:{low:1200,avg:'$1,800–$3,500',alt:'Chiang Mai, Thailand',altWhy:'Your reset intention maps perfectly to Chiang Mai — exceptional wellness infrastructure, world-class temples, and $15 massages. Same restoration, lower cost floor.',altBudget:'$600 covers everything comfortably'}};
   var dr=destRanges[S.destKey||'romantic']||destRanges.romantic;
+  var destDisplay=S.destName||'this destination';
   if(amt>0&&amt<dr.low){
     if(alert){
       alert.style.display='block';
       alert.innerHTML='<div style="background:var(--rgl);border:1.5px solid var(--rg);border-radius:14px;padding:16px;margin-bottom:4px;">'
         +'<div style="font-family:var(--fm);font-size:8px;letter-spacing:2px;color:var(--rg);text-transform:uppercase;margin-bottom:6px;">Budget Intelligence</div>'
-        +'<div style="font-family:var(--fd);font-size:15px;font-weight:700;color:var(--ink);margin-bottom:6px;">Most '+dr.dest+' travelers spend '+dr.avg+' per person.</div>'
+        +'<div style="font-family:var(--fd);font-size:15px;font-weight:700;color:var(--ink);margin-bottom:6px;">Most '+destDisplay+' travelers spend '+dr.avg+' per person.</div>'
         +'<div style="font-size:13px;color:var(--tm);line-height:1.6;margin-bottom:14px;">At $'+amt.toLocaleString()+', significant trade-offs are needed — hostels instead of hotels, public transit only, limited dining. Romieaux™ can still build this trip, but it will look different.</div>'
         +'<div style="background:var(--pn);border:1px solid var(--bd);border-radius:10px;padding:13px;margin-bottom:10px;">'
         +'<div style="font-family:var(--fm);font-size:8px;letter-spacing:2px;color:var(--sd);text-transform:uppercase;margin-bottom:4px;">Option 1 — Build it anyway</div>'
@@ -1229,14 +1231,14 @@ function checkBudget(){
     if(btn)btn.textContent='Set Budget →';
   }
 }
-function setBudgetGo(val){document.getElementById('budget-input').value=val;S.budgetAmt=val;S.budget='set';nav('s-bp-mode');}
+function setBudgetGo(val){document.getElementById('budget-input').value=val;S.budgetAmt=val;S.budget='set';nav('s-tripdetails');}
 function tg(el){el.classList.toggle('sel');document.getElementById('ob-go').style.display=document.querySelectorAll('#s-bp-music .gb.sel').length?'block':'none';}
 function fc(el){el.closest('div').querySelectorAll('.chip').forEach(function(c){c.classList.remove('sel');});el.classList.add('sel');}
-function setDM(m,el){document.querySelectorAll('#s-dest .opt').forEach(function(o){o.classList.remove('sel');});el.classList.add('sel');document.getElementById('dest-own').style.display='none';document.getElementById('dest-sug').style.display='none';if(m==='own'){document.getElementById('dest-own').style.display='block';}else if(m==='suggest'){sugIdx=0;bSug();document.getElementById('dest-sug').style.display='block';}else{S.destKey=ttk(S.tripType);S.destName=D[S.destKey].name;showToast('Romieaux choosing your destination… 🌍');setTimeout(function(){nav('s-tripdetails');},900);}}
+function setDM(m,el){document.querySelectorAll('#s-dest .opt').forEach(function(o){o.classList.remove('sel');});el.classList.add('sel');document.getElementById('dest-own').style.display='none';document.getElementById('dest-sug').style.display='none';if(m==='own'){document.getElementById('dest-own').style.display='block';}else if(m==='suggest'){sugIdx=0;bSug();document.getElementById('dest-sug').style.display='block';}else{S.destKey=ttk(S.tripType);S.destName=D[S.destKey].name;showToast('Romieaux choosing your destination… 🌍');setTimeout(function(){nav('s-bp-budget');},900);}}
 function bSug(){var l=SUGS[S.tripType]||SUGS.romantic;var s=l[sugIdx%l.length];$('sug-n',s.n);$('sug-w',s.w);S.destKey=s.k;S.destName=s.n;}
 function nextSug(){sugIdx++;bSug();}
 function onDT(v){document.getElementById('dest-go').style.display=v.length>2?'block':'none';S.destKey=ntk(v);S.destName=v||null;}
-function goDest(){nav('s-tripdetails');}
+function goDest(){nav('s-bp-budget');}
 function calcDuration(){var d=document.getElementById('td-depart').value;var r=document.getElementById('td-return').value;var el=document.getElementById('td-duration');if(d&&r){var diff=Math.round((new Date(r)-new Date(d))/(1000*60*60*24));if(diff>0){el.textContent=diff+' nights · '+(diff+1)+' days';el.style.display='block';S.tripDays=diff;}else{el.style.display='none';}}else{el.style.display='none';}}
 function ttk(t){return t==='reset'?'reset':'romantic';}
 function ntk(n){n=(n||'').toLowerCase();return(n.indexOf('bali')>-1||n.indexOf('ubud')>-1)?'reset':'romantic';}
