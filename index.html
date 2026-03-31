@@ -1,0 +1,1053 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ROMIEAUX™ — Journey, Elevated.</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap');
+:root{--cr:#faf6f0;--cr2:#f2ebe0;--pn:#fff;--ink:#1c1209;--bk:#4a2e14;--sd:#b08a50;--sdl:rgba(176,138,80,.13);--nt:#0d0b07;--n2:#171210;--bd:#e0d4c3;--bdk:rgba(255,255,255,.1);--tx:#2a1a0a;--tm:#6b4e30;--ts:#9a7a5a;--gn:#2d6b2d;--rd:#8b1a1a;--fd:'Playfair Display',serif;--fs:'DM Sans',sans-serif;--fm:'DM Mono',monospace;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--cr);color:var(--tx);font-family:var(--fs);min-height:100vh;-webkit-font-smoothing:antialiased;}
+.screen{display:none;min-height:100vh;animation:si .28s cubic-bezier(.16,1,.3,1);}
+.screen.active{display:flex;flex-direction:column;}
+@keyframes si{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.scr{overflow-y:auto;flex:1;}
+.tb{display:flex;align-items:center;justify-content:space-between;padding:14px 20px;background:var(--cr);border-bottom:1px solid var(--bd);position:sticky;top:0;z-index:100;flex-shrink:0;}
+.tb.dk{background:var(--n2);border-color:var(--bdk);}
+.wm{font-family:var(--fd);font-size:13px;font-weight:600;letter-spacing:3px;color:var(--ink);text-transform:uppercase;}
+.wm.w{color:var(--cr);}
+.bk{font-family:var(--fs);font-size:13px;color:var(--ts);background:none;border:none;cursor:pointer;transition:color .15s;}
+.bk:hover,.bk.w:hover{color:var(--sd);}
+.bk.w{color:rgba(255,255,255,.5);}
+.nt{display:flex;background:var(--cr);border-top:1px solid var(--bd);flex-shrink:0;}
+.nt.dk{background:var(--n2);border-color:var(--bdk);}
+.nb{flex:1;padding:11px 4px 9px;text-align:center;cursor:pointer;border:none;background:none;}
+.ni{font-size:16px;display:block;}
+.nl{font-family:var(--fm);font-size:7px;color:var(--ts);margin-top:2px;letter-spacing:2px;text-transform:uppercase;}
+.nb.act .nl{color:var(--sd);}
+.nt.dk .nl{color:rgba(255,255,255,.35);}
+.nt.dk .nb.act .nl{color:var(--sd);}
+.ab{padding:14px 20px;background:var(--cr);border-top:1px solid var(--bd);display:flex;gap:10px;flex-shrink:0;}
+.ab.dk{background:var(--n2);border-color:var(--bdk);}
+.btn{padding:14px 22px;font-family:var(--fs);font-size:13px;font-weight:500;cursor:pointer;border:none;transition:all .2s;}
+.bsd{background:var(--sd);color:#fff;border-radius:40px;}
+.bsd:hover{background:#9a7840;}
+.bink{background:var(--ink);color:var(--cr);border-radius:40px;}
+.bink:hover{background:var(--bk);}
+.bout{background:transparent;color:var(--ink);border:1.5px solid var(--ink);border-radius:40px;}
+.bout:hover{background:var(--ink);color:var(--cr);}
+.bgh{background:transparent;color:var(--ts);border:1.5px solid var(--bd);border-radius:40px;}
+.bgh:hover{border-color:var(--sd);color:var(--sd);}
+.bwk{background:rgba(255,255,255,.07);color:rgba(255,255,255,.75);border:1px solid rgba(255,255,255,.15);border-radius:40px;}
+/* QUESTION */
+.qs{padding:32px 24px 24px;flex:1;display:flex;flex-direction:column;}
+.qr{font-family:var(--fd);font-size:24px;font-style:italic;font-weight:500;margin-bottom:5px;}
+.qt{font-family:var(--fd);font-size:clamp(24px,6vw,34px);font-weight:500;line-height:1.2;margin-bottom:9px;}
+.qsub{font-size:14px;line-height:1.65;margin-bottom:24px;}
+.dots{display:flex;gap:6px;margin-bottom:20px;}
+.dot{width:6px;height:6px;border-radius:50%;}
+.da{background:var(--sd);box-shadow:0 0 0 3px rgba(176,138,80,.2);}
+.dd{background:var(--sd);}
+.do{background:var(--bd);}
+.dow{background:rgba(255,255,255,.15);}
+.hint{font-family:var(--fd);font-style:italic;font-size:13px;text-align:center;margin-top:14px;color:var(--ts);}
+.hint.w{color:rgba(255,255,255,.28);}
+.opts{display:flex;flex-direction:column;gap:9px;}
+.opt{width:100%;padding:15px 22px;border-radius:40px;font-family:var(--fs);font-size:15px;cursor:pointer;transition:all .2s;text-align:center;background:transparent;}
+.opt.lt{border:1.5px solid var(--bd);color:var(--tx);}
+.opt.lt:hover{border-color:var(--sd);color:var(--sd);}
+.opt.lt.sel{background:var(--ink);border-color:var(--ink);color:var(--cr);}
+.opt.dk{border:1.5px solid rgba(255,255,255,.18);color:rgba(255,255,255,.88);background:rgba(255,255,255,.04);}
+.opt.dk:hover{border-color:var(--sd);color:var(--sd);}
+.opt.dk.sel{background:var(--sd);border-color:var(--sd);color:var(--nt);}
+.mi{padding:18px 0;border-bottom:1px solid rgba(255,255,255,.07);cursor:pointer;transition:all .2s;}
+.mi:last-child{border-bottom:none;}
+.mi:hover .mn{color:var(--sd);}
+.mn{font-family:var(--fd);font-size:21px;font-weight:400;color:var(--cr);margin-bottom:4px;transition:color .2s;}
+.md{font-size:13px;color:rgba(255,255,255,.42);line-height:1.5;}
+/* GENRE */
+.gg{display:grid;grid-template-columns:1fr 1fr;gap:9px;padding:0 20px 20px;}
+.gb{padding:16px 12px;border:1.5px solid rgba(255,255,255,.15);border-radius:12px;font-family:var(--fs);font-size:14px;color:rgba(255,255,255,.9);cursor:pointer;transition:all .2s;text-align:center;background:rgba(255,255,255,.04);}
+.gb:hover{border-color:var(--sd);color:var(--sd);}
+.gb.sel{background:rgba(176,138,80,.2);border-color:var(--sd);color:var(--sd);}
+/* CHIPS */
+.chip{padding:7px 15px;border:1.5px solid var(--bd);border-radius:40px;font-family:var(--fs);font-size:13px;color:var(--tx);cursor:pointer;background:transparent;transition:all .2s;display:inline-block;}
+.chip:hover,.chip.sel{border-color:var(--sd);background:var(--sdl);color:var(--sd);}
+/* SECTION */
+.sh{padding:16px 20px 8px;}
+.shl{font-family:var(--fm);font-size:9px;letter-spacing:3px;color:var(--ts);text-transform:uppercase;margin-bottom:3px;}
+.sht{font-family:var(--fd);font-size:20px;font-weight:500;color:var(--tx);}
+/* MODULE GRID */
+.mg{display:grid;grid-template-columns:1fr 1fr;gap:9px;padding:0 20px 6px;}
+.mc{background:var(--pn);border:1px solid var(--bd);border-radius:12px;padding:15px 14px;cursor:pointer;transition:all .2s;}
+.mc:hover{border-color:var(--sd);transform:translateY(-1px);box-shadow:0 3px 10px rgba(176,138,80,.1);}
+.mci{font-size:22px;margin-bottom:7px;}
+.mcn{font-family:var(--fd);font-size:15px;font-weight:500;color:var(--tx);}
+.mcs{font-size:10px;color:var(--ts);margin-top:2px;}
+.mct{display:inline-block;margin-top:6px;padding:2px 7px;border-radius:8px;font-family:var(--fm);font-size:7px;letter-spacing:1px;text-transform:uppercase;}
+.ts2{background:var(--sdl);color:var(--sd);}
+.tg{background:rgba(45,107,45,.1);color:var(--gn);}
+.tb2{background:rgba(26,74,139,.1);color:#1a4a8b;}
+/* ROWS */
+.ir{display:flex;align-items:flex-start;gap:13px;padding:13px 20px;border-bottom:1px solid var(--bd);cursor:pointer;transition:background .15s;}
+.ir:hover{background:var(--cr2);}
+.iri{width:44px;height:44px;border-radius:10px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:20px;}
+.irb{flex:1;}
+.irn{font-family:var(--fd);font-size:15px;font-weight:400;color:var(--tx);}
+.irs{font-size:12px;color:var(--ts);margin-top:2px;line-height:1.4;}
+.irm{font-family:var(--fm);font-size:8px;color:var(--sd);letter-spacing:1px;margin-top:4px;text-transform:uppercase;}
+.ib2{font-family:var(--fm);font-size:8px;padding:3px 7px;border-radius:8px;letter-spacing:1px;text-transform:uppercase;}
+.bs{background:var(--sdl);color:var(--sd);}
+.bg{background:rgba(45,107,45,.1);color:var(--gn);}
+.ba{background:rgba(180,140,40,.1);color:#8a6a10;}
+.br{background:rgba(139,26,26,.1);color:var(--rd);}
+/* DAY CARDS */
+.dc{margin:0 20px 10px;background:var(--pn);border:1px solid var(--bd);border-radius:12px;overflow:hidden;}
+.dch{padding:12px 16px;background:var(--cr2);border-bottom:1px solid var(--bd);display:flex;align-items:center;justify-content:space-between;}
+.dcn{font-family:var(--fd);font-size:16px;font-weight:500;color:var(--tx);}
+.dcl{font-size:11px;color:var(--ts);margin-top:1px;}
+.dcb{font-family:var(--fm);font-size:7px;letter-spacing:1px;padding:3px 8px;border-radius:8px;text-transform:uppercase;}
+.bok{background:rgba(45,107,45,.1);color:var(--gn);}
+.bwn{background:rgba(180,140,40,.1);color:#8a6a10;}
+.ar{display:flex;align-items:flex-start;gap:11px;padding:12px 16px;border-bottom:1px solid var(--bd);}
+.ar:last-child{border-bottom:none;}
+.at{font-family:var(--fm);font-size:10px;color:var(--ts);width:42px;flex-shrink:0;margin-top:2px;}
+.adot{width:7px;height:7px;border-radius:50%;background:var(--sd);flex-shrink:0;margin-top:4px;}
+.ab2{flex:1;}
+.an{font-family:var(--fd);font-size:14px;font-weight:400;color:var(--tx);}
+.as2{font-size:11px;color:var(--ts);margin-top:2px;line-height:1.4;}
+.af{display:inline-block;margin-top:4px;font-family:var(--fm);font-size:7px;letter-spacing:1px;padding:2px 7px;border-radius:8px;text-transform:uppercase;}
+.ft{background:var(--sdl);color:var(--sd);}
+.fw{background:rgba(180,140,40,.1);color:#8a6a10;}
+.fe{background:rgba(139,26,26,.1);color:var(--rd);}
+/* CHECKLIST */
+.ci{display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-bottom:1px solid var(--bd);}
+.ci:last-child{border-bottom:none;}
+.cb{width:17px;height:17px;border:1.5px solid var(--bd);border-radius:3px;flex-shrink:0;margin-top:1px;display:flex;align-items:center;justify-content:center;font-size:9px;cursor:pointer;transition:all .15s;}
+.cb.done{background:var(--sd);border-color:var(--sd);color:#fff;}
+.ct{font-size:13px;color:var(--tm);line-height:1.4;}
+.ct.done{text-decoration:line-through;color:var(--ts);}
+/* INFO */
+.ic{margin:0 20px 10px;padding:16px;background:var(--pn);border:1px solid var(--bd);border-radius:12px;}
+.ice{font-family:var(--fm);font-size:8px;letter-spacing:3px;color:var(--sd);text-transform:uppercase;margin-bottom:5px;}
+.icv{font-family:var(--fd);font-size:26px;font-weight:500;color:var(--tx);line-height:1;}
+.ics{font-size:12px;color:var(--ts);margin-top:4px;line-height:1.5;}
+/* PROGRESS */
+.pg{height:3px;background:var(--bd);border-radius:3px;overflow:hidden;}
+.pgf{height:100%;background:linear-gradient(90deg,var(--sd),#d4a870);transition:width .4s;}
+/* STATS */
+.sg{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--bd);margin:0 20px 14px;}
+.sgi{background:var(--pn);padding:13px 12px;}
+.sgn{font-family:var(--fd);font-size:22px;font-weight:500;color:var(--sd);line-height:1;}
+.sgl{font-size:10px;color:var(--ts);margin-top:2px;}
+/* TOAST */
+.toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(8px);background:var(--ink);color:var(--cr);padding:10px 20px;border-radius:40px;font-family:var(--fs);font-size:12px;opacity:0;transition:all .3s;z-index:500;pointer-events:none;white-space:nowrap;}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+/* LANDING */
+#s-land{background:var(--nt);flex-direction:column;justify-content:space-between;}
+.lh{flex:1;padding:54px 28px 28px;position:relative;overflow:hidden;}
+.lh-grain{position:absolute;inset:0;opacity:.035;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");}
+.lh-glow{position:absolute;inset:0;background:radial-gradient(ellipse at 20% 30%,rgba(176,138,80,.1) 0%,transparent 60%),radial-gradient(ellipse at 80% 70%,rgba(90,50,20,.22) 0%,transparent 50%);pointer-events:none;}
+.lh-bgr{position:absolute;font-family:var(--fd);font-size:220px;font-weight:500;font-style:italic;color:rgba(255,255,255,.03);right:-16px;top:20px;line-height:1;pointer-events:none;}
+.lh-eye{font-family:var(--fm);font-size:9px;letter-spacing:5px;color:var(--sd);text-transform:uppercase;margin-bottom:18px;display:flex;align-items:center;gap:12px;position:relative;z-index:1;}
+.lh-eye::before{content:'';width:24px;height:1px;background:var(--sd);}
+.lh-wm{font-family:var(--fd);font-size:clamp(40px,10vw,58px);font-weight:600;letter-spacing:8px;color:var(--cr);text-transform:uppercase;line-height:1;position:relative;z-index:1;}
+.lh-tag{font-family:var(--fd);font-size:17px;font-style:italic;color:var(--sd);margin-top:9px;position:relative;z-index:1;}
+.lh-rule{width:36px;height:1px;background:var(--sd);margin:24px 0;opacity:.5;position:relative;z-index:1;}
+.lh-desc{font-size:14px;color:rgba(255,255,255,.5);line-height:1.75;max-width:300px;position:relative;z-index:1;}
+.lh-desc strong{color:rgba(255,255,255,.8);font-weight:500;}
+.how{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:rgba(255,255,255,.06);margin:22px 0;position:relative;z-index:1;}
+.hwi{background:var(--n2);padding:13px;}
+.hwn{font-family:var(--fm);font-size:8px;color:var(--sd);letter-spacing:2px;margin-bottom:3px;}
+.hwt{font-family:var(--fd);font-size:13px;font-weight:500;color:var(--cr);}
+.hwd{font-size:11px;color:rgba(255,255,255,.3);margin-top:2px;line-height:1.4;}
+.lf{padding:0 28px 44px;display:flex;flex-direction:column;gap:10px;position:relative;z-index:1;}
+.lf .btn{padding:17px;font-size:13px;letter-spacing:1px;width:100%;}
+/* DASHBOARD HERO */
+.dh{background:var(--ink);padding:22px 20px 18px;position:relative;overflow:hidden;}
+.dh-glow{position:absolute;inset:0;background:radial-gradient(ellipse at 70% 40%,rgba(176,138,80,.18) 0%,transparent 55%);pointer-events:none;}
+.dh-logo{font-family:var(--fd);font-size:12px;font-weight:600;letter-spacing:5px;color:rgba(255,255,255,.45);text-transform:uppercase;position:relative;z-index:1;}
+.dh-g{font-family:var(--fd);font-size:23px;font-weight:500;color:var(--cr);position:relative;z-index:1;margin-top:8px;line-height:1.2;}
+.dh-g em{font-style:italic;color:var(--sd);}
+.tp{display:inline-flex;align-items:center;gap:8px;margin-top:11px;padding:7px 14px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);border-radius:40px;cursor:pointer;position:relative;z-index:1;}
+.tp:hover{background:rgba(255,255,255,.13);}
+.ctabs{display:flex;overflow-x:auto;padding:0 20px;border-bottom:1px solid var(--bd);gap:2px;background:var(--cr);}
+.ctab{padding:10px 13px;font-family:var(--fs);font-size:12px;font-weight:500;color:var(--ts);cursor:pointer;border-bottom:2px solid transparent;background:none;border-top:none;border-left:none;border-right:none;white-space:nowrap;transition:all .2s;}
+.ctab.act{color:var(--sd);border-bottom-color:var(--sd);}
+/* ITIN BANNER */
+.ib{background:var(--ink);padding:20px 20px 16px;position:relative;overflow:hidden;}
+.ib-glow{position:absolute;inset:0;background:radial-gradient(ellipse at 30% 60%,rgba(176,138,80,.13) 0%,transparent 60%);pointer-events:none;}
+.ib-eye{font-family:var(--fm);font-size:8px;letter-spacing:3px;color:var(--sd);text-transform:uppercase;position:relative;z-index:1;margin-bottom:5px;}
+.ib-t{font-family:var(--fd);font-size:22px;font-weight:500;color:var(--cr);position:relative;z-index:1;line-height:1.2;}
+.ib-s{font-family:var(--fd);font-style:italic;font-size:12px;color:rgba(255,255,255,.36);position:relative;z-index:1;margin-top:3px;}
+.itabs{display:flex;background:var(--cr);border-bottom:1px solid var(--bd);padding:0 20px;gap:2px;}
+.itab{padding:10px 13px;font-family:var(--fs);font-size:12px;font-weight:500;color:var(--ts);cursor:pointer;border-bottom:2px solid transparent;background:none;border-top:none;border-left:none;border-right:none;transition:all .2s;}
+.itab.act{color:var(--sd);border-bottom-color:var(--sd);}
+/* MODULE HERO */
+.mh{background:var(--ink);padding:20px 20px 16px;position:relative;overflow:hidden;}
+.mh-glow{position:absolute;inset:0;background:radial-gradient(ellipse at 70% 40%,rgba(176,138,80,.15) 0%,transparent 55%);pointer-events:none;}
+.mh-eye{font-family:var(--fm);font-size:8px;letter-spacing:3px;color:var(--sd);text-transform:uppercase;position:relative;z-index:1;margin-bottom:5px;}
+.mh-t{font-family:var(--fd);font-size:20px;font-weight:500;color:var(--cr);position:relative;z-index:1;line-height:1.2;}
+.mh-s{font-size:12px;color:rgba(255,255,255,.4);position:relative;z-index:1;margin-top:4px;}
+/* STAYS */
+.stay{margin:0 20px 10px;background:var(--pn);border:1px solid var(--bd);border-radius:12px;overflow:hidden;}
+.stay-img{height:90px;display:flex;align-items:center;justify-content:center;font-size:36px;}
+.stay-b{padding:13px 15px;}
+.stay-n{font-family:var(--fd);font-size:16px;font-weight:500;color:var(--tx);}
+.stay-s{font-size:11px;color:var(--ts);margin-top:2px;}
+.stay-adv{font-size:11px;color:var(--sd);font-style:italic;margin-top:5px;line-height:1.4;}
+/* PLAYLIST */
+.plh{height:150px;display:flex;flex-direction:column;justify-content:flex-end;padding:16px;position:relative;overflow:hidden;}
+.pl-emo{position:absolute;top:14px;right:14px;font-size:44px;opacity:.45;}
+.pl-eye{font-family:var(--fm);font-size:8px;letter-spacing:3px;color:var(--sd);text-transform:uppercase;margin-bottom:4px;position:relative;z-index:1;}
+.pl-t{font-family:var(--fd);font-size:19px;font-weight:500;color:#fff;position:relative;z-index:1;line-height:1.2;}
+.trk{display:flex;align-items:center;gap:12px;padding:12px 20px;border-bottom:1px solid var(--bd);cursor:pointer;transition:background .15s;}
+.trk:hover{background:var(--cr2);}
+.ta{width:40px;height:40px;border-radius:7px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:18px;}
+/* PAYMENT */
+.pi{display:flex;align-items:center;gap:12px;padding:13px 20px;border-bottom:1px solid var(--bd);}
+.pi-ico{font-size:18px;flex-shrink:0;}
+.pi-body{flex:1;}
+.pi-n{font-family:var(--fd);font-size:14px;color:var(--tx);}
+.pi-s{font-size:11px;color:var(--ts);margin-top:2px;}
+.pi.done .pi-n{text-decoration:line-through;color:var(--ts);}
+/* POLL */
+.po{display:flex;align-items:center;gap:12px;padding:12px 16px;background:var(--pn);border:1px solid var(--bd);border-radius:10px;margin-bottom:8px;cursor:pointer;transition:all .2s;}
+.po:hover,.po.v{border-color:var(--sd);}
+.po.v{background:var(--sdl);}
+.po-bar{flex:1;height:4px;background:var(--bd);border-radius:4px;overflow:hidden;}
+.po-fill{height:100%;background:var(--sd);border-radius:4px;}
+/* MEMORY PHOTOS */
+.ph{border-radius:10px;aspect-ratio:1;display:flex;align-items:center;justify-content:center;font-size:36px;position:relative;}
+.phl{position:absolute;bottom:0;left:0;right:0;padding:6px 9px;background:linear-gradient(to top,rgba(0,0,0,.6),transparent);font-size:11px;color:rgba(255,255,255,.9);font-family:var(--fd);}
+</style>
+</head>
+<body>
+
+<!-- LANDING -->
+<div id="s-land" class="screen active">
+  <div class="lh">
+    <div class="lh-grain"></div><div class="lh-glow"></div><div class="lh-bgr">R</div>
+    <div class="lh-eye">Travel Intelligence Platform</div>
+    <div class="lh-wm">Romieaux™</div>
+    <div class="lh-tag">Journey, Elevated.</div>
+    <div class="lh-rule"></div>
+    <div class="lh-desc">The only platform that <strong>understands who you are</strong> before designing where you go. Identity-driven intelligence — not another booking site.</div>
+    <div class="how">
+      <div class="hwi"><div class="hwn">01 — Align</div><div class="hwt">Know the traveler</div><div class="hwd">Energy, intent, travel style</div></div>
+      <div class="hwi"><div class="hwn">02 — Plan</div><div class="hwt">Design the experience</div><div class="hwd">Before a dollar is spent</div></div>
+      <div class="hwi"><div class="hwn">03 — Experience</div><div class="hwt">Guide in real time</div><div class="hwd">Day-of intelligence</div></div>
+      <div class="hwi"><div class="hwn">04 — Remember</div><div class="hwt">Build your archive</div><div class="hwd">Memory book + ROAM Network</div></div>
+    </div>
+  </div>
+  <div class="lf">
+    <button class="btn bsd" onclick="nav('s-login')">Create an Account →</button>
+    <button class="btn bwk" onclick="nav('s-login')">Sign In</button>
+    <div style="text-align:center;font-family:var(--fm);font-size:8px;color:rgba(255,255,255,.18);letter-spacing:2px;text-transform:uppercase;">Free explorer tier · No credit card</div>
+  </div>
+</div>
+
+<!-- LOGIN -->
+<div id="s-login" class="screen">
+  <div class="tb dk"><button class="bk w" onclick="nav('s-land')">← Back</button><div class="wm w">ROMIEAUX™</div><div></div></div>
+  <div style="background:var(--ink);padding:38px 24px 28px;">
+    <div style="font-family:var(--fd);font-size:24px;font-style:italic;color:var(--cr);margin-bottom:5px;">R</div>
+    <div style="font-family:var(--fd);font-size:27px;font-weight:500;color:var(--cr);">Create your account.</div>
+    <div style="font-size:13px;color:rgba(255,255,255,.4);margin-top:6px;">Your Travel Blueprint lives here and grows with every trip.</div>
+  </div>
+  <div class="scr" style="padding-top:20px;">
+    <div style="padding:0 24px;margin-bottom:13px;"><label style="font-family:var(--fm);font-size:9px;letter-spacing:2px;color:var(--ts);text-transform:uppercase;margin-bottom:7px;display:block;">Your first name</label><input type="text" placeholder="Jordan" style="width:100%;padding:12px 0;background:transparent;border:none;border-bottom:1.5px solid var(--bd);font-family:var(--fs);font-size:15px;color:var(--tx);outline:none;" /></div>
+    <div style="padding:0 24px;margin-bottom:13px;"><label style="font-family:var(--fm);font-size:9px;letter-spacing:2px;color:var(--ts);text-transform:uppercase;margin-bottom:7px;display:block;">Email address</label><input type="email" placeholder="jordan@email.com" style="width:100%;padding:12px 0;background:transparent;border:none;border-bottom:1.5px solid var(--bd);font-family:var(--fs);font-size:15px;color:var(--tx);outline:none;" /></div>
+    <div style="padding:0 24px;margin-bottom:13px;"><label style="font-family:var(--fm);font-size:9px;letter-spacing:2px;color:var(--ts);text-transform:uppercase;margin-bottom:7px;display:block;">Password</label><input type="password" placeholder="••••••••" style="width:100%;padding:12px 0;background:transparent;border:none;border-bottom:1.5px solid var(--bd);font-family:var(--fs);font-size:15px;color:var(--tx);outline:none;" /></div>
+    <div style="display:flex;align-items:center;gap:12px;padding:6px 24px;margin-bottom:6px;"><div style="flex:1;height:1px;background:var(--bd);"></div><div style="font-family:var(--fm);font-size:9px;color:var(--ts);letter-spacing:2px;">or</div><div style="flex:1;height:1px;background:var(--bd);"></div></div>
+    <div style="display:flex;align-items:center;justify-content:center;gap:10px;margin:0 24px 9px;padding:13px;background:var(--pn);border:1.5px solid var(--bd);border-radius:40px;cursor:pointer;font-family:var(--fs);font-size:14px;color:var(--tx);" onclick="showToast('Google login')">🔵 &nbsp;Continue with Google</div>
+    <div style="display:flex;align-items:center;justify-content:center;gap:10px;margin:0 24px;padding:13px;background:var(--pn);border:1.5px solid var(--bd);border-radius:40px;cursor:pointer;font-family:var(--fs);font-size:14px;color:var(--tx);" onclick="showToast('Magic link sent to your email')">✨ &nbsp;Send magic link</div>
+    <div style="height:18px;"></div>
+  </div>
+  <div class="ab"><button class="btn bgh" style="flex:1;" onclick="nav('s-land')">Back</button><button class="btn bink" style="flex:2;" onclick="nav('s-ta1')">Continue →</button></div>
+</div>
+
+<!-- TRIP TYPE -->
+<div id="s-ta1" class="screen" style="background:var(--cr);">
+  <div class="tb"><button class="bk" onclick="nav('s-login')">← Back</button><div class="wm">ROMIEAUX™</div><div></div></div>
+  <div class="qs">
+    <div class="dots"><div class="dot da"></div><div class="dot do"></div><div class="dot do"></div><div class="dot do"></div></div>
+    <div class="qr" style="color:var(--ink)">R</div>
+    <div class="qt" style="color:var(--tx)">What kind of trip is this?</div>
+    <div class="qsub" style="color:var(--tm)">The foundation of your Travel Blueprint. Every recommendation, pacing, and experience is shaped by your trip type.</div>
+    <div class="opts">
+      <button class="opt lt" onclick="pick(this,'tripType','romantic','s-ta2')">Romantic Getaway</button>
+      <button class="opt lt" onclick="pick(this,'tripType','cultural','s-ta2')">Cultural Deep-Dive</button>
+      <button class="opt lt" onclick="pick(this,'tripType','reset','s-ta2')">Reset &amp; Recovery</button>
+      <button class="opt lt" onclick="pick(this,'tripType','milestone','s-ta2')">Milestone Celebration</button>
+      <button class="opt lt" onclick="pick(this,'tripType','honeymoon','s-ta2')">Honeymoon</button>
+      <button class="opt lt" onclick="pick(this,'tripType','friends','s-ta2')">Friends Trip</button>
+      <button class="opt lt" onclick="pick(this,'tripType','adventure','s-ta2')">Adventure</button>
+      <button class="opt lt" onclick="pick(this,'tripType','workcation','s-ta2')">Workcation</button>
+    </div>
+    <div class="hint">(Tap to continue)</div>
+  </div>
+</div>
+
+<!-- WHO YOU'RE WITH -->
+<div id="s-ta2" class="screen" style="background:var(--cr);">
+  <div class="tb"><button class="bk" onclick="nav('s-ta1')">← Back</button><div class="wm">ROMIEAUX™</div><div></div></div>
+  <div class="qs">
+    <div class="dots"><div class="dot dd"></div><div class="dot da"></div><div class="dot do"></div><div class="dot do"></div></div>
+    <div class="qr" style="color:var(--ink)">R</div>
+    <div class="qt" style="color:var(--tx)">Who are you traveling with?</div>
+    <div class="qsub" style="color:var(--tm)">Your travel mode activates different modules — group collaboration, family filters, solo safety intelligence, or compatibility tools for couples.</div>
+    <div class="opts">
+      <button class="opt lt" onclick="pick(this,'group','solo','s-ta3')">Solo</button>
+      <button class="opt lt" onclick="pick(this,'group','partner','s-ta3')">My Partner</button>
+      <button class="opt lt" onclick="pick(this,'group','friends','s-ta3')">Friends (Group)</button>
+      <button class="opt lt" onclick="pick(this,'group','family_adults','s-ta3')">Family (Adults Only)</button>
+      <button class="opt lt" onclick="pick(this,'group','family_kids','s-ta3')">Family (With Kids)</button>
+      <button class="opt lt" onclick="pick(this,'group','mixed','s-ta3')">Mixed Group</button>
+    </div>
+    <div class="hint">(Tap to continue)</div>
+  </div>
+</div>
+
+<!-- BUDGET -->
+<div id="s-ta3" class="screen" style="background:var(--nt);">
+  <div class="tb dk"><button class="bk w" onclick="nav('s-ta2')">← Back</button><div class="wm w">ROMIEAUX™</div><div></div></div>
+  <div class="qs">
+    <div class="dots"><div class="dot dd"></div><div class="dot dd"></div><div class="dot da"></div><div class="dot dow"></div></div>
+    <div class="qr" style="color:var(--cr)">R</div>
+    <div class="qt" style="color:var(--cr)">How are you approaching spend on this trip?</div>
+    <div class="qsub" style="color:rgba(255,255,255,.5)">No judgment — Romieaux optimizes to your full potential within whatever you set.</div>
+    <div class="opts">
+      <button class="opt dk" onclick="pick(this,'budget','budget','s-ta4')">Budget-first — Every dollar matters</button>
+      <button class="opt dk" onclick="pick(this,'budget','balanced','s-ta4')">Balanced — Smart choices, occasional splurge</button>
+      <button class="opt dk" onclick="pick(this,'budget','flexible','s-ta4')">Flexible — Right experience over right price</button>
+      <button class="opt dk" onclick="pick(this,'budget','agnostic','s-ta4')">Cost-agnostic — The best version of this trip</button>
+    </div>
+    <div class="hint w">(Tap to continue)</div>
+  </div>
+</div>
+
+<!-- ENGAGEMENT MODE -->
+<div id="s-ta4" class="screen" style="background:var(--nt);">
+  <div class="tb dk"><button class="bk w" onclick="nav('s-ta3')">← Back</button><div class="wm w">ROMIEAUX™</div><div></div></div>
+  <div class="qs">
+    <div class="dots"><div class="dot dd"></div><div class="dot dd"></div><div class="dot dd"></div><div class="dot da"></div></div>
+    <div class="qr" style="color:var(--cr)">R</div>
+    <div class="qt" style="color:var(--cr)">How involved would you like Romieaux to be?</div>
+    <div class="qsub" style="color:rgba(255,255,255,.5)">Choose your engagement mode. You can change this at any time, for any trip.</div>
+    <div style="flex:1;">
+      <div class="mi" onclick="pick(null,'mode','essential','s-ob1')"><div class="mn">Essential</div><div class="md">You plan your trip. Romieaux gives you great data — wait times, safety, currency — on demand.</div></div>
+      <div class="mi" onclick="pick(null,'mode','lightly','s-ob1')"><div class="mn">Lightly Tailored</div><div class="md">Romieaux gives you a starting itinerary you shape yourself. It fills gaps and flags friction.</div></div>
+      <div class="mi" onclick="pick(null,'mode','curated','s-ob1')"><div class="mn">Deeply Curated</div><div class="md">Romieaux designs the complete experience. You review and approve — you don't build from scratch.</div></div>
+      <div class="mi" onclick="pick(null,'mode','concierge','s-ob1')"><div class="mn">Concierge-Enhanced</div><div class="md">Fully curated plus human escalation, VIP booking assistance, and priority support.</div></div>
+    </div>
+    <div class="hint w">(Tap to continue)</div>
+  </div>
+</div>
+
+<!-- MUSIC PREFS -->
+<div id="s-ob1" class="screen" style="background:var(--nt);">
+  <div class="tb dk"><button class="bk w" onclick="nav('s-ta4')">← Back</button><div class="wm w">ROMIEAUX™</div><div></div></div>
+  <div class="scr">
+    <div style="padding:28px 20px 18px;">
+      <div style="font-family:var(--fm);font-size:8px;letter-spacing:4px;color:var(--sd);text-transform:uppercase;margin-bottom:13px;">Travel Blueprint — Music</div>
+      <div style="font-family:var(--fd);font-size:26px;font-weight:500;color:var(--cr);margin-bottom:7px;">Music Preferences</div>
+      <div style="font-size:14px;color:rgba(255,255,255,.5);line-height:1.65;margin-bottom:20px;">Used to generate your trip playlist and find live events at your destination during your travel dates.</div>
+    </div>
+    <div class="gg">
+      <button class="gb" onclick="tg(this)">Pop</button><button class="gb" onclick="tg(this)">R&amp;B</button>
+      <button class="gb" onclick="tg(this)">Hip-Hop</button><button class="gb" onclick="tg(this)">Jazz</button>
+      <button class="gb" onclick="tg(this)">Classical</button><button class="gb" onclick="tg(this)">Indie</button>
+      <button class="gb" onclick="tg(this)">Electronic</button><button class="gb" onclick="tg(this)">Rock</button>
+      <button class="gb" onclick="tg(this)">Ambient</button><button class="gb" onclick="tg(this)">Country</button>
+      <button class="gb" onclick="tg(this)" style="grid-column:1/-1;">World / Local Music</button>
+    </div>
+    <div id="ob-go" style="display:none;padding:0 20px 6px;"><button class="btn bsd" style="width:100%;" onclick="nav('s-dest')">Continue →</button></div>
+    <div style="height:24px;"></div>
+  </div>
+</div>
+
+<!-- DESTINATION -->
+<div id="s-dest" class="screen" style="background:var(--cr);">
+  <div class="tb"><button class="bk" onclick="nav('s-ob1')">← Back</button><div class="wm">ROMIEAUX™</div><div></div></div>
+  <div class="scr">
+    <div style="padding:30px 24px 18px;">
+      <div style="font-family:var(--fm);font-size:9px;letter-spacing:4px;color:var(--sd);text-transform:uppercase;margin-bottom:13px;">Guided Discovery</div>
+      <div style="font-family:var(--fd);font-size:28px;font-weight:500;color:var(--tx);line-height:1.2;margin-bottom:8px;">Where are you going?</div>
+      <div style="font-size:14px;color:var(--tm);line-height:1.65;margin-bottom:22px;">Choose your own destination, or let Romieaux match somewhere based on your trip type, budget, and travel dates.</div>
+    </div>
+    <div style="padding:0 24px 20px;" id="dest-mode-opts">
+      <button class="opt lt" style="margin-bottom:9px;" onclick="setDM('own',this)">I already have a destination in mind</button>
+      <button class="opt lt" style="margin-bottom:9px;" onclick="setDM('suggest',this)">I'm open — recommend somewhere for me</button>
+      <button class="opt lt" onclick="setDM('surprise',this)">Surprise me completely — just go</button>
+    </div>
+    <div id="dest-own" style="display:none;padding:0 24px 24px;">
+      <div style="font-family:var(--fm);font-size:9px;letter-spacing:2px;color:var(--ts);text-transform:uppercase;margin-bottom:8px;">Where are you headed?</div>
+      <input id="dest-in" type="text" placeholder="e.g. Kyoto, Patagonia, Morocco…" oninput="onDT(this.value)" style="width:100%;padding:13px 20px;border:1.5px solid var(--bd);border-radius:40px;font-family:var(--fs);font-size:15px;color:var(--tx);background:transparent;outline:none;" />
+      <div id="dest-go" style="display:none;margin-top:12px;"><button class="btn bink" style="width:100%;" onclick="goDest()">Plan This Trip →</button></div>
+    </div>
+    <div id="dest-sug" style="display:none;padding:0 24px 24px;">
+      <div style="background:var(--pn);border:1px solid var(--bd);border-radius:12px;padding:18px;">
+        <div style="font-family:var(--fm);font-size:8px;letter-spacing:3px;color:var(--sd);text-transform:uppercase;margin-bottom:8px;">Romieaux Recommends</div>
+        <div id="sug-n" style="font-family:var(--fd);font-size:21px;font-weight:500;color:var(--tx);"></div>
+        <div id="sug-w" style="font-size:13px;color:var(--tm);margin-top:7px;line-height:1.6;"></div>
+        <button class="btn bink" style="width:100%;margin-top:14px;" onclick="goDest()">Plan This Trip →</button>
+        <button style="background:transparent;border:none;cursor:pointer;width:100%;padding:9px;font-family:var(--fs);font-size:12px;color:var(--ts);margin-top:3px;" onclick="nextSug()">Suggest another →</button>
+      </div>
+      <div style="margin-top:14px;"><div style="font-family:var(--fm);font-size:9px;letter-spacing:2px;color:var(--ts);text-transform:uppercase;margin-bottom:10px;">Or choose from these</div><div style="display:flex;flex-wrap:wrap;gap:8px;" id="sug-chips"></div></div>
+    </div>
+    <div style="height:18px;"></div>
+  </div>
+</div>
+
+<!-- DASHBOARD -->
+<div id="s-dash" class="screen">
+  <div class="dh"><div class="dh-glow"></div><div class="dh-logo">Romieaux™</div><div class="dh-g">Good evening, <em>Jordan.</em></div><div style="font-size:13px;color:rgba(255,255,255,.4);position:relative;z-index:1;margin-top:4px;" id="d-sub">Your trip is loading…</div><div class="tp" onclick="nav('s-itin')"><span id="d-emo" style="font-size:15px;">🌍</span><span style="font-family:var(--fd);font-size:13px;color:var(--cr);" id="d-tn">Your trip</span><span style="font-size:11px;color:rgba(255,255,255,.35);">›</span></div></div>
+  <div class="ctabs"><button class="ctab act" id="ctab1">City 1</button><button class="ctab" id="ctab2">City 2</button><button class="ctab" onclick="showToast('Add another city')">+ City</button></div>
+  <div class="scr">
+    <div style="margin:14px 20px 0;background:var(--pn);border:1px solid var(--bd);border-radius:12px;padding:15px;">
+      <div style="font-family:var(--fm);font-size:8px;letter-spacing:3px;color:var(--sd);text-transform:uppercase;margin-bottom:7px;">Trip Alignment Summary</div>
+      <div style="font-size:13px;color:var(--tm);line-height:1.7;" id="align-txt">Loading…</div>
+      <div style="display:flex;gap:8px;margin-top:12px;"><button class="btn bgh" style="flex:1;padding:10px;" onclick="nav('s-ready')">Readiness →</button><button class="btn bink" style="flex:1;padding:10px;" onclick="nav('s-itin')">Itinerary →</button></div>
+    </div>
+    <div class="sh"><div class="shl">Core Modules</div><div class="sht" id="d-dest">Plan Your Trip</div></div>
+    <div class="mg">
+      <div class="mc" onclick="nav('s-activities')"><div class="mci">🎭</div><div class="mcn">Activities</div><div class="mcs" id="act-s">Curated for you</div><div class="mct ts2" id="act-ct">12 matched</div></div>
+      <div class="mc" onclick="nav('s-dining')"><div class="mci">🍽</div><div class="mcn">Dining</div><div class="mcs">Restaurants &amp; reservations</div><div class="mct ts2" id="din-ct">8 curated</div></div>
+      <div class="mc" onclick="nav('s-transport')"><div class="mci">🚄</div><div class="mcn">Transportation</div><div class="mcs">Routes &amp; logistics</div><div class="mct ts2">Optimized</div></div>
+      <div class="mc" onclick="nav('s-stays')"><div class="mci">🏨</div><div class="mcn">Stays</div><div class="mcs">Hotels, villas, Airbnbs</div><div class="mct ts2" id="stay-ct">6 options</div></div>
+    </div>
+    <div class="sh"><div class="shl">Intelligence Modules</div></div>
+    <div class="mg">
+      <div class="mc" onclick="nav('s-budget')"><div class="mci">💰</div><div class="mcn">Budget Tracker</div><div class="mcs">Live spend vs. plan</div><div class="mct ts2" id="bud-ct">$1,240 spent</div></div>
+      <div class="mc" onclick="nav('s-airport')"><div class="mci">✈️</div><div class="mcn">Airport &amp; Transit</div><div class="mcs">Lounges, gates, jet lag</div><div class="mct tg">Cards matched</div></div>
+      <div class="mc" onclick="nav('s-contingency')"><div class="mci">⛈</div><div class="mcn">Contingency</div><div class="mcs">Day-of backup plans</div><div class="mct ts2">3 ready</div></div>
+      <div class="mc" onclick="nav('s-insurance')"><div class="mci">🛡</div><div class="mcn">Insurance</div><div class="mcs">Card coverage analysis</div><div class="mct tg">Covered</div></div>
+    </div>
+    <div class="sh"><div class="shl">Experience Modules</div></div>
+    <div class="mg">
+      <div class="mc" onclick="nav('s-music')"><div class="mci">🎵</div><div class="mcn">Music</div><div class="mcs">Playlist + live events</div><div class="mct ts2">15 songs</div></div>
+      <div class="mc" onclick="nav('s-outfits')"><div class="mci">👗</div><div class="mcn">Shopping &amp; Outfits</div><div class="mcs">Packing, looks, boutiques</div><div class="mct ts2">7 looks</div></div>
+      <div class="mc" onclick="nav('s-sustainability')"><div class="mci">🌱</div><div class="mcn">Sustainability</div><div class="mcs">Eco options &amp; carbon</div><div class="mct tg">Active</div></div>
+      <div class="mc" onclick="nav('s-translation')"><div class="mci">🌐</div><div class="mcn">Translation</div><div class="mcs">Menus, signs, phrases</div><div class="mct tb2">Ready</div></div>
+    </div>
+    <div class="sh"><div class="shl">Specialist Modes</div></div>
+    <div class="mg">
+      <div class="mc" onclick="nav('s-group')"><div class="mci">👥</div><div class="mcn">Group Planning</div><div class="mcs">Polls, roles, splits</div><div class="mct ts2" id="grp-ct">5 travelers</div></div>
+      <div class="mc" onclick="nav('s-family')"><div class="mci">👨‍👩‍👧</div><div class="mcn">Family Mode</div><div class="mcs">Age filters, rest periods</div><div class="mct tb2">Available</div></div>
+      <div class="mc" onclick="nav('s-solo')"><div class="mci">🚺</div><div class="mcn">Solo Female</div><div class="mcs">Safety, routes, community</div><div class="mct tb2">Available</div></div>
+      <div class="mc" onclick="nav('s-workcation')"><div class="mci">💻</div><div class="mcn">Workcation</div><div class="mcs">WiFi, co-working, zones</div><div class="mct tb2">Available</div></div>
+    </div>
+    <div class="sh"><div class="shl">Trip Management</div></div>
+    <div class="mg">
+      <div class="mc" onclick="nav('s-reminders')"><div class="mci">🔔</div><div class="mcn">Reminders</div><div class="mcs">Concierge mode: Balanced</div><div class="mct ts2">Active</div></div>
+      <div class="mc" onclick="nav('s-payment')"><div class="mci">📋</div><div class="mcn">Payment Checklist</div><div class="mcs">Booking links &amp; status</div><div class="mct ts2">4 of 8 done</div></div>
+      <div class="mc" onclick="nav('s-safety')"><div class="mci">🛡</div><div class="mcn">Safety &amp; Prep</div><div class="mcs">Docs, customs, health</div><div class="mct tg">Ready</div></div>
+      <div class="mc" onclick="nav('s-posttrip')"><div class="mci">📊</div><div class="mcn">Post-Trip</div><div class="mcs">Cost summary, reflections</div><div class="mct ts2">After trip</div></div>
+    </div>
+    <div style="height:16px;"></div>
+  </div>
+  <div class="nt"><button class="nb act" onclick="nav('s-dash')"><span class="ni">🏠</span><div class="nl">Home</div></button><button class="nb" onclick="nav('s-itin')"><span class="ni">📋</span><div class="nl">Itinerary</div></button><button class="nb" onclick="nav('s-ready')"><span class="ni">✈️</span><div class="nl">Readiness</div></button><button class="nb" onclick="nav('s-memory')"><span class="ni">📖</span><div class="nl">Memory</div></button></div>
+</div>
+
+<!-- ITINERARY -->
+<div id="s-itin" class="screen">
+  <div class="ib"><div class="ib-glow"></div><button class="bk w" onclick="nav('s-dash')" style="margin-bottom:7px;">← Home</button><div class="ib-eye" id="ib-eye">Your Trip</div><div class="ib-t" id="ib-t">Itinerary</div><div class="ib-s" id="ib-s">Building…</div></div>
+  <div class="itabs"><button class="itab act">Itinerary</button><button class="itab" onclick="nav('s-music')">Playlist</button><button class="itab" onclick="nav('s-ready')">Readiness</button><button class="itab" onclick="showToast('Gallery opening…')">Gallery</button></div>
+  <div class="scr" style="padding-top:13px;"><div id="days"></div><div style="padding:12px 20px 20px;text-align:center;"><button class="btn bgh" style="padding:11px 24px;" onclick="showToast('Loading full itinerary…')">View All Days →</button></div></div>
+  <div class="nt"><button class="nb" onclick="nav('s-dash')"><span class="ni">🏠</span><div class="nl">Home</div></button><button class="nb act"><span class="ni">📋</span><div class="nl">Itinerary</div></button><button class="nb" onclick="nav('s-ready')"><span class="ni">✈️</span><div class="nl">Readiness</div></button><button class="nb" onclick="nav('s-memory')"><span class="ni">📖</span><div class="nl">Memory</div></button></div>
+</div>
+
+<!-- ACTIVITIES -->
+<div id="s-activities" class="screen">
+  <div class="tb"><button class="bk" onclick="nav('s-dash')">← Home</button><div class="wm">ACTIVITIES</div><div></div></div>
+  <div style="display:flex;gap:7px;padding:10px 20px;overflow-x:auto;"><button class="chip sel" onclick="fc(this)">All</button><button class="chip" onclick="fc(this)">Cultural</button><button class="chip" onclick="fc(this)">Outdoors</button><button class="chip" onclick="fc(this)">Wellness</button><button class="chip" onclick="fc(this)">Food</button></div>
+  <div class="scr" id="acts-list"></div>
+  <div class="nt"><button class="nb" onclick="nav('s-dash')"><span class="ni">🏠</span><div class="nl">Home</div></button><button class="nb act"><span class="ni">📋</span><div class="nl">Itinerary</div></button><button class="nb" onclick="nav('s-ready')"><span class="ni">✈️</span><div class="nl">Readiness</div></button><button class="nb" onclick="nav('s-memory')"><span class="ni">📖</span><div class="nl">Memory</div></button></div>
+</div>
+
+<!-- DINING -->
+<div id="s-dining" class="screen">
+  <div class="tb"><button class="bk" onclick="nav('s-dash')">← Home</button><div class="wm">DINING</div><div></div></div>
+  <div style="display:flex;gap:7px;padding:10px 20px;overflow-x:auto;"><button class="chip sel" onclick="fc(this)">All</button><button class="chip" onclick="fc(this)">Fine Dining</button><button class="chip" onclick="fc(this)">Local</button><button class="chip" onclick="fc(this)">Casual</button><button class="chip" onclick="fc(this)">Vegetarian</button></div>
+  <div class="scr" id="din-list"></div>
+  <div class="nt"><button class="nb" onclick="nav('s-dash')"><span class="ni">🏠</span><div class="nl">Home</div></button><button class="nb act"><span class="ni">📋</span><div class="nl">Itinerary</div></button><button class="nb" onclick="nav('s-ready')"><span class="ni">✈️</span><div class="nl">Readiness</div></button><button class="nb" onclick="nav('s-memory')"><span class="ni">📖</span><div class="nl">Memory</div></button></div>
+</div>
+
+<!-- TRANSPORT -->
+<div id="s-transport" class="screen">
+  <div class="tb"><button class="bk" onclick="nav('s-dash')">← Home</button><div class="wm">TRANSPORTATION</div><div></div></div>
+  <div style="display:flex;gap:7px;padding:10px 20px;overflow-x:auto;"><button class="chip sel" onclick="fc(this)">All</button><button class="chip" onclick="fc(this)">Cheapest</button><button class="chip" onclick="fc(this)">Fastest</button><button class="chip" onclick="fc(this)">Luxe</button><button class="chip" onclick="fc(this)">Greenest</button></div>
+  <div class="scr" id="trans-list"></div>
+  <div class="nt"><button class="nb" onclick="nav('s-dash')"><span class="ni">🏠</span><div class="nl">Home</div></button><button class="nb act"><span class="ni">📋</span><div class="nl">Itinerary</div></button><button class="nb" onclick="nav('s-ready')"><span class="ni">✈️</span><div class="nl">Readiness</div></button><button class="nb" onclick="nav('s-memory')"><span class="ni">📖</span><div class="nl">Memory</div></button></div>
+</div>
+
+<!-- STAYS -->
+<div id="s-stays" class="screen">
+  <div class="tb"><button class="bk" onclick="nav('s-dash')">← Home</button><div class="wm">STAYS</div><div></div></div>
+  <div style="display:flex;gap:7px;padding:10px 20px;overflow-x:auto;"><button class="chip sel" onclick="fc(this)">All</button><button class="chip" onclick="fc(this)">Hotels</button><button class="chip" onclick="fc(this)">Villas</button><button class="chip" onclick="fc(this)">Airbnb</button></div>
+  <div class="scr" style="padding-top:10px;" id="stays-list"></div>
+  <div class="nt"><button class="nb" onclick="nav('s-dash')"><span class="ni">🏠</span><div class="nl">Home</div></button><button class="nb act"><span class="ni">📋</span><div class="nl">Itinerary</div></button><button class="nb" onclick="nav('s-ready')"><span class="ni">✈️</span><div class="nl">Readiness</div></button><button class="nb" onclick="nav('s-memory')"><span class="ni">📖</span><div class="nl">Memory</div></button></div>
+</div>
+
+<!-- MUSIC -->
+<div id="s-music" class="screen">
+  <div class="tb"><button class="bk" onclick="nav('s-dash')">← Home</button><div class="wm">MUSIC</div><div></div></div>
+  <div class="scr">
+    <div class="plh" id="pl-h"><div class="pl-emo" id="pl-emo">🎵</div><div class="pl-eye">Your Trip Playlist</div><div class="pl-t" id="pl-t">Loading…</div></div>
+    <div style="margin:12px 20px;"><div style="display:flex;align-items:center;gap:10px;padding:12px 17px;background:#1db954;border-radius:40px;cursor:pointer;" onclick="showToast('Opening Spotify…')"><span style="font-size:18px;">🎵</span><span style="font-family:var(--fs);font-size:14px;font-weight:500;color:#fff;">Play on Spotify</span></div></div>
+    <div id="trk-list"></div>
+    <div class="sh"><div class="shl">Live Events at Destination</div><div class="sht" id="ev-t">Events</div></div>
+    <div id="ev-list"></div>
+    <div style="height:16px;"></div>
+  </div>
+  <div class="nt"><button class="nb" onclick="nav('s-dash')"><span class="ni">🏠</span><div class="nl">Home</div></button><button class="nb" onclick="nav('s-itin')"><span class="ni">📋</span><div class="nl">Itinerary</div></button><button class="nb act"><span class="ni">🎵</span><div class="nl">Music</div></button><button class="nb" onclick="nav('s-memory')"><span class="ni">📖</span><div class="nl">Memory</div></button></div>
+</div>
+
+<!-- OUTFITS -->
+<div id="s-outfits" class="screen">
+  <div class="tb"><button class="bk" onclick="nav('s-dash')">← Home</button><div class="wm">SHOPPING &amp; OUTFITS</div><div></div></div>
+  <div class="scr">
+    <div class="mh"><div class="mh-glow"></div><div class="mh-eye">Romieaux Intelligence</div><div class="mh-t" id="outfit-t">What to Wear</div><div class="mh-s" id="outfit-s">Based on your itinerary, activities, and dining reservations</div></div>
+    <div class="sh"><div class="shl">Daily Outfit Guide</div></div><div id="outfit-list"></div>
+    <div class="sh"><div class="shl">Packing List</div></div><div id="pack-list"></div>
+    <div class="sh"><div class="shl">Local Boutiques</div></div><div id="bout-list"></div>
+    <div style="height:16px;"></div>
+  </div>
+  <div class="nt"><button class="nb" onclick="nav('s-dash')"><span class="ni">🏠</span><div class="nl">Home</div></button><button class="nb" onclick="nav('s-itin')"><span class="ni">📋</span><div class="nl">Itinerary</div></button><button class="nb" onclick="nav('s-ready')"><span class="ni">✈️</span><div class="nl">Readiness</div></button><button class="nb" onclick="nav('s-memory')"><span class="ni">📖</span><div class="nl">Memory</div></button></div>
+</div>
+
+<!-- BUDGET -->
+<div id="s-budget" class="screen">
+  <div class="tb"><button class="bk" onclick="nav('s-dash')">← Home</button><div class="wm">BUDGET TRACKER</div><div></div></div>
+  <div class="scr">
+    <div class="ic" style="margin-top:14px;"><div class="ice">Total Budget</div><div class="icv" id="b-total">$3,000</div><div style="margin-top:10px;"><div style="display:flex;justify-content:space-between;font-family:var(--fm);font-size:9px;color:var(--ts);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;"><span>Spent</span><span id="b-lbl">$1,240 of $3,000</span></div><div class="pg"><div class="pgf" id="b-bar" style="width:41%;"></div></div></div><div style="font-family:var(--fm);font-size:10px;color:var(--gn);margin-top:7px;" id="b-rem">$1,760 remaining · 4 days left</div></div>
+    <div class="sh"><div class="shl">Spending by Category</div></div><div id="b-cats" style="padding:0 20px;"></div>
+    <div class="sh"><div class="shl">Split Expenses</div></div><div id="b-split"></div>
+    <div style="margin:12px 20px;padding:13px;background:var(--sdl);border:1px solid rgba(176,138,80,.25);border-radius:10px;"><div style="font-family:var(--fm);font-size:8px;letter-spacing:2px;color:var(--sd);text-transform:uppercase;margin-bottom:4px;">Romieaux Budget Alert</div><div style="font-size:13px;color:var(--tm);line-height:1.6;" id="b-alert">You're on track. At current pace you'll finish $340 under budget.</div></div>
+    <div style="height:16px;"></div>
+  </div>
+  <div class="nt"><button class="nb" onclick="nav('s-dash')"><span class="ni">🏠</span><div class="nl">Home</div></button><button class="nb" onclick="nav('s-itin')"><span class="ni">📋</span><div class="nl">Itinerary</div></button><button class="nb" onclick="nav('s-ready')"><span class="ni">✈️</span><div class="nl">Readiness</div></button><button class="nb" onclick="nav('s-memory')"><span class="ni">📖</span><div class="nl">Memory</div></button></div>
+</div>
+
+<!-- AIRPORT -->
+<div id="s-airport" class="screen">
+  <div class="tb"><button class="bk" onclick="nav('s-dash')">← Home</button><div class="wm">AIRPORT &amp; TRANSIT</div><div></div></div>
+  <div class="scr">
+    <div class="mh"><div class="mh-glow"></div><div class="mh-eye">Outbound Flight</div><div class="mh-t" id="apt-f">JFK → FCO · AA 204</div><div class="mh-s" id="apt-fs">Departs 9:40pm · Terminal 8 · Gate B22</div></div>
+    <div class="sh"><div class="shl">Airport Intelligence</div></div><div id="apt-list"></div>
+    <div class="sh"><div class="shl">Credit Card Lounge Access</div></div><div id="lounge-list"></div>
+    <div class="sh"><div class="shl">Jet Lag Management</div></div><div id="jetlag-list"></div>
+    <div style="height:16px;"></div>
+  </div>
+  <div class="nt"><button class="nb" onclick="nav('s-dash')"><span class="ni">🏠</span><div class="nl">Home</div></button><button class="nb" onclick="nav('s-itin')"><span class="ni">📋</span><div class="nl">Itinerary</div></button><button class="nb act"><span class="ni">✈️</span><div class="nl">Readiness</div></button><button class="nb" onclick="nav('s-memory')"><span class="ni">📖</span><div class="nl">Memory</div></button></div>
+</div>
+
+<!-- CONTINGENCY -->
+<div id="s-contingency" class="screen">
+  <div class="tb"><button class="bk" onclick="nav('s-dash')">← Home</button><div class="wm">CONTINGENCY</div><div></div></div>
+  <div class="scr">
+    <div class="mh"><div class="mh-glow"></div><div class="mh-eye">Day-of Intelligence</div><div class="mh-t">Backup Plans Ready</div><div class="mh-s">Romieaux monitors weather, closures &amp; disruptions in real time</div></div>
+    <div id="cont-alerts" style="padding:12px 20px 0;"></div>
+    <div class="sh"><div class="shl">Rain Plan — Day 3</div><div class="sht">Indoor Alternatives</div></div><div id="cont-rain"></div>
+    <div style="margin:0 20px 14px;padding:15px;background:var(--pn);border:1px solid var(--bd);border-radius:12px;"><div style="font-size:13px;color:var(--tm);line-height:1.6;margin-bottom:11px;">"I'm not feeling it" mode — swap today for a low-energy alternative. No FOMO. No judgment.</div><button class="btn bgh" style="width:100%;" onclick="showToast('Lower-energy day plan generated')">Generate a slow day instead →</button></div>
+    <div style="height:16px;"></div>
+  </div>
+  <div class="nt"><button class="nb" onclick="nav('s-dash')"><span class="ni">🏠</span><div class="nl">Home</div></button><button class="nb" onclick="nav('s-itin')"><span class="ni">📋</span><div class="nl">Itinerary</div></button><button class="nb" onclick="nav('s-ready')"><span class="ni">✈️</span><div class="nl">Readiness</div></button><button class="nb" onclick="nav('s-memory')"><span class="ni">📖</span><div class="nl">Memory</div></button></div>
+</div>
+
+<!-- INSURANCE -->
+<div id="s-insurance" class="screen">
+  <div class="tb"><button class="bk" onclick="nav('s-dash')">← Home</button><div class="wm">INSURANCE</div><div></div></div>
+  <div class="scr">
+    <div class="mh"><div class="mh-glow"></div><div class="mh-eye">Coverage Analysis</div><div class="mh-t">You're mostly covered.</div><div class="mh-s">Based on Chase Sapphire Reserve + Amex Platinum cards</div></div>
+    <div class="sh"><div class="shl">What Your Cards Cover</div></div><div id="ins-list"></div>
+    <div class="sh"><div class="shl">Coverage Gaps</div></div><div id="ins-gaps"></div>
+    <div style="height:16px;"></div>
+  </div>
+  <div class="nt"><button class="nb" onclick="nav('s-dash')"><span class="ni">🏠</span><div class="nl">Home</div></button><button class="nb" onclick="nav('s-itin')"><span class="ni">📋</span><div class="nl">Itinerary</div></button><button class="nb act"><span class="ni">✈️</span><div class="nl">Readiness</div></button><button class="nb" onclick="nav('s-memory')"><span class="ni">📖</span><div class="nl">Memory</div></button></div>
+</div>
+
+<!-- SUSTAINABILITY -->
+<div id="s-sustainability" class="screen">
+  <div class="tb"><button class="bk" onclick="nav('s-dash')">← Home</button><div class="wm">SUSTAINABILITY</div><div></div></div>
+  <div class="scr">
+    <div class="ic" style="margin-top:14px;"><div class="ice">Trip Carbon Footprint</div><div class="icv" style="color:var(--gn);" id="carb-v">2.1 tons CO₂</div><div class="ics" id="carb-s">Flights account for 78% of your footprint.</div></div>
+    <div class="sh"><div class="shl">Eco-Friendly Options</div></div><div id="eco-list"></div>
+    <div style="margin:0 20px 14px;padding:15px;background:rgba(45,107,45,.07);border:1px solid rgba(45,107,45,.2);border-radius:12px;"><div style="font-family:var(--fd);font-size:16px;font-weight:500;color:var(--gn);margin-bottom:5px;">Offset this trip for $22</div><div style="font-size:13px;color:var(--tm);line-height:1.5;margin-bottom:11px;">Verified forest restoration in the destination region. 2.1 tons CO₂ offset in full.</div><button class="btn" style="background:var(--gn);color:#fff;border-radius:40px;width:100%;" onclick="showToast('Carbon offset added — $22 at checkout')">Offset This Trip →</button></div>
+    <div style="height:16px;"></div>
+  </div>
+  <div class="nt"><button class="nb" onclick="nav('s-dash')"><span class="ni">🏠</span><div class="nl">Home</div></button><button class="nb" onclick="nav('s-itin')"><span class="ni">📋</span><div class="nl">Itinerary</div></button><button class="nb" onclick="nav('s-ready')"><span class="ni">✈️</span><div class="nl">Readiness</div></button><button class="nb" onclick="nav('s-memory')"><span class="ni">📖</span><div class="nl">Memory</div></button></div>
+</div>
+
+<!-- TRANSLATION -->
+<div id="s-translation" class="screen">
+  <div class="tb"><button class="bk" onclick="nav('s-dash')">← Home</button><div class="wm">TRANSLATION</div><div></div></div>
+  <div class="scr">
+    <div class="mh"><div class="mh-glow"></div><div class="mh-eye" id="trans-eye">Italian · Amalfi Coast</div><div class="mh-t">Translation &amp; Cultural Intelligence</div></div>
+    <div class="sh"><div class="shl">Essential Phrases</div></div><div id="phrases-list"></div>
+    <div class="sh"><div class="shl">Cultural Advisories</div></div><div id="cultural-list"></div>
+    <div style="margin:12px 20px;padding:14px;background:var(--pn);border:1px solid var(--bd);border-radius:10px;"><div style="font-family:var(--fm);font-size:8px;letter-spacing:2px;color:var(--sd);text-transform:uppercase;margin-bottom:4px;">Camera Translation</div><div style="font-size:13px;color:var(--tm);line-height:1.6;margin-bottom:10px;">Point your camera at any menu, sign, or text to translate in real time.</div><button class="btn bgh" style="width:100%;" onclick="showToast('Camera translation activated')">Open Camera →</button></div>
+    <div style="height:16px;"></div>
+  </div>
+  <div class="nt"><button class="nb" onclick="nav('s-dash')"><span class="ni">🏠</span><div class="nl">Home</div></button><button class="nb" onclick="nav('s-itin')"><span class="ni">📋</span><div class="nl">Itinerary</div></button><button class="nb" onclick="nav('s-ready')"><span class="ni">✈️</span><div class="nl">Readiness</div></button><button class="nb" onclick="nav('s-memory')"><span class="ni">📖</span><div class="nl">Memory</div></button></div>
+</div>
+
+<!-- GROUP -->
+<div id="s-group" class="screen">
+  <div class="tb"><button class="bk" onclick="nav('s-dash')">← Home</button><div class="wm">GROUP PLANNING</div><div></div></div>
+  <div class="scr">
+    <div class="sh" style="padding-top:14px;"><div class="shl">Trip Members</div><div class="sht" id="grp-t">Your Trip · 5 Travelers</div></div><div id="member-list"></div>
+    <div class="sh"><div class="shl">Active Poll — Day 4 Activity</div></div>
+    <div style="padding:0 20px 4px;"><div style="font-size:13px;color:var(--tm);margin-bottom:12px;">Tap to cast your vote.</div>
+      <div class="po" onclick="castVote(this)"><div style="flex:1;"><div style="font-family:var(--fd);font-size:15px;color:var(--tx);">Private boat to Capri</div><div class="po-bar" style="margin-top:5px;"><div class="po-fill" style="width:61%;"></div></div></div><div style="font-family:var(--fm);font-size:10px;color:var(--sd);flex-shrink:0;margin-left:12px;">3 votes</div></div>
+      <div class="po" onclick="castVote(this)"><div style="flex:1;"><div style="font-family:var(--fd);font-size:15px;color:var(--tx);">Ravello gardens &amp; concert</div><div class="po-bar" style="margin-top:5px;"><div class="po-fill" style="width:39%;"></div></div></div><div style="font-family:var(--fm);font-size:10px;color:var(--ts);flex-shrink:0;margin-left:12px;">2 votes</div></div>
+    </div>
+    <div class="sh"><div class="shl">Split Expenses</div></div><div id="split-g"></div>
+    <div style="margin:12px 20px;padding:14px;background:var(--pn);border:1px solid var(--bd);border-radius:12px;"><div style="font-size:13px;color:var(--ts);text-align:center;padding:6px 0;">Group chat active — all 5 travelers connected.</div><button class="btn bgh" style="width:100%;margin-top:10px;" onclick="showToast('Opening group chat…')">Open Chat →</button></div>
+    <div style="height:16px;"></div>
+  </div>
+  <div class="nt"><button class="nb" onclick="nav('s-dash')"><span class="ni">🏠</span><div class="nl">Home</div></button><button class="nb" onclick="nav('s-itin')"><span class="ni">📋</span><div class="nl">Itinerary</div></button><button class="nb" onclick="nav('s-ready')"><span class="ni">✈️</span><div class="nl">Readiness</div></button><button class="nb" onclick="nav('s-memory')"><span class="ni">📖</span><div class="nl">Memory</div></button></div>
+</div>
+
+<!-- FAMILY -->
+<div id="s-family" class="screen">
+  <div class="tb"><button class="bk" onclick="nav('s-dash')">← Home</button><div class="wm">FAMILY MODE</div><div></div></div>
+  <div class="scr">
+    <div class="mh"><div class="mh-glow"></div><div class="mh-eye">Adaptive Intelligence</div><div class="mh-t">Family Mode Active</div><div class="mh-s">Filtering for ages 4 and 8 · Rest periods built in</div></div>
+    <div class="sh"><div class="shl">What Family Mode Changes</div></div><div id="fam-list"></div>
+    <div class="sh"><div class="shl">Kid-Specific Intelligence</div></div><div id="kid-list"></div>
+    <div style="height:16px;"></div>
+  </div>
+  <div class="nt"><button class="nb" onclick="nav('s-dash')"><span class="ni">🏠</span><div class="nl">Home</div></button><button class="nb" onclick="nav('s-itin')"><span class="ni">📋</span><div class="nl">Itinerary</div></button><button class="nb" onclick="nav('s-ready')"><span class="ni">✈️</span><div class="nl">Readiness</div></button><button class="nb" onclick="nav('s-memory')"><span class="ni">📖</span><div class="nl">Memory</div></button></div>
+</div>
+
+<!-- SOLO FEMALE -->
+<div id="s-solo" class="screen">
+  <div class="tb"><button class="bk" onclick="nav('s-dash')">← Home</button><div class="wm">SOLO FEMALE TRAVEL</div><div></div></div>
+  <div class="scr">
+    <div class="mh"><div class="mh-glow"></div><div class="mh-eye">Safety Intelligence</div><div class="mh-t">Solo Female Mode Active</div><div class="mh-s" id="solo-dest">Comprehensive safety layer for your destination</div></div>
+    <div class="sh"><div class="shl">Neighborhood Safety by Time of Day</div></div><div id="solo-safety"></div>
+    <div class="sh"><div class="shl">Dress Code Intelligence</div></div><div id="solo-dress"></div>
+    <div style="margin:12px 20px;padding:13px;background:rgba(139,26,26,.06);border:1px solid rgba(139,26,26,.2);border-radius:10px;"><div style="font-family:var(--fm);font-size:8px;letter-spacing:2px;color:var(--rd);text-transform:uppercase;margin-bottom:4px;">Emergency Resources</div><div style="font-size:13px;color:var(--tm);line-height:1.6;" id="solo-em">112 EU Emergency · Local women's crisis center pre-loaded.</div></div>
+    <div style="height:16px;"></div>
+  </div>
+  <div class="nt"><button class="nb" onclick="nav('s-dash')"><span class="ni">🏠</span><div class="nl">Home</div></button><button class="nb" onclick="nav('s-itin')"><span class="ni">📋</span><div class="nl">Itinerary</div></button><button class="nb" onclick="nav('s-ready')"><span class="ni">✈️</span><div class="nl">Readiness</div></button><button class="nb" onclick="nav('s-memory')"><span class="ni">📖</span><div class="nl">Memory</div></button></div>
+</div>
+
+<!-- WORKCATION -->
+<div id="s-workcation" class="screen">
+  <div class="tb"><button class="bk" onclick="nav('s-dash')">← Home</button><div class="wm">WORKCATION MODE</div><div></div></div>
+  <div class="scr">
+    <div class="mh"><div class="mh-glow"></div><div class="mh-eye">Work + Travel Intelligence</div><div class="mh-t">Workcation Mode Active</div><div class="mh-s">4 hours/day work blocks · Team overlap calculated</div></div>
+    <div class="sh"><div class="shl">Today's Work Block</div></div>
+    <div class="ic"><div class="ice">Scheduled Work Window</div><div class="icv" id="wk-window">9:00 AM – 1:00 PM</div><div class="ics" id="wk-sub">Aligns with 3:00–7:00pm US Eastern. Team overlap: 4 hours.</div></div>
+    <div class="sh"><div class="shl">Best Work Spots Today</div></div><div id="work-spots"></div>
+    <div class="sh"><div class="shl">Time Zone Overlap</div></div><div id="tz-list"></div>
+    <div style="height:16px;"></div>
+  </div>
+  <div class="nt"><button class="nb" onclick="nav('s-dash')"><span class="ni">🏠</span><div class="nl">Home</div></button><button class="nb" onclick="nav('s-itin')"><span class="ni">📋</span><div class="nl">Itinerary</div></button><button class="nb" onclick="nav('s-ready')"><span class="ni">✈️</span><div class="nl">Readiness</div></button><button class="nb" onclick="nav('s-memory')"><span class="ni">📖</span><div class="nl">Memory</div></button></div>
+</div>
+
+<!-- REMINDERS -->
+<div id="s-reminders" class="screen">
+  <div class="tb"><button class="bk" onclick="nav('s-dash')">← Home</button><div class="wm">REMINDERS</div><div></div></div>
+  <div class="scr">
+    <div class="sh" style="padding-top:14px;"><div class="shl">Concierge Mode</div><div class="sht">Choose Your Intensity</div></div>
+    <div style="padding:0 20px 18px;display:flex;flex-direction:column;gap:9px;">
+      <div style="padding:15px;background:var(--pn);border:1.5px solid var(--bd);border-radius:12px;cursor:pointer;" onclick="setRM(this,'Minimal')"><div style="display:flex;justify-content:space-between;align-items:center;"><div style="font-family:var(--fd);font-size:16px;color:var(--tx);">Minimal</div><div style="font-family:var(--fm);font-size:8px;color:var(--ts);letter-spacing:1px;text-transform:uppercase;">Off</div></div><div style="font-size:12px;color:var(--ts);margin-top:3px;">Critical alerts only — flight delays, closures, urgent flags.</div></div>
+      <div style="padding:15px;background:var(--sdl);border:1.5px solid var(--sd);border-radius:12px;cursor:pointer;" onclick="setRM(this,'Balanced')"><div style="display:flex;justify-content:space-between;align-items:center;"><div style="font-family:var(--fd);font-size:16px;color:var(--tx);">Balanced</div><div style="font-family:var(--fm);font-size:8px;color:var(--sd);letter-spacing:1px;text-transform:uppercase;">Active</div></div><div style="font-size:12px;color:var(--ts);margin-top:3px;">Daily briefings, weather alerts, reservation confirmations.</div></div>
+      <div style="padding:15px;background:var(--pn);border:1.5px solid var(--bd);border-radius:12px;cursor:pointer;" onclick="setRM(this,'Full Concierge')"><div style="display:flex;justify-content:space-between;align-items:center;"><div style="font-family:var(--fd);font-size:16px;color:var(--tx);">Full Concierge</div><div style="font-family:var(--fm);font-size:8px;color:var(--ts);letter-spacing:1px;text-transform:uppercase;">Off</div></div><div style="font-size:12px;color:var(--ts);margin-top:3px;">Proactive suggestions throughout the day. Smart timing. Morning briefings.</div></div>
+    </div>
+    <div class="sh"><div class="shl">Upcoming Reminders</div></div><div id="rem-list"></div>
+    <div style="height:16px;"></div>
+  </div>
+  <div class="nt"><button class="nb" onclick="nav('s-dash')"><span class="ni">🏠</span><div class="nl">Home</div></button><button class="nb" onclick="nav('s-itin')"><span class="ni">📋</span><div class="nl">Itinerary</div></button><button class="nb" onclick="nav('s-ready')"><span class="ni">✈️</span><div class="nl">Readiness</div></button><button class="nb" onclick="nav('s-memory')"><span class="ni">📖</span><div class="nl">Memory</div></button></div>
+</div>
+
+<!-- PAYMENT -->
+<div id="s-payment" class="screen">
+  <div class="tb"><button class="bk" onclick="nav('s-dash')">← Home</button><div class="wm">PAYMENT CHECKLIST</div><div></div></div>
+  <div class="scr">
+    <div style="padding:14px 20px 4px;font-size:13px;color:var(--tm);line-height:1.6;">Romieaux doesn't process payments — it organizes your booking workflow. Tap any item to open the booking link or mark complete.</div>
+    <div style="padding:9px 20px 5px;"><div style="display:flex;justify-content:space-between;font-family:var(--fm);font-size:9px;color:var(--ts);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;"><span>Completed</span><span id="pay-pct">4 of 8</span></div><div class="pg"><div class="pgf" id="pay-bar" style="width:50%;"></div></div></div>
+    <div id="pay-list"></div>
+    <div style="height:16px;"></div>
+  </div>
+  <div class="nt"><button class="nb" onclick="nav('s-dash')"><span class="ni">🏠</span><div class="nl">Home</div></button><button class="nb" onclick="nav('s-itin')"><span class="ni">📋</span><div class="nl">Itinerary</div></button><button class="nb" onclick="nav('s-ready')"><span class="ni">✈️</span><div class="nl">Readiness</div></button><button class="nb" onclick="nav('s-memory')"><span class="ni">📖</span><div class="nl">Memory</div></button></div>
+</div>
+
+<!-- SAFETY -->
+<div id="s-safety" class="screen">
+  <div class="tb"><button class="bk" onclick="nav('s-dash')">← Home</button><div class="wm">SAFETY &amp; PREP</div><div></div></div>
+  <div class="scr" id="safety-list"></div>
+  <div class="nt"><button class="nb" onclick="nav('s-dash')"><span class="ni">🏠</span><div class="nl">Home</div></button><button class="nb" onclick="nav('s-itin')"><span class="ni">📋</span><div class="nl">Itinerary</div></button><button class="nb act"><span class="ni">✈️</span><div class="nl">Readiness</div></button><button class="nb" onclick="nav('s-memory')"><span class="ni">📖</span><div class="nl">Memory</div></button></div>
+</div>
+
+<!-- READINESS -->
+<div id="s-ready" class="screen">
+  <div class="tb"><button class="bk" onclick="nav('s-dash')">← Home</button><div style="font-family:var(--fm);font-size:9px;letter-spacing:2px;color:var(--ts);text-transform:uppercase;">TRAVEL READINESS</div><div></div></div>
+  <div class="scr">
+    <div style="background:var(--n2);padding:22px 20px 18px;"><div style="font-family:var(--fm);font-size:8px;letter-spacing:3px;color:var(--sd);text-transform:uppercase;margin-bottom:7px;" id="rh-eye">Travel Readiness</div><div style="font-family:var(--fd);font-size:22px;font-weight:500;color:var(--cr);line-height:1.3;" id="rh-t">Your preparation timeline</div><div style="font-size:13px;color:rgba(255,255,255,.4);margin-top:5px;line-height:1.5;" id="rh-s">Personalized to your destination.</div></div>
+    <div style="padding:9px 20px 4px;"><div style="display:flex;justify-content:space-between;font-family:var(--fm);font-size:9px;color:var(--ts);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;"><span>Completion</span><span id="rdy-pct">0 of 0</span></div><div class="pg"><div class="pgf" id="rdy-bar" style="width:0%;"></div></div></div>
+    <div style="padding:0 20px;"><div style="font-family:var(--fd);font-size:16px;font-weight:600;color:var(--tx);margin-bottom:9px;padding-bottom:6px;border-bottom:2px solid var(--sd);display:inline-block;">Before You Go</div><div id="rdy-checks"></div></div>
+    <div id="rdy-tip" style="margin:13px 20px 22px;padding:13px;background:var(--sdl);border:1px solid rgba(176,138,80,.25);border-radius:10px;"></div>
+  </div>
+  <div class="nt"><button class="nb" onclick="nav('s-dash')"><span class="ni">🏠</span><div class="nl">Home</div></button><button class="nb" onclick="nav('s-itin')"><span class="ni">📋</span><div class="nl">Itinerary</div></button><button class="nb act"><span class="ni">✈️</span><div class="nl">Readiness</div></button><button class="nb" onclick="nav('s-memory')"><span class="ni">📖</span><div class="nl">Memory</div></button></div>
+</div>
+
+<!-- POST-TRIP -->
+<div id="s-posttrip" class="screen">
+  <div class="tb"><button class="bk" onclick="nav('s-dash')">← Home</button><div class="wm">POST-TRIP</div><div></div></div>
+  <div class="scr">
+    <div class="mh"><div class="mh-glow"></div><div class="mh-eye">Trip Complete</div><div class="mh-t" id="pt-t">Italy — Spring Journey</div><div class="mh-s">10 days · April 2026</div></div>
+    <div class="sh"><div class="shl">Trip Cost Summary</div></div><div id="pt-costs"></div>
+    <div class="sh"><div class="shl">What I'd Do Differently</div></div>
+    <div style="padding:0 20px 14px;"><textarea style="width:100%;padding:13px;border:1.5px solid var(--bd);border-radius:12px;font-family:var(--fd);font-size:14px;font-style:italic;color:var(--tx);background:var(--pn);outline:none;resize:none;line-height:1.6;" rows="4" placeholder="Your reflections feed directly into ROAM Network — making your next trip smarter…"></textarea><button class="btn bink" style="width:100%;margin-top:9px;" onclick="showToast('Reflection saved to ROAM Network')">Save Reflection →</button></div>
+    <div style="height:16px;"></div>
+  </div>
+  <div class="nt"><button class="nb" onclick="nav('s-dash')"><span class="ni">🏠</span><div class="nl">Home</div></button><button class="nb" onclick="nav('s-itin')"><span class="ni">📋</span><div class="nl">Itinerary</div></button><button class="nb" onclick="nav('s-ready')"><span class="ni">✈️</span><div class="nl">Readiness</div></button><button class="nb act"><span class="ni">📖</span><div class="nl">Memory</div></button></div>
+</div>
+
+<!-- MEMORY BOOK -->
+<div id="s-memory" class="screen">
+  <div class="tb"><button class="bk" onclick="nav('s-dash')">← Home</button><div class="wm">MEMORY BOOK</div><div></div></div>
+  <div class="scr">
+    <div style="background:linear-gradient(160deg,#2d1f0e,#4a3020);padding:30px 20px 22px;position:relative;overflow:hidden;"><div style="position:absolute;inset:0;background:radial-gradient(ellipse at 40% 60%,rgba(176,138,80,.18) 0%,transparent 55%);pointer-events:none;"></div><div style="font-family:var(--fm);font-size:9px;letter-spacing:3px;color:var(--sd);text-transform:uppercase;position:relative;z-index:1;">Jordan's Travel Archive</div><div style="font-family:var(--fd);font-size:24px;font-weight:500;color:var(--cr);position:relative;z-index:1;margin-top:5px;line-height:1.2;">Your Journey Archive</div><div style="font-family:var(--fd);font-style:italic;font-size:13px;color:rgba(255,255,255,.4);position:relative;z-index:1;margin-top:4px;">Where you've been. Who you've become.</div></div>
+    <div class="sg"><div class="sgi"><div class="sgn">3</div><div class="sgl">Trips</div></div><div class="sgi"><div class="sgn">7</div><div class="sgl">Countries</div></div><div class="sgi"><div class="sgn">14</div><div class="sgl">Cities</div></div><div class="sgi"><div class="sgn">38</div><div class="sgl">Days</div></div></div>
+    <div class="sh"><div class="shl">Most Recent</div><div class="sht">Bali — October 2025</div></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:0 20px 14px;">
+      <div class="ph" style="background:linear-gradient(135deg,#4a6b5a,#2d4a3e)">🌴<div class="phl">Rice Terraces</div></div>
+      <div class="ph" style="background:linear-gradient(135deg,#6b4a2d,#4a2e14)">🏛<div class="phl">Tanah Lot</div></div>
+      <div class="ph" style="background:linear-gradient(135deg,#4a5a6b,#2d3a4a)">🌊<div class="phl">Seminyak</div></div>
+      <div class="ph" style="background:linear-gradient(135deg,#6b5a2d,#4a3a14)">🍜<div class="phl">Local Warung</div></div>
+    </div>
+    <div style="margin:0 20px 13px;padding:15px;background:var(--pn);border:1px solid var(--bd);border-radius:12px;"><div style="font-family:var(--fm);font-size:8px;letter-spacing:3px;color:var(--sd);text-transform:uppercase;margin-bottom:6px;">Journey Reflection</div><div style="font-family:var(--fd);font-style:italic;font-size:15px;color:var(--tx);line-height:1.6;">"Arrive two days early next time. The last slow morning in Ubud was the best day of the entire trip."</div></div>
+    <div class="sh"><div class="shl">Bucket List</div><div class="sht">Where You're Going</div></div>
+    <div style="display:flex;align-items:center;gap:12px;padding:12px 20px;border-bottom:1px solid var(--bd);cursor:pointer;" onclick="showToast('Adding to current trip…')"><span style="font-size:19px;">🇮🇸</span><span style="font-family:var(--fd);font-size:15px;color:var(--tx);flex:1;">Iceland — Northern Lights</span><span style="color:var(--ts);">→</span></div>
+    <div style="display:flex;align-items:center;gap:12px;padding:12px 20px;border-bottom:1px solid var(--bd);cursor:pointer;" onclick="showToast('Building Kyoto planner…')"><span style="font-size:19px;">🇯🇵</span><span style="font-family:var(--fd);font-size:15px;color:var(--tx);flex:1;">Kyoto during Cherry Blossom</span><span style="color:var(--ts);">→</span></div>
+    <div style="display:flex;align-items:center;gap:12px;padding:12px 20px;border-bottom:1px solid var(--bd);cursor:pointer;" onclick="showToast('Checking Maldives timing…')"><span style="font-size:19px;">🏝</span><span style="font-family:var(--fd);font-size:15px;color:var(--tx);flex:1;">Maldives overwater bungalow</span><span style="color:var(--ts);">→</span></div>
+    <div style="padding:14px 20px 26px;text-align:center;"><button class="btn bgh" style="padding:11px 24px;" onclick="showToast('Exporting Memory Book as PDF…')">Export PDF / Share ↓</button></div>
+  </div>
+  <div class="nt"><button class="nb" onclick="nav('s-dash')"><span class="ni">🏠</span><div class="nl">Home</div></button><button class="nb" onclick="nav('s-itin')"><span class="ni">📋</span><div class="nl">Itinerary</div></button><button class="nb" onclick="nav('s-ready')"><span class="ni">✈️</span><div class="nl">Readiness</div></button><button class="nb act"><span class="ni">📖</span><div class="nl">Memory</div></button></div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+var S={tripType:'romantic',group:'partner',budget:'balanced',mode:'curated',destKey:'romantic',destName:null};
+var sugIdx=0;
+
+var D={
+  romantic:{name:'Amalfi Coast, Italy',emoji:'🇮🇹',city1:'Positano',city2:'Ravello',eye:'Romantic Escape · Amalfi Coast · Italy',title:'Amalfi Coast — Spring',sub:'Romantic Escape · 10 Days · Deeply Curated',
+    alignTxt:'Pacing this trip for two — slower mornings, longer dinners, built-in unstructured time. Candlelit restaurants and private boat days are prioritized. A romantic getaway to Positano produces an entirely different experience than a friends trip to the same destination.',
+    actCt:'12 matched',dinCt:'8 curated',stayCt:'6 options',budCt:'$1,240 spent',
+    activities:[
+      {i:'⛵',bg:'#3a6b7a',n:'Private Boat to Capri',s:'4-hr charter · Grotta Azzurra · Li Galli Islands · Champagne on board',m:'Book 2+ weeks ahead — sells out in peak season',b:'Romantic',bc:'bs'},
+      {i:'🏛',bg:'#7a5a3a',n:'Ravello Villa Rufolo',s:'Cliffside gardens · Classical concert Thursdays at sunset',m:'⏱ 9am: no queue · 45-min wait by noon',b:'Cultural',bc:'bs'},
+      {i:'🌅',bg:'#4a6b5a',n:'Sunrise hike to Villa Cimbrone',s:'30-min trail · Best view on the coast at dawn',m:'📸 Best light 6:15–7am',b:'Active',bc:'bg'},
+      {i:'🍋',bg:'#7a6b3a',n:'Limoncello &amp; Ceramics Tour',s:'Local family farm · Private tasting · Handmade souvenirs',m:'Half-day · Lunch included',b:'Local',bc:'bs'}
+    ],
+    dining:[
+      {i:'🕯',bg:'#5a3a2a',n:'La Sponda, Le Sirenuse',s:'Candlelit terrace · 230 candles lit nightly · Local seafood',m:'Reservation required · Smart elegant dress code',b:'Fine Dining',bc:'bs'},
+      {i:'🍝',bg:'#3a5a4a',n:'Lo Guarracino',s:'Cliffside terrace · Spaghetti alle vongole · Watch the fishing boats',m:'No reservation · Arrive before 7pm',b:'Local',bc:'bg'},
+      {i:'☕',bg:'#5a4a3a',n:'Bar Internazionale',s:'Best pastries on the coast · Sfogliatella · Opens 7am · Cash only',m:'Arrive early for the best selection',b:'Breakfast',bc:'bs'}
+    ],
+    transport:[
+      {i:'⛵',bg:'#3a5a7a',n:'Naples → Positano',s:'Caremar Ferry · 55-min scenic · Upper deck recommended',m:'Book in advance — peak season fills fast',b:'Recommended',bc:'bs'},
+      {i:'🚕',bg:'#5a4a3a',n:'Positano ↔ Ravello transfers',s:'Private car · 45-min via Amalfi Drive · Or take the local SITA bus for €4',m:'Cheapest: SITA bus · Fastest: private taxi',b:'Options',bc:'ba'},
+      {i:'🚂',bg:'#3a4a5a',n:'Rome → Naples · Frecciarossa',s:'70-min high-speed · Trenitalia · Book in advance',m:'💳 Chase Sapphire: 3× points on travel',b:'Booked',bc:'bg'}
+    ],
+    stays:[
+      {emo:'🏛',bg:'linear-gradient(135deg,#6b5a3a,#4a3a20)',n:'Le Sirenuse',s:'Positano · Clifftop terrace pool · Private in-room terrace',p:'€620/night',adv:'Best for romance — private terraces facing the sea. Amex Platinum hotel credit applies.',badge:'Top Pick'},
+      {emo:'🏡',bg:'linear-gradient(135deg,#4a6b5a,#2d4a3e)',n:'Villa Fraulo',s:'Ravello · Private villa · Sleeps 2 · Full kitchen + garden',p:'€340/night',adv:'Stay Advisor: Villa for nights 4–10 saves €280 vs comparable hotel and gives you a private breakfast every morning.',badge:'Stay Advisor Pick'}
+    ],
+    playlist:{t:'Amalfi · Romantic Escape',e:'🌊',bg:'linear-gradient(160deg,#2d4a3e,#1a2d28)',
+      tracks:[{e:'🌊',bg:'#3a5a6b',n:'Across the Ocean',ar:'Hollow Coves',d:'3:42'},{e:'🌹',bg:'#6b3a4a',n:'A Different Kind of Love',ar:'Otis Redding',d:'4:18'},{e:'☀️',bg:'#6b5a2d',n:'Amore Mio Aiutami',ar:'Pino Daniele',d:'5:10'},{e:'🎸',bg:'#3a4a6b',n:'Volare',ar:'Gipsy Kings',d:'3:55'}],
+      events:[{n:'Jazz Night · Ravello Festival',w:'July 14 · Ravello'},{n:'Live acoustic at Bar Calypso',w:'Every Friday · Positano'}]
+    },
+    safety:[
+      {i:'🆘',n:'Emergency Numbers',t:'112 EU Emergency · 113 Police · 118 Ambulance · US Embassy Rome: +39 06 46741'},
+      {i:'💳',n:'Money',t:'Euro (€). Cards accepted everywhere. Notify Chase &amp; Amex before travel. Some small places cash-only.'},
+      {i:'👗',n:'Dress Code',t:'Cover shoulders and knees at churches. Swimwear only at the beach — fines apply in town.'},
+      {i:'🍷',n:'Dining Etiquette',t:'Coperto (cover charge) on bills is normal. Tipping 5–10% for excellent service at sit-down restaurants. No cappuccino after noon.'},
+      {i:'🚢',n:'Getting Around',t:'Boats are the main transport. Book ferries in advance in peak season. The Amalfi coast road is narrow, terrifying, and spectacular.'}
+    ],
+    readiness:{eye:'Get Travel-Ready for Amalfi Coast',t:'18 days to departure.',s:'Personalized preparation for your Amalfi trip.',
+      checks:['Check passport — Italy requires 3+ months validity past return date','Notify Chase Sapphire Reserve and Amex Platinum of travel dates','Book private boat charter for Capri — sells out weeks ahead in peak season','Download Trenitalia app for Naples connections','Pack grip-sole walking shoes — Amalfi steps are steep and slippery'],
+      tip:'Tipping in Italy: Round up to the nearest euro at cafés. Coperto on your bill is normal. Leave 5–10% at sit-down restaurants for excellent service.'
+    },
+    days:[
+      {n:'Day 1 · Arrival · Positano',l:'Positano',b:'Paced Well ✓',bc:'bok',acts:[
+        {t:'3:00 PM',n:'Naples → Ferry to Positano',s:'Le Sirenuse Hotel · 55-min scenic ferry · Upper deck',f:'💳 Amex Plat: hotel credit applicable',fc:'ft'},
+        {t:'6:30 PM',n:'Golden hour walk along the cliffs',s:'Via Positanesi d\'America · Best light 6:45–7:15pm',f:'📸 Look back toward the Duomo for the shot',fc:'ft'},
+        {t:'8:30 PM',n:'Dinner · La Sponda, Le Sirenuse',s:'Reservation confirmed · 230 candles · Request terrace seating',f:'🍷 Ask sommelier for local Fiano di Avellino',fc:'ft'}
+      ]},
+      {n:'Day 2 · Private Boat · Capri',l:'Capri &amp; Grotta Azzurra',b:'⚡ Book Early',bc:'bwn',acts:[
+        {t:'8:30 AM',n:'Private boat departs Positano marina',s:'4-hr charter · Li Galli Islands · Grotta Azzurra · Lunch on board',f:'⏱ Grotta Azzurra at 9am skips the 40-min midday queue',fc:'fw'},
+        {t:'2:00 PM',n:'Capri town · Funicular to Piazzetta',s:'Best espresso in the Piazzetta',f:'⏱ Funicular 20-min wait at 2pm — stairs are faster',fc:'fw'},
+        {t:'6:30 PM',n:'Return · Aperitivo at Franco\'s Bar',s:'Rooftop · Best spritz on the coast · Arrive before 6:30 for seats',f:'',fc:''}
+      ]}
+    ],
+    outfits:[
+      {i:'🌅',bg:'#4a5a6b',n:'Day 1 · Arrival &amp; Dinner',s:'Smart-casual daywear + smart elegant for La Sponda. Dress or tailored trousers.',m:'🌡 21°C · Light layer for evening'},
+      {i:'⛵',bg:'#3a6b7a',n:'Day 2 · Boat Day',s:'Swimwear + cover-up + sandals. SPF 50+ essential. Sun hat.',m:'☀️ Bring a layer for the sea breeze'},
+      {i:'🎵',bg:'#6b4a3a',n:'Day 3 · Ravello &amp; Concert',s:'Smart casual for gardens. Concert requires semiformal — summer dress or smart trousers.',m:'Concert dress code: smart casual minimum'}
+    ],
+    packing:['Grip-sole walking shoes (cobblestones are steep and unforgiving)','Smart-elegant outfit for fine dining x2','Swimwear + cover-up x2','Lightweight layers for sea breeze on boats','Sun hat + SPF 50+ sunscreen','Type F/L power adapter (Italy standard)','Offline Google Maps for Amalfi downloaded'],
+    boutiques:[
+      {i:'👜',bg:'#6b5a3a',n:'Emporio La Zagara',s:'Positano · Handmade leather sandals made to order · 24hr turnaround',m:'Iconic Positano purchase',b:'Local',bc:'bs'},
+      {i:'🏺',bg:'#5a6b3a',n:'Ceramica Casola',s:'Ravello · Hand-painted ceramics · Ships worldwide',m:'Best ceramics selection on the coast',b:'Local',bc:'bg'}
+    ],
+    insurance:[
+      {i:'✅',n:'Trip Cancellation',t:'Chase Sapphire Reserve: up to $10,000 per trip. Covers illness, injury, weather, carrier default.'},
+      {i:'✅',n:'Rental Car',t:'Chase Sapphire Reserve: primary rental car coverage. No need to buy CDW — saves ~$30/day.'},
+      {i:'✅',n:'Trip Delay',t:'Chase: up to $500/ticket for delays over 6 hours. Covers meals, lodging, ground transport.'},
+      {i:'✅',n:'Emergency Assistance',t:'Amex Platinum: Global Emergency Assistance includes medical referrals and evacuation coordination.'}
+    ],
+    insGaps:[
+      {i:'⚠️',n:'Adventure Sports',t:'Private boat and water sports are typically excluded from card coverage. Add a travel insurance rider for ~$18 for this trip.'},
+      {i:'⚠️',n:'Pre-Existing Conditions',t:'Card coverage excludes pre-existing conditions. If relevant, add a supplemental policy before departure.'}
+    ],
+    carbonVal:'2.1 tons CO₂',carbonSub:'Flights account for 78% of your trip footprint. Ground transport accounts for 18%.',
+    eco:[
+      {i:'🌿',bg:'#3a6b3a',n:'Eco-certified hotel alternative',s:'Albergo Il Monastero · Carbon-neutral certified · Renewable energy',m:'4% cheaper than Le Sirenuse for equivalent experience',b:'Eco',bc:'bg'},
+      {i:'🚢',bg:'#3a5a6b',n:'Ferry over private transfer',s:'Sita ferry vs. private car saves 0.3 tons CO₂ on the Naples → Positano leg',m:'Cheapest and greenest option',b:'Green',bc:'bg'}
+    ],
+    phrases:[
+      {i:'🗣',n:'"Un tavolo per due, per favore"',s:'A table for two, please · Pronounced: oon TAH-voh-loh pehr DOO-eh, pehr fah-VOH-reh'},
+      {i:'🗣',n:'"Il conto, per favore"',s:'The bill, please · Standard restaurant phrase'},
+      {i:'🗣',n:'"Dov\'è il bagno?"',s:'Where is the bathroom? · Pronounced: doh-VEH eel BAH-nyoh'},
+      {i:'🗣',n:'"Parla inglese?"',s:'Do you speak English? · Always appreciated to ask first'}
+    ],
+    cultural:[
+      {i:'⚠️',n:'Church Etiquette',t:'Cover shoulders and knees at any church. A scarf in your bag covers both. Photography often restricted.'},
+      {i:'☕',n:'Cappuccino Rule',t:'Italians only drink cappuccino before noon. Ordering one after lunch marks you as a tourist.'},
+      {i:'💶',n:'Coperto',t:'A cover charge (€1–3) on restaurant bills is normal. It covers bread and table — it is not a tip.'}
+    ],
+    apt:{f:'JFK → FCO · AA 204',fs:'Departs 9:40pm · Terminal 8 · Gate B22',
+      items:[
+        {i:'🚶',n:'Gate Walk Time',s:'T8 Gate B22 is 14 minutes from security. TSA PreCheck: ~8-min wait at 8pm.',f:'Arrive at gate by 9:10pm',fc:'ft'},
+        {i:'✅',n:'TSA PreCheck + CLEAR',s:'CLEAR enrolled: biometric lane. Estimated total security time: 4 minutes.',f:'',fc:''}
+      ],
+      lounges:[
+        {i:'🛋',bg:'#3a4a6b',n:'Centurion Lounge · JFK T8',s:'Amex Platinum: full access · Spa, dining, showers',m:'Your card covers this — no charge',b:'Access Confirmed',bc:'bg'},
+        {i:'🛋',bg:'#4a3a5a',n:'Flagship First Dining · AA T8',s:'AA Executive status: access until departure · Full dinner menu',m:'Opens 4pm',b:'Status Access',bc:'bs'}
+      ],
+      jetlag:[
+        {i:'💡',n:'Direction: Eastbound +6 hours',s:'Your body thinks it\'s 4am when you land at 10am Rome. Stay awake until 10pm local on arrival day.'},
+        {i:'💊',n:'Melatonin Protocol',s:'0.5mg at 10pm local for first 3 nights. Lower dose is more effective than high-dose airport varieties.'},
+        {i:'☀️',n:'Light Exposure',s:'20 minutes of morning sunlight immediately after landing resets your circadian clock. Single most effective tool.'}
+      ]
+    },
+    cont:{
+      alerts:[{cls:'bs',t:'⛈ Rain forecast Day 3 afternoon — indoor alternatives pre-built'},{cls:'bg',t:'✓ All reservations confirmed · No cancellations detected'}],
+      rain:[
+        {i:'🎨',bg:'#5a4a3a',n:'Museo Correale di Terranova',s:'Sorrento · 1hr from Positano · Remarkable decorative arts',m:'⏱ Crowd-free on rainy days',b:'Indoors',bc:'bs'},
+        {i:'🍷',bg:'#6b3a3a',n:'Wine tasting at Marisa Cuomo',s:'Furore cliff vineyard · Tour + tasting · DOC wines',m:'Reserve by phone · 2hr experience',b:'Indoors',bc:'bs'}
+      ]
+    },
+    reminders:[
+      {i:'✈️',n:'Flight check-in opens',s:'JFK → FCO · AA 204 · Opens 24 hours before departure',w:'Tomorrow 9:40pm',b:'Flight',bc:'bs'},
+      {i:'🏨',n:'Hotel confirmation',s:'Le Sirenuse · April 14 · Check-in from 3pm',w:'April 14',b:'Stay',bc:'bs'},
+      {i:'⛵',n:'Boat charter balance due',s:'Capri Private Charter · €400 remaining balance',w:'3 days before trip',b:'Payment',bc:'ba'},
+      {i:'🌧',n:'Weather alert · Day 3',s:'60% rain probability · Indoor alternatives ready in Contingency',w:'April 16',b:'Weather',bc:'ba'}
+    ],
+    payment:[
+      {done:true,i:'✅',n:'Flights · JFK → FCO',s:'American Airlines AA204 · Booked via Chase travel portal'},
+      {done:true,i:'✅',n:'Hotel · Le Sirenuse, Positano',s:'Nights 1–3 · Confirmation #LSR2024-8841'},
+      {done:true,i:'✅',n:'Villa Fraulo · Ravello',s:'Nights 4–10 · Booking confirmed via Airbnb'},
+      {done:true,i:'✅',n:'Private Boat · Capri Charter',s:'Day 2 · Deposit paid · Balance due 72hrs before'},
+      {done:false,i:'○',n:'La Sponda Restaurant',s:'Day 1 dinner · Reservation requested · Confirmation pending'},
+      {done:false,i:'○',n:'Ravello Concert Tickets',s:'Villa Rufolo · July 14 · 2 tickets needed'},
+      {done:false,i:'○',n:'Travel Insurance Rider',s:'Adventure sports add-on · Recommended · $18'},
+      {done:false,i:'○',n:'Trenitalia · Rome → Naples',s:'Return trip April 24 · Not yet booked'}
+    ],
+    postCosts:[{cat:'Lodging',amt:'$940',pct:31},{cat:'Dining',amt:'$840',pct:28},{cat:'Activities',amt:'$620',pct:21},{cat:'Transport',amt:'$480',pct:16},{cat:'Shopping',amt:'$120',pct:4}],
+    members:[{e:'👤',c:'#4a6b5a',n:'Jordan',r:'Owner',s:'Online'},{e:'👤',c:'#6b4a2d',n:'Alex S.',r:'Editor',s:'Active'},{e:'👤',c:'#3a4a6b',n:'Marcus W.',r:'Editor',s:'Online'},{e:'👤',c:'#6b3a4a',n:'Sarah P.',r:'Viewer',s:'Last seen 2hr ago'},{e:'👤',c:'#5a5a3a',n:'Chris K.',r:'Viewer',s:'Last seen 1hr ago'}],
+    splitG:[{w:'Jordan',o:'Paid $640',a:'$80 back from group'},{w:'Alex S.',o:'Owes $240',a:'Capri boat share'},{w:'Marcus W.',o:'Settled',a:'✓'},{w:'Sarah P.',o:'Owes $180',a:'Dinner Day 2'},{w:'Chris K.',o:'Owes $60',a:'Drinks Day 1'}],
+    fam:{changes:['Activities filtered for ages 4+ and 8+. Boat trips flagged as requiring older children.','Rest periods at 1pm and 4pm each day. Max 2 activities per day.','Dining filter: restaurants with highchairs and kids\' menus flagged. Noise tolerance noted.','Stroller access rated for each location. Baby carrier strongly recommended for Positano steps.'],kid:['Nearest pediatric care: Ospedale di Castiglione, Sorrento · 25-min transfer','Pharmacy: Farmacia Internazionale, Positano · Open daily 8am–8pm · English-speaking staff','Stroller note: Positano steps are NOT stroller-friendly. Baby carrier is essential.','Kid-friendly restaurants flagged: Da Adolfo Beach, Lo Guarracino (highchairs confirmed)']},
+    solo:{dest:'Amalfi Coast, Italy',safety:[{n:'Positano town center',time:'Day',l:'✅ Very safe',d:'Well-lit, busy with tourists, local police presence'},{n:'Positano town center',time:'Night after 11pm',l:'⚠️ Moderate',d:'Quieter — stick to main streets, use Bolt rather than walking alone'},{n:'Naples (transit only)',time:'Day',l:'⚠️ Moderate',d:'Watch bags at train station. Avoid Quartieri Spagnoli after dark.'}],dress:['Relaxed compared to more conservative regions. Standard European dress for restaurants.','Churches require covered shoulders and knees — a light scarf handles both.','Heels not recommended anywhere — cobblestones will destroy your evening.'],em:'112 EU Emergency · National Hotline: 1-800-799-7233 · Local crisis center pre-loaded.'},
+    work:{window:'9:00 AM – 1:00 PM',wsub:'Aligns with 3:00–7:00pm US Eastern. Team overlap: 4 hours.',spots:[{i:'☕',bg:'#4a5a3a',n:'Bar Internazionale — Garden terrace',s:'Positano · Reliable 45Mbps WiFi · Quiet in mornings',m:'Best morning work spot on the coast',b:'WiFi ✓',bc:'bg'},{i:'🏨',bg:'#4a3a5a',n:'Le Sirenuse Business Center',s:'In-hotel · Dedicated fast WiFi · Private booths',m:'Book the booth — fills by 9am',b:'Fast WiFi',bc:'bs'}],tz:[{f:'🇮🇹',z:'Rome (CET)',t:'9:00 AM',o:'Team overlap 3:00–7:00pm local'},{f:'🇺🇸',z:'New York (EST)',t:'3:00 AM',o:'Team online at 3pm your time'},{f:'🇬🇧',z:'London (GMT)',t:'8:00 AM',o:'UK team: full overlap 9am–1pm your time'}]}
+  },
+  reset:{name:'Ubud, Bali',emoji:'🇮🇩',city1:'Ubud',city2:'Seminyak',eye:'Reset &amp; Recovery · Ubud, Bali',title:'Ubud — Wellness Retreat',sub:'Reset &amp; Recovery · 9 Days · Deeply Curated',
+    alignTxt:'Romieaux™ detected a reset intention. This trip has intentional white space — slow mornings, no more than two activities per day, and rest periods that are not optional. You don\'t need to earn the rest.',
+    actCt:'10 matched',dinCt:'7 curated',stayCt:'5 options',budCt:'$640 spent',
+    activities:[
+      {i:'🧘',bg:'#3a6b5a',n:'Sunrise yoga at Radiantly Alive',s:'Open-air shala · Rice paddy views · All levels · 6am class',m:'⏱ 6am class is the quietest — book 48hrs ahead',b:'Wellness',bc:'bs'},
+      {i:'🌿',bg:'#4a6b3a',n:'Tegalalang Rice Terrace Walk',s:'UNESCO heritage · Guided 2 hours · 8am is crowd-free',m:'📸 Best light: 8–9:30am',b:'Nature',bc:'bg'},
+      {i:'🏛',bg:'#6b5a3a',n:'Tirta Empul Sacred Spring',s:'Holy spring ritual · Traditional dress provided · Deeply moving',m:'⏱ 8am near-empty. Avoid 11am–2pm.',b:'Cultural',bc:'bs'},
+      {i:'💆',bg:'#5a4a3a',n:'Traditional Balinese Pijat',s:'90-min massage · Bisma Eight spa · Included with room package',m:'Book on arrival — slots fill quickly',b:'Wellness',bc:'bs'}
+    ],
+    dining:[
+      {i:'🥗',bg:'#4a6b3a',n:'Locavore',s:'Best farm-to-table in Ubud · Hyper-local seasonal menu',m:'Reservation required 3+ days ahead',b:'Fine Dining',bc:'bs'},
+      {i:'🍚',bg:'#6b5a3a',n:'Warung Babi Guling Ibu Oka',s:'Roast pork · Local institution · Pure flavour',m:'Open from 11am · Cash only',b:'Local',bc:'bg'},
+      {i:'☕',bg:'#5a3a3a',n:'Seniman Coffee Studio',s:'Specialty coffee · Great wifi · Ideal for slow mornings',m:'Open 7am daily',b:'Breakfast',bc:'bs'}
+    ],
+    transport:[
+      {i:'🚗',bg:'#4a5a3a',n:'DPS Airport → Ubud',s:'Private transfer · 1.5hr · Rice terraces en route',m:'Book in advance — airport taxis overcharge',b:'Booked',bc:'bg'},
+      {i:'📱',bg:'#3a6b5a',n:'Gojek Rideshare App',s:'Bali\'s main rideshare · Download before landing',m:'Always cheaper than taxis · Works everywhere',b:'Download First',bc:'bs'},
+      {i:'🛵',bg:'#6b5a3a',n:'Scooter Rental',s:'Only if you have prior experience · Roads are chaotic',m:'⚠️ Not recommended for first-time riders',b:'Caution',bc:'ba'}
+    ],
+    stays:[
+      {emo:'🌿',bg:'linear-gradient(135deg,#3a6b5a,#1e4a3a)',n:'Bisma Eight',s:'Ubud · Rice terrace view · Pool · Exceptional spa',p:'$320/night',adv:'Best for reset travel — no resort hustle, extraordinary spa, breakfast view that heals something.',badge:'Top Pick'},
+      {emo:'🏡',bg:'linear-gradient(135deg,#5a6b3a,#3a4a1e)',n:'Komaneka at Bisma',s:'Boutique resort · Infinity pool · In-room yoga mat',p:'$240/night',adv:'Stay Advisor: More affordable, near-equivalent peace. Pool terrace at sunset is exceptional.',badge:'Stay Advisor Pick'}
+    ],
+    playlist:{t:'Ubud · Reset &amp; Recovery',e:'🌿',bg:'linear-gradient(160deg,#1e3a2a,#0d2218)',
+      tracks:[{e:'🌿',bg:'#2a4a3a',n:'Weightless',ar:'Marconi Union',d:'8:09'},{e:'🌊',bg:'#2a3a4a',n:'Spiegel im Spiegel',ar:'Arvo Pärt',d:'9:45'},{e:'☀️',bg:'#4a3a2a',n:'Bali',ar:'Rhye',d:'4:12'},{e:'🍃',bg:'#2a4a2a',n:'Grace',ar:'Jeff Buckley',d:'4:21'}],
+      events:[{n:'Sound healing ceremony · Taksu Ubud',w:'Every Tue &amp; Thu evening'},{n:'Kecak fire dance at Uluwatu',w:'Nightly at sunset · 6pm'}]
+    },
+    safety:[
+      {i:'🆘',n:'Emergency Numbers',t:'112 Indonesia Emergency · 110 Police · 118 Ambulance · US Embassy Jakarta: +62 21 5083 1000'},
+      {i:'💱',n:'Currency',t:'Indonesian Rupiah (IDR) · 1 USD ≈ 16,000 IDR. BNI or Mandiri ATMs have lowest fees. Temples are cash only.'},
+      {i:'👗',n:'Temple Etiquette',t:'Sarong required at all temples — provided at entrance. Cover shoulders and knees. Never step on offerings on the ground.'},
+      {i:'🦟',n:'Health',t:'Hepatitis A vaccine recommended (CDC). DEET repellent for evenings. Bottled or filtered water only. Stick to cooked food the first two days.'},
+      {i:'🛵',n:'Getting Around',t:'Download Gojek app. Scooters only with prior experience. Always negotiate taxi price without an app.'}
+    ],
+    readiness:{eye:'Get Travel-Ready for Bali',t:'Rest starts with good preparation.',s:'Your calm, structured countdown for a wellness trip.',
+      checks:['No visa required for US citizens — 30 days free on arrival','Download Gojek app before landing (rideshare + food delivery)','Hepatitis A vaccine recommended — get it 2+ weeks before departure','Pack light breathable fabrics — Bali humidity is constant','Book yoga class and spa session immediately on arrival — they fill fast'],
+      tip:'Bali tipping: Leave 10,000–20,000 IDR (~$1) for good service. At spas and with guides, 50,000–100,000 IDR is generous and deeply appreciated.'
+    },
+    days:[
+      {n:'Day 1 · Arrival · Slow Day',l:'Ubud — No Schedule Today',b:'Rest Day ✓',bc:'bok',acts:[
+        {t:'1:00 PM',n:'Arrive DPS → Private transfer to Ubud',s:'Bisma Eight · 1.5hr drive',f:'🌿 No schedule today. Decompress first.',fc:'ft'},
+        {t:'4:30 PM',n:'Welcome Balinese pijat massage',s:'90-min traditional massage · Included with room package',f:'💳 Amex travel credit applicable',fc:'ft'},
+        {t:'7:00 PM',n:'Early dinner at Locavore',s:'Reserve the tasting menu',f:'🌱 Hyper-local: best seasonal menu on the island',fc:'ft'}
+      ]},
+      {n:'Day 2 · Sunrise Yoga · Rice Terraces',l:'Ubud — Morning Ritual',b:'Wellness Optimized',bc:'bok',acts:[
+        {t:'6:00 AM',n:'Sunrise yoga at Radiantly Alive',s:'Open-air shala · Rice paddy views · 8 people max',f:'⏱ Quietest and most transformative class',fc:'fw'},
+        {t:'9:00 AM',n:'Tegalalang Rice Terrace walk',s:'Guide recommended · 2 hours · Coffee stop included',f:'📸 Best light: 9–10am',fc:'ft'},
+        {t:'2:00 PM',n:'Afternoon free — nap, swim, read',s:'Romieaux™ built this in intentionally. Rest is the trip.',f:'',fc:''}
+      ]}
+    ],
+    outfits:[{i:'🧘',bg:'#3a6b5a',n:'Yoga + Morning activities',s:'Lightweight activewear. Bali is humid — synthetic fabrics wick better.',m:'🌡 28°C · High humidity all day'},{i:'👗',bg:'#6b5a3a',n:'Temple visits',s:'Sarong required (provided at entrance) · Light long-sleeve covers shoulders.',m:'Always carry a scarf'},{i:'🌿',bg:'#4a6b3a',n:'Spa &amp; resort days',s:'Comfortable cotton or linen. Sandals. Nothing formal needed in Ubud.',m:'Flip flops are standard everywhere'}],
+    packing:['Lightweight breathable fabrics (linen, bamboo, light cotton)','Universal adapter (Indonesia uses Type C/F)','DEET mosquito repellent 30%+ for evenings','Reef-safe sunscreen SPF 50+','Light scarf for temple modesty and mosquito evenings','Offline Google Maps for Bali','Gojek app installed before landing'],
+    boutiques:[{i:'🏺',bg:'#6b5a3a',n:'Threads of Life',s:'Ubud · Museum-quality traditional textiles · Ethical sourcing',m:'Best textile shopping in Indonesia',b:'Artisan',bc:'bg'},{i:'🌿',bg:'#3a6b4a',n:'Bali Buda',s:'Ubud · Organic products, wellness goods, local honey',m:'Great for wellness items to bring home',b:'Local',bc:'bg'}],
+    insurance:[{i:'✅',n:'Trip Cancellation',t:'Chase Sapphire Reserve: up to $10,000. Covers illness, injury, weather.'},{i:'✅',n:'Emergency Evacuation Coordination',t:'Amex Platinum: Global Emergency Assistance. Critical for Bali — nearest hospital to Ubud is 45 minutes away.'},{i:'⚠️',n:'Medical Treatment Gap',t:'Card insurance does NOT cover actual medical bills. Add a $35 supplemental policy for this trip.'}],
+    insGaps:[{i:'⚠️',n:'Medical Treatment Costs',t:'Supplemental medical coverage strongly recommended for Bali given the remote healthcare situation. ~$35 for the trip.'},{i:'⚠️',n:'Motorbike Accidents',t:'Explicitly excluded from most card coverage. Do not rent a motorbike without specific policy coverage.'}],
+    carbonVal:'3.4 tons CO₂',carbonSub:'Long-haul flights to Bali account for 91% of your footprint.',
+    eco:[{i:'🌿',bg:'#3a6b3a',n:'Eco-certified accommodation',s:'Sandat Glamping Tents · Carbon-neutral · Solar energy · Composting',m:'Immersive rice terrace experience + sustainable',b:'Eco',bc:'bg'},{i:'🚗',bg:'#4a5a3a',n:'Electric vehicle transfer',s:'EV car DPS → Ubud · Same price as regular transfer',m:'Ask specifically for EV at booking',b:'Green',bc:'bg'}],
+    phrases:[{i:'🗣',n:'"Permisi"',s:'Excuse me · Most useful word in Bali · Pronounced: pehr-MEE-see'},{i:'🗣',n:'"Terima kasih"',s:'Thank you · Pronounced: teh-REE-mah KAH-see · Deeply appreciated'},{i:'🗣',n:'"Berapa harganya?"',s:'How much does it cost? · Essential for market shopping'},{i:'🗣',n:'"Tolong panggil dokter"',s:'Please call a doctor · Emergency phrase — save this on your phone'}],
+    cultural:[{i:'🙏',n:'Canang Sari Offerings',t:'Small woven baskets with flowers everywhere — these are daily offerings. Never step on them. Walk around.'},{i:'👆',n:'Pointing',t:'Never point with one finger — use your whole hand or thumb. Pointing with a single finger is considered rude.'},{i:'🤝',n:'Left Hand',t:'The left hand is considered impure. Always give and receive with the right hand, especially at temples and with food.'}],
+    apt:{f:'LAX → DPS · SQ 37 via SIN',fs:'Departs 11:55pm · Tom Bradley Terminal · Gate 156',items:[{i:'🚶',n:'Gate Walk Time',s:'TBIT Gate 156 is 12 minutes from security.',f:'Arrive at gate by 11:20pm',fc:'ft'},{i:'✈️',n:'Connection in Singapore',s:'4-hour layover at Changi T3. SilverKris Lounge via Amex Platinum.',f:'⏱ Changi is genuinely the best airport in the world — enjoy it',fc:'ft'}],lounges:[{i:'🛋',bg:'#3a4a6b',n:'SilverKris Lounge · Changi T3',s:'Amex Platinum access · Full dining + showers during connection',m:'Use the shower — 6-hour flight ahead',b:'Access Confirmed',bc:'bg'},{i:'🛋',bg:'#6b3a4a',n:'No Centurion Lounge at LAX TBIT',s:'Priority Pass not accepted at TBIT. Plan accordingly.',m:'Centurion Lounge is T4 — not worth the transfer',b:'Check Timing',bc:'ba'}],jetlag:[{i:'💡',n:'Direction: Westbound +15 hours',s:'Bali is effectively the next day. Land at 6am Bali time. Stay awake through arrival day, sleep at 10pm local.'},{i:'😴',n:'Sleep on the Plane',s:'Take the Singapore leg as your main sleep window — it\'s the longer of the two flights.'},{i:'☀️',n:'Light Exposure on Arrival',s:'Get outside into morning Bali light immediately. Pool or breakfast in the garden counts. Avoid napping before noon.'}]},
+    cont:{alerts:[{cls:'ba',t:'🌧 Monsoon season — afternoon rain likely · Indoor alternatives built'},{cls:'bg',t:'✓ All bookings confirmed · No closures detected'}],rain:[{i:'🎨',bg:'#5a4a3a',n:'ARMA Museum',s:'Ubud · World-class Balinese art · Café with rice terrace views',m:'Crowd-free in rain — genuinely spectacular',b:'Indoors',bc:'bs'},{i:'💆',bg:'#3a6b5a',n:'Extra spa session',s:'Bisma Eight · 90-min traditional Balinese ritual · Best rainy afternoon option',m:'Add at reception',b:'Wellness',bc:'bg'}]},
+    reminders:[{i:'🧘',n:'Yoga confirmation',s:'Radiantly Alive · Tomorrow 6am · 8 spots total',w:'Tomorrow 6:00am',b:'Wellness',bc:'bg'},{i:'🍽',n:'Locavore reservation',s:'Tonight 7:00pm · Tasting menu',w:'Tonight 6:45pm',b:'Dining',bc:'bs'},{i:'💆',n:'Spa appointment',s:'Bisma Eight · Traditional pijat · 90 min',w:'Day 3 2:00pm',b:'Spa',bc:'bg'}],
+    payment:[{done:true,i:'✅',n:'Flights · LAX → DPS via SIN',s:'Singapore Airlines SQ37 · Booked via Amex portal'},{done:true,i:'✅',n:'Bisma Eight Resort · 9 nights',s:'Confirmation #BE2024-4421'},{done:true,i:'✅',n:'Airport transfer · DPS → Ubud',s:'Private car · Booked via resort'},{done:false,i:'○',n:'Locavore Restaurant · 4 evenings',s:'Reservation requested · Confirmation pending'},{done:false,i:'○',n:'Sunrise Yoga · Radiantly Alive · 4 classes',s:'Pre-payment required'},{done:false,i:'○',n:'Tirta Empul Temple entrance',s:'Cash only · IDR 50,000 (~$3)'}],
+    postCosts:[{cat:'Lodging',amt:'$1,080',pct:49},{cat:'Dining',amt:'$480',pct:22},{cat:'Activities',amt:'$320',pct:15},{cat:'Transport',amt:'$180',pct:8},{cat:'Shopping',amt:'$140',pct:6}],
+    members:[{e:'👤',c:'#4a6b5a',n:'Jordan',r:'Owner',s:'Online'}],splitG:[],
+    fam:{changes:['Activities filtered for ages 6+. Temple water rituals adapted for children.','Rest periods at 12:30pm and 4pm. Afternoon nap time built into schedule.','Accommodation: Bisma Eight has family villas with separate children\'s bedroom.'],kid:['Nearest pediatric care: Rumah Sakit Kasih Ibu Denpasar · 45-min from Ubud','Pharmacy: Guardian Pharmacy, Ubud · Western medications available · Open daily 9am–9pm','Stroller: NOT suitable for Ubud streets. Baby carrier essential.','Kid-friendly dining: Sage Ubud (vegetarian, child-friendly), Locavore LO\'EL (casual)']},
+    solo:{dest:'Ubud, Bali',safety:[{n:'Ubud town center',time:'Day',l:'✅ Very safe',d:'Touristy, well-patrolled, welcoming to solo travelers'},{n:'Rice terraces (guided)',time:'Day',l:'✅ Safe',d:'Always go with a guide — unguided paths have hidden drops'},{n:'Ubud at night',time:'Night',l:'✅ Generally safe',d:'Main streets well-lit. Avoid dark back roads after 10pm.'}],dress:['More relaxed than other Indonesian regions. Standard tourist dress fine in Ubud.','Temple visits: sarong + shoulder cover required (provided at entrance).'],em:'112 Indonesia Emergency · US Embassy Jakarta: +62 21 5083 1000'},
+    work:{window:'9:00 AM – 1:00 PM',wsub:'Aligns with 8:00pm–12:00am US Eastern (previous day). Best for async work.',spots:[{i:'☕',bg:'#4a5a3a',n:'Seniman Coffee Studio',s:'Ubud · 80Mbps WiFi · Quiet mornings · Open 7am',m:'Best work spot in Ubud',b:'WiFi ✓',bc:'bg'},{i:'💻',bg:'#3a4a5a',n:'Hubud Co-working Space',s:'Ubud · Day pass $20 · Standing desks · Fast WiFi',m:'Meeting rooms and printer available',b:'Co-working',bc:'bs'}],tz:[{f:'🇮🇩',z:'Bali (WITA)',t:'9:00 AM',o:'Your work block 9am–1pm'},{f:'🇺🇸',z:'New York (EST)',t:'8:00 PM prev. day',o:'US team ends their day as yours starts'},{f:'🇸🇬',z:'Singapore (SGT)',t:'8:00 AM',o:'Singapore colleagues: full overlap 9am–1pm Bali'}]}
+  }
+};
+
+var SUGS={romantic:[{n:'Amalfi Coast, Italy',k:'romantic',w:'Late spring — warm enough for boat days, not yet peak tourist season. Your budget and travel style are a strong match.'},{n:'Santorini, Greece',k:'romantic',w:'September shoulder season: fewer tourists, same caldera sunsets, lower prices.'}],cultural:[{n:'Kyoto, Japan',k:'romantic',w:'Cherry blossom season aligns with flexible dates. Romieaux™ has identified low-crowd timings for every major site.'},{n:'Marrakech, Morocco',k:'romantic',w:'November: cool enough to explore all day. Rich cultural depth at an accessible price.'}],reset:[{n:'Ubud, Bali',k:'reset',w:'Bali\'s wellness infrastructure is unmatched. Ubud specifically has the quiet and spa culture your reset intention calls for.'},{n:'Tuscany, Italy',k:'romantic',w:'Slow food, rolling hills, no agenda. Aligned with a reset intention and balanced budget.'}],milestone:[{n:'Paris, France',k:'romantic',w:'October in Paris: crowds thinned, golden weather, unhurried pace. Right for a milestone.'},{n:'Amalfi Coast, Italy',k:'romantic',w:'A milestone deserves a view. Candlelit dinner on a private terrace — that\'s the memory.'}],honeymoon:[{n:'Maldives',k:'reset',w:'Nothing comes close for a honeymoon. Overwater bungalow, private sandbank dinner, complete seclusion.'},{n:'Amalfi Coast, Italy',k:'romantic',w:'Culture + romance + food + luxury at a fraction of Maldives price. Strong alternative.'}],friends:[{n:'Lisbon, Portugal',k:'romantic',w:'Easy flights, affordable, exceptional food and nightlife. Villa pricing beats hotel rooms significantly.'},{n:'Barcelona, Spain',k:'romantic',w:'Architecture, beaches, nightlife, food. Works for every personality in a group.'}],adventure:[{n:'Iceland',k:'romantic',w:'March gives high Northern Lights probability and minimal crowds. Strong adventure alignment match.'},{n:'Patagonia, Argentina',k:'romantic',w:'November is peak season — best weather for Torres del Paine. Truly remote and dramatic.'}],workcation:[{n:'Lisbon, Portugal',k:'romantic',w:'Best digital nomad infrastructure in Europe. GMT timezone, fast wifi, stunning city.'},{n:'Chiang Mai, Thailand',k:'reset',w:'Southeast Asia\'s top workcation city. Affordable, excellent cafés, remarkable quality of life.'}]};
+var CHIPS={romantic:['Amalfi Coast, Italy','Santorini, Greece','Paris, France','Positano, Italy','Lake Como'],cultural:['Kyoto, Japan','Marrakech, Morocco','Istanbul, Turkey','Rome, Italy'],reset:['Ubud, Bali','Costa Rica','Tulum, Mexico','Tuscany, Italy'],milestone:['Paris, France','Amalfi Coast, Italy','Tokyo, Japan','Vienna'],honeymoon:['Maldives','Bora Bora','Amalfi Coast, Italy','Santorini'],friends:['Lisbon, Portugal','Barcelona, Spain','Mexico City','Tokyo'],adventure:['Iceland','Patagonia','New Zealand','Nepal'],workcation:['Lisbon, Portugal','Chiang Mai, Thailand','Mexico City','Medellín']};
+
+function nav(id){
+  document.querySelectorAll('.screen').forEach(function(s){s.classList.remove('active');});
+  var el=document.getElementById(id);if(el)el.classList.add('active');
+  window.scrollTo(0,0);
+  var r={'s-dash':1,'s-itin':1,'s-activities':1,'s-dining':1,'s-transport':1,'s-stays':1,'s-music':1,'s-outfits':1,'s-budget':1,'s-airport':1,'s-contingency':1,'s-insurance':1,'s-sustainability':1,'s-translation':1,'s-group':1,'s-family':1,'s-solo':1,'s-workcation':1,'s-reminders':1,'s-payment':1,'s-safety':1,'s-ready':1,'s-posttrip':1};
+  if(r[id])render();
+}
+function pick(el,k,v,dest){if(el){el.parentElement.querySelectorAll('.opt').forEach(function(o){o.classList.remove('sel');});el.classList.add('sel');}S[k]=v;setTimeout(function(){nav(dest);},el?220:0);}
+function tg(el){el.classList.toggle('sel');document.getElementById('ob-go').style.display=document.querySelectorAll('#s-ob1 .gb.sel').length?'block':'none';}
+function fc(el){el.closest('div').querySelectorAll('.chip').forEach(function(c){c.classList.remove('sel');});el.classList.add('sel');}
+function setDM(m,el){document.querySelectorAll('#dest-mode-opts .opt').forEach(function(o){o.classList.remove('sel');});el.classList.add('sel');document.getElementById('dest-own').style.display='none';document.getElementById('dest-sug').style.display='none';if(m==='own'){document.getElementById('dest-in').value='';document.getElementById('dest-go').style.display='none';document.getElementById('dest-own').style.display='block';}else if(m==='suggest'){sugIdx=0;bSug();document.getElementById('dest-sug').style.display='block';var cl=CHIPS[S.tripType]||CHIPS.romantic;document.getElementById('sug-chips').innerHTML=cl.map(function(c){return '<button class="chip" onclick="pChip(this,\''+c+'\')" style="margin:2px;">'+c+'</button>';}).join('');}else{S.destKey=ttk(S.tripType);S.destName=D[S.destKey].name;showToast('Romieaux™ is choosing your destination… 🌍');setTimeout(function(){nav('s-dash');},900);}}
+function bSug(){var l=SUGS[S.tripType]||SUGS.romantic;var s=l[sugIdx%l.length];$('sug-n',s.n);$('sug-w',s.w);S.destKey=s.k;S.destName=s.n;}
+function nextSug(){sugIdx++;bSug();}
+function pChip(el,n){document.querySelectorAll('#sug-chips .chip').forEach(function(c){c.classList.remove('sel');});el.classList.add('sel');S.destKey=ntk(n);S.destName=n;$('sug-n',n);$('sug-w','Selected — Romieaux™ will optimize your full plan for '+n+'.');}
+function onDT(v){document.getElementById('dest-go').style.display=v.length>2?'block':'none';S.destKey=ntk(v);S.destName=v||null;}
+function goDest(){nav('s-dash');}
+function ttk(t){return t==='reset'?'reset':'romantic';}
+function ntk(n){n=(n||'').toLowerCase();if(n.indexOf('bali')>-1||n.indexOf('ubud')>-1||n.indexOf('reset')>-1)return 'reset';return 'romantic';}
+function castVote(el){el.classList.add('v');showToast('Vote cast!');}
+function setRM(el,label){showToast('Concierge mode: '+label);}
+function ckToggle(el){el.classList.toggle('done');var t=el.parentElement.querySelector('.ct');if(el.classList.contains('done')){el.textContent='✓';if(t)t.classList.add('done');}else{el.textContent='';if(t)t.classList.remove('done');}var all=document.querySelectorAll('#rdy-checks .cb').length,done=document.querySelectorAll('#rdy-checks .cb.done').length;$('rdy-pct',done+' of '+all+' complete');var b=document.getElementById('rdy-bar');if(b)b.style.width=Math.round(done/all*100)+'%';}
+function $(id,v){var e=document.getElementById(id);if(e)e.innerHTML=v;}
+function row(i){return '<div class="ir" onclick="showToast(\'Added to trip\')"><div class="iri" style="background:#'+i.bg+'">'+i.i+'</div><div class="irb"><div class="irn">'+i.n+'</div><div class="irs">'+i.s+'</div><div class="irm">'+i.m+'</div></div><div class="ib2 '+i.bc+'">'+i.b+'</div></div>';}
+
+function render(){
+  var k=S.destKey||ttk(S.tripType);var t=D[k]||D.romantic;
+  $('d-emo',t.emoji);$('d-tn',t.name);$('d-sub',t.sub.split('·')[0].trim()+' · '+t.name);
+  $('ctab1',t.city1);$('ctab2',t.city2);$('align-txt',t.alignTxt);$('d-dest',t.name);
+  $('act-ct',t.actCt);$('din-ct',t.dinCt);$('stay-ct',t.stayCt);$('bud-ct',t.budCt);
+  $('ib-eye',t.eye);$('ib-t',t.title);$('ib-s',t.sub);
+  // Days
+  $('days',t.days.map(function(d){return '<div class="dc"><div class="dch"><div><div class="dcn">'+d.n+'</div><div class="dcl">'+d.l+'</div></div><div class="dcb '+d.bc+'">'+d.b+'</div></div>'+d.acts.map(function(a){var fl=a.f?'<div class="af '+a.fc+'">'+a.f+'</div>':'';return '<div class="ar"><div class="at">'+a.t+'</div><div class="adot"></div><div class="ab2"><div class="an">'+a.n+'</div><div class="as2">'+a.s+'</div>'+fl+'</div></div>';}).join('')+'</div>';}).join(''));
+  $('acts-list',t.activities.map(row).join(''));
+  $('din-list',t.dining.map(row).join(''));
+  $('trans-list',t.transport.map(row).join(''));
+  $('stays-list',t.stays.map(function(s){return '<div class="stay"><div class="stay-img" style="background:'+s.bg+'">'+s.emo+'</div><div class="stay-b"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:3px;"><div class="stay-n">'+s.n+'</div><div class="ib2 bs">'+s.badge+'</div></div><div class="stay-s">'+s.s+'</div><div style="display:flex;align-items:center;justify-content:space-between;margin-top:8px;"><div style="font-family:var(--fd);font-size:16px;color:var(--tx);">'+s.p+'</div><button class="btn bgh" style="padding:7px 14px;" onclick="showToast(\'Added to trip\')">Add</button></div><div class="stay-adv">Stay Advisor: '+s.adv+'</div></div></div>';}).join(''));
+  // Music
+  var pl=t.playlist;$('pl-t',pl.t);$('pl-emo',pl.e);$('ev-t','Live Events at '+t.name.split(',')[0]);var ph=document.getElementById('pl-h');if(ph)ph.style.background=pl.bg;
+  $('trk-list',pl.tracks.map(function(tr){return '<div class="trk"><div class="ta" style="background:#'+tr.bg+'">'+tr.e+'</div><div style="flex:1;"><div style="font-family:var(--fd);font-size:14px;color:var(--tx);">'+tr.n+'</div><div style="font-size:11px;color:var(--ts);margin-top:2px;">'+tr.ar+'</div></div><div style="font-family:var(--fm);font-size:10px;color:var(--ts);">'+tr.d+'</div></div>';}).join('') + '<div style="padding:11px 20px;font-family:var(--fd);font-style:italic;font-size:14px;color:var(--sd);cursor:pointer;text-align:center;" onclick="showToast(\'Opening Spotify…\')">+11 More Songs</div>');
+  $('ev-list',pl.events.map(function(e){return '<div class="ir" onclick="showToast(\'Checking availability…\')"><div class="iri" style="background:var(--sdl)">🎟</div><div class="irb"><div class="irn">'+e.n+'</div><div class="irs">'+e.w+'</div></div><div class="ib2 bs">Event</div></div>';}).join(''));
+  // Outfits
+  $('outfit-t','What to Wear in '+t.name.split(',')[0]);$('outfit-s','Based on your itinerary, activities, and dining reservations');
+  $('outfit-list',t.outfits.map(function(o){return '<div class="ir" onclick="showToast(\'Outfit saved\')"><div class="iri" style="background:#'+o.bg+'">'+o.i+'</div><div class="irb"><div class="irn">'+o.n+'</div><div class="irs">'+o.s+'</div><div class="irm">'+o.m+'</div></div></div>';}).join(''));
+  $('pack-list','<div style="padding:0 20px;">'+t.packing.map(function(p){return '<div class="ci"><div class="cb" onclick="this.classList.toggle(\'done\');this.textContent=this.classList.contains(\'done\')?\'✓\':\'\';this.nextElementSibling.classList.toggle(\'done\')"></div><div class="ct">'+p+'</div></div>';}).join('')+'</div>');
+  $('bout-list',t.boutiques.map(row).join(''));
+  // Budget
+  $('b-total',t.budCt.replace('$','Total Budget: $').split(' ')[0]+' Budget');
+  $('b-alert',t.name==='Amalfi Coast, Italy'?"You're on track. At current pace you'll finish $340 under budget.":'Well under budget. You could add the sound healing ceremony ($45) and still finish $200 under.');
+  var cats=t.name==='Amalfi Coast, Italy'?[{c:'Dining',a:'$840',p:28},{c:'Activities',a:'$620',p:21},{c:'Transport',a:'$480',p:16},{c:'Lodging (partial)',a:'$940',p:31},{c:'Shopping',a:'$120',p:4}]:[{c:'Dining',a:'$180',p:28},{c:'Activities',a:'$90',p:14},{c:'Transport',a:'$120',p:19},{c:'Lodging (partial)',a:'$250',p:39}];
+  $('b-cats',cats.map(function(c){return '<div style="display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--bd);"><div style="font-family:var(--fs);font-size:13px;color:var(--tx);">'+c.c+'</div><div style="display:flex;align-items:center;gap:10px;"><div style="width:80px;height:3px;background:var(--bd);border-radius:3px;overflow:hidden;"><div style="width:'+c.p+'%;height:100%;background:var(--sd);border-radius:3px;"></div></div><div style="font-family:var(--fm);font-size:11px;color:var(--tm);">'+c.a+'</div></div></div>';}).join(''));
+  var split=t.name==='Amalfi Coast, Italy'?[{w:'Alex',o:'Owes you',a:'$240',r:'Capri boat + lunch'}]:[{w:'Solo trip',o:'N/A',a:'',r:'No split needed'}];
+  $('b-split',split.map(function(s){return '<div class="ir"><div class="iri" style="background:#3a5a4a">👤</div><div class="irb"><div class="irn">'+s.w+' — '+s.o+'</div><div class="irs">'+s.r+'</div></div><div style="font-family:var(--fd);font-size:15px;color:var(--sd);">'+s.a+'</div></div>';}).join(''));
+  // Airport
+  $('apt-f',t.apt.f);$('apt-fs',t.apt.fs);
+  $('apt-list',t.apt.items.map(row).join(''));
+  $('lounge-list',t.apt.lounges.map(function(l){return '<div class="ir" onclick="showToast(\'Lounge directions\')"><div class="iri" style="background:#'+l.bg+'">'+l.i+'</div><div class="irb"><div class="irn">'+l.n+'</div><div class="irs">'+l.s+'</div><div class="irm">'+l.m+'</div></div><div class="ib2 '+l.bc+'">'+l.b+'</div></div>';}).join(''));
+  $('jetlag-list',t.apt.jetlag.map(function(j){return '<div class="ir"><div class="iri" style="background:var(--sdl)">'+j.i+'</div><div class="irb"><div class="irn">'+j.n+'</div><div class="irs">'+j.s+'</div></div></div>';}).join(''));
+  // Contingency
+  $('cont-alerts',t.cont.alerts.map(function(a){return '<div style="display:inline-flex;align-items:center;gap:6px;padding:5px 12px;border-radius:20px;font-family:var(--fm);font-size:9px;letter-spacing:1px;text-transform:uppercase;margin-bottom:6px;margin-right:6px;" class="ib2 '+a.cls+'">'+a.t+'</div>';}).join(''));
+  $('cont-rain',t.cont.rain.map(row).join(''));
+  // Insurance
+  $('ins-list',t.insurance.map(function(i){return '<div class="ir"><div class="iri" style="background:rgba(45,107,45,.1)">'+i.i+'</div><div class="irb"><div class="irn">'+i.n+'</div><div class="irs">'+i.t+'</div></div></div>';}).join(''));
+  $('ins-gaps',t.insGaps.map(function(i){return '<div class="ir"><div class="iri" style="background:rgba(139,26,26,.08)">'+i.i+'</div><div class="irb"><div class="irn">'+i.n+'</div><div class="irs">'+i.t+'</div></div></div>';}).join(''));
+  // Sustainability
+  $('carb-v',t.carbonVal);$('carb-s',t.carbonSub);
+  $('eco-list',t.eco.map(row).join(''));
+  // Translation
+  $('trans-eye',(t.name.indexOf('Italy')>-1?'Italian':'Indonesian')+' · '+t.name.split(',')[0]);
+  $('phrases-list',t.phrases.map(function(p){return '<div class="ir"><div class="iri" style="background:var(--sdl)">'+p.i+'</div><div class="irb"><div class="irn">'+p.n+'</div><div class="irs">'+p.s+'</div></div></div>';}).join(''));
+  $('cultural-list',t.cultural.map(function(c){return '<div class="ir"><div class="iri" style="background:var(--sdl)">'+c.i+'</div><div class="irb"><div class="irn">'+c.n+'</div><div class="irs">'+c.t+'</div></div></div>';}).join(''));
+  // Group
+  $('grp-t','Your Trip · '+t.members.length+' Traveler'+(t.members.length>1?'s':''));$('grp-ct',t.members.length+' travelers');
+  $('member-list',t.members.map(function(m){return '<div style="display:flex;align-items:center;gap:12px;padding:12px 20px;border-bottom:1px solid var(--bd);"><div style="width:34px;height:34px;border-radius:50%;background:#'+m.c+';display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;">'+m.e+'</div><div style="flex:1;"><div style="font-family:var(--fd);font-size:14px;color:var(--tx);">'+m.n+'</div><div style="font-size:11px;color:var(--ts);margin-top:1px;">'+m.s+'</div></div><div style="font-family:var(--fm);font-size:8px;letter-spacing:1px;padding:2px 8px;border-radius:8px;text-transform:uppercase;" class="ib2 '+(m.r==='Owner'?'bs':'tg')+'">'+m.r+'</div></div>';}).join(''));
+  $('split-g',t.splitG.length?t.splitG.map(function(s){return '<div class="ir"><div class="iri" style="background:#3a5a4a">👤</div><div class="irb"><div class="irn">'+s.w+'</div><div class="irs">'+s.o+'</div></div><div style="font-family:var(--fd);font-size:14px;color:var(--sd);">'+s.a+'</div></div>';}).join(''):'<div style="padding:14px 20px;font-size:13px;color:var(--ts);text-align:center;">Solo trip — no split needed.</div>');
+  // Family
+  $('fam-list',t.fam.changes.map(function(c){return '<div class="ir"><div class="iri" style="background:rgba(26,74,139,.1)">👨‍👩‍👧</div><div class="irb"><div class="irs" style="color:var(--tx);">'+c+'</div></div></div>';}).join(''));
+  $('kid-list',t.fam.kid.map(function(c){return '<div class="ir"><div class="iri" style="background:var(--sdl)">🧒</div><div class="irb"><div class="irs" style="color:var(--tx);">'+c+'</div></div></div>';}).join(''));
+  // Solo
+  $('solo-dest',t.solo.dest+' — comprehensive safety layer');$('solo-em',t.solo.em);
+  $('solo-safety',t.solo.safety.map(function(s){return '<div class="ir"><div class="iri" style="background:rgba(26,74,139,.08)">📍</div><div class="irb"><div class="irn">'+s.n+'</div><div class="irs">'+s.time+' · '+s.l+'</div><div class="irs" style="margin-top:3px;">'+s.d+'</div></div></div>';}).join(''));
+  $('solo-dress',t.solo.dress.map(function(d){return '<div class="ir"><div class="iri" style="background:var(--sdl)">👗</div><div class="irb"><div class="irs" style="color:var(--tx);">'+d+'</div></div></div>';}).join(''));
+  // Workcation
+  $('wk-window',t.work.window);$('wk-sub',t.work.wsub);
+  $('work-spots',t.work.spots.map(row).join(''));
+  $('tz-list',t.work.tz.map(function(z){return '<div class="ir"><div class="iri" style="background:var(--sdl)">'+z.f+'</div><div class="irb"><div class="irn">'+z.z+'</div><div class="irs">Local time: '+z.t+'</div><div class="irm">'+z.o+'</div></div></div>';}).join(''));
+  // Reminders
+  $('rem-list',t.reminders.map(function(r){return '<div class="ir"><div class="iri" style="background:var(--sdl)">'+r.i+'</div><div class="irb"><div class="irn">'+r.n+'</div><div class="irs">'+r.s+'</div><div class="irm">'+r.w+'</div></div><div class="ib2 '+r.bc+'">'+r.b+'</div></div>';}).join(''));
+  // Payment
+  $('pay-list',t.payment.map(function(p){return '<div class="pi '+(p.done?'done':'')+'"><div class="pi-ico">'+p.i+'</div><div class="pi-body"><div class="pi-n">'+p.n+'</div><div class="pi-s">'+p.s+'</div></div><button class="btn '+(p.done?'bg':'bgh')+'" style="padding:6px 12px;flex-shrink:0;" onclick="showToast(\''+(p.done?'Already complete':'Opening booking link…')+'\')">'+(p.done?'Done ✓':'Book')+'</button></div>';}).join(''));
+  // Safety
+  $('safety-list','<div style="padding:14px 20px 6px;"><div style="font-family:var(--fm);font-size:8px;letter-spacing:3px;color:var(--sd);text-transform:uppercase;margin-bottom:3px;">Destination</div><div style="font-family:var(--fd);font-size:20px;font-weight:500;color:var(--tx);">'+t.name+'</div></div>'+t.safety.map(function(s){return '<div style="display:flex;gap:13px;padding:14px 20px;border-bottom:1px solid var(--bd);"><div style="font-size:22px;flex-shrink:0;">'+s.i+'</div><div><div style="font-family:var(--fd);font-size:15px;font-weight:500;color:var(--tx);">'+s.n+'</div><div style="font-size:13px;color:var(--tm);margin-top:3px;line-height:1.5;">'+s.t+'</div></div></div>';}).join(''));
+  // Readiness
+  var rd=t.readiness;$('rh-eye',rd.eye);$('rh-t',rd.t);$('rh-s',rd.s);
+  $('rdy-checks',rd.checks.map(function(c){return '<div class="ci"><div class="cb" onclick="ckToggle(this)"></div><div class="ct">'+c+'</div></div>';}).join(''));
+  $('rdy-tip','<div style="font-family:var(--fm);font-size:8px;letter-spacing:2px;color:var(--sd);text-transform:uppercase;margin-bottom:4px;">Romieaux Tip</div><div style="font-size:13px;color:var(--tm);line-height:1.6;">'+rd.tip+'</div>');
+  $('rdy-pct','0 of '+rd.checks.length+' complete');var rdb=document.getElementById('rdy-bar');if(rdb)rdb.style.width='0%';
+  // Post-trip
+  $('pt-t',t.title);
+  $('pt-costs',t.postCosts.map(function(c){return '<div style="display:flex;align-items:center;justify-content:space-between;padding:11px 20px;border-bottom:1px solid var(--bd);"><div style="font-family:var(--fs);font-size:13px;color:var(--tx);">'+c.cat+'</div><div style="display:flex;align-items:center;gap:10px;"><div style="width:80px;height:3px;background:var(--bd);border-radius:3px;overflow:hidden;"><div style="width:'+c.pct+'%;height:100%;background:var(--sd);"></div></div><div style="font-family:var(--fm);font-size:11px;color:var(--tm);">'+c.amt+'</div></div></div>';}).join(''));
+}
+
+function showToast(msg){var t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(function(){t.classList.remove('show');},2600);}
+render();
+</script>
+</body>
+</html>
