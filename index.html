@@ -155,7 +155,7 @@ body{background:var(--cr);color:var(--tx);font-family:var(--fs);min-height:100vh
 .lh-wm{font-family:var(--fd);font-size:clamp(40px,10vw,58px);font-weight:600;letter-spacing:8px;color:var(--cr);text-transform:uppercase;line-height:1;position:relative;z-index:1;}
 .lh-tag{font-family:var(--fd);font-size:17px;font-style:italic;color:var(--sd);margin-top:9px;position:relative;z-index:1;}
 .lh-rule{width:36px;height:1px;background:var(--sd);margin:24px 0;opacity:.5;position:relative;z-index:1;}
-.lh-desc{font-size:14px;color:rgba(255,255,255,.5);line-height:1.75;max-width:300px;position:relative;z-index:1;}
+.lh-desc{font-size:14px;color:rgba(255,255,255,.5);line-height:1.75;position:relative;z-index:1;}
 .lh-desc strong{color:rgba(255,255,255,.8);font-weight:500;}
 .how{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:rgba(255,255,255,.06);margin:22px 0;position:relative;z-index:1;}
 .hwi{background:var(--n2);padding:13px;}
@@ -221,6 +221,31 @@ body{background:var(--cr);color:var(--tx);font-family:var(--fs);min-height:100vh
 /* MEMORY PHOTOS */
 .ph{border-radius:10px;aspect-ratio:1;display:flex;align-items:center;justify-content:center;font-size:36px;position:relative;}
 .phl{position:absolute;bottom:0;left:0;right:0;padding:6px 9px;background:linear-gradient(to top,rgba(0,0,0,.6),transparent);font-size:11px;color:rgba(255,255,255,.9);font-family:var(--fd);}
+
+/* PAYWALL MODAL */
+.pw-overlay{position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:400;display:none;align-items:flex-end;justify-content:center;}
+.pw-overlay.show{display:flex;animation:pwIn .3s cubic-bezier(.16,1,.3,1);}
+@keyframes pwIn{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+.pw-sheet{background:var(--cr);width:100%;max-width:480px;border-radius:20px 20px 0 0;padding:28px 24px 40px;position:relative;}
+.pw-handle{width:36px;height:4px;background:var(--bd);border-radius:4px;margin:0 auto 22px;}
+.pw-lock{font-size:32px;margin-bottom:10px;}
+.pw-module{font-family:var(--fm);font-size:8px;letter-spacing:3px;color:var(--sd);text-transform:uppercase;margin-bottom:6px;}
+.pw-title{font-family:var(--fd);font-size:22px;font-weight:500;color:var(--tx);line-height:1.3;margin-bottom:8px;}
+.pw-desc{font-size:13px;color:var(--tm);line-height:1.6;margin-bottom:18px;}
+.pw-bundle{background:var(--n2);border-radius:12px;padding:16px;margin-bottom:14px;}
+.pw-bundle-name{font-family:var(--fd);font-size:16px;font-weight:500;color:var(--cr);margin-bottom:4px;}
+.pw-bundle-price{font-family:var(--fd);font-size:24px;color:var(--sd);margin-bottom:10px;}
+.pw-bundle-price span{font-size:13px;color:rgba(255,255,255,.4);font-family:var(--fs);}
+.pw-bundle-includes{font-size:11px;color:rgba(255,255,255,.5);line-height:1.7;}
+.pw-bundle-includes strong{color:rgba(255,255,255,.8);}
+.pw-allaccess{background:var(--sdl);border:1px solid rgba(176,138,80,.3);border-radius:12px;padding:14px 16px;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between;}
+.pw-aa-label{font-family:var(--fd);font-size:14px;color:var(--tx);}
+.pw-aa-sub{font-size:11px;color:var(--ts);margin-top:2px;}
+.pw-aa-price{font-family:var(--fd);font-size:20px;color:var(--sd);text-align:right;}
+.pw-aa-note{font-size:10px;color:var(--ts);}
+.pw-pertip{font-size:12px;color:var(--ts);text-align:center;margin-top:10px;line-height:1.5;}
+.pw-pertip strong{color:var(--sd);}
+.pw-close{position:absolute;top:20px;right:20px;background:none;border:none;font-size:20px;color:var(--ts);cursor:pointer;padding:4px;}
 </style>
 </head>
 <body>
@@ -241,6 +266,7 @@ body{background:var(--cr);color:var(--tx);font-family:var(--fs);min-height:100vh
       <div class="hwi"><div class="hwn">04 — Remember</div><div class="hwt">Build your archive</div><div class="hwd">Memory book + ROAM Network</div></div>
     </div>
   </div>
+
   <div class="lf">
     <button class="btn bsd" onclick="nav('s-login')">Create an Account →</button>
     <button class="btn bwk" onclick="nav('s-login')">Sign In</button>
@@ -282,7 +308,6 @@ body{background:var(--cr);color:var(--tx);font-family:var(--fs);min-height:100vh
       <button class="opt lt" onclick="pick(this,'tripType','reset','s-ta2')">Reset &amp; Recovery</button>
       <button class="opt lt" onclick="pick(this,'tripType','milestone','s-ta2')">Milestone Celebration</button>
       <button class="opt lt" onclick="pick(this,'tripType','honeymoon','s-ta2')">Honeymoon</button>
-      <button class="opt lt" onclick="pick(this,'tripType','friends','s-ta2')">Friends Trip</button>
       <button class="opt lt" onclick="pick(this,'tripType','adventure','s-ta2')">Adventure</button>
       <button class="opt lt" onclick="pick(this,'tripType','workcation','s-ta2')">Workcation</button>
     </div>
@@ -297,16 +322,53 @@ body{background:var(--cr);color:var(--tx);font-family:var(--fs);min-height:100vh
     <div class="dots"><div class="dot dd"></div><div class="dot da"></div><div class="dot do"></div><div class="dot do"></div></div>
     <div class="qr" style="color:var(--ink)">R</div>
     <div class="qt" style="color:var(--tx)">Who are you traveling with?</div>
-    <div class="qsub" style="color:var(--tm)">Your travel mode activates different modules — group collaboration, family filters, solo safety intelligence, or compatibility tools for couples.</div>
+    <div class="qsub" style="color:var(--tm)">This activates the right modules — compatibility tools for couples, group collaboration for friends, family filters for kids, or solo safety intelligence.</div>
     <div class="opts">
-      <button class="opt lt" onclick="pick(this,'group','solo','s-ta3')">Solo</button>
-      <button class="opt lt" onclick="pick(this,'group','partner','s-ta3')">My Partner</button>
-      <button class="opt lt" onclick="pick(this,'group','friends','s-ta3')">Friends (Group)</button>
-      <button class="opt lt" onclick="pick(this,'group','family_adults','s-ta3')">Family (Adults Only)</button>
-      <button class="opt lt" onclick="pick(this,'group','family_kids','s-ta3')">Family (With Kids)</button>
-      <button class="opt lt" onclick="pick(this,'group','mixed','s-ta3')">Mixed Group</button>
+      <button class="opt lt" onclick="pick(this,'group','solo','s-ta-why')">Solo</button>
+      <button class="opt lt" onclick="pick(this,'group','partner','s-compat')">My Partner</button>
+      <button class="opt lt" onclick="pick(this,'group','friends','s-compat')">Friends</button>
+      <button class="opt lt" onclick="pick(this,'group','family_adults','s-ta-why')">Family (Adults Only)</button>
+      <button class="opt lt" onclick="pick(this,'group','family_kids','s-ta-why')">Family (With Kids)</button>
+      <button class="opt lt" onclick="pick(this,'group','mixed','s-compat')">Mixed Group — couples, singles &amp; families together</button>
     </div>
     <div class="hint">(Tap to continue)</div>
+  </div>
+</div>
+
+
+<!-- WHY THIS TRIP -->
+<div id="s-ta-why" class="screen" style="background:var(--cr);">
+  <div class="tb"><button class="bk" onclick="nav('s-ta2')">← Back</button><div class="wm">ROMIEAUX™</div><div></div></div>
+  <div class="qs">
+    <div class="dots"><div class="dot dd"></div><div class="dot dd"></div><div class="dot da"></div><div class="dot do"></div><div class="dot do"></div></div>
+    <div class="qr" style="color:var(--ink)">R</div>
+    <div class="qt" style="color:var(--tx)">What do you want this trip to do for you?</div>
+    <div class="qsub" style="color:var(--tm)">This becomes your trip's intention — and anchors every recommendation Romieaux™ makes. It's stored in your Travel Blueprint and revisited in your Memory Book.</div>
+    <div class="opts">
+      <button class="opt lt" onclick="pick(this,'intention','rest','s-ta3')">Rest &amp; decompress — I need to slow down</button>
+      <button class="opt lt" onclick="pick(this,'intention','adventure','s-ta3')">Adventure — I want to feel alive</button>
+      <button class="opt lt" onclick="pick(this,'intention','culture','s-ta3')">Cultural depth — I want to learn and explore</button>
+      <button class="opt lt" onclick="pick(this,'intention','celebrate','s-ta3')">Celebrate — this moment deserves a memory</button>
+      <button class="opt lt" onclick="pick(this,'intention','connect','s-ta3')">Connection — this trip is about the people</button>
+      <button class="opt lt" onclick="pick(this,'intention','transition','s-ta3')">Transition — I'm closing one chapter, opening another</button>
+    </div>
+    <div class="hint">(Tap to continue)</div>
+  </div>
+</div>
+
+<!-- COMPATIBILITY SNAPSHOT (partner / group) -->
+<div id="s-compat" class="screen" style="background:var(--nt);">
+  <div class="tb dk"><button class="bk w" onclick="nav('s-ta2')">← Back</button><div class="wm w">ROMIEAUX™</div><div></div></div>
+  <div class="qs">
+    <div class="dots"><div class="dot dd"></div><div class="dot dd"></div><div class="dot da"></div><div class="dot dow"></div><div class="dot dow"></div></div>
+    <div style="font-family:var(--fm);font-size:8px;letter-spacing:4px;color:var(--sd);text-transform:uppercase;margin-bottom:14px;">Compatibility Intelligence Active</div>
+    <div class="qt" style="color:var(--cr)" id="compat-title">Traveling with your partner.</div>
+    <div style="font-size:14px;color:rgba(255,255,255,.5);line-height:1.65;margin-bottom:24px;" id="compat-sub">No other platform analyzes travel compatibility. Romieaux™ maps budget expectations, pacing preferences, and energy alignment — and surfaces conversation prompts to resolve gaps before the trip begins.</div>
+    <div id="compat-cards" style="display:flex;flex-direction:column;gap:10px;margin-bottom:24px;"></div>
+    <div style="font-family:var(--fd);font-style:italic;font-size:13px;color:rgba(255,255,255,.28);text-align:center;">These tools activate once your blueprint is complete.</div>
+  </div>
+  <div class="ab dk">
+    <button class="btn bsd" style="width:100%;" onclick="nav('s-ta-why')">Continue →</button>
   </div>
 </div>
 
@@ -337,13 +399,130 @@ body{background:var(--cr);color:var(--tx);font-family:var(--fs);min-height:100vh
     <div class="qt" style="color:var(--cr)">How involved would you like Romieaux to be?</div>
     <div class="qsub" style="color:rgba(255,255,255,.5)">Choose your engagement mode. You can change this at any time, for any trip.</div>
     <div style="flex:1;">
-      <div class="mi" onclick="pick(null,'mode','essential','s-ob1')"><div class="mn">Essential</div><div class="md">You plan your trip. Romieaux gives you great data — wait times, safety, currency — on demand.</div></div>
-      <div class="mi" onclick="pick(null,'mode','lightly','s-ob1')"><div class="mn">Lightly Tailored</div><div class="md">Romieaux gives you a starting itinerary you shape yourself. It fills gaps and flags friction.</div></div>
-      <div class="mi" onclick="pick(null,'mode','curated','s-ob1')"><div class="mn">Deeply Curated</div><div class="md">Romieaux designs the complete experience. You review and approve — you don't build from scratch.</div></div>
-      <div class="mi" onclick="pick(null,'mode','concierge','s-ob1')"><div class="mn">Concierge-Enhanced</div><div class="md">Fully curated plus human escalation, VIP booking assistance, and priority support.</div></div>
+      <div class="mi" onclick="pick(null,'mode','essential','s-intention')"><div class="mn">Essential</div><div class="md">You plan your trip. Romieaux gives you great data — wait times, safety, currency — on demand.</div></div>
+      <div class="mi" onclick="pick(null,'mode','lightly','s-intention')"><div class="mn">Lightly Tailored</div><div class="md">Romieaux gives you a starting itinerary you shape yourself. It fills gaps and flags friction.</div></div>
+      <div class="mi" onclick="pick(null,'mode','curated','s-intention')"><div class="mn">Deeply Curated</div><div class="md">Romieaux designs the complete experience. You review and approve — you don't build from scratch.</div></div>
+      <div class="mi" onclick="pick(null,'mode','concierge','s-intention')"><div class="mn">Concierge-Enhanced</div><div class="md">Fully curated plus human escalation, VIP booking assistance, and priority support.</div></div>
     </div>
     <div class="hint w">(Tap to continue)</div>
   </div>
+</div>
+
+<!-- COMPATIBILITY SNAPSHOT -->
+<div id="s-compat" class="screen" style="background:var(--cr);">
+  <div class="tb"><button class="bk" onclick="nav('s-ta2')">← Back</button><div class="wm">ROMIEAUX™</div><div></div></div>
+  <div class="qs">
+    <div style="font-family:var(--fm);font-size:8px;letter-spacing:4px;color:var(--sd);text-transform:uppercase;margin-bottom:16px;">Travel Blueprint — Compatibility</div>
+    <div class="qr" style="color:var(--ink)">R</div>
+    <div class="qt" style="color:var(--tx)" id="compat-title">Traveling with your partner.</div>
+    <div class="qsub" style="color:var(--tm)" id="compat-sub">Romieaux™ has activated compatibility intelligence for this trip.</div>
+    <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:24px;" id="compat-features">
+      <div style="display:flex;align-items:flex-start;gap:14px;padding:14px;background:var(--pn);border:1px solid var(--bd);border-radius:12px;">
+        <div style="font-size:22px;flex-shrink:0;">🔍</div>
+        <div><div style="font-family:var(--fd);font-size:15px;color:var(--tx);margin-bottom:3px;">Alignment Snapshot</div><div style="font-size:12px;color:var(--ts);line-height:1.5;">Identifies shared strengths, budget gaps, energy mismatches, and friction — with prompts to resolve them before the trip begins.</div></div>
+      </div>
+      <div style="display:flex;align-items:flex-start;gap:14px;padding:14px;background:var(--pn);border:1px solid var(--bd);border-radius:12px;">
+        <div style="font-size:22px;flex-shrink:0;">🎭</div>
+        <div><div style="font-family:var(--fd);font-size:15px;color:var(--tx);margin-bottom:3px;">Surprise Mode</div><div style="font-size:12px;color:var(--ts);line-height:1.5;">Hide specific activities from your travel companion — perfect for proposals, birthday surprises, or anniversary reveals.</div></div>
+      </div>
+      <div style="display:flex;align-items:flex-start;gap:14px;padding:14px;background:var(--pn);border:1px solid var(--bd);border-radius:12px;">
+        <div style="font-size:22px;flex-shrink:0;">🎵</div>
+        <div><div style="font-family:var(--fd);font-size:15px;color:var(--tx);margin-bottom:3px;">Collaborative Playlist</div><div style="font-size:12px;color:var(--ts);line-height:1.5;">Romieaux™ blends both travelers' music tastes into a single trip soundtrack that actually works for everyone.</div></div>
+      </div>
+    </div>
+    <div style="background:var(--sdl);border:1px solid rgba(176,138,80,.25);border-radius:10px;padding:13px 15px;">
+      <div style="font-family:var(--fm);font-size:8px;letter-spacing:2px;color:var(--sd);text-transform:uppercase;margin-bottom:4px;">Zero Competition</div>
+      <div style="font-size:13px;color:var(--tm);line-height:1.6;">No other travel platform analyzes compatibility for couples or groups. Romieaux™ scores 27/27 capabilities. The next closest competitor scores 5/27.</div>
+    </div>
+  </div>
+  <div class="ab"><button class="btn bgh" style="flex:1;" onclick="nav('s-ta2')">Back</button><button class="btn bink" style="flex:2;" onclick="nav('s-ta3')">Continue →</button></div>
+</div>
+
+<!-- WHY THIS TRIP — INTENTION CAPTURE -->
+<div id="s-intention" class="screen" style="background:var(--nt);">
+  <div class="tb dk"><button class="bk w" onclick="nav('s-ta4')">← Back</button><div class="wm w">ROMIEAUX™</div><div></div></div>
+  <div class="qs">
+    <div style="font-family:var(--fm);font-size:8px;letter-spacing:4px;color:var(--sd);text-transform:uppercase;margin-bottom:16px;">Travel Blueprint — Intention</div>
+    <div class="qr" style="color:var(--cr)">R</div>
+    <div class="qt" style="color:var(--cr)">Why this trip?</div>
+    <div class="qsub" style="color:rgba(255,255,255,.5)">This anchors everything Romieaux™ designs. A trip to celebrate is paced differently than a trip to recover. Choose the one that feels truest.</div>
+    <div class="opts" style="flex:1;">
+      <button class="opt dk" onclick="pick(this,'intention','reconnect','s-ob1')">Reconnect — with someone or with myself</button>
+      <button class="opt dk" onclick="pick(this,'intention','celebrate','s-ob1')">Celebrate — a milestone worth marking</button>
+      <button class="opt dk" onclick="pick(this,'intention','recover','s-ob1')">Recover — I need real rest</button>
+      <button class="opt dk" onclick="pick(this,'intention','explore','s-ob1')">Explore — curiosity is the whole point</button>
+      <button class="opt dk" onclick="pick(this,'intention','create','s-ob1')">Create — document, capture, share</button>
+      <button class="opt dk" onclick="pick(this,'intention','transition','s-ob1')">Mark a transition — something is changing</button>
+    </div>
+    <div class="hint w">(Tap to continue)</div>
+  </div>
+</div>
+
+<!-- BLUEPRINT BUILDING ANIMATION -->
+<div id="s-blueprint" class="screen" style="background:var(--nt);align-items:center;justify-content:center;">
+  <div style="padding:40px 32px;text-align:center;position:relative;z-index:1;width:100%;">
+    <div style="font-family:var(--fd);font-size:22px;font-style:italic;color:rgba(255,255,255,.15);font-weight:500;margin-bottom:32px;">R</div>
+    <div style="font-family:var(--fm);font-size:9px;letter-spacing:5px;color:var(--sd);text-transform:uppercase;margin-bottom:12px;">Building Your Travel Blueprint</div>
+    <div style="font-family:var(--fd);font-size:26px;font-weight:500;color:var(--cr);line-height:1.3;margin-bottom:32px;" id="bp-status">Romieaux™ is learning your travel identity…</div>
+    <div style="display:flex;flex-direction:column;gap:0;width:100%;" id="bp-lines">
+      <div class="bpl" id="bpl-1" style="opacity:0;display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid rgba(255,255,255,.07);">
+        <div style="width:6px;height:6px;border-radius:50%;background:var(--sd);flex-shrink:0;"></div>
+        <div style="font-size:13px;color:rgba(255,255,255,.6);" id="bpl-1-txt">Understanding your trip type &amp; travel mode…</div>
+      </div>
+      <div class="bpl" id="bpl-2" style="opacity:0;display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid rgba(255,255,255,.07);">
+        <div style="width:6px;height:6px;border-radius:50%;background:var(--sd);flex-shrink:0;"></div>
+        <div style="font-size:13px;color:rgba(255,255,255,.6);" id="bpl-2-txt">Calibrating budget &amp; engagement preferences…</div>
+      </div>
+      <div class="bpl" id="bpl-3" style="opacity:0;display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid rgba(255,255,255,.07);">
+        <div style="width:6px;height:6px;border-radius:50%;background:var(--sd);flex-shrink:0;"></div>
+        <div style="font-size:13px;color:rgba(255,255,255,.6);">Anchoring your trip intention…</div>
+      </div>
+      <div class="bpl" id="bpl-4" style="opacity:0;display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid rgba(255,255,255,.07);">
+        <div style="width:6px;height:6px;border-radius:50%;background:var(--sd);flex-shrink:0;"></div>
+        <div style="font-size:13px;color:rgba(255,255,255,.6);" id="bpl-4-txt">Matching destination to your profile…</div>
+      </div>
+      <div class="bpl" id="bpl-5" style="opacity:0;display:flex;align-items:center;gap:12px;padding:11px 0;">
+        <div style="width:6px;height:6px;border-radius:50%;background:var(--sd);flex-shrink:0;"></div>
+        <div style="font-size:13px;color:rgba(255,255,255,.6);" id="bpl-5-txt">Curating your 26-module experience…</div>
+      </div>
+    </div>
+    <div id="bp-ready" style="display:none;margin-top:28px;">
+      <div style="font-family:var(--fd);font-style:italic;font-size:18px;color:var(--sd);margin-bottom:20px;">Your blueprint is ready.</div>
+      <button class="btn bsd" style="padding:16px 32px;" onclick="nav('s-dash')">See Your Trip →</button>
+    </div>
+  </div>
+</div>
+
+<!-- SMART CHECK -->
+<div id="s-smartcheck" class="screen" style="background:var(--cr);">
+  <div class="tb"><button class="bk" onclick="nav('s-itin')">← Itinerary</button><div class="wm">SMART CHECK</div><div></div></div>
+  <div class="scr">
+    <div style="padding:28px 24px 20px;">
+      <div style="font-family:var(--fd);font-size:13px;font-style:italic;color:var(--ink);margin-bottom:5px;">R</div>
+      <div style="font-family:var(--fd);font-size:32px;font-weight:500;color:var(--tx);line-height:1.15;margin-bottom:10px;">Trip Smart<br>Check</div>
+      <div style="font-size:15px;color:var(--tm);line-height:1.6;margin-bottom:28px;">Romieaux™ runs diagnostics on your itinerary and flags potential improvements — before they become problems on the road.</div>
+      <div style="display:flex;flex-direction:column;gap:1px;background:var(--bd);">
+        <div style="background:var(--pn);padding:20px;display:flex;gap:16px;">
+          <div style="font-size:26px;flex-shrink:0;">⚠️</div>
+          <div><div style="font-family:var(--fd);font-size:18px;font-weight:500;color:var(--tx);margin-bottom:5px;">Critical Alerts</div><div style="font-size:13px;color:var(--tm);line-height:1.5;" id="sc-alerts">Resolve urgent issues with flight times, hotel bookings, and scheduling conflicts. <strong style="color:var(--rd);">1 issue found</strong> — Day 2 checkout conflicts with ferry departure.</div></div>
+        </div>
+        <div style="background:var(--pn);padding:20px;display:flex;gap:16px;">
+          <div style="font-size:26px;flex-shrink:0;">⚡</div>
+          <div><div style="font-family:var(--fd);font-size:18px;font-weight:500;color:var(--tx);margin-bottom:5px;">Quick Fixes</div><div style="font-size:13px;color:var(--tm);line-height:1.5;" id="sc-fixes">Adjustments to transportation, wait times, and transit gaps. <strong>3 optimizations available</strong> — reordering Day 2 saves 40 minutes of queue time.</div></div>
+        </div>
+        <div style="background:var(--pn);padding:20px;display:flex;gap:16px;">
+          <div style="font-size:26px;flex-shrink:0;">💡</div>
+          <div><div style="font-family:var(--fd);font-size:18px;font-weight:500;color:var(--tx);margin-bottom:5px;">Suggestions</div><div style="font-size:13px;color:var(--tm);line-height:1.5;" id="sc-suggestions">Alternative experiences and route changes matched to your profile. Your music preferences match a live event on Day 4 — want to add it?</div></div>
+        </div>
+        <div style="background:var(--pn);padding:20px;display:flex;gap:16px;">
+          <div style="font-size:26px;flex-shrink:0;">🧘</div>
+          <div><div style="font-family:var(--fd);font-size:18px;font-weight:500;color:var(--tx);margin-bottom:5px;">Wellness Balance</div><div style="font-size:13px;color:var(--tm);line-height:1.5;" id="sc-wellness">Pacing assessment and over-scheduling detection. Days 2 and 5 are heavily scheduled — Romieaux™ recommends a rest window each afternoon.</div></div>
+        </div>
+      </div>
+    </div>
+    <div style="padding:0 24px 28px;"><button class="btn bsd" style="width:100%;padding:15px;" onclick="showToast('Smart Check applied to itinerary')">Apply Fixes →</button></div>
+  </div>
+  <div class="nt"><button class="nb" onclick="nav('s-dash')"><span class="ni">🏠</span><div class="nl">Home</div></button><button class="nb act" onclick="nav('s-itin')"><span class="ni">📋</span><div class="nl">Itinerary</div></button><button class="nb" onclick="nav('s-ready')"><span class="ni">✈️</span><div class="nl">Readiness</div></button><button class="nb" onclick="nav('s-memory')"><span class="ni">📖</span><div class="nl">Memory</div></button></div>
 </div>
 
 <!-- MUSIC PREFS -->
@@ -365,6 +544,43 @@ body{background:var(--cr);color:var(--tx);font-family:var(--fs);min-height:100vh
     </div>
     <div id="ob-go" style="display:none;padding:0 20px 6px;"><button class="btn bsd" style="width:100%;" onclick="nav('s-dest')">Continue →</button></div>
     <div style="height:24px;"></div>
+  </div>
+</div>
+
+
+<!-- BLUEPRINT BUILDING ANIMATION -->
+<div id="s-blueprint" class="screen" style="background:var(--nt);align-items:center;justify-content:center;">
+  <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 28px;text-align:center;">
+    <div style="font-family:var(--fd);font-size:56px;font-style:italic;color:var(--sd);margin-bottom:24px;opacity:.8;">R</div>
+    <div style="font-family:var(--fm);font-size:9px;letter-spacing:5px;color:var(--sd);text-transform:uppercase;margin-bottom:16px;">Building Your Travel Blueprint</div>
+    <div style="font-family:var(--fd);font-size:24px;font-weight:500;color:var(--cr);margin-bottom:8px;">Romieaux™ is designing<br>your journey.</div>
+    <div style="font-size:13px;color:rgba(255,255,255,.4);margin-bottom:36px;line-height:1.6;">Identity-driven. Experience-first.<br>Nothing like this exists.</div>
+    <div style="width:100%;max-width:300px;display:flex;flex-direction:column;gap:0;" id="bp-lines">
+      <div class="bp-line" id="bpl1" style="opacity:0;transition:opacity .4s;">
+        <div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.07);">
+          <div style="width:8px;height:8px;border-radius:50%;background:var(--sd);flex-shrink:0;"></div>
+          <div style="font-size:13px;color:rgba(255,255,255,.7);">Learning your travel identity…</div>
+        </div>
+      </div>
+      <div class="bp-line" id="bpl2" style="opacity:0;transition:opacity .4s;">
+        <div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.07);">
+          <div style="width:8px;height:8px;border-radius:50%;background:var(--sd);flex-shrink:0;"></div>
+          <div style="font-size:13px;color:rgba(255,255,255,.7);" id="bpl2-txt">Matching your destination…</div>
+        </div>
+      </div>
+      <div class="bp-line" id="bpl3" style="opacity:0;transition:opacity .4s;">
+        <div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.07);">
+          <div style="width:8px;height:8px;border-radius:50%;background:var(--sd);flex-shrink:0;"></div>
+          <div style="font-size:13px;color:rgba(255,255,255,.7);">Curating your experiences…</div>
+        </div>
+      </div>
+      <div class="bp-line" id="bpl4" style="opacity:0;transition:opacity .4s;">
+        <div style="display:flex;align-items:center;gap:10px;padding:10px 0;">
+          <div style="width:8px;height:8px;border-radius:50%;background:var(--sd);flex-shrink:0;"></div>
+          <div style="font-size:13px;color:rgba(255,255,255,.7);">Generating your playlist &amp; events…</div>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -408,8 +624,13 @@ body{background:var(--cr);color:var(--tx);font-family:var(--fs);min-height:100vh
   <div class="scr">
     <div style="margin:14px 20px 0;background:var(--pn);border:1px solid var(--bd);border-radius:12px;padding:15px;">
       <div style="font-family:var(--fm);font-size:8px;letter-spacing:3px;color:var(--sd);text-transform:uppercase;margin-bottom:7px;">Trip Alignment Summary</div>
+      <div style="display:inline-flex;align-items:center;gap:6px;padding:4px 10px;background:var(--sdl);border-radius:20px;margin-bottom:9px;font-family:var(--fm);font-size:8px;color:var(--sd);letter-spacing:1px;text-transform:uppercase;" id="trip-vibe">✦ Trip Vibe: Loading…</div>
       <div style="font-size:13px;color:var(--tm);line-height:1.7;" id="align-txt">Loading…</div>
-      <div style="display:flex;gap:8px;margin-top:12px;"><button class="btn bgh" style="flex:1;padding:10px;" onclick="nav('s-ready')">Readiness →</button><button class="btn bink" style="flex:1;padding:10px;" onclick="nav('s-itin')">Itinerary →</button></div>
+      <div style="display:flex;gap:8px;margin-top:12px;">
+        <button class="btn bgh" style="flex:1;padding:10px;" onclick="nav('s-ready')">Readiness →</button>
+        <button class="btn bgh" style="flex:1;padding:10px;" onclick="nav('s-smartcheck')">Smart Check ⚡</button>
+        <button class="btn bink" style="flex:1;padding:10px;" onclick="nav('s-itin')">Itinerary →</button>
+      </div>
     </div>
     <div class="sh"><div class="shl">Core Modules</div><div class="sht" id="d-dest">Plan Your Trip</div></div>
     <div class="mg">
@@ -420,24 +641,24 @@ body{background:var(--cr);color:var(--tx);font-family:var(--fs);min-height:100vh
     </div>
     <div class="sh"><div class="shl">Intelligence Modules</div></div>
     <div class="mg">
-      <div class="mc" onclick="nav('s-budget')"><div class="mci">💰</div><div class="mcn">Budget Tracker</div><div class="mcs">Live spend vs. plan</div><div class="mct ts2" id="bud-ct">$1,240 spent</div></div>
-      <div class="mc" onclick="nav('s-airport')"><div class="mci">✈️</div><div class="mcn">Airport &amp; Transit</div><div class="mcs">Lounges, gates, jet lag</div><div class="mct tg">Cards matched</div></div>
-      <div class="mc" onclick="nav('s-contingency')"><div class="mci">⛈</div><div class="mcn">Contingency</div><div class="mcs">Day-of backup plans</div><div class="mct ts2">3 ready</div></div>
-      <div class="mc" onclick="nav('s-insurance')"><div class="mci">🛡</div><div class="mcn">Insurance</div><div class="mcs">Card coverage analysis</div><div class="mct tg">Covered</div></div>
+      <div class="mc" onclick="openPW('s-budget','💰','Budget Tracker','Smart Traveler Bundle','See exactly where your money is going in real time. Live spend tracking, split expenses, currency conversion, and budget alerts that adjust your recommendations dynamically.','Smart Traveler Bundle','$9.99<span>/mo</span>','<strong>Also includes:</strong> Airport &amp; Transit Intelligence, Insurance Analysis, and Credit Card Optimization.<br>All four modules pay for themselves on a single trip.','Or unlock just this trip from <strong>$49</strong> — split among your group, split it 6 ways — under $25 per person for every module.')"><div class="mci">💰</div><div class="mcn">Budget Tracker</div><div class="mcs">Live spend vs. plan</div><div class="mct ts2" id="bud-ct">$1,240 spent</div></div>
+      <div class="mc" onclick="openPW('s-airport','✈️','Airport &amp; Transit','Smart Traveler Bundle','Your lounge access matched to your credit cards, gate walk times, TSA estimates, jet lag management, and layover intelligence — before you ever leave home.','Smart Traveler Bundle','$9.99<span>/mo</span>','<strong>Also includes:</strong> Budget Tracker, Insurance Intelligence, and Credit Card Optimization.<br>Most travelers recover the cost in the first lounge visit.','Or unlock just this trip from <strong>$49</strong> — no subscription needed.')"><div class="mci">✈️</div><div class="mcn">Airport &amp; Transit</div><div class="mcs">Lounges, gates, jet lag</div><div class="mct tg">Cards matched</div></div>
+      <div class="mc" onclick="openPW('s-contingency','⛈','Contingency Planning','Smart Traveler Bundle','Rain on Day 3? Romieaux™ already has three indoor alternatives ready. Attraction closed? Restaurant cancelled? A lower-energy day on demand. No FOMO.','Smart Traveler Bundle','$9.99<span>/mo</span>','<strong>Also includes:</strong> Budget Tracker, Airport &amp; Transit, and Insurance Intelligence.','Or unlock just this trip from <strong>$49</strong> — no subscription needed.')"><div class="mci">⛈</div><div class="mcn">Contingency</div><div class="mcs">Day-of backup plans</div><div class="mct ts2">3 ready</div></div>
+      <div class="mc" onclick="openPW('s-insurance','🛡','Insurance Intelligence','Smart Traveler Bundle','Find out exactly what your Chase Sapphire Reserve and Amex Platinum already cover — before you buy duplicate insurance. Gap analysis included.','Smart Traveler Bundle','$9.99<span>/mo</span>','<strong>Also includes:</strong> Budget Tracker, Airport &amp; Transit, and Credit Card Optimization.<br>Most travelers are paying for coverage they already have.','Or unlock just this trip from <strong>$49</strong>.')"><div class="mci">🛡</div><div class="mcn">Insurance</div><div class="mcs">Card coverage analysis</div><div class="mct tg">Covered</div></div>
     </div>
     <div class="sh"><div class="shl">Experience Modules</div></div>
     <div class="mg">
-      <div class="mc" onclick="nav('s-music')"><div class="mci">🎵</div><div class="mcn">Music</div><div class="mcs">Playlist + live events</div><div class="mct ts2">15 songs</div></div>
-      <div class="mc" onclick="nav('s-outfits')"><div class="mci">👗</div><div class="mcn">Shopping &amp; Outfits</div><div class="mcs">Packing, looks, boutiques</div><div class="mct ts2">7 looks</div></div>
-      <div class="mc" onclick="nav('s-sustainability')"><div class="mci">🌱</div><div class="mcn">Sustainability</div><div class="mcs">Eco options &amp; carbon</div><div class="mct tg">Active</div></div>
-      <div class="mc" onclick="nav('s-translation')"><div class="mci">🌐</div><div class="mcn">Translation</div><div class="mcs">Menus, signs, phrases</div><div class="mct tb2">Ready</div></div>
+      <div class="mc" onclick="openPW('s-music','🎵','Music &amp; Live Events','Explorer Bundle','A curated playlist built from your genre preferences and destination culture. Plus live events at your destination — concerts, festivals, performances — matched to your taste.','Explorer Bundle','$9.99<span>/mo</span>','<strong>Also includes:</strong> Live Event Discovery via Ticketmaster &amp; Bandsintown, Sustainability Module, and Content Creation Intelligence.','Or unlock just this trip from <strong>$49</strong>.')"><div class="mci">🎵</div><div class="mcn">Music</div><div class="mcs">Playlist + live events</div><div class="mct ts2">15 songs</div></div>
+      <div class="mc" onclick="openPW('s-outfits','👗','Shopping &amp; Outfits','Explorer Bundle','What to wear on Day 1 dinner, Day 2 boat day, Day 3 concert — based on your actual itinerary. Packing list builder, cultural dress advisories, and local boutiques.','Explorer Bundle','$9.99<span>/mo</span>','<strong>Also includes:</strong> Music &amp; Playlist, Live Event Discovery, and Sustainability Module.','Or unlock just this trip from <strong>$49</strong>.')"><div class="mci">👗</div><div class="mcn">Shopping &amp; Outfits</div><div class="mcs">Packing, looks, boutiques</div><div class="mct ts2">7 looks</div></div>
+      <div class="mc" onclick="openPW('s-sustainability','🌱','Sustainability','Explorer Bundle','Your trip carbon footprint, eco-certified accommodation alternatives, green transport options, and one-tap carbon offsetting through verified programs.','Explorer Bundle','$9.99<span>/mo</span>','<strong>Also includes:</strong> Music &amp; Playlist, Live Event Discovery, and Content Creation Intelligence.','Or unlock just this trip from <strong>$49</strong>.')"><div class="mci">🌱</div><div class="mcn">Sustainability</div><div class="mcs">Eco options &amp; carbon</div><div class="mct tg">Active</div></div>
+      <div class="mc" onclick="openPW('s-translation','🌐','Translation &amp; Cultural Intelligence','Solo Bundle','In-app translation for menus, signs, and conversations. Essential phrases with pronunciation. Cultural advisories — things that are rude here but fine at home. Camera translation.','Solo Bundle','$9.99<span>/mo</span>','<strong>Also includes:</strong> Solo Female Safety Intelligence, Wellness &amp; Health Module, and Workcation Mode.','Or unlock just this trip from <strong>$49</strong>.')"><div class="mci">🌐</div><div class="mcn">Translation</div><div class="mcs">Menus, signs, phrases</div><div class="mct tb2">Ready</div></div>
     </div>
     <div class="sh"><div class="shl">Specialist Modes</div></div>
     <div class="mg">
       <div class="mc" onclick="nav('s-group')"><div class="mci">👥</div><div class="mcn">Group Planning</div><div class="mcs">Polls, roles, splits</div><div class="mct ts2" id="grp-ct">5 travelers</div></div>
-      <div class="mc" onclick="nav('s-family')"><div class="mci">👨‍👩‍👧</div><div class="mcn">Family Mode</div><div class="mcs">Age filters, rest periods</div><div class="mct tb2">Available</div></div>
-      <div class="mc" onclick="nav('s-solo')"><div class="mci">🚺</div><div class="mcn">Solo Female</div><div class="mcs">Safety, routes, community</div><div class="mct tb2">Available</div></div>
-      <div class="mc" onclick="nav('s-workcation')"><div class="mci">💻</div><div class="mcn">Workcation</div><div class="mcs">WiFi, co-working, zones</div><div class="mct tb2">Available</div></div>
+      <div class="mc" onclick="openPW('s-family','👨‍👩‍👧','Family Mode','Family Bundle','Age-appropriate activity filtering, rest periods built into pacing, kid-friendly restaurant flags, stroller accessibility ratings, and pediatric healthcare proximity.','Family Bundle','$9.99<span>/mo</span>','<strong>Also includes:</strong> Contingency Planning, Translation &amp; Cultural Intelligence, and Climate &amp; Carbon Module.','Or unlock just this trip from <strong>$49</strong> — split with travel companions.')"><div class="mci">👨‍👩‍👧</div><div class="mcn">Family Mode</div><div class="mcs">Age filters, rest periods</div><div class="mct tb2">Available</div></div>
+      <div class="mc" onclick="openPW('s-solo','🚺','Solo Female Travel','Solo Bundle','Neighborhood safety by time of day, safe transit after dark, female-friendly accommodations, solo dining culture by destination, dress code intelligence, and emergency resources.','Solo Bundle','$9.99<span>/mo</span>','<strong>Also includes:</strong> Translation &amp; Cultural Intelligence, Wellness &amp; Health, and Workcation Mode.','Or unlock just this trip from <strong>$49</strong>.')"><div class="mci">🚺</div><div class="mcn">Solo Female</div><div class="mcs">Safety, routes, community</div><div class="mct tb2">Available</div></div>
+      <div class="mc" onclick="openPW('s-workcation','💻','Workcation Mode','Solo Bundle','WiFi reliability scores for accommodations and cafés, time zone overlap with your team, work block scheduling inside your itinerary, and co-working space availability.','Solo Bundle','$9.99<span>/mo</span>','<strong>Also includes:</strong> Solo Female Safety Intelligence, Translation, and Wellness &amp; Health.','Or unlock just this trip from <strong>$49</strong>.')"><div class="mci">💻</div><div class="mcn">Workcation</div><div class="mcs">WiFi, co-working, zones</div><div class="mct tb2">Available</div></div>
     </div>
     <div class="sh"><div class="shl">Trip Management</div></div>
     <div class="mg">
@@ -454,9 +675,28 @@ body{background:var(--cr);color:var(--tx);font-family:var(--fs);min-height:100vh
 <!-- ITINERARY -->
 <div id="s-itin" class="screen">
   <div class="ib"><div class="ib-glow"></div><button class="bk w" onclick="nav('s-dash')" style="margin-bottom:7px;">← Home</button><div class="ib-eye" id="ib-eye">Your Trip</div><div class="ib-t" id="ib-t">Itinerary</div><div class="ib-s" id="ib-s">Building…</div></div>
-  <div class="itabs"><button class="itab act">Itinerary</button><button class="itab" onclick="nav('s-music')">Playlist</button><button class="itab" onclick="nav('s-ready')">Readiness</button><button class="itab" onclick="showToast('Gallery opening…')">Gallery</button></div>
+  <div class="itabs"><button class="itab act">Itinerary</button><button class="itab" onclick="openPW('s-music','🎵','Music &amp; Live Events','Explorer Bundle','A curated playlist built from your genre preferences and destination culture. Plus live events at your destination — concerts, festivals, performances — matched to your taste.','Explorer Bundle','$9.99<span>/mo</span>','<strong>Also includes:</strong> Live Event Discovery via Ticketmaster &amp; Bandsintown, Sustainability Module, and Content Creation Intelligence.','Or unlock just this trip from <strong>$49</strong>.')">Playlist</button><button class="itab" onclick="nav('s-ready')">Readiness</button><button class="itab" onclick="nav('s-smartcheck')">Smart Check</button><button class="itab" onclick="showToast('Gallery opening…')">Gallery</button></div>
   <div class="scr" style="padding-top:13px;"><div id="days"></div><div style="padding:12px 20px 20px;text-align:center;"><button class="btn bgh" style="padding:11px 24px;" onclick="showToast('Loading full itinerary…')">View All Days →</button></div></div>
   <div class="nt"><button class="nb" onclick="nav('s-dash')"><span class="ni">🏠</span><div class="nl">Home</div></button><button class="nb act"><span class="ni">📋</span><div class="nl">Itinerary</div></button><button class="nb" onclick="nav('s-ready')"><span class="ni">✈️</span><div class="nl">Readiness</div></button><button class="nb" onclick="nav('s-memory')"><span class="ni">📖</span><div class="nl">Memory</div></button></div>
+</div>
+
+
+<!-- SMART CHECK -->
+<div id="s-smartcheck" class="screen" style="background:var(--cr);">
+  <div class="tb"><button class="bk" onclick="nav('s-itin')">← Itinerary</button><div class="wm">SMART CHECK</div><div></div></div>
+  <div class="scr">
+    <div style="padding:28px 24px 20px;">
+      <div style="font-family:var(--fd);font-size:26px;font-style:italic;font-weight:500;color:var(--ink);margin-bottom:5px;">R</div>
+      <div style="font-family:var(--fd);font-size:30px;font-weight:500;color:var(--tx);line-height:1.15;margin-bottom:10px;">Trip Smart<br>Check</div>
+      <div style="font-size:14px;color:var(--tm);line-height:1.65;margin-bottom:6px;">Romieaux™ runs diagnostics on your itinerary and flags issues before they become problems.</div>
+    </div>
+    <div id="sc-list"></div>
+    <div style="height:20px;"></div>
+  </div>
+  <div class="ab">
+    <button class="btn bgh" style="flex:1;" onclick="nav('s-itin')">Close</button>
+    <button class="btn bsd" style="flex:2;" onclick="showToast('Running full diagnostics…')">Run Full Check →</button>
+  </div>
 </div>
 
 <!-- ACTIVITIES -->
@@ -733,14 +973,38 @@ body{background:var(--cr);color:var(--tx);font-family:var(--fs);min-height:100vh
   <div class="nt"><button class="nb" onclick="nav('s-dash')"><span class="ni">🏠</span><div class="nl">Home</div></button><button class="nb" onclick="nav('s-itin')"><span class="ni">📋</span><div class="nl">Itinerary</div></button><button class="nb" onclick="nav('s-ready')"><span class="ni">✈️</span><div class="nl">Readiness</div></button><button class="nb act"><span class="ni">📖</span><div class="nl">Memory</div></button></div>
 </div>
 
+
+<!-- PAYWALL MODAL -->
+<div class="pw-overlay" id="pw-overlay" onclick="closePW(event)">
+  <div class="pw-sheet" onclick="event.stopPropagation()">
+    <button class="pw-close" onclick="closePW()">×</button>
+    <div class="pw-handle"></div>
+    <div class="pw-lock" id="pw-icon">🔒</div>
+    <div class="pw-module" id="pw-module">Premium Module</div>
+    <div class="pw-title" id="pw-title">Unlock this module</div>
+    <div class="pw-desc" id="pw-desc">This feature is available on a paid plan.</div>
+    <div class="pw-bundle" id="pw-bundle">
+      <div class="pw-bundle-name" id="pw-bundle-name">Bundle</div>
+      <div class="pw-bundle-price" id="pw-bundle-price">$9.99<span>/mo</span></div>
+      <div class="pw-bundle-includes" id="pw-bundle-includes">Includes…</div>
+    </div>
+    <div class="pw-allaccess">
+      <div><div class="pw-aa-label">All-Access</div><div class="pw-aa-sub">All 26 modules · Best value</div></div>
+      <div><div class="pw-aa-price">$29<span style="font-size:12px;color:var(--ts);">/mo</span></div><div class="pw-aa-note">or $299/yr</div></div>
+    </div>
+    <button class="btn bsd" style="width:100%;padding:15px;" onclick="showToast('Upgrade flow — coming soon')">Unlock Now →</button>
+    <div class="pw-pertip" id="pw-pertip">Or unlock just this trip from <strong>$49</strong> — no subscription needed.</div>
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <script>
-var S={tripType:'romantic',group:'partner',budget:'balanced',mode:'curated',destKey:'romantic',destName:null};
+var S={tripType:'romantic',group:'partner',budget:'balanced',mode:'curated',destKey:null,destName:null};
 var sugIdx=0;
 
 var D={
-  romantic:{name:'Amalfi Coast, Italy',emoji:'🇮🇹',city1:'Positano',city2:'Ravello',eye:'Romantic Escape · Amalfi Coast · Italy',title:'Amalfi Coast — Spring',sub:'Romantic Escape · 10 Days · Deeply Curated',
+  romantic:{vibe:'Romantic &amp; Slow-Paced',name:'Amalfi Coast, Italy',emoji:'🇮🇹',city1:'Positano',city2:'Ravello',eye:'Romantic Escape · Amalfi Coast · Italy',title:'Amalfi Coast — Spring',sub:'Romantic Escape · 10 Days · Deeply Curated',
     alignTxt:'Pacing this trip for two — slower mornings, longer dinners, built-in unstructured time. Candlelit restaurants and private boat days are prioritized. A romantic getaway to Positano produces an entirely different experience than a friends trip to the same destination.',
     actCt:'12 matched',dinCt:'8 curated',stayCt:'6 options',budCt:'$1,240 spent',
     activities:[
@@ -871,7 +1135,7 @@ var D={
     solo:{dest:'Amalfi Coast, Italy',safety:[{n:'Positano town center',time:'Day',l:'✅ Very safe',d:'Well-lit, busy with tourists, local police presence'},{n:'Positano town center',time:'Night after 11pm',l:'⚠️ Moderate',d:'Quieter — stick to main streets, use Bolt rather than walking alone'},{n:'Naples (transit only)',time:'Day',l:'⚠️ Moderate',d:'Watch bags at train station. Avoid Quartieri Spagnoli after dark.'}],dress:['Relaxed compared to more conservative regions. Standard European dress for restaurants.','Churches require covered shoulders and knees — a light scarf handles both.','Heels not recommended anywhere — cobblestones will destroy your evening.'],em:'112 EU Emergency · National Hotline: 1-800-799-7233 · Local crisis center pre-loaded.'},
     work:{window:'9:00 AM – 1:00 PM',wsub:'Aligns with 3:00–7:00pm US Eastern. Team overlap: 4 hours.',spots:[{i:'☕',bg:'#4a5a3a',n:'Bar Internazionale — Garden terrace',s:'Positano · Reliable 45Mbps WiFi · Quiet in mornings',m:'Best morning work spot on the coast',b:'WiFi ✓',bc:'bg'},{i:'🏨',bg:'#4a3a5a',n:'Le Sirenuse Business Center',s:'In-hotel · Dedicated fast WiFi · Private booths',m:'Book the booth — fills by 9am',b:'Fast WiFi',bc:'bs'}],tz:[{f:'🇮🇹',z:'Rome (CET)',t:'9:00 AM',o:'Team overlap 3:00–7:00pm local'},{f:'🇺🇸',z:'New York (EST)',t:'3:00 AM',o:'Team online at 3pm your time'},{f:'🇬🇧',z:'London (GMT)',t:'8:00 AM',o:'UK team: full overlap 9am–1pm your time'}]}
   },
-  reset:{name:'Ubud, Bali',emoji:'🇮🇩',city1:'Ubud',city2:'Seminyak',eye:'Reset &amp; Recovery · Ubud, Bali',title:'Ubud — Wellness Retreat',sub:'Reset &amp; Recovery · 9 Days · Deeply Curated',
+  reset:{vibe:'Restorative &amp; Intentional',name:'Ubud, Bali',emoji:'🇮🇩',city1:'Ubud',city2:'Seminyak',eye:'Reset &amp; Recovery · Ubud, Bali',title:'Ubud — Wellness Retreat',sub:'Reset &amp; Recovery · 9 Days · Deeply Curated',
     alignTxt:'Romieaux™ detected a reset intention. This trip has intentional white space — slow mornings, no more than two activities per day, and rest periods that are not optional. You don\'t need to earn the rest.',
     actCt:'10 matched',dinCt:'7 curated',stayCt:'5 options',budCt:'$640 spent',
     activities:[
@@ -951,8 +1215,23 @@ function nav(id){
   window.scrollTo(0,0);
   var r={'s-dash':1,'s-itin':1,'s-activities':1,'s-dining':1,'s-transport':1,'s-stays':1,'s-music':1,'s-outfits':1,'s-budget':1,'s-airport':1,'s-contingency':1,'s-insurance':1,'s-sustainability':1,'s-translation':1,'s-group':1,'s-family':1,'s-solo':1,'s-workcation':1,'s-reminders':1,'s-payment':1,'s-safety':1,'s-ready':1,'s-posttrip':1};
   if(r[id])render();
+  if(id==='s-blueprint'){
+    // Reset lines
+    ['bpl-1','bpl-2','bpl-3','bpl-4','bpl-5'].forEach(function(lid){var e=document.getElementById(lid);if(e)e.style.opacity='0';});
+    var rd=document.getElementById('bp-ready');if(rd)rd.style.display='none';
+    var st=document.getElementById('bp-status');if(st)st.textContent='Romieaux™ is learning your travel identity…';
+    runBlueprintAnimation();
+  }
+  if(id==='s-compat') buildCompat();
+  if(id==='s-smartcheck') buildSmartCheck();
 }
-function pick(el,k,v,dest){if(el){el.parentElement.querySelectorAll('.opt').forEach(function(o){o.classList.remove('sel');});el.classList.add('sel');}S[k]=v;setTimeout(function(){nav(dest);},el?220:0);}
+function pick(el,k,v,dest){
+  if(el){el.parentElement.querySelectorAll('.opt').forEach(function(o){o.classList.remove('sel');});el.classList.add('sel');}
+  S[k]=v;
+  // Update destKey immediately when trip type is chosen so all downstream screens reflect it
+  if(k==='tripType') S.destKey=ttk(v);
+  setTimeout(function(){nav(dest);},el?220:0);
+}
 function tg(el){el.classList.toggle('sel');document.getElementById('ob-go').style.display=document.querySelectorAll('#s-ob1 .gb.sel').length?'block':'none';}
 function fc(el){el.closest('div').querySelectorAll('.chip').forEach(function(c){c.classList.remove('sel');});el.classList.add('sel');}
 function setDM(m,el){document.querySelectorAll('#dest-mode-opts .opt').forEach(function(o){o.classList.remove('sel');});el.classList.add('sel');document.getElementById('dest-own').style.display='none';document.getElementById('dest-sug').style.display='none';if(m==='own'){document.getElementById('dest-in').value='';document.getElementById('dest-go').style.display='none';document.getElementById('dest-own').style.display='block';}else if(m==='suggest'){sugIdx=0;bSug();document.getElementById('dest-sug').style.display='block';var cl=CHIPS[S.tripType]||CHIPS.romantic;document.getElementById('sug-chips').innerHTML=cl.map(function(c){return '<button class="chip" onclick="pChip(this,\''+c+'\')" style="margin:2px;">'+c+'</button>';}).join('');}else{S.destKey=ttk(S.tripType);S.destName=D[S.destKey].name;showToast('Romieaux™ is choosing your destination… 🌍');setTimeout(function(){nav('s-dash');},900);}}
@@ -960,8 +1239,14 @@ function bSug(){var l=SUGS[S.tripType]||SUGS.romantic;var s=l[sugIdx%l.length];$
 function nextSug(){sugIdx++;bSug();}
 function pChip(el,n){document.querySelectorAll('#sug-chips .chip').forEach(function(c){c.classList.remove('sel');});el.classList.add('sel');S.destKey=ntk(n);S.destName=n;$('sug-n',n);$('sug-w','Selected — Romieaux™ will optimize your full plan for '+n+'.');}
 function onDT(v){document.getElementById('dest-go').style.display=v.length>2?'block':'none';S.destKey=ntk(v);S.destName=v||null;}
-function goDest(){nav('s-dash');}
-function ttk(t){return t==='reset'?'reset':'romantic';}
+function goDest(){nav('s-blueprint');}
+function ttk(t){
+  // Reset & Recovery → Ubud wellness dataset
+  if(t==='reset') return 'reset';
+  // Everything else → Amalfi romantic dataset
+  // (romantic, milestone, honeymoon, cultural, friends, adventure, workcation)
+  return 'romantic';
+}
 function ntk(n){n=(n||'').toLowerCase();if(n.indexOf('bali')>-1||n.indexOf('ubud')>-1||n.indexOf('reset')>-1)return 'reset';return 'romantic';}
 function castVote(el){el.classList.add('v');showToast('Vote cast!');}
 function setRM(el,label){showToast('Concierge mode: '+label);}
@@ -975,6 +1260,17 @@ function render(){
   $('ctab1',t.city1);$('ctab2',t.city2);$('align-txt',t.alignTxt);$('d-dest',t.name);
   $('act-ct',t.actCt);$('din-ct',t.dinCt);$('stay-ct',t.stayCt);$('bud-ct',t.budCt);
   $('ib-eye',t.eye);$('ib-t',t.title);$('ib-s',t.sub);
+  // Trip Vibe
+  var vibes={romantic:'✦ Trip Vibe: Romantic &amp; Slow-Paced',reset:'✦ Trip Vibe: Restorative &amp; Intentional',cultural:'✦ Trip Vibe: Curious &amp; Immersive',adventure:'✦ Trip Vibe: High-Energy &amp; Exploratory',friends:'✦ Trip Vibe: Social &amp; Celebratory',honeymoon:'✦ Trip Vibe: Intimate &amp; Luxurious',milestone:'✦ Trip Vibe: Celebratory &amp; Meaningful',workcation:'✦ Trip Vibe: Productive &amp; Balanced'};
+  $('trip-vibe', vibes[S.tripType]||vibes.romantic);
+  // Blueprint lines reflect selections
+  var bpl1txt=document.getElementById('bpl-1-txt');if(bpl1txt)bpl1txt.textContent='Trip type: '+S.tripType+' · Traveling: '+S.group+'…';
+  var bpl4txt=document.getElementById('bpl-4-txt');if(bpl4txt)bpl4txt.textContent='Matching destination: '+(S.destName||t.name)+'…';
+  // Compat screen - update based on group
+  var compatTitles={partner:'Traveling with your partner.',group:'Traveling as a group.',mixed:'Traveling as a mixed group.'};
+  var compatSubs={partner:'Romieaux™ has activated compatibility intelligence, Surprise Mode, and collaborative playlist tools for this trip.',group:'Romieaux™ has activated group polling, split expense tracking, role-based access, and collaborative planning for your trip.',mixed:'Romieaux™ has activated group coordination tools and compatibility intelligence for your mixed group.'};
+  $('compat-title', compatTitles[S.group]||compatTitles.partner);
+  $('compat-sub', compatSubs[S.group]||compatSubs.partner);
   // Days
   $('days',t.days.map(function(d){return '<div class="dc"><div class="dch"><div><div class="dcn">'+d.n+'</div><div class="dcl">'+d.l+'</div></div><div class="dcb '+d.bc+'">'+d.b+'</div></div>'+d.acts.map(function(a){var fl=a.f?'<div class="af '+a.fc+'">'+a.f+'</div>':'';return '<div class="ar"><div class="at">'+a.t+'</div><div class="adot"></div><div class="ab2"><div class="an">'+a.n+'</div><div class="as2">'+a.s+'</div>'+fl+'</div></div>';}).join('')+'</div>';}).join(''));
   $('acts-list',t.activities.map(row).join(''));
@@ -1044,6 +1340,117 @@ function render(){
   // Post-trip
   $('pt-t',t.title);
   $('pt-costs',t.postCosts.map(function(c){return '<div style="display:flex;align-items:center;justify-content:space-between;padding:11px 20px;border-bottom:1px solid var(--bd);"><div style="font-family:var(--fs);font-size:13px;color:var(--tx);">'+c.cat+'</div><div style="display:flex;align-items:center;gap:10px;"><div style="width:80px;height:3px;background:var(--bd);border-radius:3px;overflow:hidden;"><div style="width:'+c.pct+'%;height:100%;background:var(--sd);"></div></div><div style="font-family:var(--fm);font-size:11px;color:var(--tm);">'+c.amt+'</div></div></div>';}).join(''));
+}
+
+
+// Build compatibility snapshot based on group
+function buildCompat() {
+  var g = S.group;
+  var title, sub, cards;
+  if(g === 'partner') {
+    title = 'Traveling with your partner.';
+    sub = 'Romieaux™ maps budget expectations, pacing preferences, and energy alignment — and surfaces conversation prompts to resolve gaps before the trip begins. No other platform does this.';
+    cards = [
+      {ico:'💛',label:'Compatibility Snapshot',desc:'Budget gap analysis, pacing alignment, and shared priorities mapped from both Travel Blueprints.'},
+      {ico:'🎉',label:'Surprise Mode',desc:'Hide specific activities from your partner — perfect for proposals, anniversary surprises, or spontaneous moments.'},
+      {ico:'🎵',label:'Collaborative Playlist',desc:'Romieaux\u2122 blends both travelers\u2019 genre preferences into a single shared trip soundtrack.'}
+    ];
+  } else {
+    title = 'Traveling with a group.';
+    sub = 'Romieaux™ surfaces budget expectation gaps, energy mismatches, and shared priorities across the group — with polls, split expenses, and role-based itinerary access built in.';
+    cards = [
+      {ico:'🗳',label:'Group Polls',desc:'Vote on activities, restaurants, and day plans. Majority rules. Minority gets heard.'},
+      {ico:'💰',label:'Split Expense Tracking',desc:'Who paid for what, who owes whom. Post-trip Venmo chaos eliminated.'},
+      {ico:'👥',label:'Owner / Editor / Viewer Roles',desc:'Invite 3–12 travelers. One trip owner unlocks full intelligence for everyone.'}
+    ];
+  }
+  var t = document.getElementById('compat-title');
+  var s = document.getElementById('compat-sub');
+  var c = document.getElementById('compat-cards');
+  if(t) t.textContent = title;
+  if(s) s.textContent = sub;
+  if(c) c.innerHTML = cards.map(function(card){
+    return '<div style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:14px;display:flex;gap:12px;"><div style="font-size:20px;flex-shrink:0;">'+card.ico+'</div><div><div style="font-family:var(--fd);font-size:14px;color:var(--cr);margin-bottom:4px;">'+card.label+'</div><div style="font-size:12px;color:rgba(255,255,255,.45);line-height:1.5;">'+card.desc+'</div></div></div>';
+  }).join('');
+}
+
+// Smart Check data by trip key
+var SC_DATA = {
+  romantic: [
+    {ico:'⚠️',color:'rgba(180,60,60,.1)',tc:'var(--rd)',label:'Critical Alert',title:'Day 4 checkout conflicts with 11am Trenitalia departure',desc:'You have 47 minutes — Romieaux™ recommends a late checkout request or rebooking the 1pm train. Probability of missing it at current pace: 68%.'},
+    {ico:'⚡',color:'rgba(180,140,40,.1)',tc:'#8a6a10',label:'Quick Fix',title:'Day 2 · Colosseum timing',desc:'Shifting from 11am to 9am reduces your average wait from 45 minutes to 12 minutes. Romieaux™ has updated your Day 2 schedule.'},
+    {ico:'💡',color:'var(--sdl)',tc:'var(--sd)',label:'Suggestion',title:'Live jazz event matches your playlist on Day 5',desc:'Ravello Festival · July 14 · Your R&B and Jazz preferences match. 2 tickets available. Want Romieaux™ to grab them?'},
+    {ico:'🧘',color:'rgba(45,107,45,.1)',tc:'var(--gn)',label:'Wellness Balance',desc:'Days 3 and 7 are heavily scheduled. Romieaux™ recommends a rest window in the afternoon of each — it has added a 2-hour unscheduled block.',title:'Pacing optimized · Rest windows added'}
+  ],
+  reset: [
+    {ico:'✅',color:'rgba(45,107,45,.1)',tc:'var(--gn)',label:'All Clear',title:'No critical alerts for this trip',desc:'Romieaux™ has reviewed your 9-day itinerary. No scheduling conflicts, no checkout friction, no tight connections detected.'},
+    {ico:'💡',color:'var(--sdl)',tc:'var(--sd)',label:'Suggestion',title:'Sound healing ceremony matches your Ambient playlist',desc:'Taksu Ubud · Thursday evening · Your music preferences and reset intention are a strong match. Want to add it?'},
+    {ico:'🧘',color:'rgba(45,107,45,.1)',tc:'var(--gn)',label:'Wellness Balance',title:'Pacing is exceptional for a reset trip',desc:'Romieaux™ confirmed: no day exceeds 2 scheduled activities. Rest windows are in place. This itinerary is built for recovery.'},
+    {ico:'⚡',color:'rgba(180,140,40,.1)',tc:'#8a6a10',label:'Quick Fix',title:'Day 5 afternoon · Potential overlap',desc:'Tirta Empul closes at 5pm. Your current arrival time is 4:30pm. Romieaux™ recommends shifting to a 9am visit when the temple is near-empty.'}
+  ]
+};
+
+function buildSmartCheck() {
+  var k = S.destKey || ttk(S.tripType);
+  var items = SC_DATA[k] || SC_DATA.romantic;
+  var el = document.getElementById('sc-list');
+  if(!el) return;
+  el.innerHTML = items.map(function(item){
+    return '<div style="display:flex;gap:16px;padding:18px 20px;border-bottom:1px solid var(--bd);"><div style="width:44px;height:44px;border-radius:10px;background:'+item.color+';flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:20px;">'+item.ico+'</div><div style="flex:1;"><div style="font-family:var(--fm);font-size:8px;letter-spacing:2px;color:'+item.tc+';text-transform:uppercase;margin-bottom:4px;">'+item.label+'</div><div style="font-family:var(--fd);font-size:16px;font-weight:500;color:var(--tx);margin-bottom:5px;">'+item.title+'</div><div style="font-size:13px;color:var(--tm);line-height:1.5;">'+item.desc+'</div></div></div>';
+  }).join('');
+}
+
+// Blueprint animation — runs when s-blueprint becomes active
+var bpTimer = null;
+function runBlueprintAnimation() {
+  var lines = ['bpl-1','bpl-2','bpl-3','bpl-4','bpl-5'];
+  var delays = [300, 900, 1600, 2300, 3000];
+  var statuses = [
+    'Learning your travel identity…',
+    'Calibrating your preferences…',
+    'Anchoring your intention…',
+    'Matching your destination…',
+    'Curating your 26-module experience…'
+  ];
+  lines.forEach(function(id, i) {
+    setTimeout(function() {
+      var el = document.getElementById(id);
+      if(el) el.style.opacity = '1';
+      var st = document.getElementById('bp-status');
+      if(st) st.textContent = statuses[i];
+    }, delays[i]);
+  });
+  setTimeout(function() {
+    var ready = document.getElementById('bp-ready');
+    var st = document.getElementById('bp-status');
+    if(ready) ready.style.display = 'block';
+    if(st) st.textContent = 'Your Travel Blueprint is ready.';
+  }, 3800);
+}
+
+function openPW(screen, icon, moduleName, bundleName, desc, bName, bPrice, bIncludes, pertip) {
+  var o = document.getElementById('pw-overlay');
+  document.getElementById('pw-icon').textContent = icon;
+  document.getElementById('pw-module').textContent = moduleName;
+  document.getElementById('pw-title').textContent = 'Unlock ' + moduleName;
+  document.getElementById('pw-desc').textContent = desc;
+  document.getElementById('pw-bundle-name').textContent = bName;
+  document.getElementById('pw-bundle-price').innerHTML = bPrice;
+  document.getElementById('pw-bundle-includes').innerHTML = bIncludes;
+  // Group-aware per-trip pricing
+  var isGroup = (S.group === 'group' || S.group === 'mixed' || S.group === 'friends');
+  if(isGroup) {
+    document.getElementById('pw-pertip').innerHTML = 'Or unlock just this trip for <strong>$149</strong> — split across your group, that’s <strong>under $25 per person</strong>. No subscription needed.';
+  } else {
+    document.getElementById('pw-pertip').innerHTML = pertip;
+  }
+  o.classList.add('show');
+  o.dataset.target = screen;
+}
+function closePW(e) {
+  if (!e || e.target === document.getElementById('pw-overlay')) {
+    document.getElementById('pw-overlay').classList.remove('show');
+  }
 }
 
 function showToast(msg){var t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(function(){t.classList.remove('show');},2600);}
