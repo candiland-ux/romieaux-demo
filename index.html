@@ -381,6 +381,44 @@ body{background:var(--cr);color:var(--tx);font-family:var(--fs);min-height:100vh
       <button class="opt lt" onclick="pick(this,'group','family_adults','s-bp-invite')">Family (Adults Only)</button>
       <button class="opt lt" onclick="pick(this,'group','mixed','s-bp-compat')">Mixed Group</button>
     </div>
+    <!-- Pet add-on toggle -->
+    <div style="margin-top:18px;border-top:1px solid var(--bd);padding-top:16px;">
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:var(--pn);border:1.5px solid var(--bd);border-radius:14px;cursor:pointer;" id="pet-toggle" onclick="togglePet()">
+        <div style="display:flex;align-items:center;gap:12px;">
+          <span style="font-size:22px;">🐾</span>
+          <div>
+            <div style="font-family:var(--fd);font-size:15px;font-weight:600;color:var(--tx);">Traveling with a pet?</div>
+            <div style="font-size:11px;color:var(--ts);margin-top:2px;">Activates pet-friendly stays, transport, dining & more</div>
+          </div>
+        </div>
+        <div id="pet-switch" style="width:44px;height:24px;border-radius:12px;background:var(--bd);position:relative;transition:background .2s;flex-shrink:0;">
+          <div style="width:20px;height:20px;border-radius:50%;background:#fff;position:absolute;top:2px;left:2px;transition:left .2s;box-shadow:0 1px 3px rgba(0,0,0,.15);" id="pet-knob"></div>
+        </div>
+      </div>
+      <!-- Pet profile (hidden until toggled) -->
+      <div id="pet-profile" style="display:none;margin-top:12px;background:var(--sdl);border:1px solid rgba(176,138,80,.25);border-radius:12px;padding:14px;">
+        <div style="font-family:var(--fm);font-size:8px;letter-spacing:2px;color:var(--sd);text-transform:uppercase;margin-bottom:10px;">Pet Profile</div>
+        <div style="margin-bottom:10px;">
+          <label style="font-family:var(--fm);font-size:9px;letter-spacing:1px;color:var(--ts);text-transform:uppercase;display:block;margin-bottom:5px;">Pet name</label>
+          <input type="text" placeholder="Luna" id="pet-name-input" style="width:100%;padding:10px 0;background:transparent;border:none;border-bottom:1.5px solid var(--bd);font-family:var(--fs);font-size:14px;color:var(--tx);outline:none;box-sizing:border-box;">
+        </div>
+        <div style="display:flex;gap:8px;margin-bottom:10px;">
+          <button class="chip sel" onclick="fc(this);S.petType='dog'" style="flex:1;">🐕 Dog</button>
+          <button class="chip" onclick="fc(this);S.petType='cat'" style="flex:1;">🐈 Cat</button>
+          <button class="chip" onclick="fc(this);S.petType='other'" style="flex:1;">🐾 Other</button>
+        </div>
+        <div style="display:flex;gap:8px;margin-bottom:10px;">
+          <button class="chip sel" onclick="fc(this);S.petSize='small'" style="flex:1;">Small</button>
+          <button class="chip" onclick="fc(this);S.petSize='medium'" style="flex:1;">Medium</button>
+          <button class="chip" onclick="fc(this);S.petSize='large'" style="flex:1;">Large</button>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;padding:8px 0;">
+          <input type="checkbox" id="pet-service" style="width:18px;height:18px;">
+          <label for="pet-service" style="font-size:13px;color:var(--tm);">Service / emotional support animal</label>
+        </div>
+        <div style="font-size:11px;color:var(--ts);line-height:1.5;margin-top:6px;">This activates pet-friendly filtering across stays, transport, dining, activities, and safety. The Pet Travel module (Couples & Celebrations Bundle) unlocks deeper intelligence: breed-specific airline restrictions, quarantine rules, pet insurance, and Dogpack integration.</div>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -703,7 +741,7 @@ body{background:var(--cr);color:var(--tx);font-family:var(--fs);min-height:100vh
       </div>
       <div class="bundle-label">Smart Traveler Bundle — $9.99/mo</div>
       <div class="mg">
-        <div class="mc locked" onclick="openPW('✈️','Airport &amp; Transit','Smart Traveler Bundle')"><div class="mci">✈️</div><div class="mcn">Airport &amp; Transit</div><div class="mcs">Lounges, gates, jet lag</div><div class="mct tlock">🔒 Smart</div></div>
+        <div class="mc locked" onclick="openPW('✈️','Airport &amp; Transit','Smart Traveler Bundle')"><div class="mci">✈️</div><div class="mcn">Airport &amp; Transit</div><div class="mcs">Lounges, gates, bag tracking</div><div class="mct tlock">🔒 Smart</div></div>
         <div class="mc locked" onclick="openPW('🛡','Insurance Intelligence','Smart Traveler Bundle')"><div class="mci">🛡</div><div class="mcn">Insurance</div><div class="mcs">Card coverage analysis</div><div class="mct tlock">🔒 Smart</div></div>
         <div class="mc locked" onclick="openPW('💳','Credit Card Optimization','Smart Traveler Bundle')"><div class="mci">💳</div><div class="mcn">Credit Card</div><div class="mcs">Rewards &amp; points</div><div class="mct tlock">🔒 Personal</div></div>
       </div>
@@ -723,7 +761,7 @@ body{background:var(--cr);color:var(--tx);font-family:var(--fs);min-height:100vh
       <div class="bundle-label">Couples &amp; Celebrations — $9.99/mo</div>
       <div class="mg">
         <div class="mc locked" onclick="openPW('👗','Shopping &amp; Outfits','Couples Bundle')"><div class="mci">👗</div><div class="mcn">Shopping &amp; Outfits</div><div class="mcs">Packing, looks, boutiques</div><div class="mct tlock">🔒 Couples</div></div>
-        <div class="mc locked" onclick="openPW('🐾','Pet Travel','Couples Bundle')"><div class="mci">🐾</div><div class="mcn">Pet Travel</div><div class="mcs">Pet-friendly everything</div><div class="mct tlock">🔒 Couples</div></div>
+        <div class="mc locked" onclick="openPW('🐾','Pet Travel','Couples Bundle')"><div class="mci">🐾</div><div class="mcn">Pet Travel</div><div class="mcs">Dogpack integration + rules</div><div class="mct tlock">🔒 Couples</div></div>
         <div class="mc locked" onclick="openPW('🕊','Intentionality','Couples Bundle')"><div class="mci">🕊</div><div class="mcn">Intentionality</div><div class="mcs">Reflection &amp; affirmations</div><div class="mct tlock">🔒 Couples</div></div>
       </div>
     </div>
@@ -1331,7 +1369,7 @@ body{background:var(--cr);color:var(--tx);font-family:var(--fs);min-height:100vh
 <div class="toast" id="toast"></div>
 
 <script>
-var S={energy:'rested',tripType:'romantic',group:'partner',intention:'rest',season:'building',budget:'balanced',budgetAmt:'',mode:'curated',destKey:null,destName:null,kidAges:[]};
+var S={energy:'rested',tripType:'romantic',group:'partner',intention:'rest',season:'building',budget:'balanced',budgetAmt:'',mode:'curated',destKey:null,destName:null,kidAges:[],hasPet:false,petType:'dog',petSize:'small'};
 var sugIdx=0;
 
 // ===== DESTINATION DATA =====
@@ -1732,10 +1770,10 @@ function runBP(){
 
 var BUNDLES={
   'Explorer Bundle':{price:'$9.99<span>/mo</span>',includes:'<strong>Includes:</strong> Music & Live Events, Content Creation Intelligence, and Sustainability Module.'},
-  'Smart Traveler Bundle':{price:'$9.99<span>/mo</span>',includes:'<strong>Includes:</strong> Budget Tracker, Airport & Transit, Insurance Intelligence, and Credit Card Optimization.'},
+  'Smart Traveler Bundle':{price:'$9.99<span>/mo</span>',includes:'<strong>Includes:</strong> Budget Tracker, Airport & Transit (with luggage tracking), Insurance Intelligence, and Credit Card Optimization.'},
   'Family Bundle':{price:'$9.99<span>/mo</span>',includes:'<strong>Includes:</strong> Family Mode, Contingency Planning, Translation, and Climate & Carbon Module.'},
   'Solo Bundle':{price:'$9.99<span>/mo</span>',includes:'<strong>Includes:</strong> Solo Female Safety, Wellness & Health, Workcation Mode, and Translation.'},
-  'Couples Bundle':{price:'$9.99<span>/mo</span>',includes:'<strong>Includes:</strong> Shopping & Outfits, Pet Travel, and Intentionality & Reflection. Compatibility features are built into Group Planning.'}
+  'Couples Bundle':{price:'$9.99<span>/mo</span>',includes:'<strong>Includes:</strong> Shopping & Outfits, Pet Travel (with Dogpack integration), and Intentionality & Reflection. Compatibility features are built into Group Planning.'}
 };
 
 function openPW(icon,moduleName,bundleName){
@@ -1757,6 +1795,7 @@ function showToast(msg){var t=document.getElementById('toast');t.textContent=msg
 function signInReturn(){S.energy='burnt';S.tripType='romantic';S.group='partner';S.intention='rest';S.season='pausing';S.budget='set';S.budgetAmt='3,000';S.mode='curated';S.destKey='romantic';S.destName='Amalfi Coast, Italy';S.tripDays=10;var dep=document.getElementById('td-depart');var ret=document.getElementById('td-return');if(dep)dep.value='2026-04-14';if(ret)ret.value='2026-04-24';nav('s-dash');}
 function toggleMoreBundles(){var el=document.getElementById('more-bundles');var arrow=document.getElementById('more-bundles-arrow');if(el.style.display==='none'){el.style.display='block';arrow.textContent='▾';}else{el.style.display='none';arrow.textContent='▸';}}
 function selectRole(r){document.getElementById('role-editor').classList.toggle('v',r==='editor');document.getElementById('role-viewer').classList.toggle('v',r==='viewer');}
+function togglePet(){S.hasPet=!S.hasPet;var sw=document.getElementById('pet-switch');var knob=document.getElementById('pet-knob');var prof=document.getElementById('pet-profile');var tog=document.getElementById('pet-toggle');if(S.hasPet){sw.style.background='var(--sd)';knob.style.left='22px';prof.style.display='block';tog.style.borderColor='var(--sd)';}else{sw.style.background='var(--bd)';knob.style.left='2px';prof.style.display='none';tog.style.borderColor='var(--bd)';}}
 var kidAges=[5];var kidCount=1;
 function adjustAge(idx,delta){kidAges[idx]=Math.max(0,Math.min(17,kidAges[idx]+delta));document.getElementById('kid-age-'+idx).textContent=kidAges[idx];updateKidsIntel();}
 function addKid(){if(kidCount>=5)return;kidAges.push(3);var list=document.getElementById('kids-list');var emos=['👶','👧','👦','🧒','👶'];var div=document.createElement('div');div.className='kid-row';div.style.cssText='display:flex;align-items:center;gap:12px;padding:14px 0;border-bottom:1px solid var(--bd);';div.innerHTML='<div style="width:40px;height:40px;border-radius:50%;background:var(--sdl);display:flex;align-items:center;justify-content:center;font-size:18px;">'+emos[kidCount%emos.length]+'</div><div style="flex:1;"><div style="font-family:var(--fd);font-size:14px;font-weight:600;color:var(--tx);">Child '+(kidCount+1)+'</div></div><div style="display:flex;align-items:center;gap:8px;"><button style="width:32px;height:32px;border-radius:50%;border:1.5px solid var(--bd);background:var(--pn);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--tm);" onclick="adjustAge('+kidCount+',-1)">−</button><div style="font-family:var(--fd);font-size:20px;font-weight:700;color:var(--ink);min-width:32px;text-align:center;" id="kid-age-'+kidCount+'">3</div><button style="width:32px;height:32px;border-radius:50%;border:1.5px solid var(--bd);background:var(--pn);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--tm);" onclick="adjustAge('+kidCount+',1)">+</button><span style="font-family:var(--fm);font-size:10px;color:var(--ts);letter-spacing:1px;">YRS</span></div>';list.appendChild(div);kidCount++;updateKidsIntel();}
