@@ -479,10 +479,6 @@ body{background:var(--cr);color:var(--tx);font-family:var(--fs);min-height:100vh
     <div class="qt" style="color:var(--tx)" id="compat-title">Traveling with your partner.</div>
     <div class="qsub" style="color:var(--tm)" id="compat-sub">No other platform analyzes travel compatibility. Romieaux™ maps budget gaps, energy mismatches, and pacing — with prompts to resolve them before the trip.</div>
     <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:18px;" id="compat-features"></div>
-    <div style="background:var(--sdl);border:1px solid rgba(176,138,80,.25);border-radius:10px;padding:13px 15px;">
-      <div style="font-family:var(--fm);font-size:8px;letter-spacing:2px;color:var(--rg);text-transform:uppercase;margin-bottom:4px;">Zero Competition</div>
-      <div style="font-size:13px;color:var(--tm);line-height:1.6;">Romieaux™ scores 26/26 capabilities. The next closest competitor scores 5/26.</div>
-    </div>
   </div>
   <div class="ab"><button class="btn bgh" style="flex:1;" onclick="nav('s-bp-who')">Back</button><button class="btn bink" style="flex:2;" onclick="nav('s-bp-invite')">Continue →</button></div>
 </div>
@@ -724,14 +720,14 @@ body{background:var(--cr);color:var(--tx);font-family:var(--fs);min-height:100vh
     <div class="bundle-label">Your Trip Modules</div>
     <div class="sh"><div class="sht" id="d-dest">Plan Your Trip</div></div>
     <div class="mg">
-      <div class="mc" onclick="nav('s-activities')"><div class="mci">🎭</div><div class="mcn">Activities</div><div class="mcs" id="act-s">Curated for you</div><div class="mct ts2" id="act-ct">12 matched</div></div>
-      <div class="mc" onclick="nav('s-dining')"><div class="mci">🍽</div><div class="mcn">Dining</div><div class="mcs">Restaurants &amp; reservations</div><div class="mct ts2" id="din-ct">8 curated</div></div>
-      <div class="mc" onclick="nav('s-transport')"><div class="mci">🚄</div><div class="mcn">Transportation</div><div class="mcs">Routes &amp; logistics</div><div class="mct ts2">Optimized</div></div>
-      <div class="mc" onclick="nav('s-stays')"><div class="mci">🏨</div><div class="mcn">Stays</div><div class="mcs">Hotels, villas, Airbnbs</div><div class="mct ts2" id="stay-ct">6 options</div></div>
-      <div class="mc" onclick="nav('s-safety')"><div class="mci">🛡</div><div class="mcn">Safety &amp; Prep</div><div class="mcs">Docs, customs, health</div><div class="mct tg">Ready</div></div>
-      <div class="mc" onclick="nav('s-payment')"><div class="mci">📋</div><div class="mcn">Payment Checklist</div><div class="mcs">Booking links &amp; status</div><div class="mct ts2">4 of 8</div></div>
-      <div class="mc" onclick="nav('s-memory')"><div class="mci">📖</div><div class="mcn">Memory Book</div><div class="mcs">Photos, reflections, archive</div><div class="mct ts2">Active</div></div>
-      <div class="mc" onclick="nav('s-reminders')"><div class="mci">🔔</div><div class="mcn">Reminders</div><div class="mcs">Concierge mode: Balanced</div><div class="mct ts2">Active</div></div>
+      <div class="mc" onclick="nav('s-activities')"><div class="mci">🎭</div><div class="mcn">Activities</div><div class="mcs">Browse &amp; add manually</div><div class="mct ts2" id="act-ct">12 found</div></div>
+      <div class="mc" onclick="nav('s-dining')"><div class="mci">🍽</div><div class="mcn">Dining</div><div class="mcs">Browse restaurants</div><div class="mct ts2" id="din-ct">8 nearby</div></div>
+      <div class="mc" onclick="nav('s-transport')"><div class="mci">🚄</div><div class="mcn">Transportation</div><div class="mcs">View routes</div><div class="mct ts2">Manual</div></div>
+      <div class="mc" onclick="nav('s-stays')"><div class="mci">🏨</div><div class="mcn">Stays</div><div class="mcs">Browse options</div><div class="mct ts2" id="stay-ct">6 listed</div></div>
+      <div class="mc" onclick="nav('s-safety')"><div class="mci">🛡</div><div class="mcn">Safety &amp; Prep</div><div class="mcs">Docs, customs, health</div><div class="mct tg">Full Access</div></div>
+      <div class="mc" onclick="nav('s-payment')"><div class="mci">📋</div><div class="mcn">Payment Checklist</div><div class="mcs">Booking links &amp; status</div><div class="mct tg">Full Access</div></div>
+      <div class="mc locked" onclick="openPW('📖','Memory Book','All-Access')"><div class="mci">📖</div><div class="mcn">Memory Book</div><div class="mcs">Photos, reflections, archive</div><div class="mct tlock">🔒 All-Access</div></div>
+      <div class="mc" onclick="nav('s-reminders')"><div class="mci">🔔</div><div class="mcn">Reminders</div><div class="mcs">Basic date reminders</div><div class="mct ts2">Active</div></div>
       <div class="mc" onclick="nav('s-budget-track')"><div class="mci">📊</div><div class="mcn">Budget Tracker</div><div class="mcs">Spend vs. budget</div><div class="mct ts2" id="bt-ct">$0 committed</div></div>
     </div>
 
@@ -825,6 +821,10 @@ body{background:var(--cr);color:var(--tx);font-family:var(--fs);min-height:100vh
 <div id="s-activities" class="screen">
   <div class="tb"><button class="bk" onclick="nav('s-dash')">← Home</button><div class="wm">ACTIVITIES</div><div></div></div>
   <div style="display:flex;gap:7px;padding:10px 20px;overflow-x:auto;"><button class="chip sel" onclick="fc(this)">All</button><button class="chip" onclick="fc(this)">Cultural</button><button class="chip" onclick="fc(this)">Outdoors</button><button class="chip" onclick="fc(this)">Wellness</button></div>
+  <div style="margin:0 20px 12px;background:linear-gradient(135deg,rgba(176,138,80,.08),rgba(196,135,122,.08));border:1.5px solid rgba(176,138,80,.3);border-radius:12px;padding:14px 16px;cursor:pointer;" onclick="openPW('🎭','Activity Intelligence','All-Access')">
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;"><span style="font-size:14px;">🔒</span><div style="font-family:var(--fm);font-size:8px;letter-spacing:2px;color:var(--sd);text-transform:uppercase;">Upgrade to unlock</div></div>
+    <div style="font-size:13px;color:var(--tm);line-height:1.5;">Your Blueprint suggests <strong>3 hidden gems</strong> matching your style. Plus: AI-optimized day pacing, "skip this — too crowded" alerts, and experience ROI scoring.</div>
+  </div>
   <div class="scr" id="acts-list"></div>
   <div class="nt"><button class="nb" onclick="nav('s-dash')"><span class="ni">🏠</span><div class="nl">Home</div></button><button class="nb act"><span class="ni">📋</span><div class="nl">Itinerary</div></button><button class="nb" onclick="nav('s-ready')"><span class="ni">✈️</span><div class="nl">Readiness</div></button><button class="nb" onclick="openSearch()"><span class="ni">🔍</span><div class="nl">Search</div></button><button class="nb" onclick="nav('s-memory')"><span class="ni">📖</span><div class="nl">Memory</div></button></div>
 </div>
@@ -833,6 +833,10 @@ body{background:var(--cr);color:var(--tx);font-family:var(--fs);min-height:100vh
 <div id="s-dining" class="screen">
   <div class="tb"><button class="bk" onclick="nav('s-dash')">← Home</button><div class="wm">DINING</div><div></div></div>
   <div style="display:flex;gap:7px;padding:10px 20px;overflow-x:auto;"><button class="chip sel" onclick="fc(this)">All</button><button class="chip" onclick="fc(this)">Fine Dining</button><button class="chip" onclick="fc(this)">Local</button><button class="chip" onclick="fc(this)">Casual</button></div>
+  <div style="margin:0 20px 12px;background:linear-gradient(135deg,rgba(176,138,80,.08),rgba(196,135,122,.08));border:1.5px solid rgba(176,138,80,.3);border-radius:12px;padding:14px 16px;cursor:pointer;" onclick="openPW('🍽','Dining Intelligence','All-Access')">
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;"><span style="font-size:14px;">🔒</span><div style="font-family:var(--fm);font-size:8px;letter-spacing:2px;color:var(--sd);text-transform:uppercase;">Upgrade to unlock</div></div>
+    <div style="font-size:13px;color:var(--tm);line-height:1.5;">Dietary matching, reservation timing intelligence, <strong>"2-hour wait on Saturdays"</strong> alerts, and hidden local restaurants tourists never find.</div>
+  </div>
   <div class="scr" id="din-list"></div>
   <div class="nt"><button class="nb" onclick="nav('s-dash')"><span class="ni">🏠</span><div class="nl">Home</div></button><button class="nb act"><span class="ni">📋</span><div class="nl">Itinerary</div></button><button class="nb" onclick="nav('s-ready')"><span class="ni">✈️</span><div class="nl">Readiness</div></button><button class="nb" onclick="openSearch()"><span class="ni">🔍</span><div class="nl">Search</div></button><button class="nb" onclick="nav('s-memory')"><span class="ni">📖</span><div class="nl">Memory</div></button></div>
 </div>
@@ -841,6 +845,10 @@ body{background:var(--cr);color:var(--tx);font-family:var(--fs);min-height:100vh
 <div id="s-transport" class="screen">
   <div class="tb"><button class="bk" onclick="nav('s-dash')">← Home</button><div class="wm">TRANSPORTATION</div><div></div></div>
   <div style="display:flex;gap:7px;padding:10px 20px;overflow-x:auto;"><button class="chip sel" onclick="fc(this)">All</button><button class="chip" onclick="fc(this)">Cheapest</button><button class="chip" onclick="fc(this)">Fastest</button><button class="chip" onclick="fc(this)">Greenest</button><button class="chip" onclick="fc(this)">Least Exhausting</button></div>
+  <div style="margin:0 20px 12px;background:linear-gradient(135deg,rgba(176,138,80,.08),rgba(196,135,122,.08));border:1.5px solid rgba(176,138,80,.3);border-radius:12px;padding:14px 16px;cursor:pointer;" onclick="openPW('🚄','Transport Intelligence','All-Access')">
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;"><span style="font-size:14px;">🔒</span><div style="font-family:var(--fm);font-size:8px;letter-spacing:2px;color:var(--sd);text-transform:uppercase;">Upgrade to unlock</div></div>
+    <div style="font-size:13px;color:var(--tm);line-height:1.5;">AI-optimized routing, real-time traffic + strike alerts, <strong>"take the 8:15 train, not the 9:00"</strong> intelligence, and energy-aware transport picks.</div>
+  </div>
   <div class="scr" id="trans-list"></div>
   <div class="nt"><button class="nb" onclick="nav('s-dash')"><span class="ni">🏠</span><div class="nl">Home</div></button><button class="nb act"><span class="ni">📋</span><div class="nl">Itinerary</div></button><button class="nb" onclick="nav('s-ready')"><span class="ni">✈️</span><div class="nl">Readiness</div></button><button class="nb" onclick="openSearch()"><span class="ni">🔍</span><div class="nl">Search</div></button><button class="nb" onclick="nav('s-memory')"><span class="ni">📖</span><div class="nl">Memory</div></button></div>
 </div>
@@ -849,6 +857,10 @@ body{background:var(--cr);color:var(--tx);font-family:var(--fs);min-height:100vh
 <div id="s-stays" class="screen">
   <div class="tb"><button class="bk" onclick="nav('s-dash')">← Home</button><div class="wm">STAYS</div><div></div></div>
   <div style="display:flex;gap:7px;padding:10px 20px;overflow-x:auto;"><button class="chip sel" onclick="fc(this)">All</button><button class="chip" onclick="fc(this)">Hotels</button><button class="chip" onclick="fc(this)">Villas</button><button class="chip" onclick="fc(this)">Airbnb</button></div>
+  <div style="margin:0 20px 12px;background:linear-gradient(135deg,rgba(176,138,80,.08),rgba(196,135,122,.08));border:1.5px solid rgba(176,138,80,.3);border-radius:12px;padding:14px 16px;cursor:pointer;" onclick="openPW('🏨','Stay Intelligence','All-Access')">
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;"><span style="font-size:14px;">🔒</span><div style="font-family:var(--fm);font-size:8px;letter-spacing:2px;color:var(--sd);text-transform:uppercase;">Upgrade to unlock</div></div>
+    <div style="font-size:13px;color:var(--tm);line-height:1.5;">Cross-platform price comparison, <strong>"a villa for 6 is cheaper than 3 hotel rooms"</strong> logic, friction scoring, and trip-type matching.</div>
+  </div>
   <div class="scr" style="padding-top:10px;">
     <div id="stays-list"></div>
     <div style="padding:12px 20px 6px;display:flex;gap:8px;">
@@ -871,7 +883,11 @@ body{background:var(--cr);color:var(--tx);font-family:var(--fs);min-height:100vh
 <div id="s-reminders" class="screen">
   <div class="tb"><button class="bk" onclick="nav('s-dash')">← Home</button><div class="wm">REMINDERS</div><div></div></div>
   <div class="scr">
-    <div class="sh" style="padding-top:14px;"><div class="shl">Concierge Mode</div><div class="sht">Choose Your Intensity</div></div>
+    <div style="margin:14px 20px 12px;background:linear-gradient(135deg,rgba(176,138,80,.08),rgba(196,135,122,.08));border:1.5px solid rgba(176,138,80,.3);border-radius:12px;padding:14px 16px;cursor:pointer;" onclick="openPW('🔔','Concierge Intelligence','All-Access')">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;"><span style="font-size:14px;">🔒</span><div style="font-family:var(--fm);font-size:8px;letter-spacing:2px;color:var(--sd);text-transform:uppercase;">Upgrade to unlock</div></div>
+      <div style="font-size:13px;color:var(--tm);line-height:1.5;">Contextual nudges, <strong>morning briefings</strong>, proactive weather re-routing, reservation confirmations, and "leave now" alerts timed to real traffic.</div>
+    </div>
+    <div class="sh"><div class="shl">Concierge Mode</div><div class="sht">Free: Basic Reminders Only</div></div>
     <div style="padding:0 20px 18px;display:flex;flex-direction:column;gap:9px;">
       <div style="padding:15px;background:var(--pn);border:1.5px solid var(--bd);border-radius:12px;cursor:pointer;" onclick="showToast('Minimal mode set')"><div style="display:flex;justify-content:space-between;"><div style="font-family:var(--fd);font-size:16px;color:var(--tx);">Minimal</div><div style="font-family:var(--fm);font-size:8px;color:var(--ts);letter-spacing:1px;text-transform:uppercase;">Off</div></div><div style="font-size:12px;color:var(--ts);margin-top:3px;">Critical alerts only.</div></div>
       <div style="padding:15px;background:var(--sdl);border:1.5px solid var(--sd);border-radius:12px;cursor:pointer;" onclick="showToast('Balanced mode active')"><div style="display:flex;justify-content:space-between;"><div style="font-family:var(--fd);font-size:16px;color:var(--tx);">Balanced</div><div style="font-family:var(--fm);font-size:8px;color:var(--sd);letter-spacing:1px;text-transform:uppercase;">Active</div></div><div style="font-size:12px;color:var(--ts);margin-top:3px;">Daily briefings, weather, confirmations.</div></div>
@@ -1174,7 +1190,7 @@ body{background:var(--cr);color:var(--tx);font-family:var(--fs);min-height:100vh
     <div class="sh"><div class="shl">Subscription</div><div class="sht">Your Plan</div></div>
     <div style="padding:0 20px;">
       <div style="background:var(--pn);border:1px solid var(--bd);border-radius:12px;padding:16px;margin-bottom:12px;">
-        <div style="display:flex;justify-content:space-between;align-items:center;"><div><div style="font-family:var(--fd);font-size:16px;font-weight:600;color:var(--tx);">Explorer (Free)</div><div style="font-size:12px;color:var(--ts);margin-top:2px;">8 core modules included</div></div><div style="font-family:var(--fd);font-size:18px;font-weight:700;color:var(--sd);">$0</div></div>
+        <div style="display:flex;justify-content:space-between;align-items:center;"><div><div style="font-family:var(--fd);font-size:16px;font-weight:600;color:var(--tx);">Explorer (Free)</div><div style="font-size:12px;color:var(--ts);margin-top:2px;">Plan manually — upgrade for AI intelligence</div></div><div style="font-family:var(--fd);font-size:18px;font-weight:700;color:var(--sd);">$0</div></div>
         <button class="btn bsd" style="width:100%;margin-top:14px;padding:12px;" onclick="nav('s-pricing')">Upgrade Plan →</button>
       </div>
     </div>
@@ -1303,7 +1319,7 @@ body{background:var(--cr);color:var(--tx);font-family:var(--fs);min-height:100vh
     <div style="padding:0 20px;">
       <div style="background:var(--pn);border:1.5px solid var(--bd);border-radius:14px;padding:18px;margin-bottom:12px;">
         <div style="display:flex;justify-content:space-between;align-items:center;"><div style="font-family:var(--fd);font-size:18px;font-weight:700;color:var(--ink);">Explorer</div><div style="font-family:var(--fd);font-size:22px;font-weight:700;color:var(--sd);">Free</div></div>
-        <div style="font-size:12px;color:var(--tm);margin-top:6px;line-height:1.6;">8 core modules: Activities, Dining, Transport, Stays, Safety, Payment, Memory Book, Reminders. Budget Tracker included.</div>
+        <div style="font-size:12px;color:var(--tm);margin-top:6px;line-height:1.6;">Browse &amp; add manually: Activities, Dining, Transport, Stays. Full access: Safety &amp; Prep, Accessibility, Payment Checklist. Basic reminders &amp; budget tracking. Memory Book requires All-Access.</div>
         <button class="btn bgh" style="width:100%;margin-top:12px;padding:11px;" onclick="nav('s-signup')">Get Started</button>
       </div>
       <div style="background:var(--pn);border:1.5px solid var(--sd);border-radius:14px;padding:18px;margin-bottom:12px;position:relative;">
