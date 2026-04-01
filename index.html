@@ -409,6 +409,35 @@ body{background:var(--cr);color:var(--tx);font-family:var(--fs);min-height:100vh
         <div style="font-size:11px;color:var(--ts);line-height:1.5;margin-top:8px;">Free: pet-friendly filtering across stays, transport, dining. Pet Travel module (paid) unlocks breed-specific airline rules, quarantine regs, and Dogpack integration.</div>
       </div>
     </div>
+    <!-- Accessibility toggle -->
+    <div style="margin-top:10px;">
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:var(--pn);border:1.5px solid var(--bd);border-radius:14px;cursor:pointer;" id="access-toggle" onclick="toggleAccess()">
+        <div style="display:flex;align-items:center;gap:12px;">
+          <span style="font-size:22px;">♿</span>
+          <div>
+            <div style="font-family:var(--fd);font-size:15px;font-weight:600;color:var(--tx);">Any accessibility needs?</div>
+            <div style="font-size:11px;color:var(--ts);margin-top:2px;">Adapts stays, transport, activities & pacing</div>
+          </div>
+        </div>
+        <div id="access-switch" style="width:44px;height:24px;border-radius:12px;background:var(--bd);position:relative;transition:background .2s;flex-shrink:0;">
+          <div style="width:20px;height:20px;border-radius:50%;background:#fff;position:absolute;top:2px;left:2px;transition:left .2s;box-shadow:0 1px 3px rgba(0,0,0,.15);" id="access-knob"></div>
+        </div>
+      </div>
+      <div id="access-profile" style="display:none;margin-top:12px;background:var(--sdl);border:1px solid rgba(176,138,80,.25);border-radius:12px;padding:14px;">
+        <div style="font-family:var(--fm);font-size:8px;letter-spacing:2px;color:var(--sd);text-transform:uppercase;margin-bottom:10px;">Select all that apply</div>
+        <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:10px;">
+          <button class="chip" onclick="fc(this)" style="text-align:left;padding:10px 14px;">♿ Wheelchair / mobility device</button>
+          <button class="chip" onclick="fc(this)" style="text-align:left;padding:10px 14px;">🦯 Limited mobility — can walk, needs accommodations</button>
+          <button class="chip" onclick="fc(this)" style="text-align:left;padding:10px 14px;">👁 Visual impairment</button>
+          <button class="chip" onclick="fc(this)" style="text-align:left;padding:10px 14px;">🦻 Hearing impairment</button>
+          <button class="chip" onclick="fc(this)" style="text-align:left;padding:10px 14px;">🧠 Sensory sensitivities</button>
+        </div>
+        <div style="margin-bottom:8px;">
+          <input type="text" placeholder="Anything else we should know? (optional)" style="width:100%;padding:8px 0;background:transparent;border:none;border-bottom:1.5px solid var(--bd);font-family:var(--fs);font-size:13px;color:var(--tx);outline:none;box-sizing:border-box;">
+        </div>
+        <div style="font-size:11px;color:var(--ts);line-height:1.5;">This adapts your entire trip — accessible rooms, step-free routes, elevator-required stays, adapted transport, proximity to medical facilities, and gentler pacing. All filtering is automatic across every module.</div>
+      </div>
+    </div>
     <button class="btn bsd" style="width:100%;margin-top:18px;display:none;" id="who-continue" onclick="continueFromWho()">Continue &#x2192;</button>
   </div>
 </div>
@@ -1155,6 +1184,42 @@ body{background:var(--cr);color:var(--tx);font-family:var(--fs);min-height:100vh
       <div style="padding:14px 0;border-bottom:1px solid var(--bd);cursor:pointer;" onclick="showToast('Notification preferences')"><div style="font-size:14px;color:var(--tx);">Notifications</div></div>
       <div style="padding:14px 0;border-bottom:1px solid var(--bd);cursor:pointer;" onclick="showToast('Privacy settings')"><div style="font-size:14px;color:var(--tx);">Privacy &amp; Data</div></div>
       <div style="padding:14px 0;border-bottom:1px solid var(--bd);cursor:pointer;" onclick="showToast('Connected apps')"><div style="font-size:14px;color:var(--tx);">Connected Apps (Spotify, Google)</div></div>
+      <div style="padding:14px 0;border-bottom:1px solid var(--bd);cursor:pointer;" onclick="showToast('FAQ')"><div style="font-size:14px;color:var(--tx);" onclick="nav('s-faq')">FAQ</div></div>
+    </div>
+    <div class="sh"><div class="shl">Discount Profiles</div></div>
+    <div style="padding:0 20px;">
+      <div style="font-size:12px;color:var(--ts);margin-bottom:12px;line-height:1.5;">Optional. Enables discount intelligence at attractions, transit, and dining. This data stays private — never shared with trip companions or third parties.</div>
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--bd);">
+        <div style="font-size:14px;color:var(--tx);">🎖 Age-Based Discounts</div>
+        <div style="width:40px;height:22px;border-radius:11px;background:var(--bd);position:relative;cursor:pointer;" onclick="var k=this.querySelector('div');var on=k.style.left==='18px';k.style.left=on?'2px':'18px';this.style.background=on?'var(--bd)':'var(--sd)';document.getElementById('senior-tiers').style.display=on?'none':'block';"><div style="width:18px;height:18px;border-radius:50%;background:#fff;position:absolute;top:2px;left:2px;transition:left .2s;box-shadow:0 1px 3px rgba(0,0,0,.15);"></div></div>
+      </div>
+      <div id="senior-tiers" style="display:none;padding:10px 0 10px 12px;border-bottom:1px solid var(--bd);font-size:12px;color:var(--tm);line-height:1.8;">
+        <div><span style="font-weight:600;color:var(--tx);">50+</span> — AARP rates, select restaurant discounts</div>
+        <div><span style="font-weight:600;color:var(--tx);">55+</span> — Many hotel chains, dining (Denny's, IHOP), rental cars</div>
+        <div><span style="font-weight:600;color:var(--tx);">60+</span> — Museums, transit systems, additional hotel programs</div>
+        <div><span style="font-weight:600;color:var(--tx);">62+</span> — US National Parks Senior Pass ($80 lifetime), Social Security</div>
+        <div><span style="font-weight:600;color:var(--tx);">65+</span> — Amtrak, most airlines, Medicare, broadest discount eligibility</div>
+        <div style="font-size:11px;color:var(--ts);margin-top:6px;">Romieaux surfaces discounts at each threshold. You determine which apply to you.</div>
+      </div>
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--bd);">
+        <div style="font-size:14px;color:var(--tx);">🎖 Military / Veteran</div>
+        <div style="width:40px;height:22px;border-radius:11px;background:var(--bd);position:relative;cursor:pointer;" onclick="var k=this.querySelector('div');var on=k.style.left==='18px';k.style.left=on?'2px':'18px';this.style.background=on?'var(--bd)':'var(--sd)';"><div style="width:18px;height:18px;border-radius:50%;background:#fff;position:absolute;top:2px;left:2px;transition:left .2s;box-shadow:0 1px 3px rgba(0,0,0,.15);"></div></div>
+      </div>
+      <div id="mil-note" style="display:none;padding:8px 0 4px;font-size:11px;color:var(--ts);line-height:1.5;">🔒 Encrypted and stored only in your Blueprint. Discount intelligence active for US domestic travel only by default. Auto-suppressed for sensitive destinations. Not visible to trip companions.</div>
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--bd);">
+        <div style="font-size:14px;color:var(--tx);">🎓 Student</div>
+        <div style="width:40px;height:22px;border-radius:11px;background:var(--bd);position:relative;cursor:pointer;" onclick="var k=this.querySelector('div');var on=k.style.left==='18px';k.style.left=on?'2px':'18px';this.style.background=on?'var(--bd)':'var(--sd)';"><div style="width:18px;height:18px;border-radius:50%;background:#fff;position:absolute;top:2px;left:2px;transition:left .2s;box-shadow:0 1px 3px rgba(0,0,0,.15);"></div></div>
+      </div>
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--bd);">
+        <div style="font-size:14px;color:var(--tx);">🚗 AAA Member</div>
+        <div style="width:40px;height:22px;border-radius:11px;background:var(--bd);position:relative;cursor:pointer;" onclick="var k=this.querySelector('div');var on=k.style.left==='18px';k.style.left=on?'2px':'18px';this.style.background=on?'var(--bd)':'var(--sd)';"><div style="width:18px;height:18px;border-radius:50%;background:#fff;position:absolute;top:2px;left:2px;transition:left .2s;box-shadow:0 1px 3px rgba(0,0,0,.15);"></div></div>
+      </div>
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 0;">
+        <div style="font-size:14px;color:var(--tx);">🏛 Government / First Responder</div>
+        <div style="width:40px;height:22px;border-radius:11px;background:var(--bd);position:relative;cursor:pointer;" onclick="var k=this.querySelector('div');var on=k.style.left==='18px';k.style.left=on?'2px':'18px';this.style.background=on?'var(--bd)':'var(--sd)';"><div style="width:18px;height:18px;border-radius:50%;background:#fff;position:absolute;top:2px;left:2px;transition:left .2s;box-shadow:0 1px 3px rgba(0,0,0,.15);"></div></div>
+      </div>
+    </div>
+    <div style="padding:0 20px;margin-top:10px;">
       <div style="padding:14px 0;cursor:pointer;" onclick="nav('s-land')"><div style="font-size:14px;color:var(--rd);">Sign Out</div></div>
     </div>
   </div>
@@ -1920,6 +1985,8 @@ function selectRole(r){document.getElementById('role-editor').classList.toggle('
 function togglePet(){S.hasPet=!S.hasPet;var sw=document.getElementById('pet-switch');var knob=document.getElementById('pet-knob');var prof=document.getElementById('pet-profile');var tog=document.getElementById('pet-toggle');if(S.hasPet){sw.style.background='var(--sd)';knob.style.left='22px';prof.style.display='block';tog.style.borderColor='var(--sd)';if(!document.getElementById('pet-list').innerHTML)addPet();}else{sw.style.background='var(--bd)';knob.style.left='2px';prof.style.display='none';tog.style.borderColor='var(--bd)';}}
 var hasKidsFlag=false;
 function toggleKidsFlag(){hasKidsFlag=!hasKidsFlag;var sw=document.getElementById('kids-toggle-switch');var knob=document.getElementById('kids-toggle-knob');var tog=document.getElementById('kids-toggle');if(hasKidsFlag){sw.style.background='var(--sd)';knob.style.left='22px';tog.style.borderColor='var(--sd)';}else{sw.style.background='var(--bd)';knob.style.left='2px';tog.style.borderColor='var(--bd)';}}
+var hasAccessFlag=false;
+function toggleAccess(){hasAccessFlag=!hasAccessFlag;var sw=document.getElementById('access-switch');var knob=document.getElementById('access-knob');var tog=document.getElementById('access-toggle');var prof=document.getElementById('access-profile');if(hasAccessFlag){sw.style.background='var(--sd)';knob.style.left='22px';tog.style.borderColor='var(--sd)';prof.style.display='block';}else{sw.style.background='var(--bd)';knob.style.left='2px';tog.style.borderColor='var(--bd)';prof.style.display='none';}}
 var petCount=0;
 function addPet(){petCount++;var list=document.getElementById('pet-list');var emos=['🐕','🐈','🐾','🐕','🐈'];var div=document.createElement('div');div.style.cssText='margin-bottom:10px;padding-bottom:10px;border-bottom:1px solid var(--bd);';div.innerHTML='<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;"><span style="font-size:16px;">'+emos[(petCount-1)%emos.length]+'</span><div style="font-family:var(--fd);font-size:13px;font-weight:600;color:var(--tx);">Pet '+petCount+'</div></div><div style="margin-bottom:8px;"><input type="text" placeholder="Pet name" style="width:100%;padding:8px 0;background:transparent;border:none;border-bottom:1.5px solid var(--bd);font-family:var(--fs);font-size:14px;color:var(--tx);outline:none;box-sizing:border-box;"></div><div style="display:flex;gap:6px;margin-bottom:8px;"><button class="chip sel" onclick="fc(this)" style="flex:1;padding:8px;">🐕 Dog</button><button class="chip" onclick="fc(this)" style="flex:1;padding:8px;">🐈 Cat</button><button class="chip" onclick="fc(this)" style="flex:1;padding:8px;">🐾 Other</button></div><div style="display:flex;gap:6px;margin-bottom:8px;"><button class="chip sel" onclick="fc(this)" style="flex:1;padding:8px;">Small</button><button class="chip" onclick="fc(this)" style="flex:1;padding:8px;">Medium</button><button class="chip" onclick="fc(this)" style="flex:1;padding:8px;">Large</button></div><div style="display:flex;align-items:center;gap:8px;"><input type="checkbox" style="width:16px;height:16px;"><span style="font-size:12px;color:var(--tm);">Service / support animal</span></div>';list.appendChild(div);}
 var selectedGroup=null;
