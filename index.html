@@ -280,7 +280,13 @@ body{background:var(--cr);color:var(--tx);font-family:var(--fs);min-height:100vh
     <button class="btn bsd" onclick="nav('s-signup')">Create Account</button>
     <button class="btn bwk" onclick="nav('s-signin')">Sign In</button>
     <div style="text-align:center;margin-top:6px;font-size:13px;color:rgba(245,239,230,.55);cursor:pointer;" onclick="nav('s-signup')">Have an invite link? <span style="color:var(--rg);font-weight:500;">Join a trip →</span></div>
-    <div style="text-align:center;margin-top:10px;font-family:var(--fd);font-style:italic;font-size:12px;color:rgba(245,239,230,.45);">Preview a finished trip: <span style="color:var(--rg);cursor:pointer;" onclick="loadDemoTrip()">Amalfi Coast</span> · <span style="color:var(--rg);cursor:pointer;" onclick="loadDemoTripBali()">Bali Wellness Reset</span></div>
+    <div style="margin-top:14px;padding:14px 18px;border:1px solid rgba(176,138,80,.35);border-radius:14px;background:rgba(176,138,80,.06);text-align:center;">
+      <div style="font-family:var(--fm);font-size:9px;letter-spacing:2px;color:var(--sd);text-transform:uppercase;margin-bottom:8px;">Preview a finished trip — no signup needed</div>
+      <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;">
+        <button onclick="loadDemoTrip()" style="padding:9px 16px;border-radius:20px;border:1px solid var(--rg);background:transparent;font-family:var(--fs);font-size:13px;color:#f5efe6;cursor:pointer;transition:all .2s;" onmouseover="this.style.background='var(--rg)';this.style.color='#1a1208';" onmouseout="this.style.background='transparent';this.style.color='#f5efe6';">Amalfi Coast →</button>
+        <button onclick="loadDemoTripBali()" style="padding:9px 16px;border-radius:20px;border:1px solid var(--rg);background:transparent;font-family:var(--fs);font-size:13px;color:#f5efe6;cursor:pointer;transition:all .2s;" onmouseover="this.style.background='var(--rg)';this.style.color='#1a1208';" onmouseout="this.style.background='transparent';this.style.color='#f5efe6';">Bali Wellness Reset →</button>
+      </div>
+    </div>
     <div style="display:flex;justify-content:center;gap:20px;margin-top:10px;">
       <span style="font-family:var(--fm);font-size:10px;color:var(--sd);letter-spacing:2px;cursor:pointer;text-transform:uppercase;" onclick="nav('s-pricing')">Pricing</span>
       <span style="font-family:var(--fm);font-size:10px;color:var(--sd);letter-spacing:2px;cursor:pointer;text-transform:uppercase;" onclick="nav('s-faq')">FAQ</span>
@@ -1363,7 +1369,7 @@ body{background:var(--cr);color:var(--tx);font-family:var(--fs);min-height:100vh
     <div style="background:var(--cr2);padding:20px;">
       <div style="display:flex;align-items:center;gap:14px;">
         <div style="width:52px;height:52px;border-radius:50%;background:#4a6b5a;display:flex;align-items:center;justify-content:center;font-size:22px;">👤</div>
-        <div><div style="font-family:var(--fd);font-size:18px;font-weight:700;color:var(--ink);">Jordan</div><div style="font-size:12px;color:var(--ts);">jordan@email.com</div><div style="font-size:11px;color:var(--rg);margin-top:2px;">Explorer (Free)</div></div>
+        <div><div style="font-family:var(--fd);font-size:18px;font-weight:700;color:var(--ink);">Jordan</div><div style="font-size:12px;color:var(--ts);"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="a7cdc8d5c3c6c9e7c2cac6cecb89c4c8ca">[email&#160;protected]</a></div><div style="font-size:11px;color:var(--rg);margin-top:2px;">Explorer (Free)</div></div>
       </div>
     </div>
     <div class="sh"><div class="shl">Travel Blueprint</div><div class="sht">Your Identity</div></div>
@@ -1655,30 +1661,35 @@ body{background:var(--cr);color:var(--tx);font-family:var(--fs);min-height:100vh
   <div class="scr">
     <div style="background:var(--cr2);padding:28px 24px 20px;">
       <div style="font-family:var(--fm);font-size:8px;letter-spacing:4px;color:var(--sd);text-transform:uppercase;margin-bottom:10px;">For Travel Professionals</div>
-      <div style="font-family:var(--fd);font-size:26px;font-weight:700;color:var(--ink);line-height:1.2;">Run your business on Romieaux.</div>
-      <div style="font-size:14px;color:var(--tm);margin-top:8px;line-height:1.6;">The same intelligence your clients can't get anywhere else, run from your dashboard and branded as yours.</div>
+      <div style="font-family:var(--fd);font-size:26px;font-weight:700;color:var(--ink);line-height:1.2;">Romieaux for Business.</div>
+      <div style="font-size:14px;color:var(--tm);margin-top:8px;line-height:1.6;">The same intelligence your clients can't get anywhere else — built into a workflow designed for you, branded as yours.</div>
     </div>
     <div style="padding:20px;">
-      <div style="display:flex;flex-direction:column;gap:12px;margin-bottom:20px;">
-        <div style="background:var(--pn);border:1px solid var(--bd);border-radius:14px;padding:16px;">
-          <div style="font-size:20px;margin-bottom:6px;">👥</div>
-          <div style="font-family:var(--fd);font-size:16px;font-weight:600;color:var(--tx);margin-bottom:4px;">Multi-Client Dashboard</div>
-          <div style="font-size:13px;color:var(--tm);line-height:1.5;">Manage every client's trips from one view. Each client builds their own Travel Blueprint that grows trip after trip — your knowledge of them, kept current.</div>
-        </div>
-        <div style="background:var(--pn);border:1px solid var(--bd);border-radius:14px;padding:16px;">
-          <div style="font-size:20px;margin-bottom:6px;">🏷</div>
-          <div style="font-family:var(--fd);font-size:16px;font-weight:600;color:var(--tx);margin-bottom:4px;">White-Label Itineraries</div>
-          <div style="font-size:13px;color:var(--tm);line-height:1.5;">Your logo, your brand, your client's experience. Every PDF and shared link carries your agency, not ours.</div>
-        </div>
+      <div style="font-family:var(--fm);font-size:8px;letter-spacing:3px;color:var(--ts);text-transform:uppercase;margin-bottom:10px;">Why it matters</div>
+      <div style="display:flex;flex-direction:column;gap:12px;margin-bottom:24px;">
         <div style="background:var(--pn);border:1px solid var(--bd);border-radius:14px;padding:16px;">
           <div style="font-size:20px;margin-bottom:6px;">🧠</div>
-          <div style="font-family:var(--fd);font-size:16px;font-weight:600;color:var(--tx);margin-bottom:4px;">Intelligence That Makes You Better</div>
+          <div style="font-family:var(--fd);font-size:16px;font-weight:600;color:var(--tx);margin-bottom:4px;">The Research That Gives You Time Back</div>
           <div style="font-size:13px;color:var(--tm);line-height:1.5;">Twenty-five modules and eighteen engines work behind every recommendation you make. Hidden gems, wait times, credit card optimization, pacing — things no advisor can research by hand for every trip.</div>
         </div>
         <div style="background:var(--pn);border:1px solid var(--bd);border-radius:14px;padding:16px;">
           <div style="font-size:20px;margin-bottom:6px;">📊</div>
           <div style="font-family:var(--fd);font-size:16px;font-weight:600;color:var(--tx);margin-bottom:4px;">Earn More Per Trip</div>
-          <div style="font-size:13px;color:var(--tm);line-height:1.5;">Build higher-value itineraries in less time. Clients feel the difference. You deliver the experience. Trips become more memorable, and worth more.</div>
+          <div style="font-size:13px;color:var(--tm);line-height:1.5;">Build higher-value itineraries in less time. The depth Romieaux brings to every recommendation makes the trip itself more memorable — and worth more.</div>
+        </div>
+      </div>
+
+      <div style="font-family:var(--fm);font-size:8px;letter-spacing:3px;color:var(--ts);text-transform:uppercase;margin-bottom:10px;">What you get</div>
+      <div style="display:flex;flex-direction:column;gap:12px;margin-bottom:20px;">
+        <div style="background:var(--pn);border:1px solid var(--bd);border-radius:14px;padding:16px;">
+          <div style="font-size:20px;margin-bottom:6px;">👥</div>
+          <div style="font-family:var(--fd);font-size:16px;font-weight:600;color:var(--tx);margin-bottom:4px;">Multi-Client Dashboard</div>
+          <div style="font-size:13px;color:var(--tm);line-height:1.5;">Manage every client's trips from one view. Build their Travel Blueprint with them or for them — your accumulated knowledge of each client compounds trip after trip, ready when they call again.</div>
+        </div>
+        <div style="background:var(--pn);border:1px solid var(--bd);border-radius:14px;padding:16px;">
+          <div style="font-size:20px;margin-bottom:6px;">🏷</div>
+          <div style="font-family:var(--fd);font-size:16px;font-weight:600;color:var(--tx);margin-bottom:4px;">White-Label Itineraries</div>
+          <div style="font-size:13px;color:var(--tm);line-height:1.5;">Your logo, your brand, your client's experience. Every PDF and shared link carries your agency, not ours.</div>
         </div>
         <div style="background:var(--pn);border:1px solid var(--bd);border-radius:14px;padding:16px;">
           <div style="font-size:20px;margin-bottom:6px;">🔌</div>
@@ -1745,7 +1756,7 @@ body{background:var(--cr);color:var(--tx);font-family:var(--fs);min-height:100vh
         <button class="btn bsd" style="width:100%;padding:14px;" onclick="showToast('Application submitted — check your email for next steps')">Submit & Start Trial →</button>
       </div>
       <button class="btn bgh" style="width:100%;padding:14px;" onclick="showToast('Scheduling a demo with the Romieaux team…')">Request a Demo</button>
-      <div style="text-align:center;margin-top:12px;font-size:12px;color:var(--ts);">Questions? <span style="color:var(--rg);cursor:pointer;" onclick="showToast('Opening pro@romieaux.com…')">pro@romieaux.com</span></div>
+      <div style="text-align:center;margin-top:12px;font-size:12px;color:var(--ts);">Questions? <span style="color:var(--rg);cursor:pointer;" onclick="showToast('Opening pro@romieaux.com…')"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="a6d6d4c9e6d4c9cbcfc3c7d3de88c5c9cb">[email&#160;protected]</a></span></div>
     </div>
   </div>
 </div>
@@ -2037,6 +2048,103 @@ body{background:var(--cr);color:var(--tx);font-family:var(--fs);min-height:100vh
   <div class="nt"><button class="nb" onclick="nav('s-dash')"><span class="ni">🏠</span><div class="nl">Home</div></button><button class="nb" onclick="nav('s-itin')"><span class="ni">📋</span><div class="nl">Itinerary</div></button><button class="nb" onclick="nav('s-ready')"><span class="ni">✈️</span><div class="nl">Readiness</div></button><button class="nb" onclick="openSearch()"><span class="ni">🔍</span><div class="nl">Search</div></button><button class="nb" onclick="nav('s-memory')"><span class="ni">📖</span><div class="nl">Memory</div></button></div>
 </div>
 
+<!-- ===== ACTIVE INTELLIGENCE: COST INTELLIGENCE ===== -->
+<div id="s-mod-cost" class="screen">
+  <div class="tb"><button class="bk" onclick="nav('s-dash')">← Home</button><div class="wm">COST INTELLIGENCE</div><div></div></div>
+  <div class="ib"><div class="ib-glow"></div><div class="ib-eye">Active Intelligence · Trip-Wide Cost Optimization</div><div class="ib-t">$827 saved across 7 decisions.</div><div class="ib-s">Every booking weighed against alternatives — points vs cash, stay vs villa, ferry vs charter.</div></div>
+  <div class="scr">
+
+    <div style="padding:16px 20px 4px;font-size:12px;color:var(--tm);line-height:1.5;">A digest of every cost decision Romieaux made for this trip. Tap any item to see it in context — nothing is duplicated, every detail lives in its home module.</div>
+
+    <div class="sh" style="padding-top:14px;"><div class="shl">Stays</div><div class="sht">$280/night avoided</div></div>
+    <div style="padding:0 20px 4px;">
+      <div style="background:var(--pn);border:1px solid var(--bd);border-radius:12px;overflow:hidden;cursor:pointer;" onclick="nav('s-itin');showToast('Stays card on the Itinerary')">
+        <div style="padding:14px 16px;border-bottom:1px solid var(--bd);">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px;"><div style="font-family:var(--fd);font-size:15px;font-weight:600;color:var(--tx);">Le Sirenuse over Villa Fraulo</div><span style="font-family:var(--fm);font-size:9px;color:var(--gn);letter-spacing:1px;">CHOSEN</span></div>
+          <div style="font-size:12px;color:var(--tm);line-height:1.5;">Villa Fraulo would have saved €280/night ($2,800 across the trip), but added a 45-minute daily commute from Ravello. For an anniversary trip with limited days, walkability won.</div>
+          <div style="display:flex;gap:6px;margin-top:8px;flex-wrap:wrap;">
+            <span style="padding:3px 9px;border-radius:10px;font-family:var(--fm);font-size:9px;letter-spacing:1px;background:var(--rgl);color:var(--rg);">Tradeoff: walkability vs cost</span>
+          </div>
+        </div>
+        <div style="padding:9px 16px;background:var(--sdl);font-size:11px;color:var(--tm);display:flex;justify-content:space-between;align-items:center;"><span>See full Stays comparison</span><span style="color:var(--sd);">→</span></div>
+      </div>
+    </div>
+
+    <div class="sh"><div class="shl">Flights</div><div class="sht">$340 saved · points strategy</div></div>
+    <div style="padding:0 20px 4px;">
+      <div style="background:var(--pn);border:1px solid var(--bd);border-radius:12px;overflow:hidden;cursor:pointer;margin-bottom:8px;" onclick="nav('s-mod-cc')">
+        <div style="padding:14px 16px;border-bottom:1px solid var(--bd);">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px;"><div style="font-family:var(--fd);font-size:15px;font-weight:600;color:var(--tx);">Le Sirenuse: pay with Chase points, not cash</div><span style="font-family:var(--fm);font-size:9px;color:var(--gn);letter-spacing:1px;">SAVES $340</span></div>
+          <div style="font-size:12px;color:var(--tm);line-height:1.5;">Sapphire Reserve transfers 1:1 to World of Hyatt · Le Sirenuse bookable through SLH collection. 22,000 points for 3 nights vs $1,860 cash. You'd be paying 8.5¢/point vs 1.5¢ cashback baseline.</div>
+        </div>
+        <div style="padding:9px 16px;background:var(--sdl);font-size:11px;color:var(--tm);display:flex;justify-content:space-between;align-items:center;"><span>See full points strategy in Credit Card</span><span style="color:var(--sd);">→</span></div>
+      </div>
+    </div>
+
+    <div class="sh"><div class="shl">Activities</div><div class="sht">2 decisions weighed</div></div>
+    <div style="padding:0 20px 4px;">
+      <div style="background:var(--pn);border:1px solid var(--bd);border-radius:12px;overflow:hidden;cursor:pointer;margin-bottom:8px;" onclick="showToast('Capri Boat detail · Day 2')">
+        <div style="padding:14px 16px;border-bottom:1px solid var(--bd);">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px;"><div style="font-family:var(--fd);font-size:15px;font-weight:600;color:var(--tx);">Capri boat charter over public ferry</div><span style="font-family:var(--fm);font-size:9px;color:var(--rg);letter-spacing:1px;">PREMIUM</span></div>
+          <div style="font-size:12px;color:var(--tm);line-height:1.5;">Public ferry would have been €22/pp (€44 total) vs €400 charter. The charter wins for the anniversary day — Grotta Azzurra access, no waiting in line, swim stops you choose. The trade is intentional, not an oversight.</div>
+        </div>
+        <div style="padding:9px 16px;background:var(--sdl);font-size:11px;color:var(--tm);display:flex;justify-content:space-between;align-items:center;"><span>See activity reasoning</span><span style="color:var(--sd);">→</span></div>
+      </div>
+      <div style="background:var(--pn);border:1px solid var(--bd);border-radius:12px;overflow:hidden;cursor:pointer;" onclick="nav('s-group')">
+        <div style="padding:14px 16px;border-bottom:1px solid var(--bd);">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px;"><div style="font-family:var(--fd);font-size:15px;font-weight:600;color:var(--tx);">Ravello concert split 4 ways</div><span style="font-family:var(--fm);font-size:9px;color:var(--gn);letter-spacing:1px;">CHOSEN</span></div>
+          <div style="font-size:12px;color:var(--tm);line-height:1.5;">€180 total · €45 each · paid by Marcus, settled in group balances. The Ravello Festival is the anchor group experience — only €5/pp more than the alternative free belvedere visit, with live Bollani Trio jazz instead of just the view.</div>
+        </div>
+        <div style="padding:9px 16px;background:var(--sdl);font-size:11px;color:var(--tm);display:flex;justify-content:space-between;align-items:center;"><span>See in Group Coordination</span><span style="color:var(--sd);">→</span></div>
+      </div>
+    </div>
+
+    <div class="sh"><div class="shl">Dining</div><div class="sht">$96 earned in points</div></div>
+    <div style="padding:0 20px 4px;">
+      <div style="background:var(--pn);border:1px solid var(--bd);border-radius:12px;overflow:hidden;cursor:pointer;" onclick="nav('s-mod-cc')">
+        <div style="padding:14px 16px;border-bottom:1px solid var(--bd);">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px;"><div style="font-family:var(--fd);font-size:15px;font-weight:600;color:var(--tx);">Amex Platinum at restaurants only</div><span style="font-family:var(--fm);font-size:9px;color:var(--gn);letter-spacing:1px;">EARNS $96</span></div>
+          <div style="font-size:12px;color:var(--tm);line-height:1.5;">Amex earns 4× at restaurants worldwide right now. Sapphire stays the default for everything else (3× travel). Across ~$1,400 of trip dining, that's 4,800 extra points vs single-card strategy.</div>
+        </div>
+        <div style="padding:9px 16px;background:var(--sdl);font-size:11px;color:var(--tm);display:flex;justify-content:space-between;align-items:center;"><span>See full card strategy in Credit Card</span><span style="color:var(--sd);">→</span></div>
+      </div>
+    </div>
+
+    <div class="sh"><div class="shl">Transport</div><div class="sht">$51 saved · skip the portal</div></div>
+    <div style="padding:0 20px 4px;">
+      <div style="background:var(--pn);border:1px solid var(--bd);border-radius:12px;overflow:hidden;cursor:pointer;margin-bottom:8px;" onclick="nav('s-mod-cc')">
+        <div style="padding:14px 16px;border-bottom:1px solid var(--bd);">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px;"><div style="font-family:var(--fd);font-size:15px;font-weight:600;color:var(--tx);">Trenitalia direct, not Chase portal</div><span style="font-family:var(--fm);font-size:9px;color:var(--gn);letter-spacing:1px;">SAVES $51</span></div>
+          <div style="font-size:12px;color:var(--tm);line-height:1.5;">Trenitalia.com is €18 cheaper per ticket than booking the same Frecciarossa through Chase Travel, and the rewards math still works on Sapphire as a direct travel charge. Two tickets, $51 total saving.</div>
+        </div>
+        <div style="padding:9px 16px;background:var(--sdl);font-size:11px;color:var(--tm);display:flex;justify-content:space-between;align-items:center;"><span>See full points strategy</span><span style="color:var(--sd);">→</span></div>
+      </div>
+      <div style="background:var(--pn);border:1px solid var(--bd);border-radius:12px;overflow:hidden;cursor:pointer;" onclick="showToast('Day 5 SS163 detail in Smart Check')">
+        <div style="padding:14px 16px;border-bottom:1px solid var(--bd);">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px;"><div style="font-family:var(--fd);font-size:15px;font-weight:600;color:var(--tx);">SITA bus available — but rejected</div><span style="font-family:var(--fm);font-size:9px;color:var(--rg);letter-spacing:1px;">PREMIUM</span></div>
+          <div style="font-size:12px;color:var(--tm);line-height:1.5;">SITA bus from Positano to Ravello is €4/pp vs €40 private car. Bus rejected for Day 5 because of the Bollani concert end at 11:30 PM (last bus is 9:45 PM). Private car holds for late-night return, all 4 travelers.</div>
+        </div>
+        <div style="padding:9px 16px;background:var(--sdl);font-size:11px;color:var(--tm);display:flex;justify-content:space-between;align-items:center;"><span>See Smart Check Day 5</span><span style="color:var(--sd);">→</span></div>
+      </div>
+    </div>
+
+    <div class="sh"><div class="shl">Settlement</div><div class="sht">FX routed via Wise</div></div>
+    <div style="padding:0 20px 4px;">
+      <div style="background:var(--pn);border:1px solid var(--bd);border-radius:12px;overflow:hidden;cursor:pointer;" onclick="nav('s-group')">
+        <div style="padding:14px 16px;border-bottom:1px solid var(--bd);">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px;"><div style="font-family:var(--fd);font-size:15px;font-weight:600;color:var(--tx);">Wise for cross-border, Venmo for domestic</div><span style="font-family:var(--fm);font-size:9px;color:var(--gn);letter-spacing:1px;">CHOSEN</span></div>
+          <div style="font-size:12px;color:var(--tm);line-height:1.5;">Sarah → Marcus and Jordan → Marcus both go through Wise (NYC → London) — cheaper FX than Venmo international. Sarah → Alex stays Venmo (NYC ↔ NYC). Same corridor, same rail.</div>
+        </div>
+        <div style="padding:9px 16px;background:var(--sdl);font-size:11px;color:var(--tm);display:flex;justify-content:space-between;align-items:center;"><span>See payment routing in Group Coordination</span><span style="color:var(--sd);">→</span></div>
+      </div>
+    </div>
+
+    <div style="padding:14px 20px 24px;"><div style="background:var(--sdl);border:1px solid rgba(176,138,80,.25);border-radius:12px;padding:14px;"><div style="font-family:var(--fm);font-size:8px;letter-spacing:2px;color:var(--sd);text-transform:uppercase;margin-bottom:4px;">How This Works</div><div style="font-size:12px;color:var(--tm);line-height:1.6;">Cost Intelligence is a digest, not a separate engine. Each decision lives in its home module — Stays, Credit Card, Group Coordination, Smart Check. This view aggregates them so you can see every cost trade-off in one place. The trip total isn't a magic number; it's the sum of decisions you can audit one by one.</div></div></div>
+
+  </div>
+  <div class="nt"><button class="nb" onclick="nav('s-dash')"><span class="ni">🏠</span><div class="nl">Home</div></button><button class="nb" onclick="nav('s-itin')"><span class="ni">📋</span><div class="nl">Itinerary</div></button><button class="nb" onclick="nav('s-ready')"><span class="ni">✈️</span><div class="nl">Readiness</div></button><button class="nb" onclick="openSearch()"><span class="ni">🔍</span><div class="nl">Search</div></button><button class="nb" onclick="nav('s-memory')"><span class="ni">📖</span><div class="nl">Memory</div></button></div>
+</div>
+
 <!-- ===== ACTIVE INTELLIGENCE: INSURANCE ===== -->
 <div id="s-mod-ins" class="screen">
   <div class="tb"><button class="bk" onclick="nav('s-dash')">← Home</button><div class="wm">INSURANCE</div><div></div></div>
@@ -2174,7 +2282,7 @@ body{background:var(--cr);color:var(--tx);font-family:var(--fs);min-height:100vh
 
 <div class="toast" id="toast"></div>
 
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 var S={energy:'rested',tripType:'romantic',tripTypes:[],group:'partner',intention:'rest',season:'building',budget:'balanced',budgetAmt:'',mode:'curated',destKey:null,destName:null,kidAges:[],hasPet:false,petType:'dog',petSize:'small'};
 var sugIdx=0;
 
@@ -2184,20 +2292,20 @@ var D={
     alignTxt:'Slower mornings, longer dinners, unstructured time built in. Candlelit restaurants and private boat days prioritized. Pacing set to restorative — 2–3 activities per day max.',
     actCt:'12 matched',dinCt:'8 curated',stayCt:'6 options',
     activities:[
-      {i:'⛵',bg:'3a6b7a',n:'Private Boat to Capri',s:'4-hr charter · Grotta Azzurra · Li Galli Islands',m:'Book 2+ weeks ahead',b:'Romantic',bc:'bs'},
-      {i:'🏛',bg:'7a5a3a',n:'Ravello Villa Rufolo',s:'Cliffside gardens · Classical concert Thursdays',m:'⏱ 9am: no queue',b:'Cultural',bc:'bs'},
+      {i:'⛵',bg:'3a6b7a',n:'Private Boat to Capri',s:'4-hr charter · Grotta Azzurra · Li Galli Islands',m:'Book 2+ weeks ahead',b:'Romantic',bc:'bs',cost:'€400 charter vs €22/pp public ferry. Premium chosen for Grotta Azzurra access + private swim stops.'},
+      {i:'🏛',bg:'7a5a3a',n:'Ravello Villa Rufolo',s:'Cliffside gardens · Classical concert Thursdays',m:'⏱ 9am: no queue',b:'Cultural',bc:'bs',cost:'Garden entry €8/pp · Concert tickets €45/pp. Free belvedere alternative considered. Concert wins for the Day 5 group anchor.'},
       {i:'🌅',bg:'4a6b5a',n:'Sunrise hike — Villa Cimbrone',s:'30-min trail · Best view on the coast at dawn',m:'📸 Best light 6:15–7am',b:'Active',bc:'bg'},
       {i:'🍋',bg:'7a6b3a',n:'Limoncello & Ceramics Tour',s:'Local family farm · Private tasting',m:'Half-day · Lunch included',b:'Local',bc:'bs'}
     ],
     dining:[
-      {i:'🕯',bg:'5a3a2a',n:'La Sponda, Le Sirenuse',s:'230 candles lit nightly · Local seafood',m:'Reservation required · Smart elegant',b:'Fine Dining',bc:'bs'},
+      {i:'🕯',bg:'5a3a2a',n:'La Sponda, Le Sirenuse',s:'230 candles lit nightly · Local seafood',m:'Reservation required · Smart elegant',b:'Fine Dining',bc:'bs',cost:'€180/pp · Day 1 + Day 7 anniversary. Lo Guarracino at €45/pp considered for Day 7 alternative — anniversary won the splurge.'},
       {i:'🍝',bg:'3a5a4a',n:'Lo Guarracino',s:'Cliffside · Spaghetti alle vongole',m:'No reservation · Before 7pm',b:'Local',bc:'bg'},
       {i:'☕',bg:'5a4a3a',n:'Bar Internazionale',s:'Best pastries · Opens 7am · Cash only',m:'Arrive early',b:'Breakfast',bc:'bs'}
     ],
     transport:[
       {i:'⛵',bg:'3a5a7a',n:'Naples → Positano Ferry',s:'Caremar · 55-min scenic · Upper deck',m:'Book in advance',b:'Recommended',bc:'bs'},
       {i:'🚕',bg:'5a4a3a',n:'Positano ↔ Ravello',s:'Private car 45-min or SITA bus €4',m:'Cheapest: SITA bus',b:'Options',bc:'ba'},
-      {i:'🚂',bg:'3a4a5a',n:'Rome → Naples Frecciarossa',s:'70-min high-speed · Trenitalia',m:'💳 Chase: 3× points',b:'Booked',bc:'bg'}
+      {i:'🚂',bg:'3a4a5a',n:'Rome → Naples Frecciarossa',s:'70-min high-speed · Trenitalia',m:'💳 Chase: 3× points',b:'Booked',bc:'bg',cost:'€18 cheaper per ticket booked direct vs Chase Travel portal. Saves $51 across 2 tickets, points still earned.'}
     ],
     stays:[
       {emo:'🏛',bg:'linear-gradient(135deg,#6b5a3a,#4a3a20)',n:'Le Sirenuse',s:'Positano · Clifftop terrace · Private terrace',p:'€620/night',adv:'Best for romance — private terraces. Amex Platinum credit applies.',badge:'Top Pick'},
@@ -2254,13 +2362,13 @@ var D={
       {i:'💆',bg:'5a4a3a',n:'Traditional Balinese Pijat',s:'90-min massage · Included with room',m:'Book on arrival',b:'Wellness',bc:'bs'}
     ],
     dining:[
-      {i:'🥗',bg:'4a6b3a',n:'Locavore',s:'Best farm-to-table in Ubud',m:'Reserve 3+ days ahead',b:'Fine Dining',bc:'bs'},
+      {i:'🥗',bg:'4a6b3a',n:'Locavore',s:'Best farm-to-table in Ubud',m:'Reserve 3+ days ahead',b:'Fine Dining',bc:'bs',cost:'$95/pp tasting menu vs $35 mid-tier alternatives. The 8km farm sourcing is a one-of-a-kind experience — splurge with intent on Day 1.'},
       {i:'🍚',bg:'6b5a3a',n:'Warung Babi Guling Ibu Oka',s:'Roast pork · Local institution',m:'Open 11am · Cash only',b:'Local',bc:'bg'},
       {i:'☕',bg:'5a3a3a',n:'Seniman Coffee Studio',s:'Specialty coffee · Great wifi',m:'Open 7am',b:'Breakfast',bc:'bs'}
     ],
     transport:[
       {i:'🚗',bg:'4a5a3a',n:'DPS Airport → Ubud',s:'Private transfer · 1.5hr',m:'Book in advance',b:'Booked',bc:'bg'},
-      {i:'📱',bg:'3a6b5a',n:'Gojek Rideshare',s:'Download before landing',m:'Cheaper than taxis',b:'Download',bc:'bs'},
+      {i:'📱',bg:'3a6b5a',n:'Gojek Rideshare',s:'Download before landing',m:'Cheaper than taxis',b:'Download',bc:'bs',cost:'~$2-4 per Ubud ride vs $8-12 from local taxi mafia. Use for everything except DPS arrival (booked transfer wins on lost-bag protocol).'},
       {i:'🛵',bg:'6b5a3a',n:'Scooter Rental',s:'Only with prior experience',m:'⚠️ Roads are chaotic',b:'Caution',bc:'ba'}
     ],
     stays:[
@@ -2650,7 +2758,7 @@ function calcDuration(){var d=document.getElementById('td-depart').value;var r=d
 function ttk(t){var map={romantic:'romantic',honeymoon:'romantic',reset:'reset',cultural:'cultural',friends:'friends',milestone:'romantic',adventure:'adventure',workcation:'friends',family:'romantic'};return map[t]||'romantic';}
 function ntk(n){n=(n||'').toLowerCase();if(n.indexOf('bali')>-1||n.indexOf('ubud')>-1||n.indexOf('seminyak')>-1)return 'reset';if(n.indexOf('kyoto')>-1||n.indexOf('tokyo')>-1||n.indexOf('japan')>-1||n.indexOf('nara')>-1)return 'cultural';if(n.indexOf('lisbon')>-1||n.indexOf('portugal')>-1||n.indexOf('barcelona')>-1||n.indexOf('porto')>-1)return 'friends';if(n.indexOf('iceland')>-1||n.indexOf('reykjav')>-1||n.indexOf('patagonia')>-1||n.indexOf('norway')>-1)return 'adventure';if(n.indexOf('amalfi')>-1||n.indexOf('positano')>-1||n.indexOf('ravello')>-1||n.indexOf('italy')>-1||n.indexOf('santorini')>-1||n.indexOf('paris')>-1||n.indexOf('maldives')>-1)return 'romantic';return ttk(S.tripType);}
 function $(id,v){var e=document.getElementById(id);if(e)e.innerHTML=v;}
-function row(i){return '<div class="ir" onclick="showToast(\'Added to trip\')"><div class="iri" style="background:#'+i.bg+'">'+i.i+'</div><div class="irb"><div class="irn">'+i.n+'</div><div class="irs">'+i.s+'</div><div class="irm">'+i.m+'</div></div><div class="ib2 '+i.bc+'">'+i.b+'</div></div>';}
+function row(i){var costBlock=i.cost?'<div style="margin:6px 0 0;padding:8px 10px;background:var(--sdl);border-left:2px solid var(--sd);border-radius:4px;font-size:11px;color:var(--tm);line-height:1.4;"><span style="font-family:var(--fm);font-size:8px;color:var(--sd);letter-spacing:1px;">COST INTEL · </span>'+i.cost+'</div>':'';return '<div class="ir" onclick="showToast(\'Added to trip\')"><div class="iri" style="background:#'+i.bg+'">'+i.i+'</div><div class="irb"><div class="irn">'+i.n+'</div><div class="irs">'+i.s+'</div><div class="irm">'+i.m+'</div>'+costBlock+'</div><div class="ib2 '+i.bc+'">'+i.b+'</div></div>';}
 function ckToggle(el){el.classList.toggle('done');var t=el.parentElement.querySelector('.ct');if(el.classList.contains('done')){el.textContent='✓';if(t)t.classList.add('done');}else{el.textContent='';if(t)t.classList.remove('done');}var all=document.querySelectorAll('#rdy-checks .cb').length,done=document.querySelectorAll('#rdy-checks .cb.done').length;$('rdy-pct',done+' of '+all);var b=document.getElementById('rdy-bar');if(b)b.style.width=Math.round(done/all*100)+'%';}
 
 function render(){
@@ -2677,7 +2785,7 @@ function render(){
   var gs=document.getElementById('group-section');if(gs)gs.style.display=(S.group==='solo')?'none':'block';
   // Suggested bundles based on trip type
   var ai=document.getElementById('active-intel');
-  if(ai){if(S.demoMode){var isR=S.destKey==='romantic';ai.innerHTML='<div class="bundle-label" style="color:var(--rg);">Working on this trip</div><div class="mg"><div class="mc" onclick="nav(\'s-mod-cc\')"><div class="mci">💳</div><div class="mcn">Credit Card</div><div class="mcs">'+(isR?'$487 saved on this trip':'$312 saved on this trip')+'</div><div class="mct" style="background:rgba(45,107,45,.1);color:var(--gn);">Active</div></div><div class="mc" onclick="nav(\'s-mod-ins\')"><div class="mci">🛡</div><div class="mcn">Insurance</div><div class="mcs">'+(isR?'3 protections covered, 1 gap filled':'Tropical risks covered, 1 gap filled')+'</div><div class="mct" style="background:rgba(45,107,45,.1);color:var(--gn);">Active</div></div><div class="mc" onclick="nav(\'s-mod-music\')"><div class="mci">🎵</div><div class="mcn">Music & Events</div><div class="mcs">'+(isR?'12-track group playlist · Ravello Day 5':'11-track playlist · Legong Day 5')+'</div><div class="mct" style="background:rgba(45,107,45,.1);color:var(--gn);">Active</div></div><div class="mc" onclick="nav(\'s-mod-airport\')"><div class="mci">✈️</div><div class="mcn">Airport & Transit</div><div class="mcs">'+(isR?'Lounge · bags · transfer · jet lag':'Changi layover · bags · resort transfer')+'</div><div class="mct" style="background:rgba(45,107,45,.1);color:var(--gn);">Active</div></div><div class="mc" onclick="nav(\'s-mod-intent\')"><div class="mci">🕊</div><div class="mcn">Intentionality</div><div class="mcs">'+(isR?'"To come back whole" · anchored':'"What my own quiet sounds like"')+'</div><div class="mct" style="background:rgba(45,107,45,.1);color:var(--gn);">Active</div></div><div class="mc" onclick="nav(\'s-mod-outfits\')"><div class="mci">👗</div><div class="mcn">Shopping & Outfits</div><div class="mcs">'+(isR?'10 looks built from your closet':'8 looks · temple to beach club')+'</div><div class="mct" style="background:rgba(45,107,45,.1);color:var(--gn);">Active</div></div><div class="mc" onclick="nav(\'s-mod-sus\')"><div class="mci">🌱</div><div class="mcn">Sustainability</div><div class="mcs">'+(isR?'6 swaps · 22% lower footprint':'7 swaps · 31% lower footprint')+'</div><div class="mct" style="background:rgba(45,107,45,.1);color:var(--gn);">Active</div></div><div class="mc" onclick="nav(\'s-memory\')"><div class="mci">📖</div><div class="mcn">Memory Book</div><div class="mcs">Photos & reflections, ready</div><div class="mct" style="background:rgba(45,107,45,.1);color:var(--gn);">Active</div></div><div class="mc" onclick="nav(\'s-mod-translate\')"><div class="mci">🌐</div><div class="mcn">Translation</div><div class="mcs">'+(isR?'Italian, with cultural context':'Bahasa Indonesia + cultural protocols')+'</div><div class="mct" style="background:rgba(45,107,45,.1);color:var(--gn);">Active</div></div><div class="mc" onclick="nav(\'s-mod-climate\')"><div class="mci">🌡</div><div class="mcn">Climate & Carbon</div><div class="mcs">'+(isR?'Within norms · 1.8 tons offsetable':'Shoulder season shifting · 1.4 tons')+'</div><div class="mct" style="background:rgba(45,107,45,.1);color:var(--gn);">Active</div></div><div class="mc" onclick="nav(\'s-posttrip\')"><div class="mci">📊</div><div class="mcn">Post-Trip</div><div class="mcs">Cost summary & reflection ready</div><div class="mct" style="background:rgba(45,107,45,.1);color:var(--gn);">Active</div></div><div class="mc" onclick="nav(\'s-mod-wellness\')"><div class="mci">🧘</div><div class="mcn">Wellness & Health</div><div class="mcs">'+(isR?'Recovery built into pacing':'The trip Wellness was built for')+'</div><div class="mct" style="background:rgba(45,107,45,.1);color:var(--gn);">Active</div></div></div>';}else{ai.innerHTML='';}}
+  if(ai){if(S.demoMode){var isR=S.destKey==='romantic';ai.innerHTML='<div class="bundle-label" style="color:var(--rg);">Working on this trip</div><div class="mg"><div class="mc" onclick="nav(\'s-mod-cc\')"><div class="mci">💳</div><div class="mcn">Credit Card</div><div class="mcs">'+(isR?'$487 saved on this trip':'$312 saved on this trip')+'</div><div class="mct" style="background:rgba(45,107,45,.1);color:var(--gn);">Active</div></div><div class="mc" onclick="nav(\'s-mod-cost\')"><div class="mci">💰</div><div class="mcn">Cost Intelligence</div><div class="mcs">'+(isR?'$827 saved · 7 decisions':'$542 saved · 6 decisions')+'</div><div class="mct" style="background:rgba(45,107,45,.1);color:var(--gn);">Active</div></div><div class="mc" onclick="nav(\'s-mod-ins\')"><div class="mci">🛡</div><div class="mcn">Insurance</div><div class="mcs">'+(isR?'3 protections covered, 1 gap filled':'Tropical risks covered, 1 gap filled')+'</div><div class="mct" style="background:rgba(45,107,45,.1);color:var(--gn);">Active</div></div><div class="mc" onclick="nav(\'s-mod-music\')"><div class="mci">🎵</div><div class="mcn">Music & Events</div><div class="mcs">'+(isR?'12-track group playlist · Ravello Day 5':'11-track playlist · Legong Day 5')+'</div><div class="mct" style="background:rgba(45,107,45,.1);color:var(--gn);">Active</div></div><div class="mc" onclick="nav(\'s-mod-airport\')"><div class="mci">✈️</div><div class="mcn">Airport & Transit</div><div class="mcs">'+(isR?'Lounge · bags · transfer · jet lag':'Changi layover · bags · resort transfer')+'</div><div class="mct" style="background:rgba(45,107,45,.1);color:var(--gn);">Active</div></div><div class="mc" onclick="nav(\'s-mod-intent\')"><div class="mci">🕊</div><div class="mcn">Intentionality</div><div class="mcs">'+(isR?'"To come back whole" · anchored':'"What my own quiet sounds like"')+'</div><div class="mct" style="background:rgba(45,107,45,.1);color:var(--gn);">Active</div></div><div class="mc" onclick="nav(\'s-mod-outfits\')"><div class="mci">👗</div><div class="mcn">Shopping & Outfits</div><div class="mcs">'+(isR?'10 looks built from your closet':'8 looks · temple to beach club')+'</div><div class="mct" style="background:rgba(45,107,45,.1);color:var(--gn);">Active</div></div><div class="mc" onclick="nav(\'s-mod-sus\')"><div class="mci">🌱</div><div class="mcn">Sustainability</div><div class="mcs">'+(isR?'6 swaps · 22% lower footprint':'7 swaps · 31% lower footprint')+'</div><div class="mct" style="background:rgba(45,107,45,.1);color:var(--gn);">Active</div></div><div class="mc" onclick="nav(\'s-memory\')"><div class="mci">📖</div><div class="mcn">Memory Book</div><div class="mcs">Photos & reflections, ready</div><div class="mct" style="background:rgba(45,107,45,.1);color:var(--gn);">Active</div></div><div class="mc" onclick="nav(\'s-mod-translate\')"><div class="mci">🌐</div><div class="mcn">Translation</div><div class="mcs">'+(isR?'Italian, with cultural context':'Bahasa Indonesia + cultural protocols')+'</div><div class="mct" style="background:rgba(45,107,45,.1);color:var(--gn);">Active</div></div><div class="mc" onclick="nav(\'s-mod-climate\')"><div class="mci">🌡</div><div class="mcn">Climate & Carbon</div><div class="mcs">'+(isR?'Within norms · 1.8 tons offsetable':'Shoulder season shifting · 1.4 tons')+'</div><div class="mct" style="background:rgba(45,107,45,.1);color:var(--gn);">Active</div></div><div class="mc" onclick="nav(\'s-posttrip\')"><div class="mci">📊</div><div class="mcn">Post-Trip</div><div class="mcs">Cost summary & reflection ready</div><div class="mct" style="background:rgba(45,107,45,.1);color:var(--gn);">Active</div></div><div class="mc" onclick="nav(\'s-mod-wellness\')"><div class="mci">🧘</div><div class="mcn">Wellness & Health</div><div class="mcs">'+(isR?'Recovery built into pacing':'The trip Wellness was built for')+'</div><div class="mct" style="background:rgba(45,107,45,.1);color:var(--gn);">Active</div></div></div>';}else{ai.innerHTML='';}}
   var sb=document.getElementById('suggested-bundles');
   if(sb){var suggested=[];
     if(S.group==='partner'||S.tripType==='romantic'||S.tripType==='honeymoon')suggested.push({label:'Couples & Celebrations',modules:[
@@ -3173,10 +3281,9 @@ var DISC=[
 ];
 function discMatch(){var filtered=DISC.slice();if(discRegion){filtered=filtered.filter(function(d){return d.r===discRegion;});}if(filtered.length===0)filtered=DISC;var d=filtered[discIdx%filtered.length];document.getElementById('disc-dest').textContent=d.n;document.getElementById('disc-why').textContent=d.w;document.getElementById('disc-when').textContent=d.t;}
 function discNext(){discIdx++;discMatch();}
-var lpRotPhrases=['Trips designed around you','Pacing that matches your energy','Tailored to who you are, not just where you\'re going','Intentional, not transactional'];
+var lpRotPhrases=['Trips designed around you','Pacing that matches your energy','Tailored to who you are, not where you are going','Identity-first, not transactional'];
 var lpRotIdx=0;
 setInterval(function(){var el=document.getElementById('lpRotateText');if(!el)return;el.style.opacity='0';setTimeout(function(){lpRotIdx=(lpRotIdx+1)%lpRotPhrases.length;el.textContent=lpRotPhrases[lpRotIdx];el.style.opacity='1';},500);},3500);
-render();
 </script>
 </body>
 </html>
