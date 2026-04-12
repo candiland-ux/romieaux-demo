@@ -141,7 +141,19 @@ body{background:var(--cr);color:var(--tx);font-family:var(--fs);min-height:100vh
 .sgl{font-size:10px;color:var(--ts);margin-top:2px;}
 .toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(8px);background:var(--ink);color:var(--cr);padding:10px 20px;border-radius:40px;font-family:var(--fs);font-size:12px;opacity:0;transition:all .3s;z-index:500;pointer-events:none;white-space:nowrap;}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
-#s-land{background:var(--cr);flex-direction:column;justify-content:space-between;position:relative;overflow:hidden;}
+#s-land{background:#1a1208;flex-direction:column;justify-content:space-between;position:relative;overflow:hidden;}
+#s-land .lp-title{background-image:linear-gradient(90deg,#b08a50 0%,#b08a50 20%,#d4a870 35%,#fff8ec 48%,#ffffff 50%,#fff8ec 52%,#d4a870 65%,#b08a50 80%,#b08a50 100%) !important;background-size:250% 100% !important;-webkit-background-clip:text !important;-webkit-text-fill-color:transparent !important;background-clip:text !important;}
+#s-land .lp-tagline{color:#c4877a !important;}
+#s-land .lp-rotate-text{color:rgba(245,239,230,.6) !important;}
+#s-land .lp-eyebrow{color:#d4a870 !important;}
+#s-land .bwk{background:transparent !important;color:#f5efe6 !important;border:1px solid rgba(245,239,230,.25) !important;transition:all .2s ease;}
+#s-land .bwk:hover{background:#f5efe6 !important;color:#1a1208 !important;border-color:#f5efe6 !important;}
+#s-land .bsd{transition:all .2s ease;}
+#s-land .bsd:hover{background:#f5efe6 !important;color:#1a1208 !important;}
+#s-land .lp-glow{background:radial-gradient(circle,rgba(196,135,122,.22) 0%,transparent 60%) !important;}
+#s-land .lp-glow2{background:radial-gradient(circle,rgba(176,138,80,.16) 0%,transparent 55%) !important;}
+#s-land .lp-glow3{background:radial-gradient(ellipse,rgba(196,135,122,.10) 0%,transparent 70%) !important;}
+#s-land .lp-grain{opacity:.05 !important;}
 .lp-grain{position:absolute;inset:0;opacity:.03;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");pointer-events:none;}
 .lp-glow{position:absolute;top:-20%;left:50%;transform:translateX(-50%);width:90vw;height:90vw;border-radius:50%;background:radial-gradient(circle,rgba(196,135,122,.16) 0%,transparent 60%);pointer-events:none;animation:lpFloat 8s ease-in-out infinite alternate;}
 .lp-glow2{position:absolute;bottom:-20%;left:50%;transform:translateX(-50%);width:70vw;height:70vw;border-radius:50%;background:radial-gradient(circle,rgba(176,138,80,.10) 0%,transparent 55%);pointer-events:none;animation:lpFloat 10s ease-in-out infinite alternate-reverse;}
@@ -150,8 +162,8 @@ body{background:var(--cr);color:var(--tx);font-family:var(--fs);min-height:100vh
 @keyframes lpFloat{0%{transform:translateX(-50%) scale(1)}100%{transform:translateX(-50%) scale(1.05)}}
 .lp-hero{flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;text-align:center;padding:0 36px 56px;position:relative;z-index:1;}
 .lp-eyebrow{font-family:var(--fm);font-size:10px;letter-spacing:6px;color:var(--sd);text-transform:uppercase;font-weight:600;opacity:0;animation:lpReveal .8s ease forwards .2s;}
-.lp-title{font-family:'Playfair Display',serif;font-size:clamp(48px,13vw,72px);font-weight:700;line-height:.92;letter-spacing:2px;text-transform:uppercase;margin:14px 0 0;opacity:0;background:linear-gradient(90deg,var(--ink) 0%,var(--ink) 35%,#c4877a 45%,#d4a870 50%,#c4877a 55%,var(--ink) 65%,var(--ink) 100%);background-size:250% 100%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:lpSlideUp .7s cubic-bezier(.16,1,.3,1) forwards .4s,lpShimmer 4s ease-in-out 1.5s infinite;}
-@keyframes lpShimmer{0%{background-position:100% 0;}40%{background-position:-50% 0;}100%{background-position:-50% 0;}}
+.lp-title{font-family:'Playfair Display',serif;font-size:clamp(48px,13vw,72px);font-weight:700;line-height:.92;letter-spacing:2px;text-transform:uppercase;margin:14px 0 0;opacity:0;background:linear-gradient(90deg,var(--ink) 0%,var(--ink) 35%,#c4877a 45%,#d4a870 50%,#c4877a 55%,var(--ink) 65%,var(--ink) 100%);background-size:250% 100%;background-position:100% 0;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:lpSlideUp .7s cubic-bezier(.16,1,.3,1) forwards .4s,lpShimmer 4.5s linear .4s infinite;}
+@keyframes lpShimmer{0%{background-position:150% 0;}100%{background-position:-50% 0;}}
 .lp-tagline{font-family:'Playfair Display',serif;font-size:17px;font-style:italic;color:var(--rg);margin-top:14px;opacity:0;animation:lpReveal .8s ease forwards .7s;}
 @keyframes lpReveal{to{opacity:1}}
 @keyframes lpSlideUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
@@ -267,8 +279,8 @@ body{background:var(--cr);color:var(--tx);font-family:var(--fs);min-height:100vh
   <div class="lp-footer">
     <button class="btn bsd" onclick="nav('s-signup')">Create Account</button>
     <button class="btn bwk" onclick="nav('s-signin')">Sign In</button>
-    <div style="text-align:center;margin-top:6px;font-size:13px;color:var(--tm);cursor:pointer;" onclick="nav('s-signup')">Have an invite link? <span style="color:var(--rg);font-weight:500;">Join a trip →</span></div>
-    <div style="text-align:center;margin-top:10px;font-family:var(--fd);font-style:italic;font-size:12px;color:var(--ts);">Preview a finished trip: <span style="color:var(--rg);cursor:pointer;" onclick="loadDemoTrip()">Amalfi Coast</span> · <span style="color:var(--rg);cursor:pointer;" onclick="loadDemoTripBali()">Bali Wellness Reset</span></div>
+    <div style="text-align:center;margin-top:6px;font-size:13px;color:rgba(245,239,230,.55);cursor:pointer;" onclick="nav('s-signup')">Have an invite link? <span style="color:var(--rg);font-weight:500;">Join a trip →</span></div>
+    <div style="text-align:center;margin-top:10px;font-family:var(--fd);font-style:italic;font-size:12px;color:rgba(245,239,230,.45);">Preview a finished trip: <span style="color:var(--rg);cursor:pointer;" onclick="loadDemoTrip()">Amalfi Coast</span> · <span style="color:var(--rg);cursor:pointer;" onclick="loadDemoTripBali()">Bali Wellness Reset</span></div>
     <div style="display:flex;justify-content:center;gap:20px;margin-top:10px;">
       <span style="font-family:var(--fm);font-size:10px;color:var(--sd);letter-spacing:2px;cursor:pointer;text-transform:uppercase;" onclick="nav('s-pricing')">Pricing</span>
       <span style="font-family:var(--fm);font-size:10px;color:var(--sd);letter-spacing:2px;cursor:pointer;text-transform:uppercase;" onclick="nav('s-faq')">FAQ</span>
@@ -372,8 +384,9 @@ body{background:var(--cr);color:var(--tx);font-family:var(--fs);min-height:100vh
     <div class="dots"><div class="dot dd"></div><div class="dot da"></div><div class="dot do"></div><div class="dot do"></div><div class="dot do"></div></div>
     <div style="font-family:var(--fm);font-size:8px;letter-spacing:4px;color:var(--rg);text-transform:uppercase;margin-bottom:14px;">Travel Blueprint — Trip Type</div>
     <div class="qt" style="color:var(--tx)">What kind of trip is this?</div>
-    <div class="qsub" style="color:var(--tm)">Based on your selections, here's what fits. You can pick any type.</div>
+    <div class="qsub" style="color:var(--tm)">Tap all that apply — most trips are more than one thing. Romieaux uses every selection to shape pacing, dining, modules, and the trip's name.</div>
     <div class="opts" id="triptype-opts"></div>
+    <button class="btn bsd" style="width:100%;margin-top:16px;display:none;" id="triptype-continue" onclick="nav('s-bp-who')">Continue →</button>
     </div>
   </div>
 </div>
@@ -2162,7 +2175,7 @@ body{background:var(--cr);color:var(--tx);font-family:var(--fs);min-height:100vh
 <div class="toast" id="toast"></div>
 
 <script>
-var S={energy:'rested',tripType:'romantic',group:'partner',intention:'rest',season:'building',budget:'balanced',budgetAmt:'',mode:'curated',destKey:null,destName:null,kidAges:[],hasPet:false,petType:'dog',petSize:'small'};
+var S={energy:'rested',tripType:'romantic',tripTypes:[],group:'partner',intention:'rest',season:'building',budget:'balanced',budgetAmt:'',mode:'curated',destKey:null,destName:null,kidAges:[],hasPet:false,petType:'dog',petSize:'small'};
 var sugIdx=0;
 
 // ===== DESTINATION DATA =====
@@ -2569,6 +2582,8 @@ function nav(id){
 function pick(el,k,v,dest){if(el){el.parentElement.querySelectorAll('.opt').forEach(function(o){o.classList.remove('sel');});el.classList.add('sel');}S[k]=v;if(k==='tripType')S.destKey=ttk(v);setTimeout(function(){nav(dest);},el?220:0);}
 function pickMerge(el,energy,intention,season,dest){if(el){el.parentElement.querySelectorAll('.opt').forEach(function(o){o.classList.remove('sel');});el.classList.add('sel');}S.energy=energy;S.intention=intention;S.season=season;setTimeout(function(){nav(dest);},220);}
 var selectedEnergies=[];
+var selectedTripTypes=[];
+function toggleTripType(el,val){var idx=selectedTripTypes.indexOf(val);if(idx>-1){selectedTripTypes.splice(idx,1);el.classList.remove('sel');}else{selectedTripTypes.push(val);el.classList.add('sel');}S.tripTypes=selectedTripTypes.slice();S.tripType=selectedTripTypes[0]||'romantic';if(S.tripType)S.destKey=ttk(S.tripType);var btn=document.getElementById('triptype-continue');if(btn)btn.style.display=selectedTripTypes.length?'block':'none';}
 function selectMode(el,mode){S.mode=mode;var cards=el.parentElement.querySelectorAll('div[style*="border-radius:14px"]');cards.forEach(function(c){c.style.borderColor='var(--bd)';c.style.background='var(--cr)';var note=c.querySelector('.mode-note');if(note)note.style.display='none';});el.style.borderColor='var(--sd)';el.style.background='var(--sdl)';var note=el.querySelector('.mode-note');if(note)note.style.display='block';document.getElementById('mode-continue').style.display='block';}
 function toggleEnergy(el,val){var idx=selectedEnergies.indexOf(val);if(idx>-1){selectedEnergies.splice(idx,1);el.classList.remove('sel');}else{selectedEnergies.push(val);el.classList.add('sel');}document.getElementById('energy-continue').style.display=selectedEnergies.length?'block':'none';}
 function renderTripTypes(){var opts=document.getElementById('triptype-opts');if(!opts)return;var e=selectedEnergies;var all=[
@@ -2582,7 +2597,7 @@ function renderTripTypes(){var opts=document.getElementById('triptype-opts');if(
   {k:'sabbatical',l:'Sabbatical',tags:['purpose','slow']},
   {k:'pilgrimage',l:'Pilgrimage',tags:['purpose','slow']},
   {k:'family',l:'Family Reunion',tags:['connect','celebrate']}
-];var overlayEnergies=['indulgent'];var eFilter=e.filter(function(en){return overlayEnergies.indexOf(en)===-1;});var matched=[];var other=[];all.forEach(function(t){var hit=eFilter.some(function(en){return t.tags.indexOf(en)>-1;});if(hit||eFilter.length===0)matched.push(t);else other.push(t);});var html='';if(matched.length&&other.length)html+='<div style="font-family:var(--fm);font-size:8px;letter-spacing:2px;color:var(--sd);text-transform:uppercase;margin-bottom:8px;">Recommended for you</div>';matched.forEach(function(t){html+='<button class="opt lt" onclick="pick(this,\'tripType\',\''+t.k+'\',\'s-bp-who\')">'+t.l+'</button>';});if(other.length){html+='<div style="font-family:var(--fm);font-size:8px;letter-spacing:2px;color:var(--ts);text-transform:uppercase;margin:12px 0 8px;">Other trip types</div>';other.forEach(function(t){html+='<button class="opt lt" style="opacity:.5;" onclick="pick(this,\'tripType\',\''+t.k+'\',\'s-bp-who\')">'+t.l+'</button>';});}opts.innerHTML=html;}
+];var overlayEnergies=['indulgent'];var eFilter=e.filter(function(en){return overlayEnergies.indexOf(en)===-1;});var matched=[];var other=[];all.forEach(function(t){var hit=eFilter.some(function(en){return t.tags.indexOf(en)>-1;});if(hit||eFilter.length===0)matched.push(t);else other.push(t);});var html='';if(matched.length&&other.length)html+='<div style="font-family:var(--fm);font-size:8px;letter-spacing:2px;color:var(--sd);text-transform:uppercase;margin-bottom:8px;">Recommended for you</div>';matched.forEach(function(t){var sel=selectedTripTypes.indexOf(t.k)>-1?' sel':'';html+='<button class="opt lt'+sel+'" onclick="toggleTripType(this,\''+t.k+'\')">'+t.l+'</button>';});if(other.length){html+='<div style="font-family:var(--fm);font-size:8px;letter-spacing:2px;color:var(--ts);text-transform:uppercase;margin:12px 0 8px;">Other trip types</div>';other.forEach(function(t){var sel=selectedTripTypes.indexOf(t.k)>-1?' sel':'';html+='<button class="opt lt'+sel+'" style="opacity:.7;" onclick="toggleTripType(this,\''+t.k+'\')">'+t.l+'</button>';});}opts.innerHTML=html;var btn=document.getElementById('triptype-continue');if(btn)btn.style.display=selectedTripTypes.length?'block':'none';}
 function setBudget(val){document.getElementById('budget-input').value=val;S.budgetAmt=val;}
 function initBudgetScreen(){var dn=S.destName||'your destination';var hint=document.getElementById('budget-dest-hint');if(hint)hint.textContent='Per person, all-in for '+dn+'. Romieaux™ shapes every dining, stay, and activity recommendation around this number.';document.getElementById('budget-input').value='';document.getElementById('budget-go').style.display='none';document.getElementById('budget-alert').style.display='none';}
 function initInviteScreen(){var sub=document.getElementById('invite-sub');if(!sub)return;var msgs={partner:'Get your partner into the trip now. They\'ll be able to share preferences, vote on activities, and help shape the budget — before the first thing is booked.',friends:'Share this link with your group. Everyone who joins can vote on destinations, weigh in on the budget, and help build the itinerary together.',family_kids:'Bring family members in so everyone\'s needs are visible — dietary restrictions, accessibility, kid-friendly filters. They see what you share.',family_adults:'Get the family in early. Shared planning means fewer "I thought you were booking that" moments.',mixed:'Get everyone on the same page. Each person joins with their own Blueprint — Romieaux maps the overlaps and flags the conflicts.'};sub.textContent=msgs[S.group]||msgs.friends;}
@@ -2913,7 +2928,7 @@ function openSearch(){document.getElementById('search-overlay').style.display='f
 function closeSearch(){document.getElementById('search-overlay').style.display='none';}
 function renderSearchItems(items){var el=document.getElementById('search-items');el.innerHTML=items.map(function(it){return '<div style="display:flex;align-items:center;gap:12px;padding:13px 0;border-bottom:1px solid var(--bd);cursor:pointer;" onclick="closeSearch();nav(\''+it.nav+'\')"><span style="font-size:18px;">'+it.icon+'</span><div style="font-family:var(--fd);font-size:15px;color:var(--tx);">'+it.name+'</div></div>';}).join('');}
 function filterSearch(q){if(!q){renderSearchItems(searchItems);return;}var filtered=searchItems.filter(function(it){return it.name.toLowerCase().indexOf(q.toLowerCase())>-1;});renderSearchItems(filtered);if(filtered.length===0)document.getElementById('search-items').innerHTML='<div style="padding:20px;text-align:center;color:var(--ts);font-size:14px;">No results for "'+q+'"</div>';}
-function signInReturn(){S.energy='burnt';S.tripType='romantic';S.group='mixed';S.intention='rest';S.season='pausing';S.budget='set';S.budgetAmt='3,000';S.mode='curated';S.destKey='romantic';S.destName='Amalfi Coast, Italy';S.tripDays=10;var dep=document.getElementById('td-depart');var ret=document.getElementById('td-return');if(dep)dep.value='2026-04-14';if(ret)ret.value='2026-04-24';nav('s-dash');}
+function signInReturn(){S.energy='burnt';S.tripType='romantic';S.tripTypes=['romantic','milestone'];S.group='mixed';S.intention='rest';S.season='pausing';S.budget='set';S.budgetAmt='3,000';S.mode='curated';S.destKey='romantic';S.destName='Amalfi Coast, Italy';S.tripDays=10;var dep=document.getElementById('td-depart');var ret=document.getElementById('td-return');if(dep)dep.value='2026-04-14';if(ret)ret.value='2026-04-24';nav('s-dash');}
 var moduleContent={};
 moduleContent['s-mod-cc']={
   romantic:{
@@ -3040,9 +3055,24 @@ adventure:[{n:'Passport Stamps and Bad Ideas',s:'from your energy'},{n:'The Tan 
 honeymoon:[{n:'Do Not Disturb',s:'from your energy'},{n:'Champagne for No Reason',s:'from your playlist'},{n:'The One Before Real Life Starts',s:'from your trip type'}],
 milestone:[{n:'Because You Earned This',s:'from your intention'},{n:'The Reservation That Took Six Months',s:'from your itinerary'},{n:'Pop the Cork Somewhere Beautiful',s:'from your playlist'}],
 sabbatical:[{n:'Out of Office Indefinitely',s:'from your energy'},{n:'No Alarm, No Agenda',s:'from your intention'},{n:'The Long Pour',s:'from your playlist'}],
-pilgrimage:[{n:'The Walk That Changed the Question',s:'from your intention'},{n:'Dust on Good Shoes',s:'from your destination'},{n:'Quieter Than Expected',s:'from your energy'}]
+pilgrimage:[{n:'The Walk That Changed the Question',s:'from your intention'},{n:'Dust on Good Shoes',s:'from your destination'},{n:'Quieter Than Expected',s:'from your energy'}],
+family:[{n:'Everyone In One Frame Again',s:'from your group'},{n:'The Year We Got It Together',s:'from your intention'},{n:'Loud House, Long Table',s:'from your energy'}]
 };
-var opts=tripNames[S.tripType]||tripNames.romantic;
+var types=(S.tripTypes&&S.tripTypes.length)?S.tripTypes:[S.tripType||'romantic'];
+var opts=[];
+if(types.length===1){
+  opts=(tripNames[types[0]]||tripNames.romantic).slice(0,3);
+}else if(types.length===2){
+  var p=tripNames[types[0]]||tripNames.romantic;
+  var s=tripNames[types[1]]||tripNames.romantic;
+  opts=[p[0],p[1],{n:s[0].n,s:'from your secondary intent · '+types[1]}];
+}else{
+  for(var i=0;i<3&&i<types.length;i++){
+    var pool=tripNames[types[i]]||tripNames.romantic;
+    var label=(i===0)?pool[0].s:('from your '+(i===1?'secondary':'tertiary')+' intent · '+types[i]);
+    opts.push({n:pool[0].n,s:label});
+  }
+}
 S.tripName=opts[0].n;window._tnSelected=opts[0].n;
 var container=document.getElementById('trip-name-options');
 if(container){container.innerHTML=opts.map(function(o,i){return '<div class="tn-card" data-name="'+o.n+'" style="background:rgba(255,255,255,'+(i===0?'.1':'.04')+');border:1.5px solid '+(i===0?'var(--sd)':'rgba(255,255,255,.08)')+';border-radius:14px;padding:18px 16px;cursor:pointer;transition:all .2s;" onclick="selectTripName(this,\''+o.n.replace(/'/g,"\\'")+'\')"><div style="font-family:var(--fd);font-size:20px;font-weight:600;color:#fff;margin-bottom:4px;">'+o.n+'</div><div style="font-size:12px;color:rgba(255,255,255,.4);font-style:italic;">'+o.s+'</div></div>';}).join('');}
@@ -3094,7 +3124,7 @@ function runFullCheck(btn){
   },1400);
 }
 function loadDemoTrip(switching){S.demoMode=true;D.romantic.payment.forEach(function(p){p.done=true;p.i='✅';});showToast(switching?'Switching to Amalfi…':'Loading a sample trip…');setTimeout(function(){S.tripName='Limoncello and Midnight';signInReturn();generateTripName();S.tripName='Limoncello and Midnight';render();setTimeout(function(){document.querySelectorAll('#rdy-checks .cb').forEach(function(cb){if(!cb.classList.contains('done'))ckToggle(cb);});},200);},900);}
-function signInReturnBali(){S.energy='burnt';S.tripType='reset';S.group='solo';S.intention='restore';S.season='pausing';S.budget='set';S.budgetAmt='2,200';S.mode='curated';S.destKey='reset';S.destName='Ubud, Bali';S.tripDays=9;var dep=document.getElementById('td-depart');var ret=document.getElementById('td-return');if(dep)dep.value='2026-05-10';if(ret)ret.value='2026-05-19';nav('s-dash');}
+function signInReturnBali(){S.energy='burnt';S.tripType='reset';S.tripTypes=['reset','sabbatical'];S.group='solo';S.intention='restore';S.season='pausing';S.budget='set';S.budgetAmt='2,200';S.mode='curated';S.destKey='reset';S.destName='Ubud, Bali';S.tripDays=9;var dep=document.getElementById('td-depart');var ret=document.getElementById('td-return');if(dep)dep.value='2026-05-10';if(ret)ret.value='2026-05-19';nav('s-dash');}
 function loadDemoTripBali(switching){S.demoMode=true;D.reset.payment.forEach(function(p){p.done=true;p.i='✅';});showToast(switching?'Switching to Bali…':'Loading a sample trip…');setTimeout(function(){S.tripName='Barefoot Until Further Notice';signInReturnBali();generateTripName();S.tripName='Barefoot Until Further Notice';render();setTimeout(function(){document.querySelectorAll('#rdy-checks .cb').forEach(function(cb){if(!cb.classList.contains('done'))ckToggle(cb);});var ptr=document.querySelector('#s-posttrip textarea');if(ptr)ptr.value='Day 4 was the day. The whole trip turned on it. I slept until 10, ate breakfast in the rice paddy reading nook, had a second pijat in the afternoon, and did not check my phone until dinner. I came back to my room that evening and realized I had not felt that quiet inside my own head in two years. Romieaux marking Day 4 as protected from itself was the move. I would come back for that day alone.';},200);},900);}
 function toggleMoreBundles(){var el=document.getElementById('more-bundles');var arrow=document.getElementById('more-bundles-arrow');if(el.style.display==='none'){el.style.display='block';arrow.textContent='▾';}else{el.style.display='none';arrow.textContent='▸';}}
 function selectRole(r){document.getElementById('role-editor').classList.toggle('v',r==='editor');document.getElementById('role-viewer').classList.toggle('v',r==='viewer');}
