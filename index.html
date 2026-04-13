@@ -802,7 +802,7 @@ body{background:var(--cr);color:var(--tx);font-family:var(--fs);min-height:100vh
           </div>
           <div>
             <div style="font-family:var(--fm);font-size:7px;letter-spacing:1.5px;color:rgba(245,239,230,.45);text-transform:uppercase;margin-bottom:3px;">Intelligence Savings</div>
-            <div style="font-family:var(--fd);font-size:16px;font-weight:600;color:var(--gn);" id="hero-saved">$827</div>
+            <div style="font-family:var(--fd);font-size:16px;font-weight:600;color:var(--gn);" id="hero-saved">$454</div>
           </div>
         </div>
       </div>
@@ -1500,10 +1500,28 @@ body{background:var(--cr);color:var(--tx);font-family:var(--fs);min-height:100vh
             <div style="font-family:var(--fd);font-size:16px;font-weight:700;color:#f5efe6;">41</div>
           </div>
           <div style="background:rgba(245,239,230,.06);border:1px solid rgba(245,239,230,.12);border-radius:10px;padding:11px 12px;">
-            <div style="font-family:var(--fm);font-size:7px;letter-spacing:1.5px;color:rgba(245,239,230,.5);text-transform:uppercase;margin-bottom:2px;">Total Saved</div>
-            <div style="font-family:var(--fd);font-size:16px;font-weight:700;color:var(--gn);">$3,059</div>
+            <div style="font-family:var(--fm);font-size:7px;letter-spacing:1.5px;color:rgba(245,239,230,.5);text-transform:uppercase;margin-bottom:2px;">Total Romieaux Value</div>
+            <div style="font-family:var(--fd);font-size:16px;font-weight:700;color:var(--gn);" id="hero-total-value">$5,802</div>
           </div>
         </div>
+      </div>
+    </div>
+
+    <!-- YOUR TIME VALUE -->
+    <div class="sh"><div class="shl">Your Time Value</div><div class="sht">Contributes to Total Romieaux Value</div></div>
+    <div style="padding:0 20px;">
+      <div style="background:var(--pn);border:1px solid var(--bd);border-radius:12px;padding:14px 16px;margin-bottom:14px;">
+        <div style="font-family:var(--fd);font-size:13px;font-weight:600;color:var(--ink);margin-bottom:6px;">What's your time worth?</div>
+        <div style="font-size:11px;color:var(--ts);line-height:1.5;margin-bottom:14px;">Set your hourly value to see what Romieaux saved you in time. Most travelers pick based on their salary or what they'd pay someone else.</div>
+        <div style="position:relative;padding-top:28px;margin-bottom:10px;">
+          <div id="rate-bubble" style="position:absolute;top:0;transform:translateX(-50%);background:var(--sd);color:#fff;padding:3px 9px;border-radius:10px;font-family:var(--fd);font-size:12px;font-weight:700;white-space:nowrap;pointer-events:none;">$50/hr</div>
+          <input type="range" min="15" max="500" value="50" step="5" id="rate-slider" oninput="updateTimeRate(this.value)" style="width:100%;margin:0;accent-color:var(--sd);">
+        </div>
+        <div style="padding-top:10px;border-top:1px solid var(--bd);display:flex;justify-content:space-between;align-items:baseline;">
+          <div style="font-size:11px;color:var(--tm);">At your rate, Romieaux saved you</div>
+          <div style="font-family:var(--fd);font-size:16px;font-weight:700;color:var(--gn);"><span id="lifetime-time-value">$3,350</span> in time</div>
+        </div>
+        <div style="font-size:10px;color:var(--ts);margin-top:2px;font-style:italic;">67 hours × <span id="rate-inline">$50</span>/hr · across 6 trips</div>
       </div>
     </div>
 
@@ -1513,52 +1531,71 @@ body{background:var(--cr);color:var(--tx);font-family:var(--fs);min-height:100vh
       <div style="background:linear-gradient(135deg,var(--ink),#2a2018);border-radius:14px;padding:18px 16px;margin-bottom:14px;color:#f5efe6;position:relative;overflow:hidden;">
         <div style="position:absolute;inset:0;background:radial-gradient(ellipse at 90% 20%,rgba(176,138,80,.15) 0%,transparent 55%);pointer-events:none;"></div>
         <div style="position:relative;z-index:1;">
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;">
-            <div>
-              <div style="font-family:var(--fm);font-size:7px;letter-spacing:1.5px;color:rgba(245,239,230,.5);text-transform:uppercase;margin-bottom:2px;">Total Spent on Trips</div>
-              <div style="font-family:var(--fd);font-size:16px;font-weight:700;color:#f5efe6;">$22,950</div>
+
+          <!-- Reference: Total Spent -->
+          <div style="display:flex;justify-content:space-between;align-items:baseline;padding-bottom:10px;border-bottom:1px solid rgba(245,239,230,.12);">
+            <div style="font-family:var(--fm);font-size:10px;letter-spacing:1px;color:rgba(245,239,230,.6);">Total Spent on Trips</div>
+            <div style="font-family:var(--fd);font-size:14px;font-weight:600;color:#f5efe6;">$22,950</div>
+          </div>
+
+          <!-- Cash Savings (gross) -->
+          <div style="padding:12px 0 10px 0;">
+            <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px;">
+              <div style="font-family:var(--fm);font-size:10px;letter-spacing:1px;color:rgba(245,239,230,.7);">Cash Savings</div>
+              <div style="font-family:var(--fd);font-size:16px;font-weight:700;color:var(--gn);">$2,858</div>
             </div>
-            <div>
-              <div style="font-family:var(--fm);font-size:7px;letter-spacing:1.5px;color:rgba(245,239,230,.5);text-transform:uppercase;margin-bottom:2px;">Membership Cost</div>
-              <div style="font-family:var(--fd);font-size:16px;font-weight:700;color:#f5efe6;">$406</div>
-              <div style="font-family:var(--fm);font-size:9px;color:rgba(245,239,230,.5);letter-spacing:0.5px;margin-top:2px;">$29/mo × 14 months</div><div style="font-family:var(--fm);font-size:9px;color:var(--gn);letter-spacing:0.5px;margin-top:3px;cursor:pointer;text-decoration:underline;" onclick="showToast('Switching to annual saves ~$49/yr')">Save ~$49/yr · go annual →</div>
-            </div>
-            <div>
-              <div style="font-family:var(--fm);font-size:7px;letter-spacing:1.5px;color:rgba(245,239,230,.5);text-transform:uppercase;margin-bottom:2px;">Net Budget</div>
-              <div style="font-family:var(--fd);font-size:16px;font-weight:700;color:var(--gn);">+$450</div>
-            </div>
-            <div>
-              <div style="font-family:var(--fm);font-size:7px;letter-spacing:1.5px;color:rgba(245,239,230,.5);text-transform:uppercase;margin-bottom:2px;">Intelligence Savings <span class="ttip-trig ttip-trig-light" onmouseenter="showTtip(this,'is-lifetime')" onmouseleave="hideTtip()" onclick="toggleTtip(this,'is-lifetime',event)">i</span></div>
-              <div style="font-family:var(--fd);font-size:16px;font-weight:700;color:var(--gn);">$3,059</div>
+            <div style="padding-left:10px;">
+              <div style="display:flex;justify-content:space-between;font-size:11px;color:rgba(245,239,230,.55);padding:2px 0;">
+                <span>· Intelligence Savings <span class="ttip-trig ttip-trig-light" onmouseenter="showTtip(this,'is-lifetime')" onmouseleave="hideTtip()" onclick="toggleTtip(this,'is-lifetime',event)">i</span></span>
+                <span>$2,408</span>
+              </div>
+              <div style="display:flex;justify-content:space-between;font-size:11px;color:rgba(245,239,230,.55);padding:2px 0;">
+                <span>· Net Budget</span>
+                <span>+$450</span>
+              </div>
             </div>
           </div>
-          <div style="padding-top:12px;border-top:1px solid rgba(245,239,230,.12);display:flex;justify-content:space-between;align-items:flex-end;gap:10px;">
+
+          <!-- Membership Fees Paid (cost) -->
+          <div style="display:flex;justify-content:space-between;align-items:baseline;padding:10px 0;border-top:1px solid rgba(245,239,230,.08);">
             <div>
-              <div style="font-family:var(--fm);font-size:7px;letter-spacing:1.5px;color:rgba(245,239,230,.5);text-transform:uppercase;margin-bottom:2px;">Net Value</div>
-              <div style="font-family:var(--fd);font-size:22px;font-weight:700;color:var(--sd);">$3,103</div>
-              <div style="font-family:var(--fm);font-size:9px;color:rgba(245,239,230,.5);letter-spacing:1px;margin-top:2px;">Net Budget + Intelligence Savings − Membership</div>
+              <div style="font-family:var(--fm);font-size:10px;letter-spacing:1px;color:rgba(245,239,230,.7);">Membership Fees Paid</div>
+              <div style="font-family:var(--fm);font-size:9px;color:rgba(245,239,230,.4);margin-top:2px;">$29/mo × 14 months · <span style="color:var(--gn);text-decoration:underline;cursor:pointer;" onclick="showToast('Switching to annual saves ~$49/yr')">save ~$49/yr annual →</span></div>
             </div>
-            <div style="text-align:right;">
-              <div style="font-family:var(--fm);font-size:7px;letter-spacing:1.5px;color:rgba(245,239,230,.5);text-transform:uppercase;margin-bottom:2px;">ROI</div>
-              <div style="font-family:var(--fd);font-size:22px;font-weight:700;color:#f5efe6;">8.6×</div>
-              <div style="font-family:var(--fm);font-size:9px;color:rgba(245,239,230,.5);letter-spacing:1px;margin-top:2px;">$1 in → $8.60 out</div>
-            </div>
+            <div style="font-family:var(--fd);font-size:14px;font-weight:600;color:#f5efe6;">−$406</div>
           </div>
-          <div style="padding-top:12px;margin-top:14px;border-top:1px solid rgba(245,239,230,.12);display:flex;justify-content:space-between;align-items:flex-end;gap:10px;">
+
+          <!-- Net Cash Savings (cash after fees) -->
+          <div style="display:flex;justify-content:space-between;align-items:baseline;padding:10px 0;border-top:1px solid rgba(245,239,230,.08);">
             <div>
-              <div style="font-family:var(--fm);font-size:7px;letter-spacing:1.5px;color:rgba(245,239,230,.5);text-transform:uppercase;margin-bottom:2px;">Decisions Automated <span class="ttip-trig ttip-trig-light" onmouseenter="showTtip(this,'da-lifetime')" onmouseleave="hideTtip()" onclick="toggleTtip(this,'da-lifetime',event)">i</span></div>
-              <div style="font-family:var(--fd);font-size:22px;font-weight:700;color:#f5efe6;">335</div>
-              <div style="font-family:var(--fm);font-size:9px;color:rgba(245,239,230,.5);letter-spacing:1px;margin-top:2px;">across 6 trips · all in the background</div>
+              <div style="font-family:var(--fm);font-size:10px;letter-spacing:1px;color:rgba(245,239,230,.7);">Net Cash Savings</div>
+              <div style="font-family:var(--fm);font-size:9px;color:rgba(245,239,230,.4);margin-top:2px;">Cash Savings − Fees · 7× your fees</div>
             </div>
-            <div style="text-align:right;">
-              <div style="font-family:var(--fm);font-size:7px;letter-spacing:1.5px;color:rgba(245,239,230,.5);text-transform:uppercase;margin-bottom:2px;">Research Hours Saved</div>
-              <div style="font-family:var(--fd);font-size:22px;font-weight:700;color:var(--sd);">~64</div>
-              <div style="font-family:var(--fm);font-size:9px;color:rgba(245,239,230,.5);letter-spacing:1px;margin-top:2px;">≈ 1.6 work weeks back</div>
-            </div>
+            <div style="font-family:var(--fd);font-size:16px;font-weight:700;color:var(--gn);">$2,452</div>
           </div>
+
+          <!-- Planning Hours Saved -->
+          <div style="padding:10px 0;border-top:1px solid rgba(245,239,230,.08);display:flex;justify-content:space-between;align-items:baseline;">
+            <div>
+              <div style="font-family:var(--fm);font-size:10px;letter-spacing:1px;color:rgba(245,239,230,.7);">Planning Hours Saved</div>
+              <div style="font-family:var(--fm);font-size:9px;color:rgba(245,239,230,.4);margin-top:2px;">335 decisions automated <span class="ttip-trig ttip-trig-light" onmouseenter="showTtip(this,'da-lifetime')" onmouseleave="hideTtip()" onclick="toggleTtip(this,'da-lifetime',event)">i</span> · ≈ 1.7 work weeks</div>
+              <div style="font-family:var(--fm);font-size:10px;color:var(--gn);margin-top:4px;cursor:pointer;text-decoration:underline;" onclick="document.getElementById('rate-slider').scrollIntoView({behavior:'smooth',block:'center'});"><span id="lifetime-hours-dollars">$3,350</span> at your rate · tap to adjust ↑</div>
+            </div>
+            <div style="font-family:var(--fd);font-size:16px;font-weight:700;color:var(--sd);">~67 hrs</div>
+          </div>
+
+          <!-- Total Romieaux Value (hero — everything combined) -->
+          <div style="margin-top:6px;padding-top:14px;border-top:1px solid rgba(245,239,230,.2);">
+            <div style="display:flex;justify-content:space-between;align-items:baseline;">
+              <div style="font-family:var(--fm);font-size:10px;letter-spacing:1.5px;color:rgba(245,239,230,.8);text-transform:uppercase;">Total Romieaux Value</div>
+              <div style="font-family:var(--fd);font-size:26px;font-weight:700;color:var(--gn);"><span id="lifetime-total-with-time">$5,802</span></div>
+            </div>
+            <div style="text-align:right;font-size:11px;color:rgba(245,239,230,.55);font-style:italic;margin-top:2px;">Net Cash + Time at your rate</div>
+          </div>
+
         </div>
       </div>
-      <div style="font-size:11px;color:var(--ts);line-height:1.5;margin-bottom:14px;font-style:italic;text-align:center;">All-Access · 14 months · $29/mo. Net Budget = under or over your set budget. Intelligence Savings = Romieaux's optimization (cards, routing, direct booking).</div>
+      <div style="font-size:11px;color:var(--ts);line-height:1.5;margin-bottom:14px;font-style:italic;text-align:center;">Intelligence Savings = Romieaux's optimization (cards, routing, direct booking). Net Budget = under or over your set budget. Per-trip breakdown below.</div>
     </div>
 
     <!-- TRAVEL PREFERENCES -->
@@ -1602,27 +1639,256 @@ body{background:var(--cr);color:var(--tx);font-family:var(--fs);min-height:100vh
       </div>
     </div>
 
-    <!-- DIETARY & PHYSICAL -->
-    <div class="sh"><div class="shl">Dietary & Health</div><div class="sht">What I've shared</div></div>
+    <!-- YOUR LIFE — identity layer that preloads trips -->
+    <div class="sh"><div class="shl">Your Life</div><div class="sht">Preloads on every trip · tap any to adjust</div></div>
+
+    <!-- Household & Companions -->
     <div style="padding:0 20px;">
       <div style="background:var(--pn);border:1px solid var(--bd);border-radius:12px;padding:16px;margin-bottom:14px;">
-        <div style="display:flex;flex-direction:column;gap:10px;">
-          <div style="display:flex;justify-content:space-between;align-items:center;padding-bottom:10px;border-bottom:1px solid var(--bd);">
-            <div style="font-size:13px;color:var(--ink);">🌱 No red meat</div>
-            <div style="font-family:var(--fm);font-size:8px;letter-spacing:1.5px;color:var(--ts);text-transform:uppercase;">Preference</div>
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
+          <span style="font-size:15px;">🏡</span>
+          <div style="font-family:var(--fd);font-size:14px;font-weight:600;color:var(--ink);">Household & Companions</div>
+        </div>
+        <div style="font-size:11px;color:var(--ts);line-height:1.5;margin-bottom:12px;">Everyone who might travel with you. Check or uncheck per trip — Romieaux never assumes.</div>
+
+        <!-- Primary partner -->
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--bd);cursor:pointer;" onclick="showToast('Edit Alex · partner')">
+          <div style="display:flex;align-items:center;gap:10px;">
+            <div style="width:32px;height:32px;border-radius:50%;background:var(--sd);color:#fff;display:flex;align-items:center;justify-content:center;font-family:var(--fd);font-size:12px;font-weight:700;">A</div>
+            <div>
+              <div style="font-size:13px;font-weight:600;color:var(--ink);">Alex</div>
+              <div style="font-size:10px;color:var(--ts);">partner · vegetarian</div>
+            </div>
           </div>
-          <div style="display:flex;justify-content:space-between;align-items:center;padding-bottom:10px;border-bottom:1px solid var(--bd);">
-            <div style="font-size:13px;color:var(--ink);">🥜 Tree nut allergy</div>
-            <div style="font-family:var(--fm);font-size:8px;letter-spacing:1.5px;color:var(--rd);text-transform:uppercase;">Allergy</div>
+          <div style="font-size:12px;color:var(--ts);">›</div>
+        </div>
+
+        <!-- Children -->
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--bd);cursor:pointer;" onclick="showToast('Edit Lucas · 7')">
+          <div style="display:flex;align-items:center;gap:10px;">
+            <div style="width:32px;height:32px;border-radius:50%;background:#d4b998;color:var(--ink);display:flex;align-items:center;justify-content:center;font-family:var(--fd);font-size:12px;font-weight:700;">L</div>
+            <div>
+              <div style="font-size:13px;font-weight:600;color:var(--ink);">Lucas</div>
+              <div style="font-size:10px;color:var(--ts);">child · age 7 · loves dinosaurs, picky eater</div>
+            </div>
           </div>
-          <div style="display:flex;justify-content:space-between;align-items:center;padding-bottom:10px;border-bottom:1px solid var(--bd);">
-            <div style="font-size:13px;color:var(--ink);">🧘 Yoga routine</div>
-            <div style="font-family:var(--fm);font-size:8px;letter-spacing:1.5px;color:var(--sd);text-transform:uppercase;">Routine</div>
+          <div style="font-size:12px;color:var(--ts);">›</div>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--bd);cursor:pointer;" onclick="showToast('Edit Elena · 4')">
+          <div style="display:flex;align-items:center;gap:10px;">
+            <div style="width:32px;height:32px;border-radius:50%;background:#d4b998;color:var(--ink);display:flex;align-items:center;justify-content:center;font-family:var(--fd);font-size:12px;font-weight:700;">E</div>
+            <div>
+              <div style="font-size:13px;font-weight:600;color:var(--ink);">Elena</div>
+              <div style="font-size:10px;color:var(--ts);">child · age 4 · sensory-sensitive, naps 1pm</div>
+            </div>
           </div>
-          <div style="display:flex;justify-content:space-between;align-items:center;">
-            <div style="font-size:13px;color:var(--ink);">🌙 No early wake-ups</div>
-            <div style="font-family:var(--fm);font-size:8px;letter-spacing:1.5px;color:var(--sd);text-transform:uppercase;">Preference</div>
+          <div style="font-size:12px;color:var(--ts);">›</div>
+        </div>
+
+        <!-- Pet -->
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--bd);cursor:pointer;" onclick="showToast('Edit Biscuit · dog')">
+          <div style="display:flex;align-items:center;gap:10px;">
+            <div style="width:32px;height:32px;border-radius:50%;background:#b8cfae;color:var(--ink);display:flex;align-items:center;justify-content:center;font-size:14px;">🐕</div>
+            <div>
+              <div style="font-size:13px;font-weight:600;color:var(--ink);">Biscuit</div>
+              <div style="font-size:10px;color:var(--ts);">dog · 15 lb · cabin-friendly · ESA-certified</div>
+            </div>
           </div>
+          <div style="font-size:12px;color:var(--ts);">›</div>
+        </div>
+
+        <!-- Frequent companions -->
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--bd);cursor:pointer;" onclick="showToast('Edit Maya · friend')">
+          <div style="display:flex;align-items:center;gap:10px;">
+            <div style="width:32px;height:32px;border-radius:50%;background:#c8b4cc;color:var(--ink);display:flex;align-items:center;justify-content:center;font-family:var(--fd);font-size:12px;font-weight:700;">M</div>
+            <div>
+              <div style="font-size:13px;font-weight:600;color:var(--ink);">Maya</div>
+              <div style="font-size:10px;color:var(--ts);">friend · frequent travel companion</div>
+            </div>
+          </div>
+          <div style="font-size:12px;color:var(--ts);">›</div>
+        </div>
+
+        <div style="display:flex;justify-content:center;align-items:center;padding:12px 0 4px 0;cursor:pointer;" onclick="showToast('Add companion')">
+          <div style="font-family:var(--fm);font-size:10px;letter-spacing:1px;color:var(--sd);text-transform:uppercase;">+ Add someone</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Taste Profile -->
+    <div style="padding:0 20px;">
+      <div style="background:var(--pn);border:1px solid var(--bd);border-radius:12px;padding:16px;margin-bottom:14px;">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
+          <span style="font-size:15px;">🎨</span>
+          <div style="font-family:var(--fd);font-size:14px;font-weight:600;color:var(--ink);">Taste Profile</div>
+        </div>
+        <div style="font-size:11px;color:var(--ts);line-height:1.5;margin-bottom:12px;">What flavors every recommendation. Playlists, dining, activities, pacing.</div>
+
+        <!-- Music -->
+        <div style="padding-bottom:12px;margin-bottom:12px;border-bottom:1px solid var(--bd);cursor:pointer;" onclick="showToast('Edit music preferences')">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+            <div style="font-family:var(--fm);font-size:9px;letter-spacing:1.5px;color:var(--ts);text-transform:uppercase;">Music</div>
+            <div style="font-size:12px;color:var(--ts);">›</div>
+          </div>
+          <div style="display:flex;flex-wrap:wrap;gap:6px;">
+            <span style="padding:4px 10px;background:var(--cr2);border:1px solid var(--bd);border-radius:14px;font-size:11px;color:var(--tm);">Jazz</span>
+            <span style="padding:4px 10px;background:var(--cr2);border:1px solid var(--bd);border-radius:14px;font-size:11px;color:var(--tm);">Ambient</span>
+            <span style="padding:4px 10px;background:var(--cr2);border:1px solid var(--bd);border-radius:14px;font-size:11px;color:var(--tm);">Indie folk</span>
+            <span style="padding:4px 10px;background:var(--cr2);border:1px solid var(--bd);border-radius:14px;font-size:11px;color:var(--tm);">Bossa nova</span>
+            <span style="padding:4px 10px;background:var(--cr2);border:1px solid var(--bd);border-radius:14px;font-size:11px;color:var(--tm);">Classical · piano</span>
+          </div>
+        </div>
+
+        <!-- Cuisine -->
+        <div style="padding-bottom:12px;margin-bottom:12px;border-bottom:1px solid var(--bd);cursor:pointer;" onclick="showToast('Edit cuisine preferences')">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+            <div style="font-family:var(--fm);font-size:9px;letter-spacing:1.5px;color:var(--ts);text-transform:uppercase;">Cuisine loves</div>
+            <div style="font-size:12px;color:var(--ts);">›</div>
+          </div>
+          <div style="display:flex;flex-wrap:wrap;gap:6px;">
+            <span style="padding:4px 10px;background:var(--cr2);border:1px solid var(--bd);border-radius:14px;font-size:11px;color:var(--tm);">Japanese · izakaya</span>
+            <span style="padding:4px 10px;background:var(--cr2);border:1px solid var(--bd);border-radius:14px;font-size:11px;color:var(--tm);">Mediterranean</span>
+            <span style="padding:4px 10px;background:var(--cr2);border:1px solid var(--bd);border-radius:14px;font-size:11px;color:var(--tm);">Coastal Italian</span>
+            <span style="padding:4px 10px;background:var(--cr2);border:1px solid var(--bd);border-radius:14px;font-size:11px;color:var(--tm);">Natural wine bars</span>
+            <span style="padding:4px 10px;background:var(--cr2);border:1px solid var(--bd);border-radius:14px;font-size:11px;color:var(--tm);">Hole-in-the-wall</span>
+          </div>
+        </div>
+
+        <!-- Activity energy -->
+        <div style="padding-bottom:12px;margin-bottom:12px;border-bottom:1px solid var(--bd);cursor:pointer;" onclick="showToast('Edit activity energy')">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+            <div style="font-family:var(--fm);font-size:9px;letter-spacing:1.5px;color:var(--ts);text-transform:uppercase;">Activity energy</div>
+            <div style="font-size:12px;color:var(--ts);">›</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;">
+            <span style="font-size:10px;color:var(--ts);">Restful</span>
+            <div style="flex:1;height:4px;background:var(--bd);border-radius:2px;position:relative;">
+              <div style="position:absolute;left:0;top:0;height:100%;width:55%;background:var(--sd);border-radius:2px;"></div>
+              <div style="position:absolute;left:55%;top:-5px;width:14px;height:14px;background:var(--sd);border-radius:50%;transform:translateX(-50%);"></div>
+            </div>
+            <span style="font-size:10px;color:var(--ts);">Adventure</span>
+          </div>
+          <div style="font-size:11px;color:var(--tm);margin-top:6px;font-style:italic;">Balanced — one main activity per day, room for wandering.</div>
+        </div>
+
+        <!-- Interests -->
+        <div style="cursor:pointer;" onclick="showToast('Edit interests')">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+            <div style="font-family:var(--fm);font-size:9px;letter-spacing:1.5px;color:var(--ts);text-transform:uppercase;">Interests</div>
+            <div style="font-size:12px;color:var(--ts);">›</div>
+          </div>
+          <div style="display:flex;flex-wrap:wrap;gap:6px;">
+            <span style="padding:4px 10px;background:var(--cr2);border:1px solid var(--bd);border-radius:14px;font-size:11px;color:var(--tm);">Architecture</span>
+            <span style="padding:4px 10px;background:var(--cr2);border:1px solid var(--bd);border-radius:14px;font-size:11px;color:var(--tm);">Markets</span>
+            <span style="padding:4px 10px;background:var(--cr2);border:1px solid var(--bd);border-radius:14px;font-size:11px;color:var(--tm);">Independent bookstores</span>
+            <span style="padding:4px 10px;background:var(--cr2);border:1px solid var(--bd);border-radius:14px;font-size:11px;color:var(--tm);">Thermal waters</span>
+            <span style="padding:4px 10px;background:var(--cr2);border:1px solid var(--bd);border-radius:14px;font-size:11px;color:var(--tm);">Small museums</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Body & Rhythm -->
+    <div style="padding:0 20px;">
+      <div style="background:var(--pn);border:1px solid var(--bd);border-radius:12px;padding:16px;margin-bottom:14px;">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
+          <span style="font-size:15px;">🌿</span>
+          <div style="font-family:var(--fd);font-size:14px;font-weight:600;color:var(--ink);">Body & Rhythm</div>
+        </div>
+        <div style="font-size:11px;color:var(--ts);line-height:1.5;margin-bottom:12px;">Dietary needs, sleep patterns, wellness routines. Kept private and never upsold.</div>
+
+        <!-- Dietary items -->
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--bd);cursor:pointer;" onclick="showToast('Edit dietary')">
+          <div style="font-size:13px;color:var(--ink);">🌱 No red meat</div>
+          <div style="font-family:var(--fm);font-size:8px;letter-spacing:1.5px;color:var(--ts);text-transform:uppercase;">Preference</div>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--bd);cursor:pointer;" onclick="showToast('Edit allergies')">
+          <div style="font-size:13px;color:var(--ink);">🥜 Tree nut allergy</div>
+          <div style="font-family:var(--fm);font-size:8px;letter-spacing:1.5px;color:var(--rd);text-transform:uppercase;">Allergy</div>
+        </div>
+
+        <!-- Sleep -->
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--bd);cursor:pointer;" onclick="showToast('Edit sleep')">
+          <div style="display:flex;align-items:center;gap:8px;">
+            <span style="font-size:13px;">🌙</span>
+            <div>
+              <div style="font-size:13px;color:var(--ink);">Night owl · jet lag sensitive</div>
+              <div style="font-size:10px;color:var(--ts);">Prefers 9am+ starts · needs 2-day adjustment window</div>
+            </div>
+          </div>
+          <div style="font-size:12px;color:var(--ts);">›</div>
+        </div>
+
+        <!-- Wellness -->
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--bd);cursor:pointer;" onclick="showToast('Edit wellness')">
+          <div style="display:flex;align-items:center;gap:8px;">
+            <span style="font-size:13px;">🧘</span>
+            <div>
+              <div style="font-size:13px;color:var(--ink);">Yoga · 3× week</div>
+              <div style="font-size:10px;color:var(--ts);">Vinyasa · protect on trips of 5+ days</div>
+            </div>
+          </div>
+          <div style="font-size:12px;color:var(--ts);">›</div>
+        </div>
+
+        <!-- Mobility -->
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;cursor:pointer;" onclick="showToast('Edit mobility')">
+          <div style="display:flex;align-items:center;gap:8px;">
+            <span style="font-size:13px;">🚶</span>
+            <div>
+              <div style="font-size:13px;color:var(--ink);">No mobility considerations</div>
+              <div style="font-size:10px;color:var(--ts);">Comfortable with stairs, long walks, cobblestones</div>
+            </div>
+          </div>
+          <div style="font-size:12px;color:var(--ts);">›</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Style & Identity -->
+    <div style="padding:0 20px;">
+      <div style="background:var(--pn);border:1px solid var(--bd);border-radius:12px;padding:16px;margin-bottom:14px;">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
+          <span style="font-size:15px;">👗</span>
+          <div style="font-family:var(--fd);font-size:14px;font-weight:600;color:var(--ink);">Style & Identity</div>
+        </div>
+        <div style="font-size:11px;color:var(--ts);line-height:1.5;margin-bottom:12px;">Wardrobe tendencies, languages, how you want trips remembered.</div>
+
+        <!-- Wardrobe -->
+        <div style="padding-bottom:12px;margin-bottom:12px;border-bottom:1px solid var(--bd);cursor:pointer;" onclick="showToast('Edit wardrobe style')">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+            <div style="font-family:var(--fm);font-size:9px;letter-spacing:1.5px;color:var(--ts);text-transform:uppercase;">Wardrobe style</div>
+            <div style="font-size:12px;color:var(--ts);">›</div>
+          </div>
+          <div style="display:flex;flex-wrap:wrap;gap:6px;">
+            <span style="padding:4px 10px;background:var(--cr2);border:1px solid var(--bd);border-radius:14px;font-size:11px;color:var(--tm);">Classic minimalist</span>
+            <span style="padding:4px 10px;background:var(--cr2);border:1px solid var(--bd);border-radius:14px;font-size:11px;color:var(--tm);">Neutral palette</span>
+            <span style="padding:4px 10px;background:var(--cr2);border:1px solid var(--bd);border-radius:14px;font-size:11px;color:var(--tm);">Linen & natural fibers</span>
+            <span style="padding:4px 10px;background:var(--cr2);border:1px solid var(--bd);border-radius:14px;font-size:11px;color:var(--tm);">One statement piece</span>
+          </div>
+        </div>
+
+        <!-- Languages -->
+        <div style="padding-bottom:12px;margin-bottom:12px;border-bottom:1px solid var(--bd);cursor:pointer;" onclick="showToast('Edit languages')">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+            <div style="font-family:var(--fm);font-size:9px;letter-spacing:1.5px;color:var(--ts);text-transform:uppercase;">Languages spoken</div>
+            <div style="font-size:12px;color:var(--ts);">›</div>
+          </div>
+          <div style="display:flex;flex-wrap:wrap;gap:6px;">
+            <span style="padding:4px 10px;background:var(--cr2);border:1px solid var(--bd);border-radius:14px;font-size:11px;color:var(--tm);">English · native</span>
+            <span style="padding:4px 10px;background:var(--cr2);border:1px solid var(--bd);border-radius:14px;font-size:11px;color:var(--tm);">Spanish · conversational</span>
+            <span style="padding:4px 10px;background:var(--cr2);border:1px solid var(--bd);border-radius:14px;font-size:11px;color:var(--tm);">Italian · basics</span>
+          </div>
+        </div>
+
+        <!-- Memory Book style -->
+        <div style="cursor:pointer;" onclick="showToast('Edit Memory Book style')">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+            <div style="font-family:var(--fm);font-size:9px;letter-spacing:1.5px;color:var(--ts);text-transform:uppercase;">Memory Book style</div>
+            <div style="font-size:12px;color:var(--ts);">›</div>
+          </div>
+          <div style="font-size:13px;color:var(--ink);">Editorial · lots of white space</div>
+          <div style="font-size:11px;color:var(--tm);margin-top:2px;font-style:italic;">Quiet layouts · serif typography · photos over captions.</div>
         </div>
       </div>
     </div>
@@ -1708,8 +1974,8 @@ body{background:var(--cr);color:var(--tx);font-family:var(--fs);min-height:100vh
             <div style="display:flex;justify-content:space-between;font-size:11px;"><span style="color:var(--ts);">Budget</span><span style="color:var(--ink);font-weight:600;">$4,200</span></div>
             <div style="display:flex;justify-content:space-between;font-size:11px;"><span style="color:var(--ts);">Spent</span><span style="color:var(--ink);font-weight:600;">$4,150</span></div>
             <div style="display:flex;justify-content:space-between;font-size:11px;"><span style="color:var(--ts);">Under Budget</span><span style="color:var(--gn);font-weight:600;">$50</span></div>
-            <div style="display:flex;justify-content:space-between;font-size:11px;"><span style="color:var(--ts);">Intelligence Savings <span class="ttip-trig" onmouseenter="showTtip(this,'is-amalfi')" onmouseleave="hideTtip()" onclick="toggleTtip(this,'is-amalfi',event)">i</span></span><span style="color:var(--gn);font-weight:700;">$827</span></div>
-            <div style="grid-column:1/-1;padding-top:8px;margin-top:2px;border-top:1px solid var(--bd);"><div style="display:flex;justify-content:space-between;align-items:baseline;"><span style="color:var(--ink);font-weight:600;font-size:12px;">Total Savings</span><span style="color:var(--sd);font-weight:700;font-size:15px;">$877</span></div><div style="font-size:10px;color:var(--ts);margin-top:2px;font-style:italic;text-align:right;">covers 30 months of membership</div><div style="font-size:10px;color:var(--ts);margin-top:1px;text-align:right;">94 decisions automated <span class="ttip-trig" onmouseenter="showTtip(this,'da-amalfi')" onmouseleave="hideTtip()" onclick="toggleTtip(this,'da-amalfi',event)">i</span> · ~18 research hours saved</div></div>
+            <div style="display:flex;justify-content:space-between;font-size:11px;"><span style="color:var(--ts);">Intelligence Savings <span class="ttip-trig" onmouseenter="showTtip(this,'is-amalfi')" onmouseleave="hideTtip()" onclick="toggleTtip(this,'is-amalfi',event)">i</span></span><span style="color:var(--gn);font-weight:700;">$454</span></div>
+            <div style="grid-column:1/-1;padding-top:8px;margin-top:2px;border-top:1px solid var(--bd);"><div style="display:flex;justify-content:space-between;align-items:baseline;"><span style="color:var(--ink);font-weight:600;font-size:12px;">Total Romieaux Value</span><span style="color:var(--sd);font-weight:700;font-size:15px;" class="trip-total-time" data-cash="504" data-hours="19">$1,454</span></div><div style="font-size:10px;color:var(--ts);margin-top:1px;text-align:right;font-style:italic;">$504 Cash Savings + <span class="trip-time-dollars" data-hours="19">$950</span> in time at your rate</div><div style="font-size:10px;color:var(--ts);margin-top:3px;text-align:right;">94 decisions automated <span class="ttip-trig" onmouseenter="showTtip(this,'da-amalfi')" onmouseleave="hideTtip()" onclick="toggleTtip(this,'da-amalfi',event)">i</span> · ~19 hrs saved</div></div>
             
           </div>
         </div>
@@ -1726,8 +1992,8 @@ body{background:var(--cr);color:var(--tx);font-family:var(--fs);min-height:100vh
             <div style="display:flex;justify-content:space-between;font-size:11px;"><span style="color:var(--ts);">Budget</span><span style="color:var(--ink);font-weight:600;">$3,600</span></div>
             <div style="display:flex;justify-content:space-between;font-size:11px;"><span style="color:var(--ts);">Spent</span><span style="color:var(--ink);font-weight:600;">$3,560</span></div>
             <div style="display:flex;justify-content:space-between;font-size:11px;"><span style="color:var(--ts);">Under Budget</span><span style="color:var(--gn);font-weight:600;">$40</span></div>
-            <div style="display:flex;justify-content:space-between;font-size:11px;"><span style="color:var(--ts);">Intelligence Savings <span class="ttip-trig" onmouseenter="showTtip(this,'is-bali')" onmouseleave="hideTtip()" onclick="toggleTtip(this,'is-bali',event)">i</span></span><span style="color:var(--gn);font-weight:700;">$542</span></div>
-            <div style="grid-column:1/-1;padding-top:8px;margin-top:2px;border-top:1px solid var(--bd);"><div style="display:flex;justify-content:space-between;align-items:baseline;"><span style="color:var(--ink);font-weight:600;font-size:12px;">Total Savings</span><span style="color:var(--sd);font-weight:700;font-size:15px;">$582</span></div><div style="font-size:10px;color:var(--ts);margin-top:2px;font-style:italic;text-align:right;">covers 20 months of membership</div><div style="font-size:10px;color:var(--ts);margin-top:1px;text-align:right;">62 decisions automated <span class="ttip-trig" onmouseenter="showTtip(this,'da-bali')" onmouseleave="hideTtip()" onclick="toggleTtip(this,'da-bali',event)">i</span> · ~12 research hours saved</div></div>
+            <div style="display:flex;justify-content:space-between;font-size:11px;"><span style="color:var(--ts);">Intelligence Savings <span class="ttip-trig" onmouseenter="showTtip(this,'is-bali')" onmouseleave="hideTtip()" onclick="toggleTtip(this,'is-bali',event)">i</span></span><span style="color:var(--gn);font-weight:700;">$264</span></div>
+            <div style="grid-column:1/-1;padding-top:8px;margin-top:2px;border-top:1px solid var(--bd);"><div style="display:flex;justify-content:space-between;align-items:baseline;"><span style="color:var(--ink);font-weight:600;font-size:12px;">Total Romieaux Value</span><span style="color:var(--sd);font-weight:700;font-size:15px;" class="trip-total-time" data-cash="304" data-hours="12">$904</span></div><div style="font-size:10px;color:var(--ts);margin-top:1px;text-align:right;font-style:italic;">$304 Cash Savings + <span class="trip-time-dollars" data-hours="12">$600</span> in time at your rate</div><div style="font-size:10px;color:var(--ts);margin-top:3px;text-align:right;">62 decisions automated <span class="ttip-trig" onmouseenter="showTtip(this,'da-bali')" onmouseleave="hideTtip()" onclick="toggleTtip(this,'da-bali',event)">i</span> · ~12 hrs saved</div></div>
             
           </div>
         </div>
@@ -1745,7 +2011,7 @@ body{background:var(--cr);color:var(--tx);font-family:var(--fs);min-height:100vh
             <div style="display:flex;justify-content:space-between;font-size:11px;"><span style="color:var(--ts);">Spent</span><span style="color:var(--ink);font-weight:600;">$5,580</span></div>
             <div style="display:flex;justify-content:space-between;font-size:11px;"><span style="color:var(--ts);">Over Budget</span><span style="color:var(--rd);font-weight:600;">$80</span></div>
             <div style="display:flex;justify-content:space-between;font-size:11px;"><span style="color:var(--ts);">Intelligence Savings <span class="ttip-trig" onmouseenter="showTtip(this,'is-paris')" onmouseleave="hideTtip()" onclick="toggleTtip(this,'is-paris',event)">i</span></span><span style="color:var(--gn);font-weight:700;">$520</span></div>
-            <div style="grid-column:1/-1;padding-top:8px;margin-top:2px;border-top:1px solid var(--bd);"><div style="display:flex;justify-content:space-between;align-items:baseline;"><span style="color:var(--ink);font-weight:600;font-size:12px;">Total Savings</span><span style="color:var(--sd);font-weight:700;font-size:15px;">$440</span></div><div style="font-size:10px;color:var(--ts);margin-top:2px;font-style:italic;text-align:right;">covers 15 months of membership</div><div style="font-size:10px;color:var(--ts);margin-top:1px;text-align:right;">51 decisions automated <span class="ttip-trig" onmouseenter="showTtip(this,'da-paris')" onmouseleave="hideTtip()" onclick="toggleTtip(this,'da-paris',event)">i</span> · ~10 research hours saved</div></div>
+            <div style="grid-column:1/-1;padding-top:8px;margin-top:2px;border-top:1px solid var(--bd);"><div style="display:flex;justify-content:space-between;align-items:baseline;"><span style="color:var(--ink);font-weight:600;font-size:12px;">Total Romieaux Value</span><span style="color:var(--sd);font-weight:700;font-size:15px;" class="trip-total-time" data-cash="440" data-hours="10">$940</span></div><div style="font-size:10px;color:var(--ts);margin-top:1px;text-align:right;font-style:italic;">$440 Cash Savings + <span class="trip-time-dollars" data-hours="10">$500</span> in time at your rate</div><div style="font-size:10px;color:var(--ts);margin-top:3px;text-align:right;">51 decisions automated <span class="ttip-trig" onmouseenter="showTtip(this,'da-paris')" onmouseleave="hideTtip()" onclick="toggleTtip(this,'da-paris',event)">i</span> · ~10 hrs saved</div></div>
             
           </div>
         </div>
@@ -1763,7 +2029,7 @@ body{background:var(--cr);color:var(--tx);font-family:var(--fs);min-height:100vh
             <div style="display:flex;justify-content:space-between;font-size:11px;"><span style="color:var(--ts);">Spent</span><span style="color:var(--ink);font-weight:600;">$2,560</span></div>
             <div style="display:flex;justify-content:space-between;font-size:11px;"><span style="color:var(--ts);">Under Budget</span><span style="color:var(--gn);font-weight:600;">$140</span></div>
             <div style="display:flex;justify-content:space-between;font-size:11px;"><span style="color:var(--ts);">Intelligence Savings <span class="ttip-trig" onmouseenter="showTtip(this,'is-tulum')" onmouseleave="hideTtip()" onclick="toggleTtip(this,'is-tulum',event)">i</span></span><span style="color:var(--gn);font-weight:700;">$340</span></div>
-            <div style="grid-column:1/-1;padding-top:8px;margin-top:2px;border-top:1px solid var(--bd);"><div style="display:flex;justify-content:space-between;align-items:baseline;"><span style="color:var(--ink);font-weight:600;font-size:12px;">Total Savings</span><span style="color:var(--sd);font-weight:700;font-size:15px;">$480</span></div><div style="font-size:10px;color:var(--ts);margin-top:2px;font-style:italic;text-align:right;">covers 17 months of membership</div><div style="font-size:10px;color:var(--ts);margin-top:1px;text-align:right;">43 decisions automated <span class="ttip-trig" onmouseenter="showTtip(this,'da-tulum')" onmouseleave="hideTtip()" onclick="toggleTtip(this,'da-tulum',event)">i</span> · ~8 research hours saved</div></div>
+            <div style="grid-column:1/-1;padding-top:8px;margin-top:2px;border-top:1px solid var(--bd);"><div style="display:flex;justify-content:space-between;align-items:baseline;"><span style="color:var(--ink);font-weight:600;font-size:12px;">Total Romieaux Value</span><span style="color:var(--sd);font-weight:700;font-size:15px;" class="trip-total-time" data-cash="480" data-hours="9">$930</span></div><div style="font-size:10px;color:var(--ts);margin-top:1px;text-align:right;font-style:italic;">$480 Cash Savings + <span class="trip-time-dollars" data-hours="9">$450</span> in time at your rate</div><div style="font-size:10px;color:var(--ts);margin-top:3px;text-align:right;">43 decisions automated <span class="ttip-trig" onmouseenter="showTtip(this,'da-tulum')" onmouseleave="hideTtip()" onclick="toggleTtip(this,'da-tulum',event)">i</span> · ~9 hrs saved</div></div>
             
           </div>
         </div>
@@ -1781,7 +2047,7 @@ body{background:var(--cr);color:var(--tx);font-family:var(--fs);min-height:100vh
             <div style="display:flex;justify-content:space-between;font-size:11px;"><span style="color:var(--ts);">Spent</span><span style="color:var(--ink);font-weight:600;">$3,900</span></div>
             <div style="display:flex;justify-content:space-between;font-size:11px;"><span style="color:var(--ts);">Under Budget</span><span style="color:var(--gn);font-weight:600;">$100</span></div>
             <div style="display:flex;justify-content:space-between;font-size:11px;"><span style="color:var(--ts);">Intelligence Savings <span class="ttip-trig" onmouseenter="showTtip(this,'is-rio')" onmouseleave="hideTtip()" onclick="toggleTtip(this,'is-rio',event)">i</span></span><span style="color:var(--gn);font-weight:700;">$420</span></div>
-            <div style="grid-column:1/-1;padding-top:8px;margin-top:2px;border-top:1px solid var(--bd);"><div style="display:flex;justify-content:space-between;align-items:baseline;"><span style="color:var(--ink);font-weight:600;font-size:12px;">Total Savings</span><span style="color:var(--sd);font-weight:700;font-size:15px;">$520</span></div><div style="font-size:10px;color:var(--ts);margin-top:2px;font-style:italic;text-align:right;">covers 18 months of membership</div><div style="font-size:10px;color:var(--ts);margin-top:1px;text-align:right;">38 decisions automated <span class="ttip-trig" onmouseenter="showTtip(this,'da-rio')" onmouseleave="hideTtip()" onclick="toggleTtip(this,'da-rio',event)">i</span> · ~7 research hours saved</div></div>
+            <div style="grid-column:1/-1;padding-top:8px;margin-top:2px;border-top:1px solid var(--bd);"><div style="display:flex;justify-content:space-between;align-items:baseline;"><span style="color:var(--ink);font-weight:600;font-size:12px;">Total Romieaux Value</span><span style="color:var(--sd);font-weight:700;font-size:15px;" class="trip-total-time" data-cash="520" data-hours="8">$920</span></div><div style="font-size:10px;color:var(--ts);margin-top:1px;text-align:right;font-style:italic;">$520 Cash Savings + <span class="trip-time-dollars" data-hours="8">$400</span> in time at your rate</div><div style="font-size:10px;color:var(--ts);margin-top:3px;text-align:right;">38 decisions automated <span class="ttip-trig" onmouseenter="showTtip(this,'da-rio')" onmouseleave="hideTtip()" onclick="toggleTtip(this,'da-rio',event)">i</span> · ~8 hrs saved</div></div>
             
           </div>
         </div>
@@ -1799,7 +2065,7 @@ body{background:var(--cr);color:var(--tx);font-family:var(--fs);min-height:100vh
             <div style="display:flex;justify-content:space-between;font-size:11px;"><span style="color:var(--ts);">Spent</span><span style="color:var(--ink);font-weight:600;">$3,200</span></div>
             <div style="display:flex;justify-content:space-between;font-size:11px;"><span style="color:var(--ts);">Under Budget</span><span style="color:var(--gn);font-weight:600;">$200</span></div>
             <div style="display:flex;justify-content:space-between;font-size:11px;"><span style="color:var(--ts);">Intelligence Savings <span class="ttip-trig" onmouseenter="showTtip(this,'is-iceland')" onmouseleave="hideTtip()" onclick="toggleTtip(this,'is-iceland',event)">i</span></span><span style="color:var(--gn);font-weight:700;">$410</span></div>
-            <div style="grid-column:1/-1;padding-top:8px;margin-top:2px;border-top:1px solid var(--bd);"><div style="display:flex;justify-content:space-between;align-items:baseline;"><span style="color:var(--ink);font-weight:600;font-size:12px;">Total Savings</span><span style="color:var(--sd);font-weight:700;font-size:15px;">$610</span></div><div style="font-size:10px;color:var(--ts);margin-top:2px;font-style:italic;text-align:right;">covers 21 months of membership</div><div style="font-size:10px;color:var(--ts);margin-top:1px;text-align:right;">47 decisions automated <span class="ttip-trig" onmouseenter="showTtip(this,'da-iceland')" onmouseleave="hideTtip()" onclick="toggleTtip(this,'da-iceland',event)">i</span> · ~9 research hours saved</div></div>
+            <div style="grid-column:1/-1;padding-top:8px;margin-top:2px;border-top:1px solid var(--bd);"><div style="display:flex;justify-content:space-between;align-items:baseline;"><span style="color:var(--ink);font-weight:600;font-size:12px;">Total Romieaux Value</span><span style="color:var(--sd);font-weight:700;font-size:15px;" class="trip-total-time" data-cash="610" data-hours="9">$1,060</span></div><div style="font-size:10px;color:var(--ts);margin-top:1px;text-align:right;font-style:italic;">$610 Cash Savings + <span class="trip-time-dollars" data-hours="9">$450</span> in time at your rate</div><div style="font-size:10px;color:var(--ts);margin-top:3px;text-align:right;">47 decisions automated <span class="ttip-trig" onmouseenter="showTtip(this,'da-iceland')" onmouseleave="hideTtip()" onclick="toggleTtip(this,'da-iceland',event)">i</span> · ~9 hrs saved</div></div>
             
           </div>
         </div>
@@ -1989,11 +2255,6 @@ body{background:var(--cr);color:var(--tx);font-family:var(--fs);min-height:100vh
         <div style="display:flex;justify-content:space-between;align-items:center;"><div style="font-family:var(--fd);font-size:18px;font-weight:700;color:var(--ink);">Per-Trip</div><div style="font-family:var(--fd);font-size:18px;font-weight:700;color:var(--sd);">$49–$399</div></div>
         <div style="font-size:12px;color:var(--tm);margin-top:6px;line-height:1.6;">For a single trip, no subscription. Pick the level of intelligence you want — Essential, Curated, or Signature.</div>
         <button class="btn bgh" style="width:100%;margin-top:12px;padding:11px;" onclick="showToast('Choose trip tier')">Plan a Single Trip →</button>
-      </div>
-      <div style="background:var(--pn);border:1.5px solid var(--bd);border-radius:14px;padding:18px;margin-bottom:12px;">
-        <div style="display:flex;justify-content:space-between;align-items:center;"><div style="font-family:var(--fd);font-size:18px;font-weight:700;color:var(--ink);">Romieaux Pro</div><div style="font-family:var(--fd);font-size:22px;font-weight:700;color:var(--sd);">$99<span style="font-size:13px;color:var(--ts);font-weight:400;">/mo</span></div></div>
-        <div style="font-size:12px;color:var(--tm);margin-top:6px;line-height:1.6;">Built for travel advisors. Manage clients, brand your itineraries, and run your business inside Romieaux.</div>
-        <button class="btn bgh" style="width:100%;margin-top:12px;padding:11px;" onclick="showToast('Contact sales for Pro')">Contact Sales →</button>
       </div>
       <div style="background:linear-gradient(160deg,var(--cr2),var(--n2));border:1.5px solid var(--sd);border-radius:14px;padding:18px;margin-bottom:20px;">
         <div style="font-family:var(--fd);font-size:18px;font-weight:700;color:var(--ink);">Private Circle</div>
@@ -2260,22 +2521,6 @@ body{background:var(--cr);color:var(--tx);font-family:var(--fs);min-height:100vh
   </div>
 </div>
 
-<!-- Search Overlay -->
-<div id="search-overlay" style="position:fixed;inset:0;background:var(--cr);z-index:500;display:none;flex-direction:column;">
-  <div style="padding:16px 20px 12px;display:flex;align-items:center;gap:12px;">
-    <button style="background:none;border:none;font-size:18px;cursor:pointer;padding:4px;" onclick="closeSearch()">←</button>
-    <div style="flex:1;display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--cr2);border:1.5px solid var(--bd);border-radius:12px;">
-      <span style="font-size:16px;">🔍</span>
-      <input type="text" id="search-input" placeholder="Search modules, activities, settings..." style="flex:1;border:none;background:transparent;font-family:var(--fs);font-size:15px;color:var(--tx);outline:none;" oninput="filterSearch(this.value)">
-      <button style="background:none;border:none;font-size:18px;cursor:pointer;padding:2px;" onclick="showToast('Listening…')">🎙</button>
-    </div>
-  </div>
-  <div style="flex:1;overflow-y:auto;padding:0 20px;" id="search-results">
-    <div style="font-family:var(--fm);font-size:8px;letter-spacing:3px;color:var(--rg);text-transform:uppercase;margin:8px 0;">Quick Access</div>
-    <div id="search-items"></div>
-  </div>
-</div>
-
 <!-- Global Search Button (floating) -->
 <div id="search-fab" style="position:fixed;bottom:80px;right:20px;width:50px;height:50px;border-radius:50%;background:var(--sd);display:none;align-items:center;justify-content:center;cursor:pointer;z-index:300;box-shadow:0 4px 16px rgba(0,0,0,.15);" onclick="openSearch()">
   <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
@@ -2293,8 +2538,11 @@ body{background:var(--cr);color:var(--tx);font-family:var(--fs);min-height:100vh
       </button>
     </div>
   </div>
-  <div style="padding:0 20px;">
-    <div style="font-family:var(--fm);font-size:8px;letter-spacing:2px;color:var(--ts);text-transform:uppercase;margin-bottom:10px;">Quick Access</div>
+  <div style="padding:0 20px;flex:1;overflow-y:auto;">
+    <!-- Intelligence card (shown when query matches KB topic) -->
+    <div id="search-intel" style="display:none;background:linear-gradient(135deg,rgba(176,138,80,0.08) 0%,rgba(176,138,80,0.03) 100%);border:1px solid rgba(176,138,80,0.25);border-radius:14px;padding:14px 16px;margin-bottom:16px;"></div>
+    <!-- Quick Access header (hidden when intel is showing with filter) -->
+    <div id="search-quick-header" style="font-family:var(--fm);font-size:8px;letter-spacing:2px;color:var(--ts);text-transform:uppercase;margin-bottom:10px;">Quick Access</div>
     <div id="search-results" style="display:flex;flex-direction:column;gap:0;">
       <div class="search-item" data-k="activities dining stays transport" style="display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--bd);cursor:pointer;" onclick="closeSearch();nav('s-activities')"><span style="font-size:18px;">🎭</span><div><div style="font-size:14px;color:var(--tx);font-weight:600;">Activities</div><div style="font-size:11px;color:var(--ts);">Browse & confirm selections</div></div></div>
       <div class="search-item" data-k="dining restaurants reservations food" style="display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--bd);cursor:pointer;" onclick="closeSearch();nav('s-dining')"><span style="font-size:18px;">🍽</span><div><div style="font-size:14px;color:var(--tx);font-weight:600;">Dining</div><div style="font-size:11px;color:var(--ts);">Restaurants & reservations</div></div></div>
@@ -2511,12 +2759,12 @@ body{background:var(--cr);color:var(--tx);font-family:var(--fs);min-height:100vh
 <!-- ===== ACTIVE INTELLIGENCE: CREDIT CARD ===== -->
 <div id="s-mod-cc" class="screen">
   <div class="tb"><button class="bk" onclick="nav('s-dash')">← Home</button><div class="wm">CREDIT CARD</div><div></div></div>
-  <div class="ib" id="s-mod-cc-ib"><div class="ib-glow"></div><div class="ib-eye">Active Intelligence · Cards Working For You</div><div class="ib-t">$487 saved on this trip.</div><div class="ib-s">From the cards already in your wallet.</div></div>
+  <div class="ib" id="s-mod-cc-ib"><div class="ib-glow"></div><div class="ib-eye">Active Intelligence · Cards Working For You</div><div class="ib-t">$63 saved on this trip.</div><div class="ib-s">From the cards already in your wallet.</div></div>
   <div class="scr" id="s-mod-cc-scr">
-    <div style="padding:18px 20px 8px;"><div style="font-family:var(--fm);font-size:8px;letter-spacing:3px;color:var(--rg);text-transform:uppercase;margin-bottom:6px;">Best Move · Stays</div><div style="background:var(--pn);border:1px solid var(--bd);border-radius:12px;padding:16px;"><div style="font-family:var(--fd);font-size:16px;font-weight:600;color:var(--ink);margin-bottom:6px;">Le Sirenuse: pay with Chase points, not cash.</div><div style="font-size:13px;color:var(--tm);line-height:1.6;">Your Sapphire Reserve transfers to World of Hyatt at 1:1, and Le Sirenuse is bookable through Hyatt's Small Luxury Hotels collection. <strong>22,000 points = 3 nights vs $1,860 cash.</strong> You'd be paying 8.5¢ per point — well above the 1.5¢ Chase pays out as cash.</div><div style="margin-top:10px;font-family:var(--fm);font-size:10px;color:var(--gn);letter-spacing:1px;">SAVES $340</div></div></div>
-    <div style="padding:14px 20px 8px;"><div style="font-family:var(--fm);font-size:8px;letter-spacing:3px;color:var(--rg);text-transform:uppercase;margin-bottom:6px;">Best Move · Dining & Activities</div><div style="background:var(--pn);border:1px solid var(--bd);border-radius:12px;padding:16px;"><div style="font-family:var(--fd);font-size:16px;font-weight:600;color:var(--ink);margin-bottom:6px;">Use Amex Platinum at restaurants. Sapphire everywhere else.</div><div style="font-size:13px;color:var(--tm);line-height:1.6;">Amex earns 4× at restaurants worldwide right now — the boat charter, ferry, and ground transport go on Sapphire Reserve for 3× travel. Across an estimated $1,400 of trip spend, you'll bank roughly <strong>4,800 extra points</strong> versus a single-card strategy.</div><div style="margin-top:10px;font-family:var(--fm);font-size:10px;color:var(--gn);letter-spacing:1px;">EARNS $96 IN POINT VALUE</div></div></div>
-    <div style="padding:14px 20px 8px;"><div style="font-family:var(--fm);font-size:8px;letter-spacing:3px;color:var(--rg);text-transform:uppercase;margin-bottom:6px;">Quiet Win</div><div style="background:var(--pn);border:1px solid var(--bd);border-radius:12px;padding:16px;"><div style="font-family:var(--fd);font-size:16px;font-weight:600;color:var(--ink);margin-bottom:6px;">Skip the Sapphire portal for the Trenitalia leg.</div><div style="font-size:13px;color:var(--tm);line-height:1.6;">Trenitalia.com is €18 cheaper per ticket than Chase Travel for the Rome → Naples Frecciarossa, and the rewards math still works on Sapphire. <strong>Saves $51 on two tickets.</strong></div></div></div>
-    <div style="padding:14px 20px 24px;"><div style="background:var(--sdl);border:1px solid rgba(176,138,80,.25);border-radius:12px;padding:14px;"><div style="font-family:var(--fm);font-size:8px;letter-spacing:2px;color:var(--sd);text-transform:uppercase;margin-bottom:4px;">How This Works</div><div style="font-size:12px;color:var(--tm);line-height:1.6;">You shared Sapphire Reserve and Amex Platinum during onboarding. Every time a stay, dining, or transport recommendation lands in your itinerary, Every recommendation is run against your portfolio's transfer partners, current promotions, and bonus categories — and tells you the highest-value way to pay. No card data is stored beyond type and issuer.</div></div></div>
+    <div style="padding:18px 20px 8px;"><div style="font-family:var(--fm);font-size:8px;letter-spacing:3px;color:var(--rg);text-transform:uppercase;margin-bottom:6px;">Best Move · Stays</div><div style="background:var(--pn);border:1px solid var(--bd);border-radius:12px;padding:16px;"><div style="font-family:var(--fd);font-size:16px;font-weight:600;color:var(--ink);margin-bottom:6px;">Le Sirenuse: pay with Chase points, not cash.</div><div style="font-size:13px;color:var(--tm);line-height:1.6;">Your Sapphire Reserve transfers to World of Hyatt at 1:1, and Le Sirenuse is bookable through Hyatt's Small Luxury Hotels collection. <strong>22,000 points = 3 nights vs $1,860 cash.</strong> You'd be paying 8.5¢ per point — well above the 1.5¢ Chase pays out as cash.</div><div style="margin-top:10px;padding:8px 10px;background:rgba(45,107,45,.08);border-left:2px solid var(--gn);border-radius:4px;font-size:12px;color:var(--tm);">✓ Booked via Hyatt · <span style="color:var(--sd);cursor:pointer;text-decoration:underline;" onclick="showToast('Opening booking details…')">view confirmation</span></div><div style="margin-top:10px;font-family:var(--fm);font-size:10px;color:var(--gn);letter-spacing:1px;">SAVES $340</div></div></div>
+    <div style="padding:14px 20px 8px;"><div style="font-family:var(--fm);font-size:8px;letter-spacing:3px;color:var(--rg);text-transform:uppercase;margin-bottom:6px;">Best Move · Dining & Activities</div><div style="background:var(--pn);border:1px solid var(--bd);border-radius:12px;padding:16px;"><div style="font-family:var(--fd);font-size:16px;font-weight:600;color:var(--ink);margin-bottom:6px;">Use Sapphire Reserve at restaurants and for travel.</div><div style="font-size:13px;color:var(--tm);line-height:1.6;">Sapphire Reserve earns 3× worldwide on dining — best in your wallet for restaurants. Flights and hotels booked direct also earn 4× on Sapphire. Across ~$1,400 of dining + trip spend, <strong>4,200 Sapphire points</strong> at 1.5¢ transfer value = $63.</div><div style="margin-top:10px;font-family:var(--fm);font-size:10px;color:var(--gn);letter-spacing:1px;">EARNS $63 IN POINT VALUE</div></div></div>
+    <div style="padding:14px 20px 8px;"><div style="font-family:var(--fm);font-size:8px;letter-spacing:3px;color:var(--rg);text-transform:uppercase;margin-bottom:6px;">Quiet Win</div><div style="background:var(--pn);border:1px solid var(--bd);border-radius:12px;padding:16px;"><div style="font-family:var(--fd);font-size:16px;font-weight:600;color:var(--ink);margin-bottom:6px;">Skip the Sapphire portal for the Trenitalia leg.</div><div style="font-size:13px;color:var(--tm);line-height:1.6;">Trenitalia.com is €18 cheaper per ticket than Chase Travel for the Rome → Naples Frecciarossa, and the rewards math still works on Sapphire. <strong>Saves $51 on two tickets.</strong></div><div style="margin-top:10px;padding:8px 10px;background:rgba(45,107,45,.08);border-left:2px solid var(--gn);border-radius:4px;font-size:12px;color:var(--tm);">✓ Booked direct on Trenitalia.com · <span style="color:var(--sd);cursor:pointer;text-decoration:underline;" onclick="showToast('Opening booking details…')">view confirmation</span></div></div></div>
+    <div style="padding:14px 20px 24px;"><div style="background:var(--sdl);border:1px solid rgba(176,138,80,.25);border-radius:12px;padding:14px;"><div style="font-family:var(--fm);font-size:8px;letter-spacing:2px;color:var(--sd);text-transform:uppercase;margin-bottom:4px;">How This Works</div><div style="font-size:12px;color:var(--tm);line-height:1.6;">You shared Sapphire Reserve and Amex Platinum during onboarding. Every time a stay, dining, or transport recommendation lands in your itinerary, it's run against your portfolio's transfer partners, current promotions, and bonus categories — and tells you the highest-value way to pay. No card data is stored beyond type and issuer.</div></div></div>
   </div>
   <div class="nt"><button class="nb" onclick="nav('s-dash')"><span class="ni">🏠</span><div class="nl">Home</div></button><button class="nb" onclick="nav('s-itin')"><span class="ni">📋</span><div class="nl">Itinerary</div></button><button class="nb" onclick="nav('s-ready')"><span class="ni">✈️</span><div class="nl">Readiness</div></button><button class="nb" onclick="openSearch()"><span class="ni">🔍</span><div class="nl">Search</div></button><button class="nb" onclick="nav('s-memory')"><span class="ni">📖</span><div class="nl">Memory</div></button></div>
 </div>
@@ -2707,7 +2955,7 @@ body{background:var(--cr);color:var(--tx);font-family:var(--fs);min-height:100vh
 <!-- ===== ACTIVE INTELLIGENCE: COST INTELLIGENCE ===== -->
 <div id="s-mod-cost" class="screen">
   <div class="tb"><button class="bk" onclick="nav('s-dash')">← Home</button><div class="wm">COST INTELLIGENCE</div><div></div></div>
-  <div class="ib"><div class="ib-glow"></div><div class="ib-eye">Active Intelligence · Trip-Wide Cost Optimization</div><div class="ib-t">$827 saved across 7 decisions.</div><div class="ib-s">Every booking weighed against alternatives — points vs cash, stay vs villa, ferry vs charter.</div></div>
+  <div class="ib"><div class="ib-glow"></div><div class="ib-eye">Active Intelligence · Trip-Wide Cost Optimization</div><div class="ib-t">$454 saved across 3 decisions.</div><div class="ib-s">Every booking weighed against alternatives — points vs cash, stay vs villa, ferry vs charter.</div></div>
   <div class="scr">
 
     <div style="padding:16px 20px 4px;font-size:12px;color:var(--tm);line-height:1.5;">A digest of every cost decision Romieaux made for this trip. Tap any item to see it in context — nothing is duplicated, every detail lives in its home module.</div>
@@ -2760,7 +3008,7 @@ body{background:var(--cr);color:var(--tx);font-family:var(--fs);min-height:100vh
       <div style="background:var(--pn);border:1px solid var(--bd);border-radius:12px;overflow:hidden;cursor:pointer;" onclick="nav('s-mod-cc')">
         <div style="padding:14px 16px;border-bottom:1px solid var(--bd);">
           <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px;"><div style="font-family:var(--fd);font-size:15px;font-weight:600;color:var(--tx);">Amex Platinum at restaurants only</div><span style="font-family:var(--fm);font-size:9px;color:var(--gn);letter-spacing:1px;">EARNS $96</span></div>
-          <div style="font-size:12px;color:var(--tm);line-height:1.5;">Amex earns 4× at restaurants worldwide right now. Sapphire stays the default for everything else (3× travel). Across ~$1,400 of trip dining, that's 4,800 extra points vs single-card strategy.</div>
+          <div style="font-size:12px;color:var(--tm);line-height:1.5;">Sapphire Reserve earns 3× worldwide on dining — best in your wallet for restaurants. Flights and hotels booked direct earn 4× on Sapphire. Across ~$1,400 of trip dining + travel, that's 4,200 Sapphire points at 1.5¢ transfer value = $63.</div>
         </div>
         <div style="padding:9px 16px;background:var(--sdl);font-size:11px;color:var(--tm);display:flex;justify-content:space-between;align-items:center;"><span>See full card strategy in Credit Card</span><span style="color:var(--sd);">→</span></div>
       </div>
@@ -2903,6 +3151,8 @@ body{background:var(--cr);color:var(--tx);font-family:var(--fs);min-height:100vh
     <div style="padding:18px 20px 6px;"><div style="font-family:var(--fm);font-size:8px;letter-spacing:3px;color:var(--rg);text-transform:uppercase;margin-bottom:6px;">The Phrases You'll Actually Use</div><div style="background:var(--pn);border:1px solid var(--bd);border-radius:12px;padding:16px;"><div style="display:flex;flex-direction:column;gap:10px;"><div><div style="font-family:var(--fd);font-size:15px;color:var(--ink);">Buongiorno · Buonasera</div><div style="font-size:11px;color:var(--ts);">bwon-JOR-no · bwon-ah-SAY-rah · "Good day" before lunch, "good evening" after</div></div><div><div style="font-family:var(--fd);font-size:15px;color:var(--ink);">Un tavolo per due, per favore</div><div style="font-size:11px;color:var(--ts);">oon TAH-vo-lo pair DOO-ay · "A table for two, please"</div></div><div><div style="font-family:var(--fd);font-size:15px;color:var(--ink);">Il conto, per favore</div><div style="font-size:11px;color:var(--ts);">eel CON-toh · "The check, please" — they will not bring it unprompted</div></div><div><div style="font-family:var(--fd);font-size:15px;color:var(--ink);">Era squisito</div><div style="font-size:11px;color:var(--ts);">EH-rah skwee-ZEE-toh · "It was exquisite" — the compliment that lands</div></div></div></div></div>
     <div style="padding:14px 20px 6px;"><div style="font-family:var(--fm);font-size:8px;letter-spacing:3px;color:var(--rg);text-transform:uppercase;margin-bottom:6px;">The Things Tourists Get Wrong</div><div style="background:var(--pn);border:1.5px solid rgba(180,140,40,.3);border-radius:12px;padding:16px;"><div style="font-family:var(--fd);font-size:15px;font-weight:600;color:var(--ink);margin-bottom:8px;">Don't order a cappuccino after noon.</div><div style="font-size:13px;color:var(--tm);line-height:1.6;margin-bottom:10px;">Italians treat cappuccino as a breakfast drink — milk after a meal is considered hard to digest. Order an espresso, a macchiato, or a caffè after lunch. This was flagged for La Sponda specifically because tourists order cappuccinos there constantly and the waitstaff are too polite to say anything.</div><div style="font-family:var(--fd);font-size:15px;font-weight:600;color:var(--ink);margin-bottom:8px;">"Ciao" is informal. Use "Salve" with strangers.</div><div style="font-size:13px;color:var(--tm);line-height:1.6;">Ciao is for friends. With shopkeepers, hotel staff, and anyone older than you, "Salve" is the warm-but-respectful greeting that doesn't read as overly familiar.</div></div></div>
     <div style="padding:14px 20px 6px;"><div style="font-family:var(--fm);font-size:8px;letter-spacing:3px;color:var(--rg);text-transform:uppercase;margin-bottom:6px;">Camera Translation · Always On</div><div style="background:var(--pn);border:1px solid var(--bd);border-radius:12px;padding:16px;"><div style="font-size:13px;color:var(--tm);line-height:1.6;">Point your phone camera at any menu, sign, or label. Translation happens in place — including handwritten chalkboards at family-run trattorias. Works offline once you've downloaded the Italian language pack (already done for you when you set the trip).</div></div></div>
+    <div style="padding:14px 20px 6px;"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;"><div style="font-family:var(--fm);font-size:8px;letter-spacing:3px;color:var(--sd);text-transform:uppercase;">Medication Identification</div><div style="font-family:var(--fm);font-size:8px;letter-spacing:2px;color:var(--rg);text-transform:uppercase;background:rgba(180,140,40,.12);padding:3px 8px;border-radius:10px;">Coming Soon</div></div><div style="background:var(--pn);border:1px solid var(--bd);border-radius:12px;padding:16px;"><div style="font-family:var(--fd);font-size:15px;font-weight:600;color:var(--ink);margin-bottom:6px;">Forgot a medication? Scan what's at the pharmacy.</div><div style="font-size:13px;color:var(--tm);line-height:1.6;margin-bottom:10px;">Point your camera at any pharmacy box abroad. Romieaux identifies the active ingredient, what it's commonly used for, and matches it to the brand name you'd recognize at home. If you've listed medications or allergies in your profile, you'll see soft flags — for example, a warning if the box contains ibuprofen and you take blood thinners.</div><div style="font-size:11px;color:var(--ts);line-height:1.5;font-style:italic;border-top:1px solid var(--bd);padding-top:8px;">Romieaux is not a healthcare provider. Identification is informational. Always confirm with a licensed pharmacist before taking any medication.</div></div></div>
+    <div style="padding:14px 20px 6px;"><div style="font-family:var(--fm);font-size:8px;letter-spacing:3px;color:var(--rg);text-transform:uppercase;margin-bottom:6px;">Available Now · Find a Pharmacist</div><div style="background:var(--pn);border:1px solid var(--bd);border-radius:12px;padding:16px;"><div style="font-size:13px;color:var(--tm);line-height:1.6;margin-bottom:10px;">Need a pharmacist who speaks English in Positano? Romieaux maintains a vetted list of local pharmacies near your stays, including which ones are open late and which staff speak your language. One tap to call, message, or get directions.</div><div><button class="btn bsd" style="padding:8px 16px;font-size:12px;" onclick="showToast('3 English-speaking pharmacies near Le Sirenuse · Tap to view')">Find pharmacists near me →</button></div></div></div>
     <div style="padding:14px 20px 24px;"><div style="background:var(--sdl);border:1px solid rgba(176,138,80,.25);border-radius:12px;padding:14px;"><div style="font-family:var(--fm);font-size:8px;letter-spacing:2px;color:var(--sd);text-transform:uppercase;margin-bottom:4px;">What's Different Here</div><div style="font-size:12px;color:var(--tm);line-height:1.6;">Google Translate gives you words. You get context — when to use which phrase, what gestures land badly, and what tourist mistakes the locals notice but don't correct. Built from the ROAM Network's reports on what travelers wished they'd known sooner.</div></div></div>
   </div>
   <div class="nt"><button class="nb" onclick="nav('s-dash')"><span class="ni">🏠</span><div class="nl">Home</div></button><button class="nb" onclick="nav('s-itin')"><span class="ni">📋</span><div class="nl">Itinerary</div></button><button class="nb" onclick="nav('s-ready')"><span class="ni">✈️</span><div class="nl">Readiness</div></button><button class="nb" onclick="openSearch()"><span class="ni">🔍</span><div class="nl">Search</div></button><button class="nb" onclick="nav('s-memory')"><span class="ni">📖</span><div class="nl">Memory</div></button></div>
@@ -3610,6 +3860,7 @@ function nav(id){
   if(id==='s-bp-kids')rebuildKids();
   if(id==='s-bp-triptype')renderTripTypes();
   if(id==='s-bp-loading')runBP();
+  if(id==='s-blueprint'){setTimeout(function(){if(typeof updateTimeRate==='function')updateTimeRate(userHourlyRate||50);},50);}
   if(id==='s-bp-compat')buildCompat();
   var fab=document.getElementById('search-fab');if(fab){var hideFab=['s-land','s-signup','s-signin','s-join-check','s-bp-energy','s-bp-triptype','s-bp-who','s-bp-kids','s-bp-compat','s-bp-invite','s-bp-mode','s-bp-music','s-bp-name','s-dest','s-discover','s-bp-budget','s-tripdetails','s-bp-loading','s-pricing'];fab.style.display=hideFab.indexOf(id)>-1?'none':'flex';}
 }
@@ -3792,7 +4043,7 @@ function render(){
       var hs=document.getElementById('hero-sub');if(hs)hs.textContent=isR?'10 nights · Amalfi Coast · April 2026':'9 nights · Ubud, Bali · May 2026';
       var hsp=document.getElementById('hero-spent');if(hsp)hsp.textContent=isR?'$4,150':'$3,560';
       var hbs=document.getElementById('hero-budget-savings');if(hbs)hbs.textContent=isR?'$50':'$40';
-      var hsv=document.getElementById('hero-saved');if(hsv)hsv.textContent=isR?'$827':'$542';
+      var hsv=document.getElementById('hero-saved');if(hsv)hsv.textContent=isR?'$454':'$264';
     }else{
       heroEl.style.display='none';
     }
@@ -3839,7 +4090,7 @@ function render(){
   var gs=document.getElementById('group-section');if(gs)gs.style.display=(S.group==='solo')?'none':'block';
   // Suggested bundles based on trip type
   var ai=document.getElementById('active-intel');
-  if(ai){if(S.demoMode){var isR=S.destKey==='romantic';ai.innerHTML='<div style="display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:6px;flex-wrap:wrap;gap:8px;"><div class="bundle-label" style="color:var(--rg);margin:0;">Working on this trip</div><div style="font-family:var(--fm);font-size:9px;letter-spacing:1.5px;color:var(--sd);text-transform:uppercase;">Tap any module to explore →</div></div><div class="mg"><div class="mc" onclick="nav(\'s-mod-cc\')"><div class="mci">💳</div><div class="mcn">Credit Card</div><div class="mcs">'+(isR?'$487 saved on this trip':'$312 saved on this trip')+'</div><div class="mct" style="background:rgba(45,107,45,.1);color:var(--gn);">Active</div></div><div class="mc" onclick="nav(\'s-mod-cost\')"><div class="mci">💰</div><div class="mcn">Cost Intelligence</div><div class="mcs">'+(isR?'$827 saved · 7 decisions':'$542 saved · 6 decisions')+'</div><div class="mct" style="background:rgba(45,107,45,.1);color:var(--gn);">Active</div></div><div class="mc" onclick="nav(\'s-mod-ins\')"><div class="mci">🛡</div><div class="mcn">Insurance</div><div class="mcs">'+(isR?'3 protections covered, 1 gap filled':'Tropical risks covered, 1 gap filled')+'</div><div class="mct" style="background:rgba(45,107,45,.1);color:var(--gn);">Active</div></div><div class="mc" onclick="nav(\'s-mod-music\')"><div class="mci">🎵</div><div class="mcn">Music & Events</div><div class="mcs">'+(isR?'12-track group playlist · Ravello Day 5':'11-track playlist · Legong Day 5')+'</div><div class="mct" style="background:rgba(45,107,45,.1);color:var(--gn);">Active</div></div><div class="mc" onclick="nav(\'s-mod-airport\')"><div class="mci">✈️</div><div class="mcn">Airport & Transit</div><div class="mcs">'+(isR?'Lounge · bags · transfer · jet lag':'Changi layover · bags · resort transfer')+'</div><div class="mct" style="background:rgba(45,107,45,.1);color:var(--gn);">Active</div></div><div class="mc" onclick="nav(\'s-mod-intent\')"><div class="mci">🕊</div><div class="mcn">Intentionality</div><div class="mcs">'+(isR?'"To come back whole" · anchored':'"What my own quiet sounds like"')+'</div><div class="mct" style="background:rgba(45,107,45,.1);color:var(--gn);">Active</div></div><div class="mc" onclick="nav(\'s-mod-outfits\')"><div class="mci">👗</div><div class="mcn">Shopping & Outfits</div><div class="mcs">'+(isR?'10 looks built from your closet':'8 looks · temple to beach club')+'</div><div class="mct" style="background:rgba(45,107,45,.1);color:var(--gn);">Active</div></div><div class="mc" onclick="nav(\'s-mod-sus\')"><div class="mci">🌱</div><div class="mcn">Sustainability</div><div class="mcs">'+(isR?'6 swaps · 22% lower footprint':'7 swaps · 31% lower footprint')+'</div><div class="mct" style="background:rgba(45,107,45,.1);color:var(--gn);">Active</div></div><div class="mc" onclick="nav(\'s-memory\')"><div class="mci">📖</div><div class="mcn">Memory Book</div><div class="mcs">Photos & reflections, ready</div><div class="mct" style="background:rgba(45,107,45,.1);color:var(--gn);">Active</div></div><div class="mc" onclick="nav(\'s-mod-translate\')"><div class="mci">🌐</div><div class="mcn">Translation</div><div class="mcs">'+(isR?'Italian, with cultural context':'Bahasa Indonesia + cultural protocols')+'</div><div class="mct" style="background:rgba(45,107,45,.1);color:var(--gn);">Active</div></div><div class="mc" onclick="nav(\'s-mod-climate\')"><div class="mci">🌡</div><div class="mcn">Climate & Carbon</div><div class="mcs">'+(isR?'Within norms · 1.8 tons offsetable':'Shoulder season shifting · 1.4 tons')+'</div><div class="mct" style="background:rgba(45,107,45,.1);color:var(--gn);">Active</div></div><div class="mc" onclick="nav(\'s-posttrip\')"><div class="mci">📊</div><div class="mcn">Post-Trip</div><div class="mcs">Cost summary & reflection ready</div><div class="mct" style="background:rgba(45,107,45,.1);color:var(--gn);">Active</div></div><div class="mc" onclick="nav(\'s-mod-wellness\')"><div class="mci">🧘</div><div class="mcn">Wellness & Health</div><div class="mcs">'+(isR?'Recovery built into pacing':'The trip Wellness was built for')+'</div><div class="mct" style="background:rgba(45,107,45,.1);color:var(--gn);">Active</div></div>'+(!isR?'<div class="mc" onclick="nav(\'s-mod-solo\')"><div class="mci">🚺</div><div class="mcn">Solo Female</div><div class="mcs">Safety as a layer · not a warning</div><div class="mct" style="background:rgba(45,107,45,.1);color:var(--gn);">Active</div></div>':'')+'</div>';}else{ai.innerHTML='';}}
+  if(ai){if(S.demoMode){var isR=S.destKey==='romantic';ai.innerHTML='<div style="display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:6px;flex-wrap:wrap;gap:8px;"><div class="bundle-label" style="color:var(--rg);margin:0;">Working on this trip</div><div style="font-family:var(--fm);font-size:9px;letter-spacing:1.5px;color:var(--sd);text-transform:uppercase;">Tap any module to explore →</div></div><div class="mg"><div class="mc" onclick="nav(\'s-mod-cc\')"><div class="mci">💳</div><div class="mcn">Credit Card</div><div class="mcs">'+(isR?'$63 saved on this trip':'$91 saved on this trip')+'</div><div class="mct" style="background:rgba(45,107,45,.1);color:var(--gn);">Active</div></div><div class="mc" onclick="nav(\'s-mod-cost\')"><div class="mci">💰</div><div class="mcn">Cost Intelligence</div><div class="mcs">'+(isR?'$391 saved · 3 decisions':'$173 saved · 1 decision')+'</div><div class="mct" style="background:rgba(45,107,45,.1);color:var(--gn);">Active</div></div><div class="mc" onclick="nav(\'s-mod-ins\')"><div class="mci">🛡</div><div class="mcn">Insurance</div><div class="mcs">'+(isR?'3 protections covered, 1 gap filled':'Tropical risks covered, 1 gap filled')+'</div><div class="mct" style="background:rgba(45,107,45,.1);color:var(--gn);">Active</div></div><div class="mc" onclick="nav(\'s-mod-music\')"><div class="mci">🎵</div><div class="mcn">Music & Events</div><div class="mcs">'+(isR?'12-track group playlist · Ravello Day 5':'11-track playlist · Legong Day 5')+'</div><div class="mct" style="background:rgba(45,107,45,.1);color:var(--gn);">Active</div></div><div class="mc" onclick="nav(\'s-mod-airport\')"><div class="mci">✈️</div><div class="mcn">Airport & Transit</div><div class="mcs">'+(isR?'Lounge · bags · transfer · jet lag':'Changi layover · bags · resort transfer')+'</div><div class="mct" style="background:rgba(45,107,45,.1);color:var(--gn);">Active</div></div><div class="mc" onclick="nav(\'s-mod-intent\')"><div class="mci">🕊</div><div class="mcn">Intentionality</div><div class="mcs">'+(isR?'"To come back whole" · anchored':'"What my own quiet sounds like"')+'</div><div class="mct" style="background:rgba(45,107,45,.1);color:var(--gn);">Active</div></div><div class="mc" onclick="nav(\'s-mod-outfits\')"><div class="mci">👗</div><div class="mcn">Shopping & Outfits</div><div class="mcs">'+(isR?'10 looks built from your closet':'8 looks · temple to beach club')+'</div><div class="mct" style="background:rgba(45,107,45,.1);color:var(--gn);">Active</div></div><div class="mc" onclick="nav(\'s-mod-sus\')"><div class="mci">🌱</div><div class="mcn">Sustainability</div><div class="mcs">'+(isR?'6 swaps · 22% lower footprint':'7 swaps · 31% lower footprint')+'</div><div class="mct" style="background:rgba(45,107,45,.1);color:var(--gn);">Active</div></div><div class="mc" onclick="nav(\'s-memory\')"><div class="mci">📖</div><div class="mcn">Memory Book</div><div class="mcs">Photos & reflections, ready</div><div class="mct" style="background:rgba(45,107,45,.1);color:var(--gn);">Active</div></div><div class="mc" onclick="nav(\'s-mod-translate\')"><div class="mci">🌐</div><div class="mcn">Translation</div><div class="mcs">'+(isR?'Italian, with cultural context':'Bahasa Indonesia + cultural protocols')+'</div><div class="mct" style="background:rgba(45,107,45,.1);color:var(--gn);">Active</div></div><div class="mc" onclick="nav(\'s-mod-climate\')"><div class="mci">🌡</div><div class="mcn">Climate & Carbon</div><div class="mcs">'+(isR?'Within norms · 1.8 tons offsetable':'Shoulder season shifting · 1.4 tons')+'</div><div class="mct" style="background:rgba(45,107,45,.1);color:var(--gn);">Active</div></div><div class="mc" onclick="nav(\'s-posttrip\')"><div class="mci">📊</div><div class="mcn">Post-Trip</div><div class="mcs">Cost summary & reflection ready</div><div class="mct" style="background:rgba(45,107,45,.1);color:var(--gn);">Active</div></div><div class="mc" onclick="nav(\'s-mod-wellness\')"><div class="mci">🧘</div><div class="mcn">Wellness & Health</div><div class="mcs">'+(isR?'Recovery built into pacing':'The trip Wellness was built for')+'</div><div class="mct" style="background:rgba(45,107,45,.1);color:var(--gn);">Active</div></div>'+(!isR?'<div class="mc" onclick="nav(\'s-mod-solo\')"><div class="mci">🚺</div><div class="mcn">Solo Female</div><div class="mcs">Safety as a layer · not a warning</div><div class="mct" style="background:rgba(45,107,45,.1);color:var(--gn);">Active</div></div>':'')+'</div>';}else{ai.innerHTML='';}}
   var sb=document.getElementById('suggested-bundles');
   if(sb){var suggested=[];
     if(S.group==='partner'||S.tripType==='romantic'||S.tripType==='honeymoon')suggested.push({label:'Couples & Celebrations',modules:[
@@ -4224,7 +4475,351 @@ function setSoloMode(mode){
 function updateDemoBanner(){var b=document.getElementById('demo-banner');if(!b)return;if(S.demoMode){b.style.display='flex';var isAmalfi=S.destKey==='romantic';var txt=document.getElementById('demo-banner-text');if(txt)txt.textContent=isAmalfi?'Sample trip · Jordan\'s Amalfi Coast':'Sample trip · Solo Bali Wellness Reset';var sw=document.getElementById('demo-switch-btn');if(sw)sw.textContent=isAmalfi?'Switch to Bali →':'Switch to Amalfi →';}else{b.style.display='none';}}
 function openSearch(){document.getElementById('search-overlay').style.display='flex';document.getElementById('search-input').value='';filterSearch('');setTimeout(function(){document.getElementById('search-input').focus();},100);}
 function closeSearch(){document.getElementById('search-overlay').style.display='none';}
-function filterSearch(q){var items=document.querySelectorAll('.search-item');q=q.toLowerCase();items.forEach(function(item){var k=item.getAttribute('data-k')||'';var name=item.querySelector('div div').textContent.toLowerCase();var show=!q||k.indexOf(q)>-1||name.indexOf(q)>-1;item.style.display=show?'flex':'none';});}
+// ====== SEARCH INTELLIGENCE KNOWLEDGE BASE ======
+var KB_ENTRIES = [
+  {
+    keywords: ['sapphire', 'chase sapphire', 'chase reserve', 'sapphire reserve', 'csr'],
+    icon: '💳',
+    title: 'Chase Sapphire Reserve',
+    snippet: '<strong>Your Sapphire Reserve earns:</strong> 4× on flights and hotels booked direct, 8× through Chase Travel, 3× on dining worldwide, 1× on everything else. Transfers 1:1 to World of Hyatt — a strong redemption option for luxury boutique stays.',
+    tripNote: {
+      romantic: 'Active on this trip: Le Sirenuse booked via Hyatt (22,000 points, saves $340).',
+      reset: 'Active on this trip: JFK→SIN long-haul paid on Sapphire — earns 5,600 points.'
+    },
+    links: [
+      {label: 'Credit Card module', nav: 's-mod-cc'},
+      {label: 'Payment Checklist', nav: 's-payment'}
+    ]
+  },
+  {
+    keywords: ['venture x', 'venture', 'capital one', 'capital one travel', 'vx'],
+    icon: '💳',
+    title: 'Capital One Venture X',
+    snippet: '<strong>Your Venture X earns:</strong> 10× miles on hotels and rental cars booked through Capital One Travel, 5× on flights through Capital One Travel, 2× on everything else. Miles redeem at 1¢ fixed on Capital One Travel or transfer 1:1 to 15+ partners.',
+    tripNote: {
+      reset: 'Active on this trip: Bisma Eight booked via Capital One Travel for 10× — earns $173 in point value.'
+    },
+    links: [
+      {label: 'Credit Card module', nav: 's-mod-cc'}
+    ]
+  },
+  {
+    keywords: ['amex', 'american express', 'platinum', 'amex platinum'],
+    icon: '💳',
+    title: 'Amex Platinum',
+    snippet: '<strong>Your Amex Platinum offers:</strong> 5× on flights booked direct or via Amex Travel, 5× on prepaid hotels via Amex Travel, Priority Pass Select lounge access, Centurion Lounge access, $400 annual Resy credit, and Global Dining Access. 1× on general dining (Sapphire\'s 3× dining wins for most restaurants).',
+    links: [
+      {label: 'Credit Card module', nav: 's-mod-cc'}
+    ]
+  },
+  {
+    keywords: ['card', 'cards', 'credit card', 'credit cards', 'points', 'miles', 'rewards'],
+    icon: '💳',
+    title: 'Card Optimization',
+    snippet: 'Romieaux routes each purchase to whichever of your cards earns the highest value. Every stay, dining, or transport recommendation runs against your portfolio\'s transfer partners, current promotions, and bonus categories.',
+    links: [
+      {label: 'Credit Card module', nav: 's-mod-cc'},
+      {label: 'Cost Intelligence module', nav: 's-mod-cost'}
+    ]
+  },
+  {
+    keywords: ['lounge', 'lounges', 'priority pass', 'airport lounge'],
+    icon: '🛋',
+    title: 'Airport Lounge Access',
+    snippet: 'Your Sapphire Reserve and Amex Platinum both include Priority Pass Select — access to 1,300+ lounges worldwide. Sapphire Reserve also unlocks Chase Sapphire Lounges by The Club. Amex Platinum adds Centurion Lounges.',
+    tripNote: {
+      romantic: 'On this trip: FCO and LAX have Priority Pass lounges on your routing.',
+      reset: 'On this trip: Plaza Premium Lounge at Singapore Changi T1 during your 4.5-hour layover.'
+    },
+    links: [
+      {label: 'Airport & Transit module', nav: 's-mod-airport'}
+    ]
+  },
+  {
+    keywords: ['weather', 'forecast', 'climate', 'temperature', 'rain'],
+    icon: '🌡',
+    title: 'Weather & Climate',
+    snippet: 'The Climate module tracks conditions for every day of your trip and flags weather-sensitive plans — outdoor dinners, boat days, hikes, sunrise activities. Shoulder-season monitoring included.',
+    tripNote: {
+      romantic: 'On this trip: Amalfi late-April is within norms. Day 5 boat day has 87% favorable forecast.',
+      reset: 'On this trip: Bali shoulder season shifting — Day 3 and Day 7 afternoon rain likely, morning sessions protected.'
+    },
+    links: [
+      {label: 'Climate & Carbon module', nav: 's-mod-climate'}
+    ]
+  },
+  {
+    keywords: ['safety', 'solo female', 'neighborhood', 'night', 'safe'],
+    icon: '🛡',
+    title: 'Safety Intelligence',
+    snippet: 'Safety runs as a layer under every recommendation — neighborhood vetting, transport routing, backup planning. For solo travelers, the Solo Female module adds quick-dial emergency contacts and local vetted backups.',
+    tripNote: {
+      reset: 'On this trip: 3 vetted backup stays in Ubud, emergency transport routing, 24/7 local concierge contact.'
+    },
+    links: [
+      {label: 'Safety & Prep', nav: 's-safety'},
+      {label: 'Solo Female module', nav: 's-mod-solo'}
+    ]
+  },
+  {
+    keywords: ['dining', 'restaurants', 'food', 'eat', 'restaurant', 'reservation', 'reservations'],
+    icon: '🍽',
+    title: 'Dining Intelligence',
+    snippet: 'Every dining recommendation is vetted against your preferences, trip pace, card optimization, and cultural context — not TripAdvisor crowds.',
+    tripNote: {
+      romantic: 'On this trip: 22 restaurants vetted. Highlights: La Sponda (Day 7 anniversary), Da Adolfo (Day 5 group lunch).',
+      reset: 'On this trip: 14 restaurants vetted. Highlights: Locavore, Room4Dessert, Warung Biah Biah.'
+    },
+    links: [
+      {label: 'Dining', nav: 's-dining'}
+    ]
+  },
+  {
+    keywords: ['stays', 'hotel', 'hotels', 'airbnb', 'accommodation', 'villa', 'boutique'],
+    icon: '🏨',
+    title: 'Stay Intelligence',
+    snippet: 'Stay Advisor vets every option against your identity, trip pace, and card rewards math. Often routes to smaller luxury properties that beat the big names on privacy and amenity fit.',
+    tripNote: {
+      romantic: 'On this trip: Le Sirenuse, Positano. Chosen over Hotel Santa Caterina for Hyatt transfer math.',
+      reset: 'On this trip: Bisma Eight, Ubud. Chosen over COMO Shambhala for quiet + rewards routing.'
+    },
+    links: [
+      {label: 'Stays', nav: 's-stays'}
+    ]
+  },
+  {
+    keywords: ['flight', 'flights', 'fly', 'airline', 'long haul'],
+    icon: '✈️',
+    title: 'Flight Routing',
+    snippet: 'Flights are evaluated across airline partners, card earning multipliers, and layover lounge access.',
+    tripNote: {
+      romantic: 'On this trip: LAX→FCO on Sapphire direct booking — earns 4× points.',
+      reset: 'On this trip: JFK→SIN on Sapphire, 4.5-hr Changi layover with Plaza Premium Lounge access.'
+    },
+    links: [
+      {label: 'Airport & Transit', nav: 's-mod-airport'}
+    ]
+  },
+  {
+    keywords: ['transport', 'transportation', 'train', 'car', 'taxi', 'ferry', 'transit'],
+    icon: '🚄',
+    title: 'Transport Routing',
+    snippet: 'Ground transport is routed by cost, comfort, and rewards math. Train direct booking often beats portal pricing.',
+    tripNote: {
+      romantic: 'On this trip: Trenitalia.com direct saves $51 over Chase Travel portal for Rome→Naples Frecciarossa.'
+    },
+    links: [
+      {label: 'Transportation', nav: 's-transport'}
+    ]
+  },
+  {
+    keywords: ['music', 'playlist', 'songs'],
+    icon: '🎵',
+    title: 'Music & Events',
+    snippet: 'Playlists built from your trip energy, destination vibe, and local artists. Concerts and events flagged by date.',
+    tripNote: {
+      romantic: 'On this trip: 12-track group playlist for Ravello Day 5 sunset.',
+      reset: 'On this trip: 11-track reset playlist tuned to Ubud mornings.'
+    },
+    links: [
+      {label: 'Music & Events module', nav: 's-mod-music'}
+    ]
+  },
+  {
+    keywords: ['wellness', 'yoga', 'spa', 'recovery', 'health', 'fitness'],
+    icon: '🧘',
+    title: 'Wellness & Health',
+    snippet: 'Recovery is built into trip pacing. Spa, yoga, cenote, and bodywork sessions are protected on the calendar.',
+    tripNote: {
+      romantic: 'On this trip: Recovery day built in on Day 6 between big boat day and anniversary dinner.',
+      reset: 'On this trip: The trip Wellness was built for — 6 yoga sessions, 2 healing sessions, 1 cleanse prep.'
+    },
+    links: [
+      {label: 'Wellness & Health module', nav: 's-mod-wellness'}
+    ]
+  },
+  {
+    keywords: ['insurance', 'medical', 'coverage', 'trip insurance', 'evac'],
+    icon: '🛡',
+    title: 'Insurance Coverage',
+    snippet: 'Your Sapphire Reserve already covers most trip cancellation, lost luggage, emergency evacuation, and rental auto. Romieaux flags gaps where supplemental coverage is recommended.',
+    tripNote: {
+      romantic: 'On this trip: 3 protections auto-covered by Sapphire. 1 gap flagged (cancel-for-any-reason, optional).',
+      reset: 'On this trip: Tropical risks covered by Sapphire. 1 gap flagged (monkey bite coverage for temple visits).'
+    },
+    links: [
+      {label: 'Insurance module', nav: 's-mod-ins'}
+    ]
+  },
+  {
+    keywords: ['translation', 'translate', 'language', 'phrase', 'italian', 'bahasa'],
+    icon: '🌐',
+    title: 'Translation',
+    snippet: 'Beyond Google Translate — cultural context, gesture etiquette, tourist mistakes locals don\'t correct.',
+    tripNote: {
+      romantic: 'On this trip: Italian with context — "Salve" not "Ciao" with strangers, no cappuccino after noon.',
+      reset: 'On this trip: Bahasa Indonesia + cultural protocols for temple visits and family ceremonies.'
+    },
+    links: [
+      {label: 'Translation module', nav: 's-mod-translate'}
+    ]
+  },
+  {
+    keywords: ['memory', 'memory book', 'photos', 'journal', 'keepsake'],
+    icon: '📖',
+    title: 'Memory Book',
+    snippet: 'Photos, reflections, and trip moments compiled into a keepsake PDF at trip end. All trips archived in your profile.',
+    tripNote: {
+      romantic: 'On this trip: Memory Book unlocked — ready for reflections and photos.',
+      reset: 'On this trip: Memory Book unlocked — ready for reflections and photos.'
+    },
+    links: [
+      {label: 'Memory Book', nav: 's-memory'}
+    ]
+  },
+  {
+    keywords: ['budget', 'spend', 'cost', 'money', 'spending'],
+    icon: '📊',
+    title: 'Budget Tracker',
+    snippet: 'Live spend vs. budget with category breakdowns. Intelligence Savings tracked separately from Budget Savings.',
+    tripNote: {
+      romantic: 'On this trip: $4,150 spent of $4,200 budget. $50 under + $454 Intelligence Savings.',
+      reset: 'On this trip: $3,560 spent of $3,600 budget. $40 under + $264 Intelligence Savings.'
+    },
+    links: [
+      {label: 'Budget Tracker', nav: 's-budget-track'},
+      {label: 'My Profile', nav: 's-blueprint'}
+    ]
+  },
+  {
+    keywords: ['intentionality', 'intention', 'why', 'reason', 'purpose'],
+    icon: '🕊',
+    title: 'Intentionality',
+    snippet: 'Every trip starts with "why." Intentionality anchors the trip to a guiding phrase and checks decisions against it.',
+    tripNote: {
+      romantic: 'On this trip: "To come back whole."',
+      reset: 'On this trip: "What my own quiet sounds like."'
+    },
+    links: [
+      {label: 'Intentionality module', nav: 's-mod-intent'}
+    ]
+  },
+  {
+    keywords: ['outfit', 'outfits', 'clothing', 'packing', 'what to wear', 'closet'],
+    icon: '👗',
+    title: 'Shopping & Outfits',
+    snippet: 'Looks built from your existing closet — mapped to daily activities, weather, and cultural dress codes.',
+    tripNote: {
+      romantic: 'On this trip: 10 looks built from your closet (anniversary dinner, boat day, town strolls).',
+      reset: 'On this trip: 8 looks — temple-appropriate to beach club.'
+    },
+    links: [
+      {label: 'Shopping & Outfits', nav: 's-mod-outfits'}
+    ]
+  },
+  {
+    keywords: ['sustainability', 'carbon', 'footprint', 'offset', 'eco'],
+    icon: '🌱',
+    title: 'Sustainability',
+    snippet: 'Carbon footprint tracked per trip with offset suggestions. Swaps for lower-impact options surfaced when possible.',
+    tripNote: {
+      romantic: 'On this trip: 6 swaps · 22% lower footprint · 1.8 tons offsetable.',
+      reset: 'On this trip: 7 swaps · 31% lower footprint · 1.4 tons offsetable.'
+    },
+    links: [
+      {label: 'Sustainability module', nav: 's-mod-sus'}
+    ]
+  },
+  {
+    keywords: ['group', 'friends', 'invite', 'share', 'collaborate', 'travelers'],
+    icon: '👥',
+    title: 'Group Planning',
+    snippet: 'Polls, role assignments, budget alignment, and Surprise Mode for hidden plans (like anniversary dinners).',
+    tripNote: {
+      romantic: 'On this trip: 4 travelers + Surprise Mode active for La Sponda Day 7.'
+    },
+    links: [
+      {label: 'Group Planning', nav: 's-group'}
+    ]
+  },
+  {
+    keywords: ['profile', 'my profile', 'identity', 'preferences', 'blueprint'],
+    icon: '👤',
+    title: 'My Profile',
+    snippet: 'Your travel identity, preferences, past trips, and lifetime value from Romieaux membership.',
+    links: [
+      {label: 'My Profile', nav: 's-blueprint'}
+    ]
+  },
+  {
+    keywords: ['subscription', 'membership', 'plan', 'pricing', 'bundle', 'upgrade', 'all access', 'annual'],
+    icon: '💎',
+    title: 'Membership & Pricing',
+    snippet: 'All-Access plan: $29/month or $299/year (save ~$49/yr going annual). Includes all 13 modules, full intelligence, and Memory Book.',
+    links: [
+      {label: 'Pricing', nav: 's-pricing'},
+      {label: 'My Profile', nav: 's-blueprint'}
+    ]
+  }
+];
+
+function getActiveTripKey(){
+  return (typeof S !== 'undefined' && S.destKey) ? S.destKey : null;
+}
+
+function matchKB(q){
+  q = (q||'').toLowerCase().trim();
+  if(!q) return null;
+  // find best match — longest matching keyword wins
+  var best = null, bestLen = 0;
+  for(var i=0;i<KB_ENTRIES.length;i++){
+    var e = KB_ENTRIES[i];
+    for(var j=0;j<e.keywords.length;j++){
+      var kw = e.keywords[j];
+      if(q.indexOf(kw) > -1 || kw.indexOf(q) > -1){
+        if(kw.length > bestLen){ best = e; bestLen = kw.length; }
+      }
+    }
+  }
+  return best;
+}
+
+function renderSearchIntel(entry){
+  var el = document.getElementById('search-intel');
+  if(!entry){ el.style.display='none'; el.innerHTML=''; return; }
+  var trip = getActiveTripKey();
+  var tripNote = (entry.tripNote && trip && entry.tripNote[trip]) ? entry.tripNote[trip] : null;
+  var linksHtml = (entry.links||[]).map(function(l){
+    return '<button onclick="closeSearch();nav(\''+l.nav+'\')" style="display:inline-flex;align-items:center;gap:6px;background:var(--sd);color:#fff;border:none;border-radius:20px;padding:8px 14px;font-family:var(--fm);font-size:10px;letter-spacing:1px;text-transform:uppercase;cursor:pointer;margin-right:6px;margin-top:4px;">'+l.label+' →</button>';
+  }).join('');
+  el.innerHTML = '<div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">'
+    + '<span style="font-size:20px;">'+entry.icon+'</span>'
+    + '<div style="font-family:var(--fd);font-size:15px;font-weight:600;color:var(--ink);">'+entry.title+'</div>'
+    + '</div>'
+    + '<div style="font-size:12.5px;color:var(--tm);line-height:1.55;margin-bottom:'+(tripNote?'8':'10')+'px;">'+entry.snippet+'</div>'
+    + (tripNote ? '<div style="background:rgba(176,138,80,0.1);border-left:2px solid var(--sd);padding:8px 10px;border-radius:4px;font-size:11.5px;color:var(--tm);line-height:1.5;margin-bottom:10px;font-style:italic;">'+tripNote+'</div>' : '')
+    + '<div>'+linksHtml+'</div>';
+  el.style.display = 'block';
+}
+
+function filterSearch(q){
+  var items=document.querySelectorAll('#search-results .search-item');
+  var query=(q||'').toLowerCase().trim();
+  // Intel card
+  var entry = matchKB(query);
+  renderSearchIntel(entry);
+  // Quick Access header — relabel if filtering
+  var qh = document.getElementById('search-quick-header');
+  if(qh) qh.textContent = query ? 'Also in the app' : 'Quick Access';
+  // Filter nav items
+  items.forEach(function(item){
+    var k=item.getAttribute('data-k')||'';
+    var nameEl=item.querySelector('div div');
+    var name=nameEl ? nameEl.textContent.toLowerCase() : '';
+    var show=!query||k.indexOf(query)>-1||name.indexOf(query)>-1;
+    item.style.display=show?'flex':'none';
+  });
+}
 var searchItems=[
   {icon:'🏠',name:'Dashboard',nav:'s-dash'},
   {icon:'📋',name:'Itinerary',nav:'s-itin'},
@@ -4246,20 +4841,77 @@ var searchItems=[
   {icon:'💰',name:'Edit Budget',nav:'s-bp-budget'},
   {icon:'💳',name:'Pricing',nav:'s-pricing'}
 ];
-function openSearch(){document.getElementById('search-overlay').style.display='flex';document.getElementById('search-input').value='';renderSearchItems(searchItems);setTimeout(function(){document.getElementById('search-input').focus();},100);}
-function closeSearch(){document.getElementById('search-overlay').style.display='none';}
-function renderSearchItems(items){var el=document.getElementById('search-items');el.innerHTML=items.map(function(it){return '<div style="display:flex;align-items:center;gap:12px;padding:13px 0;border-bottom:1px solid var(--bd);cursor:pointer;" onclick="closeSearch();nav(\''+it.nav+'\')"><span style="font-size:18px;">'+it.icon+'</span><div style="font-family:var(--fd);font-size:15px;color:var(--tx);">'+it.name+'</div></div>';}).join('');}
-function filterSearch(q){if(!q){renderSearchItems(searchItems);return;}var filtered=searchItems.filter(function(it){return it.name.toLowerCase().indexOf(q.toLowerCase())>-1;});renderSearchItems(filtered);if(filtered.length===0)document.getElementById('search-items').innerHTML='<div style="padding:20px;text-align:center;color:var(--ts);font-size:14px;">No results for "'+q+'"</div>';}
+
+// === TIME VALUE CALCULATOR ===
+var userHourlyRate = 50;
+function setTimeRate(rate){
+  var slider = document.getElementById('rate-slider');
+  if(slider) slider.value = rate;
+  updateTimeRate(rate);
+}
+function updateTimeRate(rate){
+  rate = parseInt(rate, 10);
+  userHourlyRate = rate;
+  // Position & update the thumb bubble
+  var bubble = document.getElementById('rate-bubble');
+  var slider = document.getElementById('rate-slider');
+  if(bubble && slider){
+    bubble.textContent = '$' + rate + '/hr';
+    var min = parseInt(slider.min, 10);
+    var max = parseInt(slider.max, 10);
+    var pct = (rate - min) / (max - min);
+    // Account for thumb width (~18px) so bubble stays over thumb edge-to-edge
+    var thumbPad = 9;
+    var sliderWidth = slider.offsetWidth || 280;
+    var leftPx = thumbPad + pct * (sliderWidth - thumbPad*2);
+    bubble.style.left = leftPx + 'px';
+  }
+  var inline = document.getElementById('rate-inline');
+  if(inline) inline.textContent = '$' + rate;
+  // Lifetime total: 67 hrs × rate
+  var lifetimeTotal = 67 * rate;
+  var ltEl = document.getElementById('lifetime-time-value');
+  if(ltEl) ltEl.textContent = '$' + lifetimeTotal.toLocaleString();
+  var ltHrsEl = document.getElementById('lifetime-hours-dollars');
+  if(ltHrsEl) ltHrsEl.textContent = '$' + lifetimeTotal.toLocaleString();
+  // Lifetime Total Value w/ Time: $2,452 cash + 67 hrs × rate
+  var lifetimeTotalWithTime = 2452 + lifetimeTotal;
+  var ltTWT = document.getElementById('lifetime-total-with-time');
+  if(ltTWT) ltTWT.textContent = '$' + lifetimeTotalWithTime.toLocaleString();
+  var heroTV = document.getElementById('hero-total-value');
+  if(heroTV) heroTV.textContent = '$' + lifetimeTotalWithTime.toLocaleString();
+  // Per-trip Total Value w/ Time: cash + hrs × rate
+  var tripTotals = document.querySelectorAll('.trip-total-time');
+  tripTotals.forEach(function(el){
+    var cash = parseInt(el.getAttribute('data-cash'), 10);
+    var hrs = parseInt(el.getAttribute('data-hours'), 10);
+    el.textContent = '$' + (cash + hrs*rate).toLocaleString();
+  });
+  // Per-trip time-dollars inline
+  var tripTimeDollars = document.querySelectorAll('.trip-time-dollars');
+  tripTimeDollars.forEach(function(el){
+    var hrs = parseInt(el.getAttribute('data-hours'), 10);
+    el.textContent = '$' + (hrs*rate).toLocaleString();
+  });
+  // Per-trip captions: recalculate each based on data-hours
+  var captions = document.querySelectorAll('.time-val-caption');
+  captions.forEach(function(cap){
+    var hrs = parseInt(cap.getAttribute('data-hours'), 10);
+    var amtEl = cap.querySelector('.tv-amount');
+    if(amtEl) amtEl.textContent = '$' + (hrs * rate).toLocaleString();
+  });
+}
+
 function signInReturn(){S.energy='burnt';S.tripType='romantic';S.tripTypes=['romantic','milestone'];S.group='mixed';S.intention='rest';S.season='pausing';S.budget='set';S.budgetAmt='4,200';S.mode='curated';S.destKey='romantic';S.destName='Amalfi Coast, Italy';S.tripDays=10;var dep=document.getElementById('td-depart');var ret=document.getElementById('td-return');if(dep)dep.value='2026-04-14';if(ret)ret.value='2026-04-24';nav('s-dash');}
 var moduleContent={};
 moduleContent['s-mod-cc']={
   romantic:{
-    ib:`<div class="ib-glow"></div><div class="ib-eye">Active Intelligence · Cards Working For You</div><div class="ib-t">$487 saved on this trip.</div><div class="ib-s">From the cards already in your wallet.</div>`,
-    scr:`<div style="padding:18px 20px 8px;"><div style="font-family:var(--fm);font-size:8px;letter-spacing:3px;color:var(--rg);text-transform:uppercase;margin-bottom:6px;">Best Move · Stays</div><div style="background:var(--pn);border:1px solid var(--bd);border-radius:12px;padding:16px;"><div style="font-family:var(--fd);font-size:16px;font-weight:600;color:var(--ink);margin-bottom:6px;">Le Sirenuse: pay with Chase points, not cash.</div><div style="font-size:13px;color:var(--tm);line-height:1.6;">Your Sapphire Reserve transfers to World of Hyatt at 1:1, and Le Sirenuse is bookable through Hyatt's Small Luxury Hotels collection. <strong>22,000 points = 3 nights vs $1,860 cash.</strong> You'd be paying 8.5¢ per point — well above the 1.5¢ Chase pays out as cash.</div><div style="margin-top:10px;font-family:var(--fm);font-size:10px;color:var(--gn);letter-spacing:1px;">SAVES $340</div></div></div><div style="padding:14px 20px 8px;"><div style="font-family:var(--fm);font-size:8px;letter-spacing:3px;color:var(--rg);text-transform:uppercase;margin-bottom:6px;">Best Move · Dining & Activities</div><div style="background:var(--pn);border:1px solid var(--bd);border-radius:12px;padding:16px;"><div style="font-family:var(--fd);font-size:16px;font-weight:600;color:var(--ink);margin-bottom:6px;">Use Amex Platinum at restaurants. Sapphire everywhere else.</div><div style="font-size:13px;color:var(--tm);line-height:1.6;">Amex earns 4× at restaurants worldwide right now — the boat charter, ferry, and ground transport go on Sapphire Reserve for 3× travel. Across an estimated $1,400 of trip spend, you'll bank roughly <strong>4,800 extra points</strong> versus a single-card strategy.</div><div style="margin-top:10px;font-family:var(--fm);font-size:10px;color:var(--gn);letter-spacing:1px;">EARNS $96 IN POINT VALUE</div></div></div><div style="padding:14px 20px 8px;"><div style="font-family:var(--fm);font-size:8px;letter-spacing:3px;color:var(--rg);text-transform:uppercase;margin-bottom:6px;">Quiet Win</div><div style="background:var(--pn);border:1px solid var(--bd);border-radius:12px;padding:16px;"><div style="font-family:var(--fd);font-size:16px;font-weight:600;color:var(--ink);margin-bottom:6px;">Skip the Sapphire portal for the Trenitalia leg.</div><div style="font-size:13px;color:var(--tm);line-height:1.6;">Trenitalia.com is €18 cheaper per ticket than Chase Travel for the Rome → Naples Frecciarossa, and the rewards math still works on Sapphire. <strong>Saves $51 on two tickets.</strong></div></div></div><div style="padding:14px 20px 24px;"><div style="background:var(--sdl);border:1px solid rgba(176,138,80,.25);border-radius:12px;padding:14px;"><div style="font-family:var(--fm);font-size:8px;letter-spacing:2px;color:var(--sd);text-transform:uppercase;margin-bottom:4px;">How This Works</div><div style="font-size:12px;color:var(--tm);line-height:1.6;">You shared Sapphire Reserve and Amex Platinum during onboarding. Every time a stay, dining, or transport recommendation lands in your itinerary, Every recommendation is run against your portfolio's transfer partners, current promotions, and bonus categories — and tells you the highest-value way to pay. No card data is stored beyond type and issuer.</div></div></div>`
+    ib:`<div class="ib-glow"></div><div class="ib-eye">Active Intelligence · Cards Working For You</div><div class="ib-t">$63 saved on this trip.</div><div class="ib-s">From the cards already in your wallet.</div>`,
+    scr:`<div style="padding:18px 20px 8px;"><div style="font-family:var(--fm);font-size:8px;letter-spacing:3px;color:var(--rg);text-transform:uppercase;margin-bottom:6px;">Best Move · Stays</div><div style="background:var(--pn);border:1px solid var(--bd);border-radius:12px;padding:16px;"><div style="font-family:var(--fd);font-size:16px;font-weight:600;color:var(--ink);margin-bottom:6px;">Le Sirenuse: pay with Chase points, not cash.</div><div style="font-size:13px;color:var(--tm);line-height:1.6;">Your Sapphire Reserve transfers to World of Hyatt at 1:1, and Le Sirenuse is bookable through Hyatt's Small Luxury Hotels collection. <strong>22,000 points = 3 nights vs $1,860 cash.</strong> You'd be paying 8.5¢ per point — well above the 1.5¢ Chase pays out as cash.</div><div style="margin-top:10px;padding:8px 10px;background:rgba(45,107,45,.08);border-left:2px solid var(--gn);border-radius:4px;font-size:12px;color:var(--tm);">✓ Booked via Hyatt · <span style="color:var(--sd);cursor:pointer;text-decoration:underline;" onclick="showToast('Opening booking details…')">view confirmation</span></div><div style="margin-top:10px;font-family:var(--fm);font-size:10px;color:var(--gn);letter-spacing:1px;">SAVES $340</div></div></div><div style="padding:14px 20px 8px;"><div style="font-family:var(--fm);font-size:8px;letter-spacing:3px;color:var(--rg);text-transform:uppercase;margin-bottom:6px;">Best Move · Dining & Activities</div><div style="background:var(--pn);border:1px solid var(--bd);border-radius:12px;padding:16px;"><div style="font-family:var(--fd);font-size:16px;font-weight:600;color:var(--ink);margin-bottom:6px;">Use Sapphire Reserve at restaurants and for travel.</div><div style="font-size:13px;color:var(--tm);line-height:1.6;">Sapphire Reserve earns 3× worldwide on dining — best in your wallet for restaurants. Flights and hotels booked direct also earn 4× on Sapphire. Across ~$1,400 of dining + trip spend, <strong>4,200 Sapphire points</strong> at 1.5¢ transfer value = $63.</div><div style="margin-top:10px;font-family:var(--fm);font-size:10px;color:var(--gn);letter-spacing:1px;">EARNS $63 IN POINT VALUE</div></div></div><div style="padding:14px 20px 8px;"><div style="font-family:var(--fm);font-size:8px;letter-spacing:3px;color:var(--rg);text-transform:uppercase;margin-bottom:6px;">Quiet Win</div><div style="background:var(--pn);border:1px solid var(--bd);border-radius:12px;padding:16px;"><div style="font-family:var(--fd);font-size:16px;font-weight:600;color:var(--ink);margin-bottom:6px;">Skip the Sapphire portal for the Trenitalia leg.</div><div style="font-size:13px;color:var(--tm);line-height:1.6;">Trenitalia.com is €18 cheaper per ticket than Chase Travel for the Rome → Naples Frecciarossa, and the rewards math still works on Sapphire. <strong>Saves $51 on two tickets.</strong></div><div style="margin-top:10px;padding:8px 10px;background:rgba(45,107,45,.08);border-left:2px solid var(--gn);border-radius:4px;font-size:12px;color:var(--tm);">✓ Booked direct on Trenitalia.com · <span style="color:var(--sd);cursor:pointer;text-decoration:underline;" onclick="showToast('Opening booking details…')">view confirmation</span></div></div></div><div style="padding:14px 20px 24px;"><div style="background:var(--sdl);border:1px solid rgba(176,138,80,.25);border-radius:12px;padding:14px;"><div style="font-family:var(--fm);font-size:8px;letter-spacing:2px;color:var(--sd);text-transform:uppercase;margin-bottom:4px;">How This Works</div><div style="font-size:12px;color:var(--tm);line-height:1.6;">You shared Sapphire Reserve and Amex Platinum during onboarding. Every time a stay, dining, or transport recommendation lands in your itinerary, it's run against your portfolio's transfer partners, current promotions, and bonus categories — and tells you the highest-value way to pay. No card data is stored beyond type and issuer.</div></div></div>`
   },
   reset:{
-    ib:`<div class="ib-glow"></div><div class="ib-eye">Active Intelligence · Cards Working For You</div><div class="ib-t">$312 saved. Different cards, same idea.</div><div class="ib-s">From the cards already in your wallet.</div>`,
-    scr:`<div style="padding:18px 20px 8px;"><div style="font-family:var(--fm);font-size:8px;letter-spacing:3px;color:var(--rg);text-transform:uppercase;margin-bottom:6px;">Best Move · Stays</div><div style="background:var(--pn);border:1px solid var(--bd);border-radius:12px;padding:16px;"><div style="font-family:var(--fd);font-size:16px;font-weight:600;color:var(--ink);margin-bottom:6px;">Bisma Eight: book through Capital One Travel for 10× miles.</div><div style="font-size:13px;color:var(--tm);line-height:1.6;">Your Venture X earns 10× miles per dollar on hotels booked through Capital One Travel. For Bisma Eight at $320/night × 9 nights = $2,880, that's <strong>28,800 miles vs the 5,760 you'd earn by booking direct on Sapphire.</strong> At Capital One's 1¢ per mile redemption value, that's $230 in points value you would have left on the table. Already routed this way.</div><div style="margin-top:10px;font-family:var(--fm);font-size:10px;color:var(--gn);letter-spacing:1px;">SAVES $230</div></div></div><div style="padding:14px 20px 8px;"><div style="font-family:var(--fm);font-size:8px;letter-spacing:3px;color:var(--rg);text-transform:uppercase;margin-bottom:6px;">Best Move · Flights</div><div style="background:var(--pn);border:1px solid var(--bd);border-radius:12px;padding:16px;"><div style="font-family:var(--fd);font-size:16px;font-weight:600;color:var(--ink);margin-bottom:6px;">Pay the long-haul on Sapphire for 3× travel.</div><div style="font-size:13px;color:var(--tm);line-height:1.6;">Sapphire earns 3× on travel and you don't have KrisFlyer status, so points redemption math doesn't favor a transfer. The JFK→SIN leg as a paid Sapphire fare on a $1,400 ticket. <strong>Earns 4,200 Sapphire points = $63 in transferable value.</strong></div><div style="margin-top:10px;font-family:var(--fm);font-size:10px;color:var(--gn);letter-spacing:1px;">EARNS $63 IN POINT VALUE</div></div></div><div style="padding:14px 20px 8px;"><div style="font-family:var(--fm);font-size:8px;letter-spacing:3px;color:var(--rg);text-transform:uppercase;margin-bottom:6px;">Quiet Win · Lounges</div><div style="background:var(--pn);border:1px solid var(--bd);border-radius:12px;padding:16px;"><div style="font-family:var(--fd);font-size:16px;font-weight:600;color:var(--ink);margin-bottom:6px;">Singapore Changi has multiple Priority Pass lounges. Sapphire gets you in.</div><div style="font-size:13px;color:var(--tm);line-height:1.6;">You have a 4.5-hour layover at Changi on the way out. The Plaza Premium Lounge in Terminal 1 has hot showers, full meals, and a quiet zone — best landing spot after the JFK overnight. <strong>No additional cost.</strong></div></div></div><div style="padding:14px 20px 8px;"><div style="font-family:var(--fm);font-size:8px;letter-spacing:3px;color:var(--rg);text-transform:uppercase;margin-bottom:6px;">Currency · The Forgotten One</div><div style="background:var(--pn);border:1px solid var(--bd);border-radius:12px;padding:16px;"><div style="font-family:var(--fd);font-size:16px;font-weight:600;color:var(--ink);margin-bottom:6px;">Use Venture X at restaurants. Always say no to DCC.</div><div style="font-size:13px;color:var(--tm);line-height:1.6;">Both Sapphire and Venture X waive foreign transaction fees, but Venture X earns 2× on everything which beats Sapphire's 1× on dining. For an estimated $480 of dining spend, that's <strong>480 extra miles.</strong> When restaurants offer to charge "in dollars instead of rupiah," always say no — that's dynamic currency conversion, and the markup is 3-7%.</div></div></div><div style="padding:14px 20px 24px;"><div style="background:var(--sdl);border:1px solid rgba(176,138,80,.25);border-radius:12px;padding:14px;"><div style="font-family:var(--fm);font-size:8px;letter-spacing:2px;color:var(--sd);text-transform:uppercase;margin-bottom:4px;">How This Works</div><div style="font-size:12px;color:var(--tm);line-height:1.6;">You shared Sapphire Reserve and Capital One Venture X during onboarding. Every time a stay, dining, or transport recommendation lands in your itinerary, Every recommendation is run against your portfolio's transfer partners, current promotions, and bonus categories — and tells you the highest-value way to pay. No card data is stored beyond type and issuer.</div></div></div>`
+    ib:`<div class="ib-glow"></div><div class="ib-eye">Active Intelligence · Cards Working For You</div><div class="ib-t">$91 saved. Different cards, same math.</div><div class="ib-s">From the cards already in your wallet.</div>`,
+    scr:`<div style="padding:18px 20px 8px;"><div style="font-family:var(--fm);font-size:8px;letter-spacing:3px;color:var(--rg);text-transform:uppercase;margin-bottom:6px;">Best Move · Stays</div><div style="background:var(--pn);border:1px solid var(--bd);border-radius:12px;padding:16px;"><div style="font-family:var(--fd);font-size:16px;font-weight:600;color:var(--ink);margin-bottom:6px;">Bisma Eight: book through Capital One Travel for 10× miles.</div><div style="font-size:13px;color:var(--tm);line-height:1.6;">Your Venture X earns 10× miles per dollar on hotels booked through Capital One Travel. For Bisma Eight at $320/night × 9 nights = $2,880, that's <strong>28,800 miles vs 11,520 you'd earn booking direct on Sapphire Reserve's 4× direct.</strong> At 1¢ per mile redemption, that's $173 in extra point value.</div><div style="margin-top:10px;padding:8px 10px;background:rgba(45,107,45,.08);border-left:2px solid var(--gn);border-radius:4px;font-size:12px;color:var(--tm);">✓ Booked via Capital One Travel · <span style="color:var(--sd);cursor:pointer;text-decoration:underline;" onclick="showToast('Opening booking details…')">view confirmation</span></div><div style="margin-top:10px;font-family:var(--fm);font-size:10px;color:var(--gn);letter-spacing:1px;">EARNS $173 IN POINT VALUE</div></div></div><div style="padding:14px 20px 8px;"><div style="font-family:var(--fm);font-size:8px;letter-spacing:3px;color:var(--rg);text-transform:uppercase;margin-bottom:6px;">Best Move · Flights</div><div style="background:var(--pn);border:1px solid var(--bd);border-radius:12px;padding:16px;"><div style="font-family:var(--fd);font-size:16px;font-weight:600;color:var(--ink);margin-bottom:6px;">Pay the long-haul on Sapphire for 4× direct.</div><div style="font-size:13px;color:var(--tm);line-height:1.6;">Sapphire earns 4× on flights booked direct and you don't have KrisFlyer status, so points redemption math doesn't favor a transfer. Pay the JFK→SIN leg on Sapphire for a $1,400 ticket. <strong>Earns 5,600 Sapphire points = $84 in transferable value.</strong></div><div style="margin-top:10px;font-family:var(--fm);font-size:10px;color:var(--gn);letter-spacing:1px;">EARNS $84 IN POINT VALUE</div></div></div><div style="padding:14px 20px 8px;"><div style="font-family:var(--fm);font-size:8px;letter-spacing:3px;color:var(--rg);text-transform:uppercase;margin-bottom:6px;">Quiet Win · Lounges</div><div style="background:var(--pn);border:1px solid var(--bd);border-radius:12px;padding:16px;"><div style="font-family:var(--fd);font-size:16px;font-weight:600;color:var(--ink);margin-bottom:6px;">Singapore Changi has multiple Priority Pass lounges. Your Sapphire's Priority Pass Select gets you in.</div><div style="font-size:13px;color:var(--tm);line-height:1.6;">You have a 4.5-hour layover at Changi on the way out. Plaza Premium Lounge in Terminal 1 has full meals, a quiet zone, and pay-for showers — best landing spot after the JFK overnight. <strong>Included with your membership.</strong></div></div></div><div style="padding:14px 20px 8px;"><div style="font-family:var(--fm);font-size:8px;letter-spacing:3px;color:var(--rg);text-transform:uppercase;margin-bottom:6px;">Currency · The Forgotten One</div><div style="background:var(--pn);border:1px solid var(--bd);border-radius:12px;padding:16px;"><div style="font-family:var(--fd);font-size:16px;font-weight:600;color:var(--ink);margin-bottom:6px;">Use Sapphire for restaurants. Always say no to DCC.</div><div style="font-size:13px;color:var(--tm);line-height:1.6;">Both Sapphire and Venture X waive foreign transaction fees. Sapphire wins for dining (3× worldwide vs Venture X's 2×). Use Sapphire for restaurants. For an estimated $480 of dining spend, that's <strong>1,440 Sapphire points — 480 more than Venture X.</strong> When restaurants offer to charge "in dollars instead of rupiah," always say no — that's dynamic currency conversion, and the markup is 3-7%.</div></div></div><div style="padding:14px 20px 24px;"><div style="background:var(--sdl);border:1px solid rgba(176,138,80,.25);border-radius:12px;padding:14px;"><div style="font-family:var(--fm);font-size:8px;letter-spacing:2px;color:var(--sd);text-transform:uppercase;margin-bottom:4px;">How This Works</div><div style="font-size:12px;color:var(--tm);line-height:1.6;">You shared Sapphire Reserve and Capital One Venture X during onboarding. Every time a stay, dining, or transport recommendation lands in your itinerary, it's run against your portfolio's transfer partners, current promotions, and bonus categories — and tells you the highest-value way to pay. No card data is stored beyond type and issuer.</div></div></div>`
   }
 };
 moduleContent['s-mod-wellness']={
@@ -4520,13 +5172,13 @@ setInterval(function(){var el=document.getElementById('lpRotateText');if(!el)ret
 // Tooltip data — keyed by ID
 var TTIP_DATA = {
   // Per-trip Intelligence Savings breakdowns
-  'is-amalfi': '<div class="ttip-h">Intelligence Savings · Amalfi</div><div class="ttip-row"><span>Cost Intelligence routing</span><strong>$487</strong></div><div class="ttip-row"><span>Card optimization (Sapphire 3×)</span><strong>$240</strong></div><div class="ttip-row"><span>Direct-booking margin</span><strong>$100</strong></div><div class="ttip-total"><span>Total</span><span>$827</span></div><div class="ttip-note">Captured automatically across 7 booking decisions.</div>',
-  'is-bali': '<div class="ttip-h">Intelligence Savings · Bali</div><div class="ttip-row"><span>Cost Intelligence routing</span><strong>$230</strong></div><div class="ttip-row"><span>Card optimization (Venture X 10×)</span><strong>$230</strong></div><div class="ttip-row"><span>Direct-booking margin</span><strong>$82</strong></div><div class="ttip-total"><span>Total</span><span>$542</span></div><div class="ttip-note">Captured automatically across 6 booking decisions.</div>',
+  'is-amalfi': '<div class="ttip-h">Intelligence Savings · Amalfi</div><div class="ttip-row"><span>Hyatt points redemption (Le Sirenuse)</span><strong>$340</strong></div><div class="ttip-row"><span>Direct booking (Trenitalia vs portal)</span><strong>$51</strong></div><div class="ttip-row"><span>Sapphire dining points (3× worldwide)</span><strong>$63</strong></div><div class="ttip-total"><span>Total</span><span>$454</span></div><div class="ttip-note">Every dollar tied to a specific booking or card action.</div>',
+  'is-bali': '<div class="ttip-h">Intelligence Savings · Bali</div><div class="ttip-row"><span>Capital One Travel 10× (Bisma Eight)</span><strong>$173</strong></div><div class="ttip-row"><span>Sapphire flight points (4× direct)</span><strong>$84</strong></div><div class="ttip-row"><span>Sapphire dining edge over Venture X</span><strong>$7</strong></div><div class="ttip-total"><span>Total</span><span>$264</span></div><div class="ttip-note">Every dollar tied to a specific booking or card action.</div><div class="ttip-note">Captured automatically across 6 booking decisions.</div>',
   'is-paris': '<div class="ttip-h">Intelligence Savings · Paris</div><div class="ttip-row"><span>Card optimization (Sapphire portal)</span><strong>$290</strong></div><div class="ttip-row"><span>Stay Advisor (Hôtel Particulier vs Bristol)</span><strong>$230</strong></div><div class="ttip-total"><span>Total</span><span>$520</span></div>',
   'is-tulum': '<div class="ttip-h">Intelligence Savings · Tulum</div><div class="ttip-row"><span>Stay routing (Nest vs beachfront)</span><strong>$200</strong></div><div class="ttip-row"><span>Card optimization</span><strong>$140</strong></div><div class="ttip-total"><span>Total</span><span>$340</span></div>',
   'is-rio': '<div class="ttip-h">Intelligence Savings · Rio</div><div class="ttip-row"><span>Stay direct (Fasano vs OTA)</span><strong>$290</strong></div><div class="ttip-row"><span>Card FX optimization</span><strong>$130</strong></div><div class="ttip-total"><span>Total</span><span>$420</span></div>',
   'is-iceland': '<div class="ttip-h">Intelligence Savings · Iceland</div><div class="ttip-row"><span>Card optimization (tour package)</span><strong>$250</strong></div><div class="ttip-row"><span>Routing &amp; lounges</span><strong>$160</strong></div><div class="ttip-total"><span>Total</span><span>$410</span></div>',
-  'is-lifetime': '<div class="ttip-h">Intelligence Savings · Lifetime</div><div class="ttip-row"><span>Cost Intelligence routing</span><strong>$717</strong></div><div class="ttip-row"><span>Card optimization</span><strong>$1,280</strong></div><div class="ttip-row"><span>Stay Advisor</span><strong>$720</strong></div><div class="ttip-row"><span>Direct-booking margin</span><strong>$182</strong></div><div class="ttip-row"><span>Lounges &amp; transit routing</span><strong>$160</strong></div><div class="ttip-total"><span>Total</span><span>$3,059</span></div><div class="ttip-note">Across 6 trips · 14 months.</div>',
+  'is-lifetime': '<div class="ttip-h">Intelligence Savings · Lifetime</div><div class="ttip-row"><span>Amalfi (Apr 2026)</span><strong>$454</strong></div><div class="ttip-row"><span>Bali (May 2026)</span><strong>$264</strong></div><div class="ttip-row"><span>Paris (Sep 2025)</span><strong>$520</strong></div><div class="ttip-row"><span>Iceland (Mar 2025)</span><strong>$410</strong></div><div class="ttip-row"><span>Rio (Feb 2025)</span><strong>$420</strong></div><div class="ttip-row"><span>Tulum (Dec 2025)</span><strong>$340</strong></div><div class="ttip-total"><span>Total</span><span>$2,408</span></div><div class="ttip-note">Every dollar traceable to a specific card, booking, or routing decision.</div>',
 
   // Per-trip Decisions Automated breakdowns
   'da-amalfi': '<div class="ttip-h">Decisions Automated · Amalfi</div><div class="ttip-row"><span>Stay options compared</span><strong>18</strong></div><div class="ttip-row"><span>Restaurant vetting</span><strong>22</strong></div><div class="ttip-row"><span>Transport routes</span><strong>14</strong></div><div class="ttip-row"><span>Group coordination</span><strong>12</strong></div><div class="ttip-row"><span>Card-routing decisions</span><strong>12</strong></div><div class="ttip-row"><span>Weather &amp; pacing checks</span><strong>8</strong></div><div class="ttip-row"><span>Safety &amp; backup planning</span><strong>8</strong></div><div class="ttip-total"><span>Total</span><span>94</span></div>',
@@ -4535,7 +5187,7 @@ var TTIP_DATA = {
   'da-tulum': '<div class="ttip-h">Decisions Automated · Tulum</div><div class="ttip-row"><span>Restaurant vetting</span><strong>12</strong></div><div class="ttip-row"><span>Stay options compared</span><strong>10</strong></div><div class="ttip-row"><span>Wellness venue vetting</span><strong>9</strong></div><div class="ttip-row"><span>Transport routes</span><strong>6</strong></div><div class="ttip-row"><span>Card-routing decisions</span><strong>6</strong></div><div class="ttip-total"><span>Total</span><span>43</span></div>',
   'da-rio': '<div class="ttip-h">Decisions Automated · Rio</div><div class="ttip-row"><span>Safety &amp; neighborhood vetting</span><strong>10</strong></div><div class="ttip-row"><span>Stay options compared</span><strong>9</strong></div><div class="ttip-row"><span>Restaurant vetting</span><strong>8</strong></div><div class="ttip-row"><span>Transport routes</span><strong>6</strong></div><div class="ttip-row"><span>Card-routing decisions</span><strong>5</strong></div><div class="ttip-total"><span>Total</span><span>38</span></div>',
   'da-iceland': '<div class="ttip-h">Decisions Automated · Iceland</div><div class="ttip-row"><span>Weather &amp; Northern Lights monitoring</span><strong>13</strong></div><div class="ttip-row"><span>Stay options compared</span><strong>11</strong></div><div class="ttip-row"><span>Restaurant vetting</span><strong>9</strong></div><div class="ttip-row"><span>Transport routes</span><strong>8</strong></div><div class="ttip-row"><span>Card-routing decisions</span><strong>6</strong></div><div class="ttip-total"><span>Total</span><span>47</span></div>',
-  'da-lifetime': '<div class="ttip-h">Decisions Automated · Lifetime</div><div class="ttip-row"><span>Stay options compared</span><strong>74</strong></div><div class="ttip-row"><span>Restaurant vetting</span><strong>66</strong></div><div class="ttip-row"><span>Transport routes</span><strong>51</strong></div><div class="ttip-row"><span>Card-routing decisions</span><strong>44</strong></div><div class="ttip-row"><span>Wellness venue vetting</span><strong>25</strong></div><div class="ttip-row"><span>Safety &amp; cultural prep</span><strong>27</strong></div><div class="ttip-row"><span>Weather &amp; pacing checks</span><strong>27</strong></div><div class="ttip-row"><span>Group &amp; milestone coordination</span><strong>21</strong></div><div class="ttip-total"><span>Total</span><span>335</span></div><div class="ttip-note">Each one a comparison, vetting, or route a planner would otherwise do by hand.</div>'
+  'da-lifetime': '<div class="ttip-h">Decisions Automated · Lifetime</div><div class="ttip-row"><span>Stay options compared</span><strong>74</strong></div><div class="ttip-row"><span>Restaurant vetting</span><strong>66</strong></div><div class="ttip-row"><span>Transport routes</span><strong>51</strong></div><div class="ttip-row"><span>Card-routing decisions</span><strong>44</strong></div><div class="ttip-row"><span>Wellness venue vetting</span><strong>25</strong></div><div class="ttip-row"><span>Safety &amp; cultural prep</span><strong>27</strong></div><div class="ttip-row"><span>Weather &amp; pacing checks</span><strong>27</strong></div><div class="ttip-row"><span>Group &amp; milestone coordination</span><strong>21</strong></div><div class="ttip-total"><span>Total</span><span>335</span></div><div class="ttip-note">Each one a comparison, vetting, or route a planner would otherwise do by hand. At ~12 minutes average DIY research per decision, that\'s 67 hours saved across 6 trips.</div>'
 };
 
 function showTtip(el, id, evt){
