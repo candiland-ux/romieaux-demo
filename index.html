@@ -83,8 +83,16 @@ body{background:var(--cr);color:var(--tx);font-family:var(--fs);min-height:100vh
 .mg{display:grid;grid-template-columns:1fr 1fr;gap:9px;padding:0 20px 6px;}
 .mc{background:var(--pn);border:1px solid var(--bd);border-radius:12px;padding:15px 14px;cursor:pointer;transition:all .2s;}
 .mc:hover{border-color:var(--sd);transform:translateY(-1px);box-shadow:0 3px 10px rgba(176,138,80,.1);}
-.mc.locked{opacity:.7;}
-.mc.locked:hover{opacity:1;}
+.mc.locked{opacity:.55;filter:grayscale(30%);}
+.mc.locked:hover{opacity:.8;filter:grayscale(0%);}
+.mc.tier-locked{opacity:.55;filter:grayscale(30%);cursor:pointer;}
+.mc.tier-locked:hover{opacity:.9;filter:grayscale(0%);}
+.module-blur-overlay{position:absolute;inset:0;backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);background:rgba(var(--cr-raw,250,247,242),.7);z-index:10;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:24px;text-align:center;border-radius:inherit;}
+.module-blur-overlay .blur-icon{font-size:28px;}
+.module-blur-overlay .blur-title{font-family:var(--fd);font-size:16px;font-weight:700;color:var(--ink);}
+.module-blur-overlay .blur-sub{font-size:13px;color:var(--tm);line-height:1.5;}
+.module-blur-overlay .blur-btn{margin-top:4px;padding:10px 22px;border-radius:24px;border:none;background:var(--sd);color:#fff;font-family:var(--fm);font-size:11px;letter-spacing:1px;text-transform:uppercase;cursor:pointer;}
+.module-screen-wrap{position:relative;}
 .mci{font-size:22px;margin-bottom:7px;}
 .mcn{font-family:var(--fd);font-size:15px;font-weight:600;color:var(--tx);}
 .mcs{font-size:10px;color:var(--ts);margin-top:2px;}
@@ -575,23 +583,14 @@ body{background:var(--cr);color:var(--tx);font-family:var(--fs);min-height:100vh
     <div class="qt" style="color:var(--ink)">How involved should Romieaux be?</div>
     <div class="qsub" style="color:var(--tm)">This sets your default experience level. You can change it anytime.</div>
     <div style="flex:1;display:flex;flex-direction:column;gap:10px;">
-      <div style="background:var(--cr);border:1.5px solid var(--bd);border-radius:14px;padding:16px;cursor:pointer;" onclick="selectMode(this,'essential')">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
-          <div style="font-family:var(--fd);font-size:16px;font-weight:700;color:var(--ink);">Essential</div>
-          <div style="font-family:var(--fm);font-size:10px;color:var(--gn);letter-spacing:1px;text-transform:uppercase;">Free</div>
-        </div>
-        <div style="font-size:13px;color:var(--tm);line-height:1.5;">You plan. Romieaux gives you data on demand — wait times, safety alerts, currency info. Browse and add manually.</div>
-        <div style="display:flex;flex-wrap:wrap;gap:4px;margin-top:8px;"><span style="padding:3px 8px;border-radius:8px;background:rgba(45,107,45,.08);font-family:var(--fm);font-size:9px;color:var(--gn);letter-spacing:1px;">5 CORE MODULES</span><span style="padding:3px 8px;border-radius:8px;background:var(--pn);font-family:var(--fm);font-size:9px;color:var(--ts);letter-spacing:1px;">BASIC ITINERARY</span><span style="padding:3px 8px;border-radius:8px;background:var(--pn);font-family:var(--fm);font-size:9px;color:var(--ts);letter-spacing:1px;">MANUAL PLANNING</span></div>
-        <div class="mode-note" style="display:none;margin-top:10px;padding:10px 12px;background:rgba(45,107,45,.06);border-radius:8px;font-size:12px;color:var(--tm);line-height:1.5;">No payment required. You can upgrade anytime from the dashboard.</div>
-      </div>
       <div style="background:var(--cr);border:1.5px solid var(--bd);border-radius:14px;padding:16px;cursor:pointer;" onclick="selectMode(this,'lightly')">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
-          <div style="font-family:var(--fd);font-size:16px;font-weight:700;color:var(--ink);">Lightly Tailored</div>
+          <div style="font-family:var(--fd);font-size:16px;font-weight:700;color:var(--ink);">I'll plan it</div>
           <div style="font-family:var(--fm);font-size:10px;color:var(--gn);letter-spacing:1px;text-transform:uppercase;">Free</div>
         </div>
-        <div style="font-size:13px;color:var(--tm);line-height:1.5;">Romieaux generates a starting itinerary you shape. Flags scheduling conflicts and fills obvious gaps. Default for free users.</div>
-        <div style="display:flex;flex-wrap:wrap;gap:4px;margin-top:8px;"><span style="padding:3px 8px;border-radius:8px;background:rgba(45,107,45,.08);font-family:var(--fm);font-size:9px;color:var(--gn);letter-spacing:1px;">5 CORE MODULES</span><span style="padding:3px 8px;border-radius:8px;background:var(--pn);font-family:var(--fm);font-size:9px;color:var(--ts);letter-spacing:1px;">GENERATED ITINERARY</span><span style="padding:3px 8px;border-radius:8px;background:var(--pn);font-family:var(--fm);font-size:9px;color:var(--ts);letter-spacing:1px;">SMART CHECK · 2 ALERTS</span></div>
-        <div class="mode-note" style="display:none;margin-top:10px;padding:10px 12px;background:rgba(45,107,45,.06);border-radius:8px;font-size:12px;color:var(--tm);line-height:1.5;">No payment required. Upgrade modules individually from the dashboard.</div>
+        <div style="font-size:13px;color:var(--tm);line-height:1.5;">You're in the driver's seat. Romieaux gives you a starting point, flags conflicts, and surfaces data when you need it — wait times, safety alerts, currency, smart checks. You build and adjust from there.</div>
+        <div style="display:flex;flex-wrap:wrap;gap:4px;margin-top:8px;"><span style="padding:3px 8px;border-radius:8px;background:rgba(45,107,45,.08);font-family:var(--fm);font-size:9px;color:var(--gn);letter-spacing:1px;">5 CORE MODULES</span><span style="padding:3px 8px;border-radius:8px;background:var(--pn);font-family:var(--fm);font-size:9px;color:var(--ts);letter-spacing:1px;">MANUAL PLANNING</span><span style="padding:3px 8px;border-radius:8px;background:var(--pn);font-family:var(--fm);font-size:9px;color:var(--ts);letter-spacing:1px;">BASIC REMINDERS</span></div>
+        <div class="mode-note" style="display:none;margin-top:10px;padding:10px 12px;background:rgba(45,107,45,.06);border-radius:8px;font-size:12px;color:var(--tm);line-height:1.5;">No payment required. AI recommendations, Smart Check, and proactive alerts unlock with a paid plan.</div>
       </div>
       <div style="background:var(--cr);border:1.5px solid var(--sd);border-radius:14px;padding:16px;cursor:pointer;position:relative;" onclick="selectMode(this,'curated')">
         <div style="position:absolute;top:-8px;right:14px;background:var(--rg);color:#fff;font-family:var(--fm);font-size:8px;letter-spacing:1px;padding:2px 10px;border-radius:8px;text-transform:uppercase;">Most Popular</div>
@@ -599,7 +598,7 @@ body{background:var(--cr);color:var(--tx);font-family:var(--fs);min-height:100vh
           <div style="font-family:var(--fd);font-size:16px;font-weight:700;color:var(--ink);">Deeply Curated</div>
           <div style="font-family:var(--fm);font-size:10px;color:var(--sd);letter-spacing:1px;">BUNDLE OR ALL-ACCESS</div>
         </div>
-        <div style="font-size:13px;color:var(--tm);line-height:1.5;">Romieaux designs the complete experience — pacing, hidden gems, dining matches, credit card optimization. You review and approve. Requires a bundle or All-Access.</div>
+        <div style="font-size:13px;color:var(--tm);line-height:1.5;">Romieaux designs the complete experience — pacing, hidden gems, dining matches, credit card optimization. You review and approve.</div>
         <div style="display:flex;flex-wrap:wrap;gap:4px;margin-top:8px;"><span style="padding:3px 8px;border-radius:8px;background:rgba(176,138,80,.12);font-family:var(--fm);font-size:9px;color:var(--sd);letter-spacing:1px;">ALL 13 MODULES</span><span style="padding:3px 8px;border-radius:8px;background:rgba(176,138,80,.12);font-family:var(--fm);font-size:9px;color:var(--sd);letter-spacing:1px;">FULL INTELLIGENCE</span><span style="padding:3px 8px;border-radius:8px;background:rgba(176,138,80,.12);font-family:var(--fm);font-size:9px;color:var(--sd);letter-spacing:1px;">MEMORY BOOK</span></div>
         <div class="mode-note" style="display:none;margin-top:10px;padding:10px 12px;background:rgba(176,138,80,.08);border-radius:8px;font-size:12px;color:var(--tm);line-height:1.5;">Unlocks with a Lifestyle Bundle (<strong>$9.99/mo</strong>) or All-Access (<strong>$29/mo</strong>). <span style="color:var(--sd);cursor:pointer;font-weight:600;" onclick="event.stopPropagation();nav('s-pricing')">See plans →</span></div>
       </div>
@@ -608,7 +607,7 @@ body{background:var(--cr);color:var(--tx);font-family:var(--fs);min-height:100vh
           <div style="font-family:var(--fd);font-size:16px;font-weight:700;color:var(--ink);">Concierge-Enhanced</div>
           <div style="font-family:var(--fm);font-size:10px;color:var(--sd);letter-spacing:1px;">PER-TRIP · FROM $149</div>
         </div>
-        <div style="font-size:13px;color:var(--tm);line-height:1.5;">Everything in Deeply Curated plus human escalation for complex requests, VIP booking assistance, and priority support. Per-trip pricing.</div>
+        <div style="font-size:13px;color:var(--tm);line-height:1.5;">Everything in Deeply Curated, plus a human in the loop for complex requests, VIP booking, and priority support.</div>
         <div style="display:flex;flex-wrap:wrap;gap:4px;margin-top:8px;"><span style="padding:3px 8px;border-radius:8px;background:rgba(176,138,80,.12);font-family:var(--fm);font-size:9px;color:var(--sd);letter-spacing:1px;">ALL 13 MODULES</span><span style="padding:3px 8px;border-radius:8px;background:rgba(176,138,80,.12);font-family:var(--fm);font-size:9px;color:var(--sd);letter-spacing:1px;">ACTIVE CONCIERGE</span><span style="padding:3px 8px;border-radius:8px;background:rgba(176,138,80,.12);font-family:var(--fm);font-size:9px;color:var(--sd);letter-spacing:1px;">BOOKS FOR YOU</span></div>
         <div class="mode-note" style="display:none;margin-top:10px;padding:10px 12px;background:rgba(176,138,80,.08);border-radius:8px;font-size:12px;color:var(--tm);line-height:1.5;">Available as Per-Trip Planning from <strong>$149</strong>. Includes human concierge and VIP booking. <span style="color:var(--sd);cursor:pointer;font-weight:600;" onclick="event.stopPropagation();nav('s-pricing')">See plans →</span></div>
       </div>
@@ -684,28 +683,32 @@ body{background:var(--cr);color:var(--tx);font-family:var(--fs);min-height:100vh
     <div style="font-family:var(--fm);font-size:9px;letter-spacing:2px;color:var(--rg);text-transform:uppercase;margin-bottom:8px;margin-top:10px;">Outbound Flight <span style="color:var(--ts);text-transform:none;letter-spacing:0;">(optional)</span></div>
     <div style="background:var(--pn);border:1px solid var(--bd);border-radius:12px;padding:14px;margin-bottom:14px;">
       <div style="display:flex;gap:10px;margin-bottom:10px;">
-        <div style="flex:1;"><label style="font-family:var(--fm);font-size:8px;letter-spacing:1px;color:var(--ts);text-transform:uppercase;margin-bottom:4px;display:block;">From</label><input type="text" placeholder="LAX" maxlength="3" style="width:100%;padding:10px;border:1px solid var(--bd);border-radius:8px;font-family:var(--fm);font-size:16px;font-weight:600;color:var(--tx);background:transparent;outline:none;text-transform:uppercase;text-align:center;box-sizing:border-box;" oninput="this.value=this.value.toUpperCase()"></div>
+        <div style="flex:1;"><label style="font-family:var(--fm);font-size:8px;letter-spacing:1px;color:var(--ts);text-transform:uppercase;margin-bottom:4px;display:block;">From</label><input type="text" id="td-from" placeholder="LAX" maxlength="3" style="width:100%;padding:10px;border:1px solid var(--bd);border-radius:8px;font-family:var(--fm);font-size:16px;font-weight:600;color:var(--tx);background:transparent;outline:none;text-transform:uppercase;text-align:center;box-sizing:border-box;" oninput="this.value=this.value.toUpperCase()"></div>
         <div style="display:flex;align-items:center;color:var(--sd);font-size:18px;padding-top:16px;">→</div>
-        <div style="flex:1;"><label style="font-family:var(--fm);font-size:8px;letter-spacing:1px;color:var(--ts);text-transform:uppercase;margin-bottom:4px;display:block;">To</label><input type="text" placeholder="NAP" maxlength="3" style="width:100%;padding:10px;border:1px solid var(--bd);border-radius:8px;font-family:var(--fm);font-size:16px;font-weight:600;color:var(--tx);background:transparent;outline:none;text-transform:uppercase;text-align:center;box-sizing:border-box;" oninput="this.value=this.value.toUpperCase()"></div>
+        <div style="flex:1;"><label style="font-family:var(--fm);font-size:8px;letter-spacing:1px;color:var(--ts);text-transform:uppercase;margin-bottom:4px;display:block;">To</label><input type="text" id="td-dest" placeholder="NAP" maxlength="3" style="width:100%;padding:10px;border:1px solid var(--bd);border-radius:8px;font-family:var(--fm);font-size:16px;font-weight:600;color:var(--tx);background:transparent;outline:none;text-transform:uppercase;text-align:center;box-sizing:border-box;" oninput="this.value=this.value.toUpperCase()"></div>
       </div>
       <div style="display:flex;gap:10px;">
         <div style="flex:1;"><label style="font-family:var(--fm);font-size:8px;letter-spacing:1px;color:var(--ts);text-transform:uppercase;margin-bottom:4px;display:block;">Flight #</label><input type="text" placeholder="DL 482" style="width:100%;padding:10px;border:1px solid var(--bd);border-radius:8px;font-family:var(--fs);font-size:14px;color:var(--tx);background:transparent;outline:none;box-sizing:border-box;"></div>
         <div style="flex:1;"><label style="font-family:var(--fm);font-size:8px;letter-spacing:1px;color:var(--ts);text-transform:uppercase;margin-bottom:4px;display:block;">Arrives (local)</label><input type="time" style="width:100%;padding:10px;border:1px solid var(--bd);border-radius:8px;font-family:var(--fs);font-size:14px;color:var(--tx);background:transparent;outline:none;box-sizing:border-box;"></div>
       </div>
     </div>
+    <div id="outbound-legs"></div>
+    <button onclick="addFlightLeg('outbound')" style="width:100%;padding:10px;border-radius:10px;border:1px dashed var(--bd);background:transparent;font-family:var(--fs);font-size:13px;color:var(--tm);cursor:pointer;margin-bottom:14px;display:flex;align-items:center;justify-content:center;gap:6px;">+ Add connection</button>
 
     <div style="font-family:var(--fm);font-size:9px;letter-spacing:2px;color:var(--rg);text-transform:uppercase;margin-bottom:8px;">Return Flight <span style="color:var(--ts);text-transform:none;letter-spacing:0;">(optional)</span></div>
     <div style="background:var(--pn);border:1px solid var(--bd);border-radius:12px;padding:14px;margin-bottom:18px;">
       <div style="display:flex;gap:10px;margin-bottom:10px;">
-        <div style="flex:1;"><label style="font-family:var(--fm);font-size:8px;letter-spacing:1px;color:var(--ts);text-transform:uppercase;margin-bottom:4px;display:block;">From</label><input type="text" placeholder="NAP" maxlength="3" style="width:100%;padding:10px;border:1px solid var(--bd);border-radius:8px;font-family:var(--fm);font-size:16px;font-weight:600;color:var(--tx);background:transparent;outline:none;text-transform:uppercase;text-align:center;box-sizing:border-box;" oninput="this.value=this.value.toUpperCase()"></div>
+        <div style="flex:1;"><label style="font-family:var(--fm);font-size:8px;letter-spacing:1px;color:var(--ts);text-transform:uppercase;margin-bottom:4px;display:block;">From</label><input type="text" id="td-home" placeholder="NAP" maxlength="3" style="width:100%;padding:10px;border:1px solid var(--bd);border-radius:8px;font-family:var(--fm);font-size:16px;font-weight:600;color:var(--tx);background:transparent;outline:none;text-transform:uppercase;text-align:center;box-sizing:border-box;" oninput="this.value=this.value.toUpperCase()"></div>
         <div style="display:flex;align-items:center;color:var(--sd);font-size:18px;padding-top:16px;">→</div>
-        <div style="flex:1;"><label style="font-family:var(--fm);font-size:8px;letter-spacing:1px;color:var(--ts);text-transform:uppercase;margin-bottom:4px;display:block;">To</label><input type="text" placeholder="LAX" maxlength="3" style="width:100%;padding:10px;border:1px solid var(--bd);border-radius:8px;font-family:var(--fm);font-size:16px;font-weight:600;color:var(--tx);background:transparent;outline:none;text-transform:uppercase;text-align:center;box-sizing:border-box;" oninput="this.value=this.value.toUpperCase()"></div>
+        <div style="flex:1;"><label style="font-family:var(--fm);font-size:8px;letter-spacing:1px;color:var(--ts);text-transform:uppercase;margin-bottom:4px;display:block;">To</label><input type="text" id="td-to" placeholder="LAX" maxlength="3" style="width:100%;padding:10px;border:1px solid var(--bd);border-radius:8px;font-family:var(--fm);font-size:16px;font-weight:600;color:var(--tx);background:transparent;outline:none;text-transform:uppercase;text-align:center;box-sizing:border-box;" oninput="this.value=this.value.toUpperCase()"></div>
       </div>
       <div style="display:flex;gap:10px;">
         <div style="flex:1;"><label style="font-family:var(--fm);font-size:8px;letter-spacing:1px;color:var(--ts);text-transform:uppercase;margin-bottom:4px;display:block;">Flight #</label><input type="text" placeholder="DL 483" style="width:100%;padding:10px;border:1px solid var(--bd);border-radius:8px;font-family:var(--fs);font-size:14px;color:var(--tx);background:transparent;outline:none;box-sizing:border-box;"></div>
         <div style="flex:1;"><label style="font-family:var(--fm);font-size:8px;letter-spacing:1px;color:var(--ts);text-transform:uppercase;margin-bottom:4px;display:block;">Departs (local)</label><input type="time" style="width:100%;padding:10px;border:1px solid var(--bd);border-radius:8px;font-family:var(--fs);font-size:14px;color:var(--tx);background:transparent;outline:none;box-sizing:border-box;"></div>
       </div>
     </div>
+    <div id="return-legs"></div>
+    <button onclick="addFlightLeg('return')" style="width:100%;padding:10px;border-radius:10px;border:1px dashed var(--bd);background:transparent;font-family:var(--fs);font-size:13px;color:var(--tm);cursor:pointer;margin-bottom:14px;display:flex;align-items:center;justify-content:center;gap:6px;">+ Add connection</button>
 
     <div id="flight-upgrade-card" style="background:linear-gradient(135deg,rgba(176,138,80,.08),rgba(196,135,122,.08));border:1.5px solid rgba(176,138,80,.3);border-radius:12px;padding:14px 16px;margin-bottom:14px;cursor:pointer;" onclick="openPW('✈️','Flight Intelligence','Smart Traveler Bundle')">
       <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;"><span style="font-size:14px;">🔒</span><div style="font-family:var(--fm);font-size:8px;letter-spacing:2px;color:var(--sd);text-transform:uppercase;">Smart Traveler Bundle</div></div>
@@ -767,7 +770,7 @@ body{background:var(--cr);color:var(--tx);font-family:var(--fs);min-height:100vh
     <div style="display:flex;align-items:center;gap:6px;padding:7px 14px;background:var(--pn);border:1px solid var(--bd);border-radius:20px;cursor:pointer;flex-shrink:0;" onclick="document.getElementById('join-sheet').style.display='flex'"><span style="font-size:11px;">🔗</span><span style="font-family:var(--fm);font-size:10px;color:var(--tm);letter-spacing:1px;white-space:nowrap;">Join a Trip</span></div>
   </div>
 
-  <div class="ctabs"><button class="ctab act" id="ctab1" onclick="selectCity(this,1)">City 1</button><button class="ctab" id="ctab2" onclick="selectCity(this,2)">City 2</button><button class="ctab" onclick="showToast('Add another city to this trip')">+ City</button></div>
+  <div class="ctabs" id="itin-ctabs" style="display:none;"><button class="ctab act" id="ctab1" onclick="selectCity(this,1)">City 1</button><button class="ctab" id="ctab2" onclick="selectCity(this,2)">City 2</button><button class="ctab" onclick="showToast('Add another city to this trip')">+ City</button></div>
   <div class="scr">
 
     <!-- PLANNING PROGRESS — compact -->
@@ -821,7 +824,7 @@ body{background:var(--cr);color:var(--tx);font-family:var(--fs);min-height:100vh
       <div style="display:inline-flex;align-items:center;gap:6px;padding:4px 10px;background:var(--sdl);border-radius:20px;margin-bottom:9px;font-family:var(--fm);font-size:8px;color:var(--sd);letter-spacing:1px;text-transform:uppercase;" id="trip-vibe">✦ Trip Vibe: Loading…</div>
       <div style="display:inline-flex;align-items:center;gap:6px;padding:4px 10px;background:var(--rgl);border-radius:20px;margin-bottom:9px;margin-left:4px;font-family:var(--fm);font-size:8px;color:var(--rg);letter-spacing:1px;text-transform:uppercase;" id="trip-budget">💰 Budget: —</div>
       <div style="display:inline-flex;align-items:center;gap:6px;padding:4px 10px;background:var(--sdl);border-radius:20px;margin-bottom:9px;margin-left:4px;font-family:var(--fm);font-size:8px;color:var(--sd);letter-spacing:1px;text-transform:uppercase;" id="trip-dates">📅 Dates: Not set</div>
-      <div style="font-size:13px;color:var(--tm);line-height:1.7;" id="align-txt">Loading…</div>
+      <div style="font-size:13px;color:var(--tm);line-height:1.7;" id="align-txt">Loading...</div><div id="align-group-note" style="display:none;margin-top:8px;padding:8px 10px;background:rgba(176,138,80,.08);border-radius:8px;font-family:var(--fm);font-size:9px;color:var(--sd);letter-spacing:1px;">⏳ AWAITING GROUP — Pacing and preference summary will update once your travel companions complete their profiles.</div>
       <div style="display:flex;gap:8px;margin-top:12px;">
         <button class="btn bgh" style="flex:1;padding:10px;" onclick="nav('s-ready')">Readiness →</button>
         <button class="btn bgh" style="flex:1;padding:10px;" onclick="nav('s-smartcheck')">Smart Check ⚡</button>
@@ -912,7 +915,7 @@ body{background:var(--cr);color:var(--tx);font-family:var(--fs);min-height:100vh
 <!-- ===== ITINERARY ===== -->
 <div id="s-itin" class="screen">
   <div class="ib"><div class="ib-glow"></div><button class="bk w" onclick="nav('s-dash')" style="margin-bottom:7px;">← Home</button><div class="ib-eye" id="ib-eye">Your Trip</div><div class="ib-t" id="ib-t">Itinerary</div><div class="ib-s" id="ib-s">Building…</div></div>
-  <div class="itabs"><button class="itab act">Itinerary</button><button class="itab" onclick="if(S.demoMode){nav('s-mod-music');}else{showToast('Playlist — unlock Explorer Bundle');}">Playlist</button><button class="itab" onclick="nav('s-ready')">Readiness</button><button class="itab" onclick="nav('s-smartcheck')">Smart Check</button></div>
+  <div class="itabs"><button class="itab act">Itinerary</button><button class="itab" onclick="if(S.demoMode||isPaid()){nav('s-mod-music');}else{openPW('🎵','Music &amp; Events','Explorer Bundle');}">Playlist</button><button class="itab" onclick="nav('s-ready')">Readiness</button><button class="itab" onclick="nav('s-smartcheck')">Smart Check</button></div>
   <div class="scr" style="padding-top:0;">
     <!-- TRIP OPENING NARRATIVE (demo mode) -->
     <div id="trip-opening" style="display:none;padding:18px 20px 14px;background:var(--cr2);border-bottom:1px solid var(--bd);">
@@ -948,7 +951,7 @@ body{background:var(--cr);color:var(--tx);font-family:var(--fs);min-height:100vh
 <!-- ===== ACTIVITIES ===== -->
 <div id="s-activities" class="screen">
   <div class="tb"><button class="bk" onclick="nav('s-dash')">← Home</button><div class="wm">ACTIVITIES</div><div></div></div>
-  <div style="display:flex;gap:7px;padding:10px 20px;overflow-x:auto;"><button class="chip sel" onclick="fc(this)">All</button><button class="chip" onclick="fc(this)">Cultural</button><button class="chip" onclick="fc(this)">Outdoors</button><button class="chip" onclick="fc(this)">Wellness</button></div>
+  <div id="acts-chips" style="display:flex;gap:7px;padding:10px 20px;overflow-x:auto;"><button class="chip sel" onclick="fc(this)">All</button></div>
   <div id="activity-upgrade-card" style="margin:0 20px 12px;background:linear-gradient(135deg,rgba(176,138,80,.08),rgba(196,135,122,.08));border:1.5px solid rgba(176,138,80,.3);border-radius:12px;padding:14px 16px;cursor:pointer;" onclick="openPW('🎭','Activity Intelligence','All-Access')">
     <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;"><span style="font-size:14px;">🔒</span><div style="font-family:var(--fm);font-size:8px;letter-spacing:2px;color:var(--sd);text-transform:uppercase;">Upgrade to unlock</div></div>
     <div style="font-size:13px;color:var(--tm);line-height:1.5;">Your profile already suggests <strong>3 hidden gems</strong> for your style. Unlock pacing that flows from morning to night, "skip this — too crowded" alerts, and a way to spot the experiences worth your time.</div>
@@ -960,7 +963,7 @@ body{background:var(--cr);color:var(--tx);font-family:var(--fs);min-height:100vh
 <!-- ===== DINING ===== -->
 <div id="s-dining" class="screen">
   <div class="tb"><button class="bk" onclick="nav('s-dash')">← Home</button><div class="wm">DINING</div><div></div></div>
-  <div style="display:flex;gap:7px;padding:10px 20px;overflow-x:auto;"><button class="chip sel" onclick="fc(this)">All</button><button class="chip" onclick="fc(this)">Fine Dining</button><button class="chip" onclick="fc(this)">Local</button><button class="chip" onclick="fc(this)">Casual</button></div>
+  <div id="din-chips" style="display:flex;gap:7px;padding:10px 20px;overflow-x:auto;"><button class="chip sel" onclick="fc(this)">All</button></div>
   <div id="dining-upgrade-card" style="margin:0 20px 12px;background:linear-gradient(135deg,rgba(176,138,80,.08),rgba(196,135,122,.08));border:1.5px solid rgba(176,138,80,.3);border-radius:12px;padding:14px 16px;cursor:pointer;" onclick="openPW('🍽','Dining Intelligence','All-Access')">
     <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;"><span style="font-size:14px;">🔒</span><div style="font-family:var(--fm);font-size:8px;letter-spacing:2px;color:var(--sd);text-transform:uppercase;">Upgrade to unlock</div></div>
     <div style="font-size:13px;color:var(--tm);line-height:1.5;">Restaurants that work for your diet, timed for the right night to book, with <strong>"2-hour wait on Saturdays"</strong> alerts and the local places tourists never find.</div>
@@ -972,7 +975,7 @@ body{background:var(--cr);color:var(--tx);font-family:var(--fs);min-height:100vh
 <!-- ===== TRANSPORT ===== -->
 <div id="s-transport" class="screen">
   <div class="tb"><button class="bk" onclick="nav('s-dash')">← Home</button><div class="wm">TRANSPORTATION</div><div></div></div>
-  <div style="display:flex;gap:7px;padding:10px 20px;overflow-x:auto;"><button class="chip sel" onclick="fc(this)">All</button><button class="chip" onclick="fc(this)">Cheapest</button><button class="chip" onclick="fc(this)">Fastest</button><button class="chip" onclick="fc(this)">Greenest</button><button class="chip" onclick="fc(this)">Least Exhausting</button></div>
+  <div id="trans-chips" style="display:flex;gap:7px;padding:10px 20px;overflow-x:auto;"><button class="chip sel" onclick="fc(this)">All</button></div>
   <div id="transport-upgrade-card" style="margin:0 20px 12px;background:linear-gradient(135deg,rgba(176,138,80,.08),rgba(196,135,122,.08));border:1.5px solid rgba(176,138,80,.3);border-radius:12px;padding:14px 16px;cursor:pointer;" onclick="openPW('🚄','Transport Intelligence','All-Access')">
     <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;"><span style="font-size:14px;">🔒</span><div style="font-family:var(--fm);font-size:8px;letter-spacing:2px;color:var(--sd);text-transform:uppercase;">Upgrade to unlock</div></div>
     <div style="font-size:13px;color:var(--tm);line-height:1.5;">Routes built around how you travel, with live traffic and strike alerts, <strong>"take the 8:15 train, not the 9:00"</strong> intelligence, and picks that respect your energy.</div>
@@ -984,7 +987,7 @@ body{background:var(--cr);color:var(--tx);font-family:var(--fs);min-height:100vh
 <!-- ===== STAYS ===== -->
 <div id="s-stays" class="screen">
   <div class="tb"><button class="bk" onclick="nav('s-dash')">← Home</button><div class="wm">STAYS</div><div></div></div>
-  <div style="display:flex;gap:7px;padding:10px 20px;overflow-x:auto;"><button class="chip sel" onclick="fc(this)">All</button><button class="chip" onclick="fc(this)">Hotels</button><button class="chip" onclick="fc(this)">Villas</button><button class="chip" onclick="fc(this)">Airbnb</button></div>
+  <div id="stays-chips" style="display:flex;gap:7px;padding:10px 20px;overflow-x:auto;"><button class="chip sel" onclick="fc(this)">All</button></div>
   <div id="stays-upgrade-card" style="margin:0 20px 12px;background:linear-gradient(135deg,rgba(176,138,80,.08),rgba(196,135,122,.08));border:1.5px solid rgba(176,138,80,.3);border-radius:12px;padding:14px 16px;cursor:pointer;" onclick="openPW('🏨','Stay Intelligence','All-Access')">
     <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;"><span style="font-size:14px;">🔒</span><div style="font-family:var(--fm);font-size:8px;letter-spacing:2px;color:var(--sd);text-transform:uppercase;">Upgrade to unlock</div></div>
     <div style="font-size:13px;color:var(--tm);line-height:1.5;">Prices compared across every platform, logic like <strong>"a villa for 6 is cheaper than 3 hotel rooms,"</strong> and matches to the kind of trip you're actually planning.</div>
@@ -1405,7 +1408,7 @@ body{background:var(--cr);color:var(--tx);font-family:var(--fs);min-height:100vh
     <div style="background:var(--cr2);padding:20px;">
       <div style="display:flex;align-items:center;gap:14px;">
         <div style="width:52px;height:52px;border-radius:50%;background:#4a6b5a;display:flex;align-items:center;justify-content:center;font-size:22px;">👤</div>
-        <div><div style="font-family:var(--fd);font-size:18px;font-weight:700;color:var(--ink);">Jordan</div><div style="font-size:12px;color:var(--ts);"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="a7cdc8d5c3c6c9e7c2cac6cecb89c4c8ca">[email&#160;protected]</a></div><div style="font-size:11px;color:var(--sd);margin-top:2px;font-family:var(--fm);letter-spacing:1px;text-transform:uppercase;">All-Access · $29/mo</div></div>
+        <div><div style="font-family:var(--fd);font-size:18px;font-weight:700;color:var(--ink);">Jordan</div><div style="font-size:12px;color:var(--ts);"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="a8c2c7daccc9c6e8cdc5c9c1c486cbc7c5">[email&#160;protected]</a></div><div style="font-size:11px;color:var(--sd);margin-top:2px;font-family:var(--fm);letter-spacing:1px;text-transform:uppercase;">All-Access · $29/mo</div></div>
       </div>
     </div>
     <div class="sh"><div class="shl">My Profile</div><div class="sht">Your travel preferences</div></div>
@@ -1415,6 +1418,7 @@ body{background:var(--cr);color:var(--tx);font-family:var(--fs);min-height:100vh
       <div style="display:flex;justify-content:space-between;align-items:center;padding:14px 0;border-bottom:1px solid var(--bd);cursor:pointer;" onclick="showToast('Edit music preferences')"><div><div style="font-family:var(--fd);font-size:14px;font-weight:600;color:var(--tx);">Music Preferences</div><div style="font-size:12px;color:var(--ts);margin-top:2px;">Jazz, Soul, Ambient</div></div><div style="color:var(--ts);">›</div></div>
       <div style="display:flex;justify-content:space-between;align-items:center;padding:14px 0;border-bottom:1px solid var(--bd);cursor:pointer;" onclick="showToast('Edit engagement mode')"><div><div style="font-family:var(--fd);font-size:14px;font-weight:600;color:var(--tx);">Engagement Mode</div><div style="font-size:12px;color:var(--ts);margin-top:2px;" id="set-mode">Deeply Curated</div></div><div style="color:var(--ts);">›</div></div>
       <div style="display:flex;justify-content:space-between;align-items:center;padding:14px 0;border-bottom:1px solid var(--bd);cursor:pointer;" onclick="showToast('Edit accessibility preferences')"><div><div style="font-family:var(--fd);font-size:14px;font-weight:600;color:var(--tx);">Accessibility Needs</div><div style="font-size:12px;color:var(--ts);margin-top:2px;">None configured</div></div><div style="color:var(--ts);">›</div></div>
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:14px 0;border-bottom:1px solid var(--bd);"><div><div style="font-family:var(--fd);font-size:14px;font-weight:600;color:var(--tx);">Home Airport</div><div style="font-size:12px;color:var(--ts);margin-top:2px;" id="set-home-airport">Not set</div></div><div style="display:flex;align-items:center;gap:8px;"><input type="text" id="home-airport-input" maxlength="3" placeholder="LAX" style="width:52px;padding:8px;border:1.5px solid var(--bd);border-radius:8px;font-family:var(--fm);font-size:15px;font-weight:700;color:var(--tx);background:transparent;outline:none;text-transform:uppercase;text-align:center;" oninput="this.value=this.value.toUpperCase()" onchange="setHomeAirport(this.value)"></div></div>
     </div>
     <div class="sh"><div class="shl">Subscription</div><div class="sht">Your Plan</div></div>
     <div style="padding:0 20px;">
@@ -1565,15 +1569,6 @@ body{background:var(--cr);color:var(--tx);font-family:var(--fs);min-height:100vh
             <div style="font-family:var(--fd);font-size:14px;font-weight:600;color:#f5efe6;">−$406</div>
           </div>
 
-          <!-- Net Cash Savings (cash after fees) -->
-          <div style="display:flex;justify-content:space-between;align-items:baseline;padding:10px 0;border-top:1px solid rgba(245,239,230,.08);">
-            <div>
-              <div style="font-family:var(--fm);font-size:10px;letter-spacing:1px;color:rgba(245,239,230,.7);">Net Cash Savings</div>
-              <div style="font-family:var(--fm);font-size:9px;color:rgba(245,239,230,.4);margin-top:2px;">Cash Savings − Fees · 7× your fees</div>
-            </div>
-            <div style="font-family:var(--fd);font-size:16px;font-weight:700;color:var(--gn);">$2,452</div>
-          </div>
-
           <!-- Planning Hours Saved -->
           <div style="padding:10px 0;border-top:1px solid rgba(245,239,230,.08);display:flex;justify-content:space-between;align-items:baseline;">
             <div>
@@ -1590,7 +1585,7 @@ body{background:var(--cr);color:var(--tx);font-family:var(--fs);min-height:100vh
               <div style="font-family:var(--fm);font-size:10px;letter-spacing:1.5px;color:rgba(245,239,230,.8);text-transform:uppercase;">Total Romieaux Value</div>
               <div style="font-family:var(--fd);font-size:26px;font-weight:700;color:var(--gn);"><span id="lifetime-total-with-time">$5,802</span></div>
             </div>
-            <div style="text-align:right;font-size:11px;color:rgba(245,239,230,.55);font-style:italic;margin-top:2px;">Net Cash + Time at your rate</div>
+            <div style="text-align:right;font-size:11px;color:rgba(245,239,230,.55);font-style:italic;margin-top:2px;">Cash Savings + Time − Fees</div>
           </div>
 
         </div>
@@ -1691,7 +1686,7 @@ body{background:var(--cr);color:var(--tx);font-family:var(--fs);min-height:100vh
             <div style="width:32px;height:32px;border-radius:50%;background:#b8cfae;color:var(--ink);display:flex;align-items:center;justify-content:center;font-size:14px;">🐕</div>
             <div>
               <div style="font-size:13px;font-weight:600;color:var(--ink);">Biscuit</div>
-              <div style="font-size:10px;color:var(--ts);">dog · 15 lb · cabin-friendly · ESA-certified</div>
+              <div style="font-size:10px;color:var(--ts);">dog · small · cabin-friendly · ESA-certified</div>
             </div>
           </div>
           <div style="font-size:12px;color:var(--ts);">›</div>
@@ -2426,7 +2421,7 @@ body{background:var(--cr);color:var(--tx);font-family:var(--fs);min-height:100vh
         <button class="btn bsd" style="width:100%;padding:14px;" onclick="showToast('Application submitted — check your email for next steps')">Submit & Start Trial →</button>
       </div>
       <button class="btn bgh" style="width:100%;padding:14px;" onclick="showToast('Scheduling a demo with the Romieaux team…')">Request a Demo</button>
-      <div style="text-align:center;margin-top:12px;font-size:12px;color:var(--ts);">Questions? <span style="color:var(--rg);cursor:pointer;" onclick="showToast('Opening pro@romieaux.com…')"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="a6d6d4c9e6d4c9cbcfc3c7d3de88c5c9cb">[email&#160;protected]</a></span></div>
+      <div style="text-align:center;margin-top:12px;font-size:12px;color:var(--ts);">Questions? <span style="color:var(--rg);cursor:pointer;" onclick="showToast('Opening pro@romieaux.com…')"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="c0b0b2af80b2afada9a5a1b5b8eea3afad">[email&#160;protected]</a></span></div>
     </div>
   </div>
 </div>
@@ -3454,8 +3449,8 @@ body{background:var(--cr);color:var(--tx);font-family:var(--fs);min-height:100vh
 
 <div class="toast" id="toast"></div>
 
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
-var S={energy:'rested',tripType:'romantic',tripTypes:[],group:'partner',intention:'rest',season:'building',budget:'balanced',budgetAmt:'',mode:'curated',destKey:null,destName:null,kidAges:[],hasPet:false,petType:'dog',petSize:'small',soloContext:'bali'};
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+var S={energy:'rested',tripType:'romantic',tripTypes:[],homeAirport:null,group:'partner',intention:'rest',season:'building',budget:'balanced',budgetAmt:'',mode:'curated',destKey:null,destName:null,kidAges:[],hasPet:false,petType:'dog',petSize:'small',soloContext:'bali'};
 var sugIdx=0;
 
 // ===== DESTINATION DATA =====
@@ -3802,6 +3797,555 @@ var D={
 
 var SUGS={romantic:[{n:'Amalfi Coast, Italy',k:'romantic',w:'Late spring — warm for boats, not yet peak season.'},{n:'Santorini, Greece',k:'romantic',w:'September shoulder season: fewer tourists, same sunsets.'}],reset:[{n:'Ubud, Bali',k:'reset',w:'Unmatched wellness infrastructure. Your reset intention is a strong match.'},{n:'Tuscany, Italy',k:'romantic',w:'Slow food, rolling hills, no agenda.'}],cultural:[{n:'Kyoto, Japan',k:'cultural',w:'Cherry blossom season. Low-crowd timings for every major site.'},{n:'Marrakech, Morocco',k:'cultural',w:'November: cool enough to explore all day.'}],milestone:[{n:'Paris, France',k:'romantic',w:'October: crowds thinned, golden weather.'},{n:'Amalfi Coast, Italy',k:'romantic',w:'Candlelit terrace dinners — that\'s the memory.'}],honeymoon:[{n:'Maldives',k:'reset',w:'Overwater bungalow. Complete seclusion.'},{n:'Amalfi Coast, Italy',k:'romantic',w:'Culture + romance at fraction of Maldives price.'}],adventure:[{n:'Iceland',k:'adventure',w:'March: high Northern Lights probability.'},{n:'Patagonia',k:'adventure',w:'November peak: best weather for Torres del Paine.'}],friends:[{n:'Lisbon, Portugal',k:'friends',w:'Easy flights, affordable, exceptional nightlife.'},{n:'Barcelona, Spain',k:'friends',w:'Architecture, beaches, food. Works for everyone.'}],workcation:[{n:'Lisbon, Portugal',k:'friends',w:'Best digital nomad infrastructure in Europe.'},{n:'Chiang Mai',k:'reset',w:'Affordable, excellent cafés, remarkable quality of life.'}]};
 
+var DEST_STUBS={
+  dubai:{
+    activities:[
+      {i:'🏙',bg:'3a5a6b',n:'Burj Khalifa — At the Top',s:'Level 124 observation deck · Book sunrise slot',m:'⏱ Book online — 40% cheaper + skip queue',b:'Landmark',bc:'bs'},
+      {i:'🏜',bg:'7a5a3a',n:'Desert Safari — Al Marmoom',s:'Dune bashing · Camel ride · Bedouin camp dinner',m:'Half-day · Private transfer included',b:'Adventure',bc:'bs'},
+      {i:'🕌',bg:'6b5a3a',n:'Al Fahidi Historic District',s:'Wind towers · Dubai Museum · Oldest neighborhood',m:'Morning visit — cool before 10am',b:'Cultural',bc:'bg'},
+      {i:'🛥',bg:'3a4a6b',n:'Dubai Creek Abra Ride',s:'Traditional wooden boat · 1 AED crossing',m:'Cash only · 5-min ride',b:'Local',bc:'ba'}
+    ],
+    dining:[
+      {i:'🫕',bg:'5a3a2a',n:'Al Hadheerah, Bab Al Shams',s:'Outdoor Emirati feast · Live oud · Desert setting',m:'Reservation required · Dress modestly',b:'Emirati',bc:'bs'},
+      {i:'🥙',bg:'3a5a4a',n:'Arabian Tea House — Al Fahidi',s:'Emirati breakfast · Al Baidhawi eggs · Date syrup',m:'Walk-in · Before 10am for best table',b:'Local',bc:'bg'},
+      {i:'🍱',bg:'4a3a5a',n:'Nobu Dubai, Atlantis',s:'Japanese-Peruvian fusion · Palm views',m:'Reserve · Smart casual',b:'Fine Dining',bc:'bs'}
+    ],
+    transport:[
+      {i:'🚇',bg:'3a4a5a',n:'Dubai Metro — Red & Green Line',s:'Burj Khalifa/Mall of Emirates/Airport',m:'Nol card · Women & children car at front',b:'Recommended',bc:'bs'},
+      {i:'🚕',bg:'5a4a3a',n:'Careem / Uber',s:'Reliable · A/C essential in summer',m:'Cheaper than hotel taxis',b:'Flexible',bc:'ba'},
+      {i:'🚤',bg:'3a5a6b',n:'Water Taxi — Dubai RTA',s:'Creek + Marina routes · Scenic alternative',m:'AED 4–25 depending on route',b:'Scenic',bc:'bg'}
+    ],
+    stays:[
+      {emo:'🏙',bg:'linear-gradient(135deg,#3a5a6b,#1e3a4a)',n:'Burj Al Arab Jumeirah',s:'Madinat Jumeirah · Iconic sail tower · Butler service',p:'AED 8,500/night',adv:'The flagship splurge — unmatched for a milestone night.',badge:'Iconic'},
+      {emo:'🌴',bg:'linear-gradient(135deg,#4a6b3a,#2d4a1e)',n:'One&Only The Palm',s:'Palm Jumeirah · Private beach · Low-rise luxury',p:'AED 3,200/night',adv:'Stay Advisor: Better value than Atlantis, quieter, private feel.',badge:'Top Pick'}
+    ],
+    safety:[
+      {i:'🆘',n:'Emergency',t:'999 Police · 998 Ambulance · 997 Fire'},
+      {i:'💵',n:'Currency',t:'UAE Dirham (AED). Cards accepted widely. 1 USD ≈ 3.67 AED.'},
+      {i:'👗',n:'Dress',t:'Cover shoulders and knees in malls, mosques, souks. Swimwear only at beach/pool.'},
+      {i:'🍷',n:'Alcohol',t:'Only served in hotels and licensed venues. Not in public areas.'},
+      {i:'📷',n:'Photography',t:'Do not photograph government buildings, airports, or people without consent.'}
+    ]
+  },
+  paris:{
+    activities:[
+      {i:'🗼',bg:'3a4a6b',n:'Eiffel Tower — Summit',s:'Book last elevator slot · City lights at dusk',m:'⏱ Book 2 weeks ahead · Sunset slot sells first',b:'Landmark',bc:'bs'},
+      {i:'🖼',bg:'5a3a4a',n:'Musee d Orsay',s:'Impressionist collection · Less crowded than Louvre',m:'⏱ Thursday evening: open till 9:45pm',b:'Cultural',bc:'bg'},
+      {i:'🚲',bg:'3a5a4a',n:'Vélib Bike — Le Marais Loop',s:'Jewish quarter · Place des Vosges · Canal St-Martin',m:'Day pass €5 · Helmet from hotel',b:'Active',bc:'ba'},
+      {i:'🍷',bg:'6b4a3a',n:'Wine Bar Crawl — Natural Wine',s:'Septime Cave · La Buvette · Frenchie Bar à Vins',m:'Walk-in only · Go early',b:'Nightlife',bc:'bs'}
+    ],
+    dining:[
+      {i:'🥐',bg:'4a3a2a',n:'Du Pain et des Idées',s:'Best croissants in Paris · Opens 7am · Cash',m:'Get the pain des amis — the move',b:'Breakfast',bc:'bs'},
+      {i:'🍽',bg:'5a3a4a',n:'Septime',s:'Natural wine · Neo-bistro · Best table in Paris right now',m:'Reserve 4 weeks ahead — worth it',b:'Fine Dining',bc:'bs'},
+      {i:'🧀',bg:'3a5a3a',n:'Marche d Aligre',s:'Open-air market · Cheese · Charcuterie',m:'Saturday morning · Cash only for producers',b:'Local',bc:'bg'}
+    ],
+    transport:[
+      {i:'🚇',bg:'3a4a5a',n:'Paris Métro',s:'14 lines · Navigo pass covers all zones',m:'Buy Navigo at any station — weekly pass is cheapest',b:'Primary',bc:'bs'},
+      {i:'🚄',bg:'4a3a6b',n:'CDG Airport → Gare du Nord',s:'RER B · 35 min · Every 15 min',m:'Navigo or single ticket €11.45',b:'Airport',bc:'bg'},
+      {i:'🚲',bg:'3a5a4a',n:'Vélib Bike Share',s:'1,400 stations · Electric option available',m:'Day pass €5 · Best for Marais + Saint-Germain',b:'Scenic',bc:'ba'}
+    ],
+    stays:[
+      {emo:'🏛',bg:'linear-gradient(135deg,#5a3a4a,#3a1e2d)',n:'Hôtel Costes',s:'Saint-Honoré · Courtyard bar · Fashion-week favorite',p:'€550/night',adv:'Stay Advisor: Location + vibe unmatched for first Paris trip.',badge:'Top Pick'},
+      {emo:'🌸',bg:'linear-gradient(135deg,#4a5a6b,#2d3a4a)',n:'La Belle Juliette',s:'6th arr. · Boutique · Steps from Luxembourg Garden',p:'€280/night',adv:'Half the price, better neighborhood for walking. Strong value.',badge:'Stay Advisor'}
+    ],
+    safety:[
+      {i:'🆘',n:'Emergency',t:'112 EU Emergency · 17 Police · 15 SAMU Medical'},
+      {i:'💶',n:'Currency',t:'Euro (€). Cards everywhere. Carry €20 cash for markets + small cafés.'},
+      {i:'🚇',n:'Transit',t:'Navigo weekly pass €30 covers metro + RER + bus.'},
+      {i:'🎭',n:'Etiquette',t:'Greet with "Bonjour" entering any shop. English is fine — try one word of French first.'},
+      {i:'👜',n:'Safety',t:'Pickpocket-aware at Eiffel, Louvre, metro line 1. Keep bag in front.'}
+    ]
+  },
+  santorini:{
+    activities:[
+      {i:'🌅',bg:'3a5a7a',n:'Oia Sunset — Kastro Viewpoint',s:'Arrive 90 min early to claim a spot',m:'Crowds peak July–Aug — go to Skaros Rock instead',b:'Iconic',bc:'bs'},
+      {i:'⛵',bg:'3a6b7a',n:'Caldera Sailing',s:'Catamaran · Hot springs · Snorkel stops',m:'Book private for groups — same price split 6 ways',b:'Active',bc:'bs'},
+      {i:'🏛',bg:'7a5a3a',n:'Ancient Akrotiri',s:'Bronze Age Pompeii · Covered site',m:'⏱ Morning before 10am — manageable',b:'Cultural',bc:'bg'},
+      {i:'🍷',bg:'6b3a3a',n:'Santo Wines — Volcanic Tasting',s:'Assyrtiko grown in volcanic soil · Caldera views',m:'Sunset tasting reservation recommended',b:'Local',bc:'ba'}
+    ],
+    dining:[
+      {i:'🐙',bg:'3a5a4a',n:'Metaxy Mas — Exo Gonia',s:'Local taverna · Off-tourist-trail · Mezedes',m:'No reservations · Arrive at 7pm',b:'Local',bc:'bs'},
+      {i:'🦞',bg:'5a3a3a',n:'Selene — Pyrgos',s:'Farm-to-table Cycladic · White tablecloth',m:'Reserve · Best terrace for a milestone dinner',b:'Fine Dining',bc:'bs'},
+      {i:'☕',bg:'4a4a3a',n:'Lolita Café — Fira',s:'Greek breakfast · Frappé · People-watching',m:'Walk-in · Opens 8am',b:'Breakfast',bc:'bg'}
+    ],
+    transport:[
+      {i:'🚌',bg:'3a4a5a',n:'KTEL Bus — Island Circuit',s:'Fira · Oia · Perissa · Akrotiri',m:'€1.80 per ride · Frequent in summer',b:'Cheapest',bc:'ba'},
+      {i:'🛵',bg:'5a4a3a',n:'ATV / Scooter Rental',s:'Best way to explore the island',m:'€30/day · Hairpin roads — drive slow',b:'Recommended',bc:'bs'},
+      {i:'⛵',bg:'3a5a7a',n:'Ferry from Athens',s:'Piraeus → Santorini · 5-7 hours',m:'High-speed ferry 4h · Book ahead in summer',b:'Arrival',bc:'bg'}
+    ],
+    stays:[
+      {emo:'🌊',bg:'linear-gradient(135deg,#3a5a7a,#1e3a5a)',n:'Canaves Oia Epitome',s:'Oia · Infinity pool · Caldera view',p:'€900/night',adv:'Best caldera view stay on the island.',badge:'Top Pick'},
+      {emo:'🏛',bg:'linear-gradient(135deg,#5a4a3a,#3a2d1e)',n:'Ikies Traditional Houses',s:'Oia · Cave suite · Quieter end',p:'€450/night',adv:'Stay Advisor: Half the cost, still caldera-facing, more intimate.',badge:'Stay Advisor'}
+    ],
+    safety:[
+      {i:'🆘',n:'Emergency',t:'112 EU Emergency · 100 Police · 166 Ambulance'},
+      {i:'💶',n:'Currency',t:'Euro (€). Tourist areas card-friendly. Villages: carry cash.'},
+      {i:'🛵',n:'Roads',t:'Caldera roads are narrow and winding. Scooter accidents common. Drive slowly.'},
+      {i:'☀️',n:'Sun',t:'Volcanic island — UV is intense. SPF 50 and shade breaks essential.'},
+      {i:'💧',n:'Water',t:'Tap water not drinkable. Bottled water everywhere.'}
+    ]
+  },
+  marrakech:{
+    activities:[
+      {i:'🕌',bg:'5a3a2a',n:'Jemaa el-Fna Square',s:'Snake charmers · Storytellers · Food stalls at dusk',m:'🌅 Golden hour: storytellers appear at 5pm',b:'Cultural',bc:'bs'},
+      {i:'🌿',bg:'3a6b3a',n:'Majorelle Garden + Yves Saint Laurent Museum',s:'Cobalt blue villa · Cactus garden · YSL archive',m:'⏱ Book online — afternoon less crowded',b:'Art',bc:'bs'},
+      {i:'🫖',bg:'6b4a3a',n:'Medina Souk Walk — Guided',s:'Spice souk · Leather tanneries · Hidden riads',m:'Local guide essential — prevents getting lost + hassle',b:'Local',bc:'bg'},
+      {i:'🧖',bg:'4a3a5a',n:'Traditional Hammam — Bain Beldi',s:'Full ritual · Kessa scrub · Ghassoul clay',m:'Book for morning · Not mixed-gender',b:'Wellness',bc:'ba'}
+    ],
+    dining:[
+      {i:'🍋',bg:'5a4a2a',n:'Dar Yacout',s:'Rooftop terrace · Tagine · Traditional Moroccan feast',m:'Reserve · Dress the part',b:'Fine Dining',bc:'bs'},
+      {i:'🥘',bg:'3a5a3a',n:'Café des Épices — Place Rahba Kedima',s:'Rooftop views · Simple tagine · Locals eat here',m:'No reservation · Lunch only',b:'Local',bc:'bg'},
+      {i:'🍊',bg:'6b3a3a',n:'Jemaa el-Fna Food Stalls',s:'Snail soup · Merguez · Harira · Nightly from 7pm',m:'Stall 32 for snails · Haggle first',b:'Street Food',bc:'ba'}
+    ],
+    transport:[
+      {i:'🛺',bg:'5a3a2a',n:'Petit Taxi — Inside Medina',s:'Red cabs · Metered · Max 3 passengers',m:'Insist on meter or agree price first',b:'Primary',bc:'bs'},
+      {i:'🚗',bg:'3a4a5a',n:'Grand Taxi — Airport + Day Trips',s:'Shared or private · Marrakech ↔ Atlas',m:'Negotiate before getting in',b:'Intercity',bc:'ba'},
+      {i:'🚶',bg:'4a5a3a',n:'Walk — Medina Only',s:'Cars banned inside medina walls',m:'Download maps.me offline — Google Maps unreliable in medina',b:'Best Option',bc:'bg'}
+    ],
+    stays:[
+      {emo:'🏛',bg:'linear-gradient(135deg,#5a3a2a,#3a1e10)',n:'La Mamounia',s:'Medina edge · Historic palace · Gardens · Spa',p:'$650/night',adv:'The iconic choice — Churchill stayed here. Gardens alone worth it.',badge:'Iconic'},
+      {emo:'🌿',bg:'linear-gradient(135deg,#3a5a3a,#1e3a1e)',n:'Riad Yasmine',s:'Inside medina · Courtyard pool · Rooftop breakfast',p:'$180/night',adv:'Stay Advisor: 10-min walk to Jemaa el-Fna. Riad experience at a fraction of the cost.',badge:'Top Pick'}
+    ],
+    safety:[
+      {i:'🆘',n:'Emergency',t:'19 Police · 15 Ambulance · 150 Gendarmerie'},
+      {i:'💵',n:'Currency',t:'Moroccan Dirham (MAD). Cash essential in medina. ATMs in Gueliz.'},
+      {i:'👗',n:'Dress',t:'Cover shoulders + knees in medina. Swimwear at pool/riad only.'},
+      {i:'🛺',n:'Taxis',t:'Always agree price before entering unmarked taxis. Petit taxis are metered — insist.'},
+      {i:'🗣',n:'Harassment',t:'Firm "La, shukran" (no, thank you). Walk with purpose. A guide helps.'}
+    ]
+  },
+  maldives:{
+    activities:[
+      {i:'🤿',bg:'3a6b7a',n:'House Reef Snorkel — Dawn',s:'Manta ray · Reef shark · Turtle passes',m:'⏱ 6am — manta rays feeding at surface',b:'Nature',bc:'bs'},
+      {i:'🌊',bg:'3a5a7a',n:'Sunset Dolphin Cruise',s:'Spinner dolphins in the channel',m:'Every resort offers — book same day',b:'Wildlife',bc:'bg'},
+      {i:'🧘',bg:'3a5a4a',n:'Overwater Bungalow Sunrise Yoga',s:'Private deck · Instructor at 7am',m:'Complimentary at most resorts',b:'Wellness',bc:'ba'},
+      {i:'🏝',bg:'6b5a3a',n:'Uninhabited Island Picnic',s:'Resort arranges transfer + private setup',m:'Book 2 days ahead',b:'Romantic',bc:'bs'}
+    ],
+    dining:[
+      {i:'🦞',bg:'4a3a2a',n:'Overwater Restaurant — In-Resort',s:'Fresh tuna · Lobster · Lagoon below your feet',m:'Reservation required for sunset seating',b:'Fine Dining',bc:'bs'},
+      {i:'🍹',bg:'3a6b5a',n:'Sandbank Cocktail Hour',s:'Private sandbank setup · Resort arranges',m:'Order 24hrs ahead',b:'Romantic',bc:'bs'},
+      {i:'🐟',bg:'3a4a5a',n:'Local Island Lunch — Maafushi',s:'Tuna curry · Mas huni · €8 total',m:'Day trip ferry AED 20',b:'Local',bc:'bg'}
+    ],
+    transport:[
+      {i:'🛥',bg:'3a5a7a',n:'Speedboat Transfer — Airport to Resort',s:'30–90 min depending on atoll',m:'Resort arranges — confirm on booking',b:'Arrival',bc:'bs'},
+      {i:'✈️',bg:'3a4a6b',n:'Seaplane Transfer',s:'Most scenic arrival possible · 15-min',m:'Weather-dependent · Morning departures preferred',b:'Scenic',bc:'bg'},
+      {i:'⛵',bg:'3a6b4a',n:'Dhoni — Local Wooden Boat',s:'Island hopping · Snorkel trips',m:'Arrange with resort boat team',b:'Local',bc:'ba'}
+    ],
+    stays:[
+      {emo:'🌊',bg:'linear-gradient(135deg,#3a5a7a,#1e3a5a)',n:'Gili Lankanfushi',s:'North Malé Atoll · Overwater villa · No shoes policy',p:'$2,400/night',adv:'Best all-round overwater resort — private butler, no roads on island.',badge:'Top Pick'},
+      {emo:'🏝',bg:'linear-gradient(135deg,#3a6b5a,#1e4a3a)',n:'Kandima Maldives',s:'Dhaalu Atoll · Beach villa · More affordable',p:'$700/night',adv:'Stay Advisor: 30% cost of Gili. Same reef quality, larger rooms, full activity program.',badge:'Stay Advisor'}
+    ],
+    safety:[
+      {i:'🆘',n:'Emergency',t:'119 Police · 102 Ambulance · Resort emergency line always fastest'},
+      {i:'💵',n:'Currency',t:'USD accepted everywhere. MVR local currency. Resorts run on USD.'},
+      {i:'👗',n:'Dress',t:'Bikini/swimwear at resort only. Modest dress required on inhabited local islands.'},
+      {i:'🌊',n:'Ocean',t:'Strong currents outside lagoon. Always check with dive/snorkel team before entering open water.'},
+      {i:'🛥',n:'Transfers',t:'All sea transfers weather-dependent. Build a buffer day each end of your trip.'}
+    ]
+  },
+  barcelona:{
+    activities:[
+      {i:'⛪',bg:'5a3a6b',n:'Sagrada Família — Tower Access',s:'Gaudí masterpiece · Book tower tickets separately',m:'⏱ 9am entry — crowds build by 11am',b:'Landmark',bc:'bs'},
+      {i:'🏛',bg:'3a5a4a',n:'Park Güell — Free Terrace',s:'Monumental Zone requires ticket · Terrace is free',m:'Sunrise slot (8am) — magic light + no crowds',b:'Gaudí',bc:'bg'},
+      {i:'🏖',bg:'3a5a7a',n:'Barceloneta Beach',s:'City beach · 20-min walk from Gothic Quarter',m:'Go early — packed by noon in summer',b:'Beach',bc:'ba'},
+      {i:'🥘',bg:'6b4a3a',n:'La Boqueria Market',s:'Las Ramblas · Fresh produce · Seafood tapas',m:'⏱ 8–10am for locals · Tourist trap by noon',b:'Market',bc:'bs'}
+    ],
+    dining:[
+      {i:'🦑',bg:'3a5a4a',n:'Bar del Pla — El Born',s:'Catalan tapas · Croquetas · Bombas',m:'Walk-in · Arrive 7:30pm — fills by 8:30pm',b:'Local',bc:'bs'},
+      {i:'🍷',bg:'5a3a3a',n:'Bodega Sepúlveda',s:'Natural wine bar · Iberian charcuterie',m:'No reservation · Best after 9pm',b:'Wine Bar',bc:'bg'},
+      {i:'🥩',bg:'6b4a3a',n:'Bar Calders — Sant Antoni',s:'Vermut · Pintxos · Neighborhood locals',m:'Brunch Saturday: arrive at 11am',b:'Social',bc:'ba'}
+    ],
+    transport:[
+      {i:'🚇',bg:'3a4a5a',n:'Barcelona Metro — TMB',s:'10-trip T-Casual pass covers bus + metro',m:'T-Casual €12.15 · Best value for multi-day',b:'Primary',bc:'bs'},
+      {i:'🚲',bg:'3a5a4a',n:'Bicing / Donkey Republic Bikes',s:'Flat seafront routes · Barceloneta to Fòrum',m:'Donkey Republic app · Day pass €2',b:'Scenic',bc:'bg'},
+      {i:'🚌',bg:'4a3a5a',n:'Aerobus — El Prat Airport',s:'35 min to Plaça Catalunya · Every 5 min',m:'€6.75 one-way · Cheaper than taxi',b:'Airport',bc:'ba'}
+    ],
+    stays:[
+      {emo:'🏛',bg:'linear-gradient(135deg,#5a3a6b,#3a1e4a)',n:'Hotel Arts Barcelona',s:'Barceloneta · 44-floor tower · Ocean views',p:'€420/night',adv:'Best location for beach + Gothic Quarter split.',badge:'Top Pick'},
+      {emo:'🌿',bg:'linear-gradient(135deg,#3a5a4a,#1e3a2d)',n:'Casa Camper',s:'El Raval · Boutique · Free 24hr snacks',p:'€210/night',adv:'Stay Advisor: Central, design-forward, half the cost.',badge:'Stay Advisor'}
+    ],
+    safety:[
+      {i:'🆘',n:'Emergency',t:'112 EU Emergency · 091 National Police · 092 Local Police'},
+      {i:'💶',n:'Currency',t:'Euro (€). Cards widely accepted. Carry €20 cash for markets.'},
+      {i:'👜',n:'Pickpockets',t:'High risk on Las Ramblas, La Boqueria, beach. Front-carry bag. Hotel safe for passports.'},
+      {i:'🚇',n:'Transit',t:'T-Casual 10-trip pass best value. Buy at station, not from machines near tourists.'},
+      {i:'🌙',n:'Nightlife',t:'Dinner starts 9pm. Clubs open midnight. Pre-party (botellón) is normal. Pace yourself.'}
+    ]
+  },
+  tuscany:{
+    activities:[
+      {i:'🍷',bg:'6b4a3a',n:'Chianti Wine Estate Tour',s:'Private cellar · Brunello tasting · Vineyard walk',m:'Book direct with estate — half the price of tours',b:'Wine',bc:'bs'},
+      {i:'🏛',bg:'5a3a2a',n:'Siena — Piazza del Campo',s:'Medieval square · Palio history · Duomo',m:'⏱ 8am before tour groups arrive',b:'Cultural',bc:'bg'},
+      {i:'🌳',bg:'3a6b3a',n:'Val d Orcia Sunrise Drive',s:'Cypress-lined roads · Iconic landscape · Sunrise',m:'Drive SR2 from Montalcino to Pienza',b:'Nature',bc:'bs'},
+      {i:'🧑‍🍳',bg:'4a3a2a',n:'Truffle Hunting — San Miniato',s:'November peak · Dog + hunter · Farmhouse lunch',m:'Book directly with truffle hunter',b:'Local',bc:'ba'}
+    ],
+    dining:[
+      {i:'🥩',bg:'5a3a2a',n:'Buca Mario — Florence',s:'Bistecca alla Fiorentina · Oldest restaurant in Florence',m:'Reserve · Order the T-bone for two',b:'Classic',bc:'bs'},
+      {i:'🍝',bg:'3a5a3a',n:'Osteria di Passignano',s:'Antinori wine estate · Handmade pasta',m:'Reserve far ahead · Worth the detour',b:'Fine Dining',bc:'bs'},
+      {i:'🥐',bg:'4a4a3a',n:'Mercato Centrale — Florence',s:'Top floor food hall · Lampredotto · Ribollita',m:'Lunch only · Walk-in',b:'Local',bc:'bg'}
+    ],
+    transport:[
+      {i:'🚗',bg:'4a3a5a',n:'Rental Car — Essential for Val d Orcia',s:'Siena · Pienza · Montalcino · Montepulciano',m:'Book manual (cheaper) · Fuel is diesel',b:'Essential',bc:'bs'},
+      {i:'🚄',bg:'3a4a6b',n:'Frecciarossa — Rome/Florence to Siena',s:'Florence → Siena: 1.5hr by train + bus',m:'Trenitalia app — book day before',b:'Arrival',bc:'bg'},
+      {i:'🚕',bg:'5a4a3a',n:'Taxi — City to City',s:'White licensed cabs only',m:'Fixed price from airports — confirm before entering',b:'Flexible',bc:'ba'}
+    ],
+    stays:[
+      {emo:'🌿',bg:'linear-gradient(135deg,#5a6b3a,#3a4a1e)',n:'Borgo Santo Pietro',s:'Chiusdino · Organic farm · Spa · Michelin dining',p:'€950/night',adv:'Ultimate Tuscan retreat — farm-to-table, vineyard, and spa.',badge:'Top Pick'},
+      {emo:'🏰',bg:'linear-gradient(135deg,#6b5a3a,#4a3a1e)',n:'Relais La Suvera',s:'Pievescola · 12th-century papal villa · Pool',p:'€420/night',adv:'Stay Advisor: Historic character, pool, half the price.',badge:'Stay Advisor'}
+    ],
+    safety:[
+      {i:'🆘',n:'Emergency',t:'112 EU Emergency · 113 Police · 118 Ambulance'},
+      {i:'💶',n:'Currency',t:'Euro (€). Rural estates and markets: cash essential.'},
+      {i:'🚗',n:'Driving',t:'ZTL zones in historic city centers — do not drive in unless hotel is inside. Fines mailed home.'},
+      {i:'☀️',n:'Summer',t:'July–August: extreme heat in Siena and Florence. Plan activities before noon and after 5pm.'},
+      {i:'🍷',n:'Wine',t:'Brunello di Montalcino and Chianti Classico are local. Ask for house wine (vino della casa) at trattorias.'}
+    ]
+  },
+  iceland:{
+    activities:[
+      {i:'🌌',bg:'1e2a3a',n:'Northern Lights Hunt — Þingvellir',s:'Dark sky site · 40 min from Reykjavík',m:'Best: clear night + KP index 3+. App: Space Weather Live',b:'Bucket List',bc:'bs'},
+      {i:'♨️',bg:'3a6b6b',n:'Blue Lagoon — Pre-book Only',s:'Geothermal spa · Silica mud · Lava field',m:'Book 2 weeks ahead. Comfort package minimum.',b:'Wellness',bc:'bs'},
+      {i:'🏔',bg:'3a4a5a',n:'Skógafoss Waterfall Hike',s:'1-hour trail to ridge · Walk behind the falls',m:'⏱ 8am — before tour buses arrive',b:'Active',bc:'bg'},
+      {i:'🐋',bg:'3a5a6b',n:'Whale Watching — Húsavík',s:'Humpback + minke · Best port in Europe',m:'April–October · Book direct with North Sailing',b:'Wildlife',bc:'bs'}
+    ],
+    dining:[
+      {i:'🐟',bg:'3a4a5a',n:'Grillið, Radisson Blu — Reykjavík',s:'Arctic char · Skyr dessert · Panoramic views',m:'Reserve · Smart casual',b:'Fine Dining',bc:'bs'},
+      {i:'🥣',bg:'4a4a3a',n:'Bergsson Mathús',s:'Skyr bowl · Rye bread · Best breakfast in Reykjavík',m:'Walk-in · Open 7am · Cash ok',b:'Breakfast',bc:'bg'},
+      {i:'🦞',bg:'3a5a4a',n:'Langoustine Soup — Höfn',s:'Freshest langoustine on the Ring Road',m:'Höfnin restaurant · Worth the stop',b:'Local',bc:'bs'}
+    ],
+    transport:[
+      {i:'🚗',bg:'3a4a5a',n:'4x4 Rental — Ring Road',s:'Suzuki Jimny or similar · F-road capable',m:'Book 2+ weeks ahead in season',b:'Essential',bc:'bs'},
+      {i:'🚌',bg:'4a5a3a',n:'Reykjavík Excursions Bus',s:'Golden Circle + South Shore day trips',m:'Good for single days without a car',b:'Day Trips',bc:'ba'},
+      {i:'✈️',bg:'3a4a6b',n:'Domestic Flights — Eagleair',s:'Reykjavík → Akureyri · 45 min vs 5 hr drive',m:'Book early — limited seats',b:'Northern Iceland',bc:'bg'}
+    ],
+    stays:[
+      {emo:'🌋',bg:'linear-gradient(135deg,#2a3a4a,#1a2530)',n:'The Retreat at Blue Lagoon',s:'In-lava-field · Private geothermal pool · Remote',p:'$1,800/night',adv:'Ultimate Iceland — included Blue Lagoon access, total isolation.',badge:'Bucket List'},
+      {emo:'🏔',bg:'linear-gradient(135deg,#3a4a3a,#1e2d1e)',n:'Fosshotel Glacier Lagoon',s:'South Iceland · Glacier views · Base for Jökulsárlón',p:'$380/night',adv:'Stay Advisor: Best location for south coast in one stay.',badge:'Top Pick'}
+    ],
+    safety:[
+      {i:'🆘',n:'Emergency',t:'112 — all emergencies. Download the 112 Iceland app — sends GPS location.'},
+      {i:'🌬',n:'Weather',t:'Changes in minutes. Dress in layers. Wind + wet = serious cold even in summer.'},
+      {i:'🚗',n:'Roads',t:'F-roads (highland tracks) require 4x4. Never attempt in standard car. Check road.is before driving.'},
+      {i:'💧',n:'Water',t:'Tap water is drinking quality — best in the world. Never buy bottled.'},
+      {i:'🌋',n:'Volcanos',t:'Check vedur.is for volcanic activity alerts if traveling near active zones.'}
+    ]
+  },
+  patagonia:{
+    activities:[
+      {i:'🏔',bg:'3a5a6b',n:'Torres del Paine — W Trek',s:'5-day circuit · Las Torres · Grey Glacier',m:'Book refugios 6+ months ahead in season',b:'Trekking',bc:'bs'},
+      {i:'🧊',bg:'3a6b7a',n:'Perito Moreno Glacier Walk',s:'Ice trekking · Crampons provided · 2hrs',m:'Book with Los Glaciares NP office',b:'Active',bc:'bs'},
+      {i:'🐧',bg:'3a4a5a',n:'Magellanic Penguin Colony — Isla Magdalena',s:'October–March only · 120,000 breeding pairs',m:'Day ferry from Punta Arenas',b:'Wildlife',bc:'bg'},
+      {i:'🌊',bg:'3a5a7a',n:'Kayaking — Lago Grey',s:'Paddle past floating icebergs · Half day',m:'Small group · Book at park entrance',b:'Adventure',bc:'ba'}
+    ],
+    dining:[
+      {i:'🥩',bg:'5a3a2a',n:'La Tablita — El Calafate',s:'Patagonian lamb asado · Best in the region',m:'Reserve for dinner · Large groups welcome',b:'Classic',bc:'bs'},
+      {i:'🍺',bg:'3a5a4a',n:'Cervecería Kaikén',s:'Local craft beer · Empanadas · Trekkers bar',m:'Walk-in · After-trek tradition',b:'Local',bc:'bg'},
+      {i:'🦑',bg:'3a4a5a',n:'Restaurant Sotitos — Puerto Natales',s:'King crab · Centolla · Southern Chile seafood',m:'Reserve · October–March season',b:'Seafood',bc:'bs'}
+    ],
+    transport:[
+      {i:'🚌',bg:'3a4a5a',n:'Bus — Puerto Natales ↔ Torres del Paine',s:'JB Bus · 2-hr · 3x daily in season',m:'Book online — fills up fast in November–February',b:'Primary',bc:'bs'},
+      {i:'🚗',bg:'4a3a5a',n:'Car Rental — Punta Arenas or Calafate',s:'4x4 required for park interior roads',m:'International license required · Book ahead',b:'Flexible',bc:'ba'},
+      {i:'✈️',bg:'3a4a6b',n:'LATAM — SCL to PUQ or FTE',s:'Santiago → Punta Arenas or El Calafate',m:'Book 2+ months ahead · Prices spike in season',b:'Arrival',bc:'bg'}
+    ],
+    stays:[
+      {emo:'🏔',bg:'linear-gradient(135deg,#3a4a5a,#1e2d3a)',n:'EcoCamp Patagonia',s:'Inside Torres del Paine · Geodesic domes · Guided',p:'$1,200/night',adv:'Best for immersive trekking experience — guides, meals, and park access included.',badge:'Top Pick'},
+      {emo:'🌿',bg:'linear-gradient(135deg,#3a5a4a,#1e3a2d)',n:'The Singular Patagonia',s:'Puerto Bories · Former cold-storage factory · Stunning conversion',p:'$650/night',adv:'Stay Advisor: Base for day trips to park. Better value, dramatic setting.',badge:'Stay Advisor'}
+    ],
+    safety:[
+      {i:'🆘',n:'Emergency',t:'133 Police Chile · 131 Ambulance · 132 Fire'},
+      {i:'🌬',n:'Wind',t:'Torres del Paine: 100+ km/h gusts are normal. Never stand near cliff edges in wind.'},
+      {i:'🥾',n:'Trekking',t:'Register all treks with CONAF park office. Conditions change fast — carry emergency bivouac.'},
+      {i:'💵',n:'Currency',t:'Chilean Peso (CLP) or Argentine Peso (ARS) depending on which side. USD accepted at hotels.'},
+      {i:'🛂',n:'Borders',t:'Argentina/Chile crossing at Cerro Castillo. Bring all food declaration forms — strict enforcement.'}
+    ]
+  },
+  'chiang mai':{
+    activities:[
+      {i:'🐘',bg:'4a6b3a',n:'Elephant Nature Park',s:'Ethical sanctuary · Feeding + bathing',m:'Book weeks ahead — sells out',b:'Wildlife',bc:'bs'},
+      {i:'🏯',bg:'5a3a2a',n:'Doi Suthep Temple — Sunrise',s:'300 steps · City views · Sacred site',m:'⏱ 6am — cool and quiet before tour groups',b:'Cultural',bc:'bg'},
+      {i:'🧑‍🍳',bg:'3a5a3a',n:'Thai Cooking Class',s:'Morning market visit + hands-on kitchen',m:'Baan Thai — most respected school',b:'Experience',bc:'bs'},
+      {i:'🌿',bg:'3a6b5a',n:'Mae Sa Valley Hiking',s:'Waterfalls · Rice terraces · Cool air',m:'Rainy season (July–Sept): most lush',b:'Nature',bc:'ba'}
+    ],
+    dining:[
+      {i:'🍜',bg:'5a3a2a',n:'Khao Soi Khun Yai',s:'Best khao soi in Chiang Mai · Crispy noodles',m:'Cash only · Lunch only · No English menu',b:'Local',bc:'bs'},
+      {i:'🥗',bg:'3a5a4a',n:'Pun Pun Organic — Doi Suthep',s:'Farm-to-table Northern Thai · Vegetarian friendly',m:'Walk-in · Garden seating',b:'Healthy',bc:'bg'},
+      {i:'🍻',bg:'4a4a3a',n:'Night Bazaar Food Court',s:'Grilled meats · Papaya salad · Chang beer',m:'Nightly from 6pm · Cash',b:'Social',bc:'ba'}
+    ],
+    transport:[
+      {i:'🛺',bg:'5a3a2a',n:'Songthaew — Red Truck Taxi',s:'Shared pickup trucks · B30 per ride',m:'Agree price before boarding',b:'Primary',bc:'bs'},
+      {i:'🛵',bg:'4a3a5a',n:'Scooter Rental',s:'Best for day trips outside city',m:'B200/day · International license required · Left-side driving',b:'Day Trips',bc:'ba'},
+      {i:'✈️',bg:'3a4a6b',n:'Domestic Flight — BKK to CNX',s:'Thai Airways / AirAsia · 1hr',m:'Book ahead · Buses are cheaper but 9-10 hours',b:'Arrival',bc:'bg'}
+    ],
+    stays:[
+      {emo:'🌿',bg:'linear-gradient(135deg,#3a5a3a,#1e3a1e)',n:'Dhara Dhevi Chiang Mai',s:'Rice paddy setting · Lanna architecture · Spa',p:'$400/night',adv:'The landmark resort — feels like a village, not a hotel.',badge:'Top Pick'},
+      {emo:'🏯',bg:'linear-gradient(135deg,#5a3a2a,#3a1e10)',n:'Tamarind Village',s:'Old City · Colonial era · Walking distance to temples',p:'$120/night',adv:'Stay Advisor: Best location for temple walking. Boutique feel at a quarter of the cost.',badge:'Stay Advisor'}
+    ],
+    safety:[
+      {i:'🆘',n:'Emergency',t:'191 Police · 1669 Ambulance · 199 Fire'},
+      {i:'💵',n:'Currency',t:'Thai Baht (THB). Cash essential outside hotels. ATMs everywhere but charge B220 foreign fee.'},
+      {i:'👗',n:'Temples',t:'Shoulders + knees covered for temple entry. Sarongs available at temple gates for B20.'},
+      {i:'🛵',n:'Scooters',t:'Most travel insurance excludes motorbikes. Ride defensively. Helmets are mandatory.'},
+      {i:'🌡',n:'Heat',t:'Hot year-round. March–May peak heat. Carry water. Plan outdoor activities before 11am.'}
+    ]
+  },
+  'new zealand':{
+    activities:[
+      {i:'🏔',bg:'3a5a6b',n:'Queenstown — Skyline Gondola + Luge',s:'Panoramic views · Bob Peak',m:'Book online: 10% discount',b:'Iconic',bc:'bs'},
+      {i:'🌊',bg:'3a6b7a',n:'Milford Sound Cruise',s:'Fjord · Waterfalls · Seals · Penguins',m:'Book day-before · Morning cruise less rain',b:'Nature',bc:'bs'},
+      {i:'🎿',bg:'3a4a5a',n:'Remarkables Ski Area',s:'June–October · 30 min from Queenstown',m:'Book lift pass online — cheaper',b:'Adventure',bc:'bg'},
+      {i:'🏋',bg:'3a5a4a',n:'Bungy Jump — AJ Hackett Kawarau',s:'Original bungy site · 43m · Historical',m:'Book ahead · Morning slots best',b:'Adrenaline',bc:'ba'}
+    ],
+    dining:[
+      {i:'🥩',bg:'4a3a2a',n:'Rata Restaurant — Queenstown',s:'New Zealand lamb · Central Otago pinot',m:'Reserve · Smart casual',b:'Fine Dining',bc:'bs'},
+      {i:'🍔',bg:'3a5a3a',n:'Fergburger — Queenstown',s:'Legendary burger · Open till 5am',m:'Queue normal at dinner — worth it',b:'Local',bc:'bg'},
+      {i:'🐑',bg:'5a4a3a',n:'Amisfield Winery',s:'Central Otago · Pinot noir + bistro lunch',m:'Reserve · 15 min from Queenstown',b:'Winery',bc:'bs'}
+    ],
+    transport:[
+      {i:'🚗',bg:'3a4a5a',n:'Rental Car — Left-side Driving',s:'Essential for South Island',m:'International license · Book ahead in season',b:'Essential',bc:'bs'},
+      {i:'✈️',bg:'3a4a6b',n:'Domestic Flights — Air New Zealand',s:'Auckland · Wellington · Christchurch · Queenstown',m:'Book early — island-hopping adds up',b:'Intercity',bc:'bg'},
+      {i:'🚌',bg:'4a5a3a',n:'InterCity Bus + Kiwi Experience',s:'Budget option — major routes',m:'Good for solo travelers on a budget',b:'Budget',bc:'ba'}
+    ],
+    stays:[
+      {emo:'🏔',bg:'linear-gradient(135deg,#3a4a5a,#1e2d3a)',n:'Blanket Bay Lodge',s:'Glenorchy · Luxury lakeside lodge · Helicopter access',p:'$2,200/night',adv:'The pinnacle — private access to Middle-earth landscape.',badge:'Iconic'},
+      {emo:'🌿',bg:'linear-gradient(135deg,#3a5a4a,#1e3a2d)',n:'Heritage Queenstown',s:'Town center · Mountain views · Spa',p:'$320/night',adv:'Stay Advisor: Walk to everything. Strong value for the location.',badge:'Top Pick'}
+    ],
+    safety:[
+      {i:'🆘',n:'Emergency',t:'111 — Police, Fire, Ambulance'},
+      {i:'🚗',n:'Driving',t:'Left-hand side. Speed cameras are hidden and fines are steep. 100km/h max on open road.'},
+      {i:'🌊',n:'Water',t:'Strong rip currents at surf beaches. Swim only at patrolled beaches between flags.'},
+      {i:'☀️',n:'UV',t:'Ozone layer thin in NZ — UV index extreme even on overcast days. SPF 50 essential.'},
+      {i:'🥾',n:'Hiking',t:'Register all multi-day treks with DOC. Weather changes fast. Carry emergency locator beacon for remote tracks.'}
+    ]
+  },
+  'new york':{
+    activities:[
+      {i:'🗽',bg:'3a4a6b',n:'Brooklyn Bridge Walk',s:'Manhattan side at sunrise · 30-min crossing',m:'6am — empty deck, perfect light',b:'Iconic',bc:'bs'},
+      {i:'🎭',bg:'5a3a4a',n:'Broadway — Same Day TKTS',s:'TKTS booth · Times Square or Lincoln Center · 50% off',m:'Show up by 3pm for best selection',b:'Culture',bc:'bg'},
+      {i:'🌳',bg:'3a6b3a',n:'Central Park — The Ramble',s:'65-acre woodland · Birding trail · Rarely crowded',m:'Early morning or weekday afternoon',b:'Nature',bc:'ba'},
+      {i:'🎨',bg:'4a3a5a',n:'MoMA or Met — Tuesday Late',s:'MoMA free Friday 4-8pm · Met pay-what-you-wish',m:'Avoid weekends — lines add 45+ min',b:'Art',bc:'bs'}
+    ],
+    dining:[
+      {i:'🥯',bg:'4a3a2a',n:'Russ & Daughters — Lower East Side',s:'110-year-old appetizing shop · Lox · Bagels · Counter only',m:'Arrive by 9am weekends — line forms fast',b:'Iconic',bc:'bs'},
+      {i:'🍕',bg:'5a3a2a',n:'Di Fara Pizza — Midwood Brooklyn',s:'Cash only · Slice counter · Worth the trip',m:'Tue-Sun lunch · Cash · Line is part of it',b:'Local',bc:'bg'},
+      {i:'🍜',bg:'3a4a5a',n:'Xi an Famous Foods — Multiple locations',s:'Hand-ripped noodles · Spicy lamb · Under $15',m:'Walk-in · Fast · Midtown or East Village',b:'Quick',bc:'ba'}
+    ],
+    transport:[
+      {i:'🚇',bg:'3a4a5a',n:'NYC Subway — OMNY tap-to-pay',s:'24/7 · Fastest way across Manhattan',m:'Google Maps real-time for delays · OMNY card or phone',b:'Primary',bc:'bs'},
+      {i:'🚕',bg:'5a4a3a',n:'Uber / Lyft vs Yellow Cab',s:'Uber surge is real — yellow cab metered is often cheaper',m:'Peak hours: subway beats both every time',b:'Flexible',bc:'ba'},
+      {i:'🚲',bg:'3a6b3a',n:'Citi Bike — Day or Week Pass',s:'1,000 stations · Best for short cross-town trips',m:'Day pass $15 · Free rides under 30 min',b:'Scenic',bc:'bg'}
+    ],
+    stays:[
+      {emo:'🏙',bg:'linear-gradient(135deg,#3a4a6b,#1e2d4a)',n:'The Ned NoMad',s:'NoMad · Member-club hotel · Rooftop pool',p:'$450/night',adv:'Best vibe for a reset trip — not a tourist-facing lobby hotel.',badge:'Top Pick'},
+      {emo:'🌿',bg:'linear-gradient(135deg,#3a5a4a,#1e3a2d)',n:'1 Hotel Brooklyn Bridge',s:'DUMBO · Sustainable · East River views · Rooftop',p:'$380/night',adv:'Stay Advisor: Quieter than Manhattan, stunning views, same subway access.',badge:'Stay Advisor'}
+    ],
+    safety:[
+      {i:'🆘',n:'Emergency',t:'911 — Police, Fire, Ambulance. 311 for non-emergency city services.'},
+      {i:'💵',n:'Currency',t:'USD. Cards accepted everywhere. Carry $20-40 cash for street food, taxis, and tips.'},
+      {i:'🚇',n:'Transit',t:'Subway runs 24/7 but check MTA app for service changes — weekend disruptions are frequent.'},
+      {i:'👜',n:'Safety',t:'Standard big-city awareness. Keep bags in front. Avoid empty subway cars late at night.'},
+      {i:'🏥',n:'Medical',t:'NYC Health + Hospitals urgent care for non-emergencies. ER wait times can be 4+ hours.'}
+    ]
+  },
+  london:{
+    activities:[
+      {i:'🏛',bg:'3a4a5a',n:'British Museum — Free Entry',s:'Rosetta Stone · Elgin Marbles · 3-4 hrs minimum',m:'Tuesday opening at 10am — manageable crowds',b:'Culture',bc:'bs'},
+      {i:'🎡',bg:'3a5a6b',n:'Borough Market & Southbank Walk',s:'Thursdays-Saturdays · Best food market in London',m:'Go hungry · Thursday least crowded',b:'Local',bc:'bg'},
+      {i:'🌿',bg:'3a6b3a',n:'Hampstead Heath — Parliament Hill',s:'360 London skyline view · Swimming ponds',m:'Weekend morning · Dogs everywhere · Pack a blanket',b:'Nature',bc:'ba'},
+      {i:'🎭',bg:'5a3a4a',n:'National Theatre — Southbank',s:'World-class productions · Day tickets from £15',m:'Check NT website at 9am on performance day',b:'Arts',bc:'bs'}
+    ],
+    dining:[
+      {i:'🥘',bg:'4a3a2a',n:'St. John — Smithfield',s:'Nose-to-tail · Bone marrow · The original',m:'Reserve ahead · Dress casually · Fergus Henderson landmark',b:'Iconic',bc:'bs'},
+      {i:'🍛',bg:'3a5a3a',n:'Dishoom — Covent Garden',s:'Bombay cafe · Black dal · Worth the queue',m:'Join queue by 5:30pm for dinner — 40-60 min wait',b:'Local',bc:'bg'},
+      {i:'🍺',bg:'4a4a3a',n:'The Palmerston — East Dulwich',s:'Proper gastropub · Sunday roast · Neighborhood feel',m:'Book Sunday lunch 2 weeks ahead',b:'Pub',bc:'ba'}
+    ],
+    transport:[
+      {i:'🚇',bg:'3a4a5a',n:'London Underground — Oyster or Contactless',s:'Tap in and out with any contactless card',m:'Daily cap applies — Oyster not necessary for visitors',b:'Primary',bc:'bs'},
+      {i:'🚌',bg:'4a5a3a',n:'Red Bus — Routes 11, 15, RV1',s:'Scenic above ground alternative · Same Oyster card',m:'Slower but free sightseeing across central London',b:'Scenic',bc:'bg'},
+      {i:'🚂',bg:'3a4a6b',n:'Heathrow Express — Paddington',s:'15 min to central London · Every 15 min',m:'Book online for £22 vs £27 walk-up',b:'Airport',bc:'ba'}
+    ],
+    stays:[
+      {emo:'🏛',bg:'linear-gradient(135deg,#4a3a5a,#2d1e3a)',n:'The Hoxton Shoreditch',s:'East London · Boutique · Bar scene · Young crowd',p:'£220/night',adv:'Best location for East London culture and food scene.',badge:'Top Pick'},
+      {emo:'🌿',bg:'linear-gradient(135deg,#3a5a4a,#1e3a2d)',n:'The Zetter Townhouse Clerkenwell',s:'EC1 · Quirky · Cocktail lounge · Boutique',p:'£280/night',adv:'Stay Advisor: Character stays in London cost more. This one earns it.',badge:'Stay Advisor'}
+    ],
+    safety:[
+      {i:'🆘',n:'Emergency',t:'999 — Police, Fire, Ambulance. 101 for non-emergency police.'},
+      {i:'💷',n:'Currency',t:'GBP. Cards accepted everywhere. Contactless is the norm — keep £20 cash for markets and older pubs.'},
+      {i:'🚇',n:'Transit',t:'Check TfL app for Tube strikes — they happen with notice. Buses run during strikes.'},
+      {i:'🌧',n:'Weather',t:'Pack layers and a compact umbrella. Rain is brief but frequent. 15C feels cold in wind.'},
+      {i:'👜',n:'Safety',t:'Low crime overall. Phone theft increasing on buses — keep phone in pocket, not in hand.'}
+    ]
+  },
+  singapore:{
+    activities:[
+      {i:'🌿',bg:'3a6b4a',n:'Gardens by the Bay — Supertree Grove',s:'Free to walk · Light show 7:45pm and 8:45pm',m:'Arrive at 7:30pm for light show — free and stunning',b:'Iconic',bc:'bs'},
+      {i:'🏛',bg:'5a3a2a',n:'Chinatown Heritage Centre',s:'3-floor immersive museum · Shophouse history',m:'Skip the weekend — weekday morning is calm',b:'Culture',bc:'bg'},
+      {i:'🌊',bg:'3a5a6b',n:'Sentosa Island — Siloso Beach',s:'Cable car · Beach clubs · Family or social',m:'Weekday — weekend crowds are intense',b:'Beach',bc:'ba'},
+      {i:'🍜',bg:'4a3a2a',n:'Maxwell Road Hawker Centre',s:'Tian Tian Hainanese chicken rice · Lines are real',m:'Arrive by 11am before lunch rush',b:'Hawker',bc:'bs'}
+    ],
+    dining:[
+      {i:'🦀',bg:'4a3a2a',n:'No Signboard Seafood — Clarke Quay',s:'Chili and black pepper crab · Tourist-friendly · Worth it',m:'Reserve ahead for dinner · Order the crab for two minimum',b:'Iconic',bc:'bs'},
+      {i:'🍜',bg:'3a5a3a',n:'Tiong Bahru Hawker Centre',s:'Locals eat here · Best wonton noodles in Singapore',m:'Breakfast or lunch only · Cash preferred',b:'Local',bc:'bg'},
+      {i:'🍸',bg:'3a4a5a',n:'Manhattan Bar — Regent Singapore',s:'Consistently top 5 Asia bar · Classic cocktails',m:'Reserve a table · Smart casual',b:'Cocktails',bc:'ba'}
+    ],
+    transport:[
+      {i:'🚇',bg:'3a4a5a',n:'MRT + Bus — EZ-Link Card',s:'Covers entire island · Clean · Air-conditioned',m:'Buy EZ-Link at any station · Top up at 7-Eleven',b:'Primary',bc:'bs'},
+      {i:'🚕',bg:'5a4a3a',n:'Grab — Southeast Asia Uber',s:'Reliable · A/C · Fixed price before you book',m:'Cheaper than taxis for late night and airport',b:'Flexible',bc:'ba'},
+      {i:'✈️',bg:'3a4a6b',n:'Changi Airport — Allow 90 min',s:'Best airport in the world · Jewel waterfall worth a detour',m:'T2/T3 MRT direct · T1 requires shuttle bus',b:'Airport',bc:'bg'}
+    ],
+    stays:[
+      {emo:'🌿',bg:'linear-gradient(135deg,#3a5a4a,#1e3a2d)',n:'Capella Singapore — Sentosa',s:'Sentosa · Colonial heritage · Pool · Quiet luxury',p:'SGD $750/night',adv:'Best resort-feel stay in Singapore — completely removes you from city pace.',badge:'Top Pick'},
+      {emo:'🏙',bg:'linear-gradient(135deg,#3a4a6b,#1e2d4a)',n:'The Warehouse Hotel',s:'Robertson Quay · Converted spice warehouse · Boutique',p:'SGD $380/night',adv:'Stay Advisor: River location, rooftop pool, half the cost of Marina Bay.',badge:'Stay Advisor'}
+    ],
+    safety:[
+      {i:'🆘',n:'Emergency',t:'999 Police · 995 Ambulance · 994 Fire. Singapore is extremely safe — crime rate near zero.'},
+      {i:'💵',n:'Currency',t:'Singapore Dollar (SGD). Cards accepted everywhere. 1 USD ≈ 1.35 SGD.'},
+      {i:'🌡',n:'Weather',t:'32C and humid year-round. Rain is brief and heavy. Light breathable clothing only. Always carry an umbrella.'},
+      {i:'🍺',n:'Laws',t:'Strict fines for jaywalking, littering, and chewing gum. Alcohol banned in public after 10:30pm. Vaping illegal.'},
+      {i:'🌿',n:'Food',t:'All hawker food is safe — it is government-inspected. Eat where locals are eating.'}
+    ]
+  }
+};
+
+function getDestContent(destName,fallbackKey){
+  var n=(destName||'').toLowerCase();
+  var keys=Object.keys(DEST_STUBS);
+  for(var i=0;i<keys.length;i++){
+    if(n.indexOf(keys[i])>-1)return DEST_STUBS[keys[i]];
+  }
+  return null;
+}
+
+var DEST_AIRPORTS={
+  dubai:'DXB', paris:'CDG', santorini:'JTR', marrakech:'RAK',
+  maldives:'MLE', barcelona:'BCN', tuscany:'FLR', florence:'FLR',
+  iceland:'KEF', reykjav:'KEF', patagonia:'PUQ', 'chiang mai':'CNX',
+  'new zealand':'ZQN', queenstown:'ZQN', kyoto:'KIX', tokyo:'NRT',
+  japan:'NRT', bali:'DPS', ubud:'DPS', lisbon:'LIS', portugal:'LIS',
+  italy:'FCO', rome:'FCO', amalfi:'NAP', positano:'NAP', naples:'NAP',
+  'amalfi coast':'NAP', greece:'ATH', athens:'ATH', france:'CDG',
+  spain:'MAD', madrid:'MAD', morocco:'CMN', casablanca:'CMN',
+  thailand:'BKK', bangkok:'BKK', mexico:'MEX', tulum:'CUN',
+  cancun:'CUN', colombia:'BOG', peru:'LIM', 'costa rica':'SJO',
+  kenya:'NBO', nairobi:'NBO', 'south africa':'CPT', 'cape town':'CPT',
+  vietnam:'SGN', cambodia:'PNH', 'new york':'JFK', nyc:'JFK',
+  london:'LHR', sydney:'SYD', australia:'SYD', toronto:'YYZ',
+  canada:'YYZ', amsterdam:'AMS', berlin:'BER', germany:'BER',
+  dubai:'DXB', uae:'DXB'
+};
+
+var READINESS_STUBS={
+  dubai:{
+    eye:'Dubai Readiness',t:'Preparation for the UAE.',s:'Your destination-specific countdown.',
+    checks:['US passport valid 6+ months beyond travel dates — UAE requirement','Apply for UAE visa if required (US citizens get visa-on-arrival, 30 days free)','Take photo of passport — store in phone and email to yourself','Register for STEP at mytravel.state.gov — US embassy in Abu Dhabi notified','Pack modest clothing for mosques and souks — shoulders and knees covered','Pack reef-safe sunscreen — UV index extreme Nov-Mar, brutal Apr-Oct','Download Careem app before landing — more reliable than hailing in Dubai','Download offline Google Maps for Dubai — works well with data too','Download Google Translate Arabic pack offline','Notify credit cards of UAE travel — DXB customs sometimes flags foreign cards','Book Burj Khalifa observation deck in advance — 50% cheaper online','Check Ramadan calendar — if traveling during Ramadan, eating/drinking in public restricted daytime'],
+    tip:'Tipping in Dubai: 10-15% at restaurants (service charge often already added). Taxis: round up. Definitely tip hotel staff. Cash preferred for small tips.'
+  },
+  paris:{
+    eye:'Paris Readiness',t:'Preparation for France.',s:'Your Paris countdown.',
+    checks:['US passport valid 3+ months beyond travel dates — Schengen requirement','No visa needed for US citizens for stays under 90 days in Schengen zone','Take photo of passport — store in phone and email to yourself','Register for STEP at mytravel.state.gov — US embassy in Paris notified','Purchase Navigo weekly pass on arrival at CDG — covers all metro, bus, RER zones','Book timed tickets for Musee d Orsay and Sainte-Chapelle in advance','Reserve Septime or any neo-bistro 3-4 weeks ahead minimum','Pack comfortable walking shoes — Paris averages 8-10km walking per day','Download RATP app for metro navigation','Notify Chase and Amex of France travel dates','Pack a light scarf — useful for churches and cool evenings','Learn 5 phrases: Bonjour, Merci, Excusez-moi, Un cafe sil vous plait, Laddition'],
+    tip:'Tipping in Paris: Not expected but appreciated. Round up at cafes. Leave 5-10% at sit-down restaurants for genuinely good service. Never tip at the bar — ordering at the counter is already the cheaper price.'
+  },
+  santorini:{
+    eye:'Santorini Readiness',t:'Preparation for the Cyclades.',s:'Your island countdown.',
+    checks:['US passport valid 3+ months — Schengen entry requirement','No visa for US citizens under 90 days in Schengen zone','Book Canaves Oia or preferred stay 3+ months ahead — summer fills fast','Book sunset catamaran in advance — private charters sell out weeks ahead','Notify credit cards of Greece travel','Pack motion sickness tablets — boat transfers can be rough','Pack grip-sole sandals — Oia caldera stairs are steep and uneven','Download offline Google Maps for Santorini — cell signal spotty in villages','Book Selene or upscale dining 2+ weeks ahead','Pack reef-safe sunscreen — no regular sunscreen at protected beaches'],
+    tip:'Tipping in Greece: 10-15% at restaurants is appreciated but not required. Taxi drivers: round up. Hotel housekeeping: 1-2 euros per night. Sunset viewpoints: tip street performers if you watch.'
+  },
+  marrakech:{
+    eye:'Marrakech Readiness',t:'Preparation for Morocco.',s:'Your medina countdown.',
+    checks:['US passport valid 6+ months — Moroccan entry requirement','No visa for US citizens for stays under 90 days','Take photo of passport — store in phone and email','Register for STEP at mytravel.state.gov — US embassy in Rabat notified','Pack modest clothing — shoulders and knees covered in medina and souks','Pack comfortable closed-toe shoes — medina roads are cobblestone and uneven','Download maps.me offline for medina navigation — Google Maps unreliable in old city','Exchange to Moroccan Dirhams on arrival — ATMs at CMN airport, better rates than hotels','Book hammam 1-2 days ahead — Bain Beldi fills quickly','Book riad directly for best price — booking platforms charge high commission','Prepare for aggressive touts in souks — firm La shukran is the phrase'],
+    tip:'Tipping in Morocco: Expected and important. 10-15% at restaurants. Guide: 100-200 MAD per half day. Drivers: 50-100 MAD per day. Hotel staff: 20-50 MAD. Always tip in cash, in Dirhams.'
+  },
+  maldives:{
+    eye:'Maldives Readiness',t:'Preparation for the Indian Ocean.',s:'Your overwater countdown.',
+    checks:['US passport valid 6+ months — Maldives entry requirement','No visa required for US citizens — tourist visa issued on arrival, 30 days','Confirm resort speedboat or seaplane transfer details with hotel before departure','Book seaplane transfer well in advance — seats are limited and sell out','Pack reef-safe sunscreen only — regular sunscreen banned at many resorts and reef areas','Pack underwater camera or waterproof phone case — house reef is accessible from your room','Download resort app if available — most luxury resorts have dedicated apps for room service and excursions','Confirm dietary restrictions with resort 1 week before arrival','Pack light breathable clothing — humidity 80-90% year round','Book snorkeling, diving, and excursions with resort before arrival — limited capacity'],
+    tip:'Tipping in the Maldives: A service charge (usually 10%) is added to all resort bills. Additional tipping appreciated but not expected. Tip dive instructors and guides separately in USD cash.'
+  },
+  barcelona:{
+    eye:'Barcelona Readiness',t:'Preparation for Catalonia.',s:'Your Barcelona countdown.',
+    checks:['US passport valid 3+ months — Schengen entry requirement','No visa for US citizens under 90 days','Book Sagrada Familia timed tickets 2-4 weeks ahead — sells out completely in peak season','Book Park Guell monumental zone tickets in advance','Reserve La Boqueria visit for early morning — 8-10am before tourist rush','Purchase T-Casual 10-trip metro card on arrival at El Prat airport','Pack anti-pickpocket measures — Las Ramblas and beach areas are high risk','Download Aerobus app for airport transfer','Book dinner reservations for top restaurants 2+ weeks ahead — Barcelona eats late (9-10pm)','Pack comfortable walking shoes — Gothic Quarter is entirely cobblestone'],
+    tip:'Tipping in Barcelona: Not customary but appreciated. Round up at cafes. Leave 5-10% at sit-down restaurants for good service. No tipping at bars. Taxi: round up to nearest euro.'
+  },
+  tuscany:{
+    eye:'Tuscany Readiness',t:'Preparation for Central Italy.',s:'Your Tuscan countdown.',
+    checks:['US passport valid 3+ months — Schengen entry requirement','Book rental car in advance — automatic transmission costs significantly more in Italy, book manual if possible','Research ZTL zones before driving — historic city centers ban non-resident cars, fines mailed home','Download the Telepass Free app for Italian toll roads','Book Osteria di Passignano or Borgo Santo Pietro dining far in advance','Purchase Trenitalia tickets in advance for Florence-Rome-Siena routes','Pack layers — Tuscan hill towns are cooler than coastal areas, especially evenings','Download offline Google Maps for Val d Orcia and Chianti regions','Exchange to Euros before departure or withdraw at Florence airport ATM','Notify cards of Italy travel — some rural estates only take cash'],
+    tip:'Tipping in Tuscany: Cover charge (coperto) of 2-4 euros per person is normal and not a tip. Leave 5-10% for excellent restaurant service. No tipping at bars. Wine estates: tip pouring staff 5-10 euros for a private tasting.'
+  },
+  iceland:{
+    eye:'Iceland Readiness',t:'Preparation for the North Atlantic.',s:'Your Iceland countdown.',
+    checks:['US passport valid 3+ months — Schengen entry requirement','No visa for US citizens under 90 days','Download the 112 Iceland emergency app — sends GPS location automatically','Book Blue Lagoon 2+ weeks in advance — no walk-ins, always sells out','Book Northern Lights tour if traveling Oct-Mar — small group tours fill fast','Rent a 4x4 — standard cars are not permitted on F-roads (highland tracks)','Check road.is before every drive — conditions change hourly','Pack waterproof outer layer and warm base layers — weather changes in minutes','Pack microspikes for winter travel — ice walking without them is dangerous','Download Vedur app for weather forecasts and volcanic activity alerts','Bring cash in Icelandic Kronur — rural areas and fuel stations may not accept foreign cards','Book Fosshotel or preferred accommodation months ahead for summer travel'],
+    tip:'Tipping in Iceland: Not part of the culture. Service charge is included in all prices. You can round up or leave a small amount for exceptional service, but it is never expected.'
+  },
+  patagonia:{
+    eye:'Patagonia Readiness',t:'Preparation for the end of the world.',s:'Your Patagonia countdown.',
+    checks:['US passport valid 6+ months — Chile and Argentina entry requirement','No visa for US citizens in Chile or Argentina','Book Torres del Paine refugios 6+ months ahead for Nov-Feb peak season','Register all multi-day treks with CONAF park office before entering','Download offline Maps.me for Torres del Paine — no cell coverage in park','Pack emergency bivouac shelter — mandatory for remote overnight treks','Pack quality windproof and waterproof outer layer — 100km/h gusts are normal','Confirm Argentina-Chile border crossing requirements — Cerro Castillo crossing','Bring USD cash — both Chilean Peso and Argentine Peso accepted at hotels','Book LATAM domestic flights 2+ months ahead — peak season prices spike sharply','Pack trekking poles — mandatory for serious elevation gain with pack weight'],
+    tip:'Tipping in Patagonia: 10% at restaurants in both Chile and Argentina. Guides: 10,000-20,000 CLP per day. Hotel staff: 2,000-5,000 CLP. Gaucho experiences: tip the asado chef directly.'
+  },
+  'chiang mai':{
+    eye:'Chiang Mai Readiness',t:'Preparation for Northern Thailand.',s:'Your Chiang Mai countdown.',
+    checks:['US passport valid 6+ months — Thailand entry requirement','No visa for US citizens for stays under 30 days (visa exemption)','Book Elephant Nature Park weeks in advance — ethical sanctuaries fill fast','Book Thai cooking class at Baan Thai at least 1 week ahead','Download Grab app before landing — safer and more reliable than tuk-tuks at night','Pack modest clothing for temples — shoulders and knees covered (sarongs available at gates)','Pack DEET 30%+ mosquito repellent for evenings — dengue risk elevated in rainy season','Bring cash in Thai Baht — ATMs charge 220 THB foreign fee, best to withdraw large amounts','Download offline Google Maps for Chiang Mai old city area','Book Dhara Dhevi or preferred accommodation at least 2 months ahead for peak season (Nov-Feb)'],
+    tip:'Tipping in Chiang Mai: Expected at restaurants (20-50 THB). Massage: 50-100 THB per hour on top of price. Tuk-tuks and songthaew: round up or negotiate a tip-inclusive price. Tour guides: 200-500 THB per day.'
+  },
+  'new zealand':{
+    eye:'New Zealand Readiness',t:'Preparation for Aotearoa.',s:'Your New Zealand countdown.',
+    checks:['US passport valid 3+ months — NZ entry requirement','Purchase NZeTA (New Zealand Electronic Travel Authority) before departure — USD $17, required for US citizens','Pay IVL (International Visitor Levy) USD $35 — paid with NZeTA','Book rental car in advance — left-side driving, practice in a carpark before heading to mountain roads','Book Milford Sound cruise 1-2 weeks ahead — fills completely in peak season (Nov-Mar)','Register multi-day DOC treks with Department of Conservation before entering','Purchase DOC hut passes for Great Walks in advance — Milford and Routeburn sell out months ahead','Pack emergency locator beacon for remote tracks — rentable at most outdoor shops','Pack SPF 50+ sunscreen — UV index extreme in NZ due to thin ozone layer','Download offline Maps.me for South Island roads — cell coverage patchy outside main towns'],
+    tip:'Tipping in New Zealand: Not customary. Service charge is included. You can round up or leave a small amount for excellent service, but locals do not tip and staff do not expect it.'
+  }
+};
+
+var SMARTCHECK_STUBS={
+  dubai:{ico:'⚡',color:'rgba(176,138,80,.15)',tc:'var(--sd)',label:'Destination Alert',
+    title:'Friday and Saturday are the UAE weekend — plan accordingly',
+    desc:'The UAE work week runs Sunday-Thursday. Friday is the holy day — many attractions open late (after Jummah prayers, around 1:30pm). Saturday is busy. Plan museum visits and mosque tours for Sunday-Thursday mornings.',
+    actions:[{t:'Adjust itinerary for Friday',m:'Friday slots adjusted — late afternoon openings applied'},{t:'Got it',m:'Noted in your trip'}]},
+  paris:{ico:'⚡',color:'rgba(176,138,80,.15)',tc:'var(--sd)',label:'Booking Alert',
+    title:'Your restaurant reservations need attention',
+    desc:'Top Paris restaurants book 3-6 weeks out. Septime and Le Comptoir du Relais are showing availability gaps in your itinerary. Two dining nights are currently unplanned.',
+    actions:[{t:'Open reservation queue',m:'Showing available slots for your dates'},{t:'I will handle it',m:'Reminder set for 3 weeks before departure'}]},
+  santorini:{ico:'⚡',color:'rgba(176,138,80,.15)',tc:'var(--sd)',label:'Crowd Alert',
+    title:'Sunset viewpoints in Oia are at capacity by 6pm',
+    desc:'In peak season, Oia Castle viewpoint reaches standing-room-only by 6pm and photographers fight for position. Skaros Rock is 45 minutes earlier sunset and 90% fewer people. Your Day 3 sunset is currently slotted for Oia.',
+    actions:[{t:'Switch to Skaros Rock',m:'Day 3 updated — Skaros Rock, depart by 5:30pm'},{t:'Keep Oia — arrive at 4:30pm',m:'Early arrival reminder set for Day 3'}]},
+  marrakech:{ico:'⚡',color:'rgba(176,138,80,.15)',tc:'var(--sd)',label:'Cultural Timing',
+    title:'Jemaa el-Fna storytellers only appear after 5pm',
+    desc:'The square during the day is tourist-facing performers and food vendors. The real medina experience — storytellers, local chess games, traditional music circles — only begins after 5pm when locals arrive. Your current Day 1 afternoon visit is scheduled for 2pm.',
+    actions:[{t:'Push Day 1 square visit to 5:30pm',m:'Day 1 updated — Jemaa el-Fna moved to evening slot'},{t:'Keep 2pm — first impressions fine',m:'Noted'}]},
+  maldives:{ico:'⚡',color:'rgba(176,138,80,.15)',tc:'var(--sd)',label:'Transfer Alert',
+    title:'Your seaplane window closes 2 hours before sunset',
+    desc:'Maldives seaplanes do not operate after dark — last departure is typically 4:30-5pm depending on the season. If your arrival flight lands after 3pm local time, you will need an overnight in Male and take the seaplane the following morning. Check your arrival time.',
+    actions:[{t:'Check my arrival time',m:'Opening flight details — confirm Male arrival time'},{t:'Already confirmed',m:'Good — transfer is set'}]},
+  barcelona:{ico:'⚡',color:'rgba(176,138,80,.15)',tc:'var(--sd)',label:'Booking Alert',
+    title:'Sagrada Familia tickets for your dates are selling out',
+    desc:'Tower access tickets for weekend dates are showing low availability 3+ weeks out. Basic entry remains available but tower views require advance booking. Your current dates fall on a Saturday.',
+    actions:[{t:'Book tower tickets now',m:'Opening Sagrada Familia booking — tower access for your date'},{t:'Basic entry is fine',m:'Tower visit removed from itinerary'}]},
+  tuscany:{ico:'⚡',color:'rgba(176,138,80,.15)',tc:'var(--sd)',label:'Driving Alert',
+    title:'Three ZTL zones on your current route',
+    desc:'Your itinerary passes through Siena, Florence, and Pienza — all have ZTL restricted zones where non-resident vehicles are banned. Entering without a permit triggers automated fines mailed to your home address, typically 80-250 euros per violation.',
+    actions:[{t:'Review ZTL zones on my route',m:'ZTL map opening — your route highlighted'},{t:'I have a permit or staying outside',m:'Noted — no further action'}]},
+  iceland:{ico:'⚡',color:'rgba(176,138,80,.15)',tc:'var(--sd)',label:'Weather Alert',
+    title:'F-roads on your route are currently closed',
+    desc:'The highland F-roads including F210 near Landmannalaugar are currently closed for the season — typically closed until late June or July depending on snowpack. Your current itinerary includes a route that passes through a closed F-road zone.',
+    actions:[{t:'Reroute around closed F-roads',m:'Route updated — coastal alternative applied'},{t:'Check road.is myself',m:'road.is opening for current conditions'}]},
+  patagonia:{ico:'⚡',color:'rgba(176,138,80,.15)',tc:'var(--sd)',label:'Booking Alert',
+    title:'Torres del Paine refugios for your dates are near capacity',
+    desc:'November-February is peak season in Torres del Paine. The Chileno and Las Torres refugios — the most critical overnight stops on the W Trek — show limited availability for your travel window. Booking should happen now.',
+    actions:[{t:'Book refugios now',m:'vertice.cl opening — W Trek route for your dates'},{t:'Camping instead',m:'Camping permit info added to readiness checklist'}]},
+  'chiang mai':{ico:'⚡',color:'rgba(176,138,80,.15)',tc:'var(--sd)',label:'Seasonal Alert',
+    title:'Smoke season may affect your dates',
+    desc:'Chiang Mai experiences significant air quality issues from agricultural burning, typically February through April. If your travel dates fall in this window, outdoor activities and sunrise hikes may be impacted. The Elephant Nature Park is less affected than city-center activities.',
+    actions:[{t:'Check air quality forecast for my dates',m:'AQI data for Chiang Mai opening for your travel window'},{t:'Noted — aware of smoke season',m:'Air quality monitoring added to your trip'}]},
+  'new zealand':{ico:'⚡',color:'rgba(176,138,80,.15)',tc:'var(--sd)',label:'Booking Alert',
+    title:'Milford Sound cruise and DOC hut passes for your dates',
+    desc:'Peak season (November-March) Milford Sound cruises fill 1-2 weeks ahead. If you are doing the Milford Track Great Walk, hut passes must be booked months ahead and are limited to 40 people per night.',
+    actions:[{t:'Book Milford Sound cruise',m:'Real Journeys booking opening for your dates'},{t:'Check DOC hut availability',m:'doc.govt.nz Great Walks booking opening'}]}
+};
+
+function getDestAirport(destName){
+  var n=(destName||'').toLowerCase();
+  var keys=Object.keys(DEST_AIRPORTS);
+  for(var i=0;i<keys.length;i++){if(n.indexOf(keys[i])>-1)return DEST_AIRPORTS[keys[i]];}
+  return null;
+}
+
+
 var TRAVELERS={
   mixed:[
     {n:'Jordan',role:'Trip Owner',anchor:true,arrival:1,departure:10,from:'Brooklyn, NY',color:'4a6b5a',initial:'J'},
@@ -3856,6 +4400,7 @@ function nav(id){
   if(id==='s-dash'||id==='s-itin'||id==='s-activities'||id==='s-dining'||id==='s-transport'||id==='s-stays'||id==='s-safety'||id==='s-ready'||id==='s-reminders'||id==='s-payment'||id==='s-group'||id==='s-posttrip'||id==='s-smartcheck'||id==='s-budget-track'||id==='s-settings')render();
   if(id==='s-bp-budget')initBudgetScreen();
   if(id==='s-bp-invite')initInviteScreen();
+  if(id==='s-tripdetails'){var ap=getDestAirport(S.destName);var df=document.getElementById('td-dest');var hf=document.getElementById('td-home');var ff=document.getElementById('td-from');if(df&&ap&&!df.value)df.value=ap;if(hf&&ap&&!hf.value)hf.value=ap;if(ff&&S.homeAirport&&!ff.value)ff.value=S.homeAirport;}
   if(id==='s-bp-who')renderWhoOpts();
   if(id==='s-bp-kids')rebuildKids();
   if(id==='s-bp-triptype')renderTripTypes();
@@ -3869,7 +4414,7 @@ function pickMerge(el,energy,intention,season,dest){if(el){el.parentElement.quer
 var selectedEnergies=[];
 var selectedTripTypes=[];
 function toggleTripType(el,val){var idx=selectedTripTypes.indexOf(val);if(idx>-1){selectedTripTypes.splice(idx,1);el.classList.remove('sel');}else{selectedTripTypes.push(val);el.classList.add('sel');}S.tripTypes=selectedTripTypes.slice();S.tripType=selectedTripTypes[0]||'romantic';if(S.tripType)S.destKey=ttk(S.tripType);var btn=document.getElementById('triptype-continue');if(btn)btn.style.display=selectedTripTypes.length?'block':'none';}
-function selectMode(el,mode){S.mode=mode;var cards=el.parentElement.querySelectorAll('div[style*="border-radius:14px"]');cards.forEach(function(c){c.style.borderColor='var(--bd)';c.style.background='var(--cr)';var note=c.querySelector('.mode-note');if(note)note.style.display='none';});el.style.borderColor='var(--sd)';el.style.background='var(--sdl)';var note=el.querySelector('.mode-note');if(note)note.style.display='block';document.getElementById('mode-continue').style.display='block';}
+function selectMode(el,mode){S.mode=mode;var cards=document.querySelectorAll('#s-bp-mode div[onclick^="selectMode"]');cards.forEach(function(c){c.style.borderColor='var(--bd)';c.style.background='var(--cr)';var n=c.querySelector('.mode-note');if(n)n.style.display='none';});el.style.borderColor='var(--sd)';el.style.background='var(--sdl)';var note=el.querySelector('.mode-note');if(note)note.style.display='block';document.getElementById('mode-continue').style.display='block';}
 function toggleEnergy(el,val){var idx=selectedEnergies.indexOf(val);if(idx>-1){selectedEnergies.splice(idx,1);el.classList.remove('sel');}else{selectedEnergies.push(val);el.classList.add('sel');}document.getElementById('energy-continue').style.display=selectedEnergies.length?'block':'none';}
 function renderTripTypes(){var opts=document.getElementById('triptype-opts');if(!opts)return;var e=selectedEnergies;var all=[
   {k:'romantic',l:'Romantic Getaway',tags:['slow','connect','celebrate']},
@@ -3925,15 +4470,95 @@ function checkBudget(){
 }
 function setBudgetGo(val){document.getElementById('budget-input').value=val;S.budgetAmt=val;S.budget='set';nav('s-tripdetails');}
 function tg(el){el.classList.toggle('sel');document.getElementById('ob-go').style.display=document.querySelectorAll('#s-bp-music .gb.sel').length?'block':'none';}
-function fc(el){el.closest('div').querySelectorAll('.chip').forEach(function(c){c.classList.remove('sel');});el.classList.add('sel');}
+
+function buildFilterChips(listId, chipContainerId){
+  var list=document.getElementById(listId);
+  var container=document.getElementById(chipContainerId);
+  if(!list||!container)return;
+  var badges=['All'];
+  list.querySelectorAll('.ib2').forEach(function(b){
+    var txt=b.textContent.trim();
+    if(txt&&badges.indexOf(txt)===-1)badges.push(txt);
+  });
+  container.innerHTML=badges.map(function(b,i){
+    return '<button class="chip'+(i===0?' sel':'')+'" onclick="fc(this)">'+b+'</button>';
+  }).join('');
+}
+
+function fc(el){
+  el.closest('div').querySelectorAll('.chip').forEach(function(c){c.classList.remove('sel');});
+  el.classList.add('sel');
+  var filter=el.textContent.trim();
+  // Find the nearest sibling scr/list container
+  var screen=el.closest('.screen');
+  if(!screen)return;
+  var listEl=screen.querySelector('#acts-list,#din-list,#trans-list,#stays-list');
+  if(!listEl)return;
+  var items=listEl.querySelectorAll('.ir,.stay');
+  items.forEach(function(item){
+    if(filter==='All'){item.style.display='';return;}
+    // Match against the badge text inside .ib2 or .stay-b
+    var badge=item.querySelector('.ib2');
+    var badgeText=badge?badge.textContent.trim():'';
+    item.style.display=badgeText.toLowerCase().indexOf(filter.toLowerCase())>-1?'':'none';
+  });
+}
 function setDM(m,el){document.querySelectorAll('#s-dest .opt').forEach(function(o){o.classList.remove('sel');});el.classList.add('sel');document.getElementById('dest-own').style.display='none';if(m==='own'){document.getElementById('dest-own').style.display='block';}else{S.destKey=ttk(S.tripType);S.destName=D[S.destKey].name;generateTripName();showToast('Choosing your destination… 🌍');setTimeout(function(){nav('s-bp-name');},900);}}
 function bSug(){var l=SUGS[S.tripType]||SUGS.romantic;var s=l[sugIdx%l.length];$('sug-n',s.n);$('sug-w',s.w);S.destKey=s.k;S.destName=s.n;}
 function nextSug(){sugIdx++;bSug();}
 function onDT(v){document.getElementById('dest-go').style.display=v.length>2?'block':'none';S.destKey=ntk(v);S.destName=v||null;}
 function goDest(){generateTripName();nav('s-bp-name');}
+
+function addFlightLeg(dir){
+  var c=document.getElementById(dir+'-legs');
+  if(!c)return;
+  var n=c.children.length+2;
+  var lbl=dir==='outbound'?'Connection '+n:'Return Leg '+n;
+  var arv=dir==='outbound'?'Arrives (local)':'Departs (local)';
+  var wrap=document.createElement('div');
+  wrap.style.cssText='background:var(--pn);border:1px solid var(--bd);border-radius:12px;padding:14px;margin-bottom:10px;';
+  var hdr=document.createElement('div');
+  hdr.style.cssText='display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;';
+  var ttl=document.createElement('div');
+  ttl.style.cssText='font-family:var(--fm);font-size:8px;letter-spacing:2px;color:var(--rg);text-transform:uppercase;';
+  ttl.textContent=lbl;
+  var rmv=document.createElement('button');
+  rmv.style.cssText='background:none;border:none;font-size:18px;color:var(--ts);cursor:pointer;padding:0;';
+  rmv.textContent='×';
+  rmv.onclick=function(){wrap.remove();};
+  hdr.appendChild(ttl);hdr.appendChild(rmv);
+  var row1=document.createElement('div');
+  row1.style.cssText='display:flex;gap:10px;margin-bottom:10px;';
+  var iStyle='width:100%;padding:10px;border:1px solid var(--bd);border-radius:8px;font-family:var(--fm);font-size:16px;font-weight:600;color:var(--tx);background:transparent;outline:none;text-transform:uppercase;text-align:center;box-sizing:border-box;';
+  var lStyle='font-family:var(--fm);font-size:8px;letter-spacing:1px;color:var(--ts);text-transform:uppercase;margin-bottom:4px;display:block;';
+  function mkAp(ph){var w=document.createElement('div');w.style.flex='1';var l=document.createElement('label');l.style.cssText=lStyle;l.textContent=ph==='SCL'?'From':'To';var i=document.createElement('input');i.type='text';i.placeholder=ph;i.maxLength=3;i.style.cssText=iStyle;i.oninput=function(){this.value=this.value.toUpperCase();};w.appendChild(l);w.appendChild(i);return w;}
+  var arr=document.createElement('div');
+  arr.style.cssText='display:flex;align-items:center;color:var(--sd);font-size:18px;padding-top:16px;';
+  arr.textContent='→';
+  row1.appendChild(mkAp('SCL'));row1.appendChild(arr);row1.appendChild(mkAp('PUQ'));
+  var row2=document.createElement('div');
+  row2.style.cssText='display:flex;gap:10px;';
+  function mkTxt(ph,lbl2){var w=document.createElement('div');w.style.flex='1';var l=document.createElement('label');l.style.cssText=lStyle;l.textContent=lbl2;var i=document.createElement('input');i.type=ph==='LA 549'?'text':'time';if(ph==='LA 549')i.placeholder=ph;i.style.cssText='width:100%;padding:10px;border:1px solid var(--bd);border-radius:8px;font-family:var(--fs);font-size:14px;color:var(--tx);background:transparent;outline:none;box-sizing:border-box;';w.appendChild(l);w.appendChild(i);return w;}
+  row2.appendChild(mkTxt('LA 549','Flight #'));row2.appendChild(mkTxt('time',arv));
+  wrap.appendChild(hdr);wrap.appendChild(row1);wrap.appendChild(row2);
+  c.appendChild(wrap);
+}
+
+function setHomeAirport(val){
+  val=(val||'').toUpperCase().trim();
+  S.homeAirport=val||null;
+  var lbl=document.getElementById('set-home-airport');
+  if(lbl)lbl.textContent=val||'Not set';
+  // Pre-fill td-from on trip details screen
+  var fromFld=document.getElementById('td-from');
+  if(fromFld&&val)fromFld.value=val;
+  showToast(val?'Home airport set to '+val:'Home airport cleared');
+}
+
 function calcDuration(){var d=document.getElementById('td-depart').value;var r=document.getElementById('td-return').value;var el=document.getElementById('td-duration');if(d&&r){var diff=Math.round((new Date(r)-new Date(d))/(1000*60*60*24));if(diff>0){el.textContent=diff+' nights · '+(diff+1)+' days';el.style.display='block';S.tripDays=diff;}else{el.style.display='none';}}else{el.style.display='none';}}
 function ttk(t){var map={romantic:'romantic',honeymoon:'romantic',reset:'reset',cultural:'cultural',friends:'friends',milestone:'romantic',adventure:'adventure',workcation:'friends',family:'romantic'};return map[t]||'romantic';}
-function ntk(n){n=(n||'').toLowerCase();if(n.indexOf('bali')>-1||n.indexOf('ubud')>-1||n.indexOf('seminyak')>-1)return 'reset';if(n.indexOf('kyoto')>-1||n.indexOf('tokyo')>-1||n.indexOf('japan')>-1||n.indexOf('nara')>-1)return 'cultural';if(n.indexOf('lisbon')>-1||n.indexOf('portugal')>-1||n.indexOf('barcelona')>-1||n.indexOf('porto')>-1)return 'friends';if(n.indexOf('iceland')>-1||n.indexOf('reykjav')>-1||n.indexOf('patagonia')>-1||n.indexOf('norway')>-1)return 'adventure';if(n.indexOf('amalfi')>-1||n.indexOf('positano')>-1||n.indexOf('ravello')>-1||n.indexOf('italy')>-1||n.indexOf('santorini')>-1||n.indexOf('paris')>-1||n.indexOf('maldives')>-1)return 'romantic';return ttk(S.tripType);}
+function ntk(n){n=(n||'').toLowerCase();if(n.indexOf('bali')>-1||n.indexOf('ubud')>-1||n.indexOf('seminyak')>-1||n.indexOf('chiang mai')>-1||n.indexOf('tuscany')>-1)return 'reset';if(n.indexOf('kyoto')>-1||n.indexOf('tokyo')>-1||n.indexOf('japan')>-1||n.indexOf('nara')>-1||n.indexOf('marrakech')>-1||n.indexOf('morocco')>-1)return 'cultural';if(n.indexOf('lisbon')>-1||n.indexOf('portugal')>-1||n.indexOf('barcelona')>-1||n.indexOf('porto')>-1||n.indexOf('new york')>-1||n.indexOf('nyc')>-1||n.indexOf('berlin')>-1||n.indexOf('london')>-1||n.indexOf('amsterdam')>-1||n.indexOf('singapore')>-1||n.indexOf('chicago')>-1||n.indexOf('miami')>-1||n.indexOf('nashville')>-1||n.indexOf('new orleans')>-1||n.indexOf('austin')>-1||n.indexOf('los angeles')>-1||n.indexOf('san francisco')>-1)return 'friends';if(n.indexOf('iceland')>-1||n.indexOf('reykjav')>-1||n.indexOf('patagonia')>-1||n.indexOf('norway')>-1||n.indexOf('new zealand')>-1||n.indexOf('queenstown')>-1)return 'adventure';if(n.indexOf('amalfi')>-1||n.indexOf('positano')>-1||n.indexOf('ravello')>-1||n.indexOf('italy')>-1||n.indexOf('santorini')>-1||n.indexOf('paris')>-1||n.indexOf('maldives')>-1||n.indexOf('dubai')>-1)return 'romantic';return ttk(S.tripType);}
+function getDestFlag(destName,fallbackEmoji){var n=(destName||'').toLowerCase();var flags={'italy':'🇮🇹','amalfi':'🇮🇹','positano':'🇮🇹','ravello':'🇮🇹','rome':'🇮🇹','naples':'🇮🇹','sicily':'🇮🇹','tuscany':'🇮🇹','florence':'🇮🇹','venice':'🇮🇹','bali':'🇮🇩','ubud':'🇮🇩','seminyak':'🇮🇩','indonesia':'🇮🇩','japan':'🇯🇵','kyoto':'🇯🇵','tokyo':'🇯🇵','nara':'🇯🇵','osaka':'🇯🇵','portugal':'🇵🇹','lisbon':'🇵🇹','porto':'🇵🇹','spain':'🇪🇸','barcelona':'🇪🇸','madrid':'🇪🇸','iceland':'🇮🇸','reykjav':'🇮🇸','france':'🇫🇷','paris':'🇫🇷','greece':'🇬🇷','santorini':'🇬🇷','athens':'🇬🇷','maldives':'🇲🇻','dubai':'🇦🇪','uae':'🇦🇪','abu dhabi':'🇦🇪','morocco':'🇲🇦','marrakech':'🇲🇦','mexico':'🇲🇽','oaxaca':'🇲🇽','tulum':'🇲🇽','argentina':'🇦🇷','patagonia':'🇦🇷','brazil':'🇧🇷','rio':'🇧🇷','new zealand':'🇳🇿','queenstown':'🇳🇿','thailand':'🇹🇭','chiang mai':'🇹🇭','bangkok':'🇹🇭','norway':'🇳🇴','croatia':'🇭🇷','dubrovnik':'🇭🇷','turkey':'🇹🇷','istanbul':'🇹🇷','peru':'🇵🇪','machu picchu':'🇵🇪','costa rica':'🇨🇷','kenya':'🇰🇪','tanzania':'🇹🇿','south africa':'🇿🇦','cape town':'🇿🇦','india':'🇮🇳','rajasthan':'🇮🇳','vietnam':'🇻🇳','cambodia':'🇰🇭','colombia':'🇨🇴','cartagena':'🇨🇴','new york':'🇺🇸','nyc':'🇺🇸','usa':'🇺🇸','united states':'🇺🇸','chicago':'🇺🇸','miami':'🇺🇸','los angeles':'🇺🇸','san francisco':'🇺🇸','hawaii':'🇺🇸','nashville':'🇺🇸','new orleans':'🇺🇸','austin':'🇺🇸','uk':'🇬🇧','london':'🇬🇧','england':'🇬🇧','scotland':'🇬🇧','ireland':'🇮🇪','dublin':'🇮🇪','singapore':'🇸🇬','hong kong':'🇭🇰','taiwan':'🇹🇼','south korea':'🇰🇷','seoul':'🇰🇷','egypt':'🇪🇬','cairo':'🇪🇬','israel':'🇮🇱','tel aviv':'🇮🇱'};for(var k in flags){if(n.indexOf(k)>-1)return flags[k];}return fallbackEmoji||'🌍';}
 function $(id,v){var e=document.getElementById(id);if(e)e.innerHTML=v;}
 function row(i){var costBlock=i.cost?'<div style="margin:6px 0 0;padding:8px 10px;background:var(--sdl);border-left:2px solid var(--sd);border-radius:4px;font-size:11px;color:var(--tm);line-height:1.4;"><span style="font-family:var(--fm);font-size:8px;color:var(--sd);letter-spacing:1px;">COST INTEL · </span>'+i.cost+'</div>':'';return '<div class="ir" onclick="showToast(\'Added to trip\')"><div class="iri" style="background:#'+i.bg+'">'+i.i+'</div><div class="irb"><div class="irn">'+i.n+'</div><div class="irs">'+i.s+'</div><div class="irm">'+i.m+'</div>'+costBlock+'</div><div class="ib2 '+i.bc+'">'+i.b+'</div></div>';}
 function ckToggle(el){el.classList.toggle('done');var t=el.parentElement.querySelector('.ct');if(el.classList.contains('done')){el.textContent='✓';if(t)t.classList.add('done');}else{el.textContent='';if(t)t.classList.remove('done');}var all=document.querySelectorAll('#rdy-checks .cb').length,done=document.querySelectorAll('#rdy-checks .cb.done').length;$('rdy-pct',done+' of '+all);var b=document.getElementById('rdy-bar');if(b)b.style.width=Math.round(done/all*100)+'%';}
@@ -4015,11 +4640,11 @@ function renderTripShape(){
 function render(){
   updateDemoBanner();
   var h=new Date().getHours();var g=h<12?'Good morning,':h<17?'Good afternoon,':'Good evening,';var ge=document.getElementById('greeting');if(ge)ge.textContent=g;
-  var k=S.destKey||ttk(S.tripType);var t=D[k]||D.romantic;var dn=S.destName||t.name;
-  $('d-emo',t.emoji);$('d-tn',S.tripName||dn);var durTxt=S.tripDays?(S.tripDays+' nights · '):'';var demoTag=S.demoMode?'✦ ':'';$('d-sub',demoTag+durTxt+t.sub.split('·')[0].trim()+' · '+dn);
-  $('ctab1',t.city1);$('ctab2',t.city2);$('align-txt',t.alignTxt);$('d-dest',dn);
+  var k=S.destName?ntk(S.destName):(S.destKey||ttk(S.tripType));S.destKey=k;var t=D[k]||D.romantic;var dn=S.destName||t.name;var destOverride=getDestContent(S.destName,k);var rdOverride=READINESS_STUBS&&S.destName?function(){var n=(S.destName||'').toLowerCase();var keys=Object.keys(READINESS_STUBS);for(var i=0;i<keys.length;i++){if(n.indexOf(keys[i])>-1)return READINESS_STUBS[keys[i]];}return null;}():null;if(destOverride){t=Object.assign({},t,destOverride);}if(rdOverride){t=Object.assign({},t,{readiness:Object.assign({},t.readiness,rdOverride)});}var destAp=getDestAirport(S.destName);var destFld=document.getElementById('td-dest');var homeFld=document.getElementById('td-home');var fromFld=document.getElementById('td-from');if(destFld&&destAp&&!destFld.value)destFld.value=destAp;if(homeFld&&destAp&&!homeFld.value)homeFld.value=destAp;if(fromFld&&S.homeAirport&&!fromFld.value)fromFld.value=S.homeAirport;var hai=document.getElementById('home-airport-input');if(hai&&S.homeAirport&&!hai.value)hai.value=S.homeAirport;var hal=document.getElementById('set-home-airport');if(hal)hal.textContent=S.homeAirport||'Not set';
+  $('d-emo',getDestFlag(S.destName,t.emoji));$('d-tn',S.tripName||dn);var durTxt=S.tripDays?(S.tripDays+' nights · '):'';var demoTag=S.demoMode?'✦ ':'';var vibeMap={romantic:'Romantic Escape',honeymoon:'Honeymoon',reset:'Reset & Recovery',cultural:'Cultural Deep-Dive',friends:'Friends Trip',adventure:'Adventure',milestone:'Milestone',workcation:'Workcation',family:'Family Trip'};var vibeLabel=vibeMap[S.tripType]||vibeMap[S.destKey]||'Deeply Curated';$('d-sub',demoTag+durTxt+vibeLabel+' · '+dn);
+  $('ctab1',t.city1||'City 1');$('ctab2',t.city2||'City 2');var ctabs=document.getElementById('itin-ctabs');if(ctabs)ctabs.style.display=(t.city1&&S.demoMode)?'flex':'none';var baseAlign=t.alignTxt||'';var extras=[];if(S.hasPet){var petName='';var plist=document.getElementById('pet-list');if(plist){var inp=plist.querySelector('input[type=text]');if(inp&&inp.value)petName=' ('+inp.value+')';}extras.push('Pet'+petName+' traveling — pet-friendly stays, dining, and transport prioritized.');}if(S.kidAges&&S.kidAges.length){var ages=S.kidAges.map(function(m){return m<24?m+' mo':Math.floor(m/12)+' yr';}).join(', ');var youngest=Math.min.apply(null,S.kidAges);var kidNote=youngest<24?'Infant pacing — nap windows protected, early dinners, bassinet check.':youngest<60?'Toddler-aware pacing — kid menus, early bedtimes, play-stop scheduling.':youngest<144?'Kid-friendly filtering active — activities, dining, and stays filtered for children.':'Teen-aware scheduling active.';extras.push('Traveling with: '+ages+'. '+kidNote);}var fullAlign=baseAlign+(extras.length?' '+extras.join(' '):'');$('align-txt',fullAlign);$('d-dest',dn);
   $('act-ct',t.actCt);$('din-ct',t.dinCt);$('stay-ct',t.stayCt);
-  $('ib-eye',t.eye);$('ib-t',t.title);var dayCount=S.tripDays||t.days.length;$('ib-s',dayCount+' days · '+t.sub);
+  var ibEye=S.demoMode?t.eye:(vibeLabel+' · '+(S.destName||dn));var ibTitle=S.demoMode?t.title:(S.destName||dn);$('ib-eye',ibEye);$('ib-t',ibTitle);var dayCount=S.tripDays||t.days.length;$('ib-s',dayCount+' days · '+vibeLabel+' · Deeply Curated');
   var vibes={romantic:'✦ Romantic & Slow-Paced',reset:'✦ Restorative & Intentional',cultural:'✦ Curious & Immersive',adventure:'✦ High-Energy & Exploratory',friends:'✦ Social & Celebratory',honeymoon:'✦ Intimate & Luxurious',milestone:'✦ Celebratory & Meaningful',workcation:'✦ Productive & Balanced'};
   $('trip-vibe',vibes[S.tripType]||vibes.romantic);
   var budgetLabels={budget:'Budget-First',balanced:'Balanced',flexible:'Flexible',agnostic:'No Limit',set:''};
@@ -4027,10 +4652,12 @@ function render(){
   $('trip-budget','💰 '+bDisplay);
   var dep=document.getElementById('td-depart');var ret=document.getElementById('td-return');
   if(dep&&ret&&dep.value&&ret.value){var d1=new Date(dep.value);var d2=new Date(ret.value);var mn=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];$('trip-dates','📅 '+mn[d1.getUTCMonth()]+' '+d1.getUTCDate()+' – '+mn[d2.getUTCMonth()]+' '+d2.getUTCDate()+' · '+(S.tripDays||'?')+' nights');}else{$('trip-dates','📅 Dates: Not set');}
+  applyTierLocks();
   // Trip pill name
   var pill=document.getElementById('trip-pill-name');if(pill)pill.textContent=dn||'Current Trip';
   // Group nudges - show for any non-solo trip
   var nudges=document.getElementById('group-nudges');if(nudges)nudges.style.display=(S.group==='solo'||S.demoMode)?'none':'block';
+  var agn=document.getElementById('align-group-note');if(agn)agn.style.display=(S.group!=='solo'&&!S.demoMode)?'block':'none';
   // Hide planning progress on demo mode (trip is already complete)
   var planCard=document.getElementById('plan-progress-card');if(planCard)planCard.style.display=S.demoMode?'none':'block';
   // Show hero "Trip Complete" card on demo mode
@@ -4090,7 +4717,7 @@ function render(){
   var gs=document.getElementById('group-section');if(gs)gs.style.display=(S.group==='solo')?'none':'block';
   // Suggested bundles based on trip type
   var ai=document.getElementById('active-intel');
-  if(ai){if(S.demoMode){var isR=S.destKey==='romantic';ai.innerHTML='<div style="display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:6px;flex-wrap:wrap;gap:8px;"><div class="bundle-label" style="color:var(--rg);margin:0;">Working on this trip</div><div style="font-family:var(--fm);font-size:9px;letter-spacing:1.5px;color:var(--sd);text-transform:uppercase;">Tap any module to explore →</div></div><div class="mg"><div class="mc" onclick="nav(\'s-mod-cc\')"><div class="mci">💳</div><div class="mcn">Credit Card</div><div class="mcs">'+(isR?'$63 saved on this trip':'$91 saved on this trip')+'</div><div class="mct" style="background:rgba(45,107,45,.1);color:var(--gn);">Active</div></div><div class="mc" onclick="nav(\'s-mod-cost\')"><div class="mci">💰</div><div class="mcn">Cost Intelligence</div><div class="mcs">'+(isR?'$391 saved · 3 decisions':'$173 saved · 1 decision')+'</div><div class="mct" style="background:rgba(45,107,45,.1);color:var(--gn);">Active</div></div><div class="mc" onclick="nav(\'s-mod-ins\')"><div class="mci">🛡</div><div class="mcn">Insurance</div><div class="mcs">'+(isR?'3 protections covered, 1 gap filled':'Tropical risks covered, 1 gap filled')+'</div><div class="mct" style="background:rgba(45,107,45,.1);color:var(--gn);">Active</div></div><div class="mc" onclick="nav(\'s-mod-music\')"><div class="mci">🎵</div><div class="mcn">Music & Events</div><div class="mcs">'+(isR?'12-track group playlist · Ravello Day 5':'11-track playlist · Legong Day 5')+'</div><div class="mct" style="background:rgba(45,107,45,.1);color:var(--gn);">Active</div></div><div class="mc" onclick="nav(\'s-mod-airport\')"><div class="mci">✈️</div><div class="mcn">Airport & Transit</div><div class="mcs">'+(isR?'Lounge · bags · transfer · jet lag':'Changi layover · bags · resort transfer')+'</div><div class="mct" style="background:rgba(45,107,45,.1);color:var(--gn);">Active</div></div><div class="mc" onclick="nav(\'s-mod-intent\')"><div class="mci">🕊</div><div class="mcn">Intentionality</div><div class="mcs">'+(isR?'"To come back whole" · anchored':'"What my own quiet sounds like"')+'</div><div class="mct" style="background:rgba(45,107,45,.1);color:var(--gn);">Active</div></div><div class="mc" onclick="nav(\'s-mod-outfits\')"><div class="mci">👗</div><div class="mcn">Shopping & Outfits</div><div class="mcs">'+(isR?'10 looks built from your closet':'8 looks · temple to beach club')+'</div><div class="mct" style="background:rgba(45,107,45,.1);color:var(--gn);">Active</div></div><div class="mc" onclick="nav(\'s-mod-sus\')"><div class="mci">🌱</div><div class="mcn">Sustainability</div><div class="mcs">'+(isR?'6 swaps · 22% lower footprint':'7 swaps · 31% lower footprint')+'</div><div class="mct" style="background:rgba(45,107,45,.1);color:var(--gn);">Active</div></div><div class="mc" onclick="nav(\'s-memory\')"><div class="mci">📖</div><div class="mcn">Memory Book</div><div class="mcs">Photos & reflections, ready</div><div class="mct" style="background:rgba(45,107,45,.1);color:var(--gn);">Active</div></div><div class="mc" onclick="nav(\'s-mod-translate\')"><div class="mci">🌐</div><div class="mcn">Translation</div><div class="mcs">'+(isR?'Italian, with cultural context':'Bahasa Indonesia + cultural protocols')+'</div><div class="mct" style="background:rgba(45,107,45,.1);color:var(--gn);">Active</div></div><div class="mc" onclick="nav(\'s-mod-climate\')"><div class="mci">🌡</div><div class="mcn">Climate & Carbon</div><div class="mcs">'+(isR?'Within norms · 1.8 tons offsetable':'Shoulder season shifting · 1.4 tons')+'</div><div class="mct" style="background:rgba(45,107,45,.1);color:var(--gn);">Active</div></div><div class="mc" onclick="nav(\'s-posttrip\')"><div class="mci">📊</div><div class="mcn">Post-Trip</div><div class="mcs">Cost summary & reflection ready</div><div class="mct" style="background:rgba(45,107,45,.1);color:var(--gn);">Active</div></div><div class="mc" onclick="nav(\'s-mod-wellness\')"><div class="mci">🧘</div><div class="mcn">Wellness & Health</div><div class="mcs">'+(isR?'Recovery built into pacing':'The trip Wellness was built for')+'</div><div class="mct" style="background:rgba(45,107,45,.1);color:var(--gn);">Active</div></div>'+(!isR?'<div class="mc" onclick="nav(\'s-mod-solo\')"><div class="mci">🚺</div><div class="mcn">Solo Female</div><div class="mcs">Safety as a layer · not a warning</div><div class="mct" style="background:rgba(45,107,45,.1);color:var(--gn);">Active</div></div>':'')+'</div>';}else{ai.innerHTML='';}}
+  if(ai){if(S.demoMode){var isR=S.destKey==='romantic';ai.innerHTML='<div style="display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:6px;flex-wrap:wrap;gap:8px;"><div class="bundle-label" style="color:var(--rg);margin:0;">Working on this trip</div><div style="font-family:var(--fm);font-size:9px;letter-spacing:1.5px;color:var(--sd);text-transform:uppercase;">Tap any module to explore →</div></div><div class="mg"><div class="mc" onclick="nav(\'s-mod-cc\')"><div class="mci">💳</div><div class="mcn">Credit Card</div><div class="mcs">'+(isR?'$63 saved on this trip':'$91 saved on this trip')+'</div><div class="mct" style="background:rgba(45,107,45,.1);color:var(--gn);">Active</div></div><div class="mc" onclick="nav(\'s-mod-cost\')"><div class="mci">💰</div><div class="mcn">Cost Intelligence</div><div class="mcs">'+(isR?'$391 saved · 3 decisions':'$173 saved · 1 decision')+'</div><div class="mct" style="background:rgba(45,107,45,.1);color:var(--gn);">Active</div></div><div class="mc" onclick="nav(\'s-mod-ins\')"><div class="mci">🛡</div><div class="mcn">Insurance</div><div class="mcs">'+(isR?'3 protections covered, 1 gap filled':'Tropical risks covered, 1 gap filled')+'</div><div class="mct" style="background:rgba(45,107,45,.1);color:var(--gn);">Active</div></div><div class="mc" onclick="nav(\'s-mod-music\')"><div class="mci">🎵</div><div class="mcn">Music & Events</div><div class="mcs">'+(isR?'12-track group playlist · Ravello Day 5':'11-track playlist · Legong Day 5')+'</div><div class="mct" style="background:rgba(45,107,45,.1);color:var(--gn);">Active</div></div><div class="mc" onclick="nav(\'s-mod-airport\')"><div class="mci">✈️</div><div class="mcn">Airport & Transit</div><div class="mcs">'+(isR?'Lounge · bags · transfer · jet lag':'Changi layover · bags · resort transfer')+'</div><div class="mct" style="background:rgba(45,107,45,.1);color:var(--gn);">Active</div></div><div class="mc" onclick="nav(\'s-mod-intent\')"><div class="mci">🕊</div><div class="mcn">Intentionality</div><div class="mcs">'+(isR?'"To come back whole" · anchored':'"What my own quiet sounds like"')+'</div><div class="mct" style="background:rgba(45,107,45,.1);color:var(--gn);">Active</div></div><div class="mc" onclick="nav(\'s-mod-outfits\')"><div class="mci">👗</div><div class="mcn">Shopping & Outfits</div><div class="mcs">'+(isR?'10 looks built from your closet':'8 looks · temple to beach club')+'</div><div class="mct" style="background:rgba(45,107,45,.1);color:var(--gn);">Active</div></div><div class="mc" onclick="nav(\'s-mod-sus\')"><div class="mci">🌱</div><div class="mcn">Sustainability</div><div class="mcs">'+(isR?'6 swaps · 22% lower footprint':'7 swaps · 31% lower footprint')+'</div><div class="mct" style="background:rgba(45,107,45,.1);color:var(--gn);">Active</div></div><div class="mc" onclick="nav(\'s-memory\')"><div class="mci">📖</div><div class="mcn">Memory Book</div><div class="mcs">Photos & reflections, ready</div><div class="mct" style="background:rgba(45,107,45,.1);color:var(--gn);">Active</div></div><div class="mc" onclick="nav(\'s-mod-translate\')"><div class="mci">🌐</div><div class="mcn">Translation</div><div class="mcs">'+(isR?'Italian, with cultural context':'Bahasa Indonesia + cultural protocols')+'</div><div class="mct" style="background:rgba(45,107,45,.1);color:var(--gn);">Active</div></div><div class="mc" onclick="nav(\'s-mod-climate\')"><div class="mci">🌡</div><div class="mcn">Climate & Carbon</div><div class="mcs">'+(isR?'Within norms · 1.8 tons offsetable':'Shoulder season shifting · 1.4 tons')+'</div><div class="mct" style="background:rgba(45,107,45,.1);color:var(--gn);">Active</div></div><div class="mc" onclick="nav(\'s-posttrip\')"><div class="mci">📊</div><div class="mcn">Post-Trip</div><div class="mcs">Cost summary & reflection ready</div><div class="mct" style="background:rgba(45,107,45,.1);color:var(--gn);">Active</div></div><div class="mc" onclick="nav(\'s-mod-wellness\')"><div class="mci">🧘</div><div class="mcn">Wellness & Health</div><div class="mcs">'+(isR?'Recovery built into pacing':'The trip Wellness was built for')+'</div><div class="mct" style="background:rgba(45,107,45,.1);color:var(--gn);">Active</div></div>'+(!isR?'<div class="mc" onclick="nav(\'s-mod-solo\')"><div class="mci">🚺</div><div class="mcn">Solo Female</div><div class="mcs">Safety as a layer · not a warning</div><div class="mct" style="background:rgba(45,107,45,.1);color:var(--gn);">Active</div></div>':'')+'</div>';}else{var destLbl=S.destName||dn||'your destination';var tripLbl=vibeMap[S.tripType]||'curated';ai.innerHTML='<div style="display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:6px;flex-wrap:wrap;gap:8px;"><div class="bundle-label" style="color:var(--rg);margin:0;">Building for '+destLbl+'</div><div style="font-family:var(--fm);font-size:9px;letter-spacing:1.5px;color:var(--sd);text-transform:uppercase;">Tap to explore →</div></div>'+'<div class="mg">'+'<div class="mc" onclick="nav(\'s-activities\')">'+'<div class="mci">🎭</div><div class="mcn">Activities</div>'+'<div class="mcs">Matched to '+tripLbl+' · '+destLbl+'</div>'+'<div class="mct ts2">'+t.actCt+'</div></div>'+'<div class="mc" onclick="nav(\'s-dining\')">'+'<div class="mci">🍽</div><div class="mcn">Dining</div>'+'<div class="mcs">Local picks · '+destLbl+'</div>'+'<div class="mct ts2">'+t.dinCt+'</div></div>'+'<div class="mc" onclick="nav(\'s-stays\')">'+'<div class="mci">🏨</div><div class="mcn">Stays</div>'+'<div class="mcs">Filtered for '+tripLbl+'</div>'+'<div class="mct ts2">'+t.stayCt+'</div></div>'+'<div class="mc" onclick="nav(\'s-transport\')">'+'<div class="mci">🚄</div><div class="mcn">Transportation</div>'+'<div class="mcs">Getting around '+destLbl+'</div>'+'<div class="mct ts2">Manual</div></div>'+'<div class="mc" onclick="nav(\'s-ready\')">'+'<div class="mci">✅</div><div class="mcn">Readiness</div>'+'<div class="mcs">Prep checklist for '+destLbl+'</div>'+'<div class="mct ts2">Review</div></div>'+'<div class="mc" onclick="nav(\'s-safety\')">'+'<div class="mci">🛡</div><div class="mcn">Safety & Prep</div>'+'<div class="mcs">'+destLbl+' specific intel</div>'+'<div class="mct ts2">Active</div></div>'+'<div class="mc" onclick="nav(\'s-smartcheck\')">'+'<div class="mci">⚡</div><div class="mcn">Smart Check</div>'+'<div class="mcs">Run a sweep on your trip</div>'+'<div class="mct ts2">Ready</div></div>'+'<div class="mc" onclick="openPW(\'💳\',\'Credit Card\',\'Smart Traveler Bundle\')">'+'<div class="mci">💳</div><div class="mcn">Credit Card</div>'+'<div class="mcs">Optimize rewards for '+destLbl+'</div>'+'<div class="mct" style="background:rgba(176,138,80,.1);color:var(--sd);">Upgrade</div></div>'+'<div class="mc" onclick="openPW(\'🎵\',\'Music & Events\',\'Explorer Bundle\')">'+'<div class="mci">🎵</div><div class="mcn">Music & Events</div>'+'<div class="mcs">Live events in '+destLbl+'</div>'+'<div class="mct" style="background:rgba(176,138,80,.1);color:var(--sd);">Upgrade</div></div>'+'</div>';}}
   var sb=document.getElementById('suggested-bundles');
   if(sb){var suggested=[];
     if(S.group==='partner'||S.tripType==='romantic'||S.tripType==='honeymoon')suggested.push({label:'Couples & Celebrations',modules:[
@@ -4232,6 +4859,10 @@ function render(){
   $('acts-list',t.activities.map(row).join(''));
   $('din-list',t.dining.map(row).join(''));
   $('trans-list',t.transport.map(row).join(''));
+  buildFilterChips('acts-list','acts-chips');
+  buildFilterChips('din-list','din-chips');
+  buildFilterChips('trans-list','trans-chips');
+  buildFilterChips('stays-list','stays-chips');
   $('stays-list',t.stays.map(function(s){return '<div class="stay"><div class="stay-img" style="background:'+s.bg+'">'+s.emo+'</div><div class="stay-b"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:3px;"><div class="stay-n">'+s.n+'</div><div class="ib2 bs">'+s.badge+'</div></div><div class="stay-s">'+s.s+'</div><div style="display:flex;align-items:center;justify-content:space-between;margin-top:8px;"><div style="font-family:var(--fd);font-size:16px;color:var(--tx);">'+s.p+'</div><button class="btn bgh" style="padding:7px 14px;" onclick="showToast(\'Added to trip\')">Add</button></div><div class="stay-adv">'+s.adv+'</div></div></div>';}).join(''));
   // Safety
   $('safety-list','<div style="padding:14px 20px 6px;"><div style="font-family:var(--fm);font-size:8px;letter-spacing:3px;color:var(--sd);text-transform:uppercase;margin-bottom:3px;">Destination</div><div style="font-family:var(--fd);font-size:20px;font-weight:500;color:var(--tx);">'+dn+'</div></div>'+t.safety.map(function(s){return '<div style="display:flex;gap:13px;padding:14px 20px;border-bottom:1px solid var(--bd);"><div style="font-size:22px;flex-shrink:0;">'+s.i+'</div><div><div style="font-family:var(--fd);font-size:15px;font-weight:500;color:var(--tx);">'+s.n+'</div><div style="font-size:13px;color:var(--tm);margin-top:3px;line-height:1.5;">'+s.t+'</div></div></div>';}).join(''));
@@ -4279,7 +4910,7 @@ function render(){
   if(scEl)scEl.innerHTML=scItems.map(function(item){var actionsHtml='';if(item.actions&&item.actions.length){actionsHtml='<div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;">'+item.actions.map(function(a){return '<button style="padding:6px 12px;border-radius:16px;border:1px solid '+item.tc+';background:transparent;font-family:var(--fm);font-size:9px;color:'+item.tc+';cursor:pointer;letter-spacing:1px;" onclick="showToast(\''+a.m.replace(/'/g,"\\'")+'\')">'+a.t+'</button>';}).join('')+'</div>';}return '<div style="display:flex;gap:16px;padding:18px 20px;border-bottom:1px solid var(--bd);"><div style="width:44px;height:44px;border-radius:10px;background:'+item.color+';flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:20px;">'+item.ico+'</div><div style="flex:1;"><div style="font-family:var(--fm);font-size:8px;letter-spacing:2px;color:'+item.tc+';text-transform:uppercase;margin-bottom:4px;">'+item.label+'</div><div style="font-family:var(--fd);font-size:16px;font-weight:500;color:var(--tx);margin-bottom:5px;">'+item.title+'</div><div style="font-size:13px;color:var(--tm);line-height:1.5;">'+item.desc+'</div>'+actionsHtml+'</div></div>';}).join('');
   // Settings
   var energyLabels={burnt:'Slow & restorative',rested:'Full & adventurous',curious:'Rich & cultural',rebuilding:'Purposeful',focused:'Focused',indulgent:'Indulgent'};
-  var modeLabels={essential:'Essential',lightly:'Lightly Tailored',curated:'Deeply Curated',concierge:'Concierge-Enhanced'};
+  var modeLabels={lightly:"I'll plan it",curated:'Deeply Curated',concierge:'Concierge-Enhanced'};
   var se=document.getElementById('set-energy');if(se)se.textContent=energyLabels[S.energy]||'Slow & restorative';
   var sm=document.getElementById('set-mode');if(sm)sm.textContent=modeLabels[S.mode]||'Deeply Curated';
   // Budget Tracker
@@ -4332,6 +4963,118 @@ var BUNDLES={
   'Solo Bundle':{price:'$9.99<span>/mo</span>',includes:'<strong>Includes:</strong> Solo Female Safety, Wellness & Health, Workcation Mode, and Translation.'},
   'Couples Bundle':{price:'$9.99<span>/mo</span>',includes:'<strong>Includes:</strong> Shopping & Outfits, Pet Travel (with Dogpack integration), and Intentionality & Reflection. Compatibility features are built into Group Planning.'}
 };
+
+
+function isPaid(){return S.mode==='curated'||S.mode==='concierge';}
+
+var MODULE_LOCK_MAP={
+  's-mod-cc':     {icon:'💳',name:'Credit Card Optimization',bundle:'Smart Traveler Bundle'},
+  's-mod-cost':   {icon:'💰',name:'Cost Intelligence',bundle:'Smart Traveler Bundle'},
+  's-mod-ins':    {icon:'🛡',name:'Insurance Intelligence',bundle:'Smart Traveler Bundle'},
+  's-mod-music':  {icon:'🎵',name:'Music & Events',bundle:'Explorer Bundle'},
+  's-mod-airport':{icon:'✈️',name:'Airport & Transit',bundle:'Smart Traveler Bundle'},
+  's-mod-intent': {icon:'🕊',name:'Intentionality',bundle:'Couples & Celebrations Bundle'},
+  's-mod-outfits':{icon:'👗',name:'Shopping & Outfits',bundle:'Couples & Celebrations Bundle'},
+  's-mod-sus':    {icon:'🌱',name:'Sustainability',bundle:'Explorer Bundle'},
+  's-mod-translate':{icon:'🌐',name:'Translation',bundle:'Family Bundle'},
+  's-mod-climate':{icon:'🌡',name:'Climate & Carbon',bundle:'Family Bundle'},
+  's-mod-wellness':{icon:'🧘',name:'Wellness & Health',bundle:'Solo Bundle'},
+  's-mod-solo':   {icon:'🚺',name:'Solo Female Travel',bundle:'Solo Bundle'},
+  's-memory':     {icon:'📖',name:'Memory Book',bundle:'All-Access'},
+  's-posttrip':   {icon:'📊',name:'Post-Trip Intelligence',bundle:'All-Access'}
+};
+
+function openLockedModule(el){
+  var icon=el.getAttribute('data-icon');
+  var name=el.getAttribute('data-name');
+  var bundle=el.getAttribute('data-bundle');
+  openPW(icon,name,bundle);
+}
+
+function applyTierLocks(){
+  var paid=isPaid();
+
+  // 1. Dashboard module cards — lock paid ones
+  var ai=document.getElementById('active-intelligence');
+  if(ai){
+    ai.querySelectorAll('.mc[data-orig-onclick],.mc[onclick*="nav("]').forEach(function(card){
+      var onclick=card.getAttribute('data-orig-onclick')||card.getAttribute('onclick')||'';
+      var m=onclick.match(/nav\('([^']+)'\)/);
+      if(!m)return;
+      var sid=m[1];
+      var info=MODULE_LOCK_MAP[sid];
+      if(!info)return;
+      if(!card.getAttribute('data-orig-onclick')){
+        card.setAttribute('data-orig-onclick',card.getAttribute('onclick'));
+        card.setAttribute('data-icon',info.icon);
+        card.setAttribute('data-name',info.name);
+        card.setAttribute('data-bundle',info.bundle);
+      }
+      if(paid){
+        card.classList.remove('tier-locked');
+        card.setAttribute('onclick',card.getAttribute('data-orig-onclick'));
+        var mct=card.querySelector('.mct');
+        if(mct&&mct.getAttribute('data-orig-text')){
+          mct.textContent=mct.getAttribute('data-orig-text');
+          mct.className=mct.getAttribute('data-orig-class')||'mct';
+        }
+      }else{
+        card.classList.add('tier-locked');
+        card.setAttribute('onclick','openLockedModule(this)');
+        var mct=card.querySelector('.mct');
+        if(mct&&!mct.getAttribute('data-orig-text')){
+          mct.setAttribute('data-orig-text',mct.textContent);
+          mct.setAttribute('data-orig-class',mct.className);
+          mct.className='mct tlock';
+          mct.textContent='🔒 Upgrade';
+        }
+      }
+    });
+  }
+
+  // 2. Module screens — blur overlay
+  Object.keys(MODULE_LOCK_MAP).forEach(function(sid){
+    var screen=document.getElementById(sid);
+    if(!screen)return;
+    var info=MODULE_LOCK_MAP[sid];
+    var existing=screen.querySelector('.module-blur-overlay');
+    if(!paid){
+      if(!existing){
+        var scrDiv=screen.querySelector('.scr');
+        if(!scrDiv)return;
+        scrDiv.style.position='relative';
+        var ov=document.createElement('div');
+        ov.className='module-blur-overlay';
+        var dest=S.destName||'your destination';
+        var btn=document.createElement('button');
+        btn.className='blur-btn';
+        btn.textContent='Unlock → '+info.bundle;
+        btn.setAttribute('data-icon',info.icon);
+        btn.setAttribute('data-name',info.name);
+        btn.setAttribute('data-bundle',info.bundle);
+        btn.onclick=function(e){e.stopPropagation();openLockedModule(this);};
+        var icon=document.createElement('div');icon.className='blur-icon';icon.textContent=info.icon;
+        var title=document.createElement('div');title.className='blur-title';title.textContent=info.name;
+        var sub=document.createElement('div');sub.className='blur-sub';
+        sub.textContent='Unlock to access full intelligence for '+dest+'.';
+        ov.appendChild(icon);ov.appendChild(title);ov.appendChild(sub);ov.appendChild(btn);
+        scrDiv.appendChild(ov);
+      }else{
+        // Update destination name in existing overlay
+        var sub=existing.querySelector('.blur-sub');
+        if(sub)sub.textContent='Unlock to access full intelligence for '+(S.destName||'your destination')+'.';
+      }
+    }else{
+      if(existing)existing.remove();
+    }
+  });
+
+  // 3. Upgrade cards inside free modules — hide for paid
+  ['activity-upgrade-card','dining-upgrade-card','transport-upgrade-card','stays-upgrade-card'].forEach(function(id){
+    var el=document.getElementById(id);
+    if(el)el.style.display=paid?'none':'block';
+  });
+}
 
 function openPW(icon,moduleName,bundleName){
   var isAAOnly=(bundleName==='All-Access');
@@ -4874,8 +5617,8 @@ function updateTimeRate(rate){
   if(ltEl) ltEl.textContent = '$' + lifetimeTotal.toLocaleString();
   var ltHrsEl = document.getElementById('lifetime-hours-dollars');
   if(ltHrsEl) ltHrsEl.textContent = '$' + lifetimeTotal.toLocaleString();
-  // Lifetime Total Value w/ Time: $2,452 cash + 67 hrs × rate
-  var lifetimeTotalWithTime = 2452 + lifetimeTotal;
+  // Lifetime Total Value: Cash Savings ($2,858) + Time (67 hrs × rate) − Fees ($406)
+  var lifetimeTotalWithTime = 2858 + lifetimeTotal - 406;
   var ltTWT = document.getElementById('lifetime-total-with-time');
   if(ltTWT) ltTWT.textContent = '$' + lifetimeTotalWithTime.toLocaleString();
   var heroTV = document.getElementById('hero-total-value');
@@ -5088,7 +5831,7 @@ function runFullCheck(btn){
       romantic:{ico:'✨',color:'rgba(176,138,80,.15)',tc:'var(--sd)',label:'Just Found',title:'Le Sirenuse released 2 spa appointments for Day 4 morning',desc:'Last-minute openings — 90-min couples massage, 10am or 11:30am. Released 4 minutes ago.',actions:[{t:'Hold the 10am slot',m:'Held — confirm in your inbox'},{t:'Hold the 11:30am slot',m:'Held — confirm in your inbox'},{t:'Pass — keep Day 4 open',m:'Slots released back to availability'}]},
       reset:{ico:'✨',color:'rgba(176,138,80,.15)',tc:'var(--sd)',label:'Just Found',title:'Mozaic confirmed your Day 6 reservation',desc:'Chef noted your dietary preferences from your profile. Confirmation 6 minutes ago.',actions:[{t:'View confirmation',m:'Reservation details opening…'},{t:'Add to calendar',m:'Day 6 · 6:00 PM · Mozaic added'},{t:'Note for the chef',m:'Opening message draft…'}]}
     };
-    var item=newItems[S.destKey];if(!item){btn.innerHTML=orig;btn.disabled=false;btn.style.opacity='1';showToast('All clear — nothing new');return;}
+    var item=newItems[S.destKey];if(!item&&typeof SMARTCHECK_STUBS!=='undefined'&&S.destName){var sn=(S.destName||'').toLowerCase();var skeys=Object.keys(SMARTCHECK_STUBS);for(var si=0;si<skeys.length;si++){if(sn.indexOf(skeys[si])>-1){item=SMARTCHECK_STUBS[skeys[si]];break;}}}if(!item){btn.innerHTML=orig;btn.disabled=false;btn.style.opacity='1';showToast('All clear — nothing new');return;}
     var scEl=document.getElementById('sc-list');if(!scEl){btn.innerHTML=orig;return;}
     var actionsHtml='<div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;">'+item.actions.map(function(a){return '<button style="padding:6px 12px;border-radius:16px;border:1px solid '+item.tc+';background:transparent;font-family:var(--fm);font-size:9px;color:'+item.tc+';cursor:pointer;letter-spacing:1px;" onclick="showToast(\''+a.m.replace(/'/g,"\\'")+'\')">'+a.t+'</button>';}).join('')+'</div>';
     var newHtml='<div style="display:flex;gap:16px;padding:18px 20px;border-bottom:1px solid var(--bd);background:rgba(176,138,80,.04);animation:fadein .5s ease;"><div style="width:44px;height:44px;border-radius:10px;background:'+item.color+';flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:20px;">'+item.ico+'</div><div style="flex:1;"><div style="font-family:var(--fm);font-size:8px;letter-spacing:2px;color:'+item.tc+';text-transform:uppercase;margin-bottom:4px;">'+item.label+'</div><div style="font-family:var(--fd);font-size:16px;font-weight:500;color:var(--tx);margin-bottom:5px;">'+item.title+'</div><div style="font-size:13px;color:var(--tm);line-height:1.5;">'+item.desc+'</div>'+actionsHtml+'</div></div>';
@@ -5215,19 +5958,4 @@ function hideTtip(){
 function toggleTtip(el, id, evt){
   if(evt) evt.stopPropagation();
   var ttip = document.getElementById('ttip');
-  if(ttip && ttip.style.display === 'block' && ttip.dataset.activeId === id){
-    hideTtip();
-    ttip.dataset.activeId = '';
-  } else {
-    showTtip(el, id, evt);
-    if(ttip) ttip.dataset.activeId = id;
-  }
-}
-// Close on outside click
-document.addEventListener('click', function(e){
-  if(!e.target.closest('.ttip-trig') && !e.target.closest('#ttip')) hideTtip();
-});
-</script>
-
-</body>
-</html>
+  if(ttip && ttip.style.display === 'block' && tt
