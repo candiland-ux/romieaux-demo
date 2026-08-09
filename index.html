@@ -168,7 +168,7 @@ body{background:var(--cr);color:var(--tx);font-family:var(--fs);min-height:100vh
 .lp-glow3{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:80vw;height:40vw;border-radius:50%;background:radial-gradient(ellipse,rgba(196,135,122,.06) 0%,transparent 70%);pointer-events:none;animation:lpPulse 6s ease-in-out infinite;}
 @keyframes lpPulse{0%,100%{opacity:.4;transform:translate(-50%,-50%) scale(1);}50%{opacity:1;transform:translate(-50%,-50%) scale(1.15);}}
 @keyframes lpFloat{0%{transform:translateX(-50%) scale(1)}100%{transform:translateX(-50%) scale(1.05)}}
-.lp-hero{flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;text-align:center;padding:0 36px 56px;position:relative;z-index:1;}
+.lp-hero{flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;text-align:center;padding:32px 36px 56px;position:relative;z-index:1;}
 .lp-eyebrow{font-family:var(--fm);font-size:10px;letter-spacing:6px;color:var(--sd);text-transform:uppercase;font-weight:600;opacity:0;animation:lpReveal .8s ease forwards .2s;}
 .lp-title{font-family:'Playfair Display',serif;font-size:clamp(48px,13vw,72px);font-weight:700;line-height:.92;letter-spacing:2px;text-transform:uppercase;margin:14px 0 0;opacity:0;background:linear-gradient(90deg,var(--ink) 0%,var(--ink) 35%,#c4877a 45%,#d4a870 50%,#c4877a 55%,var(--ink) 65%,var(--ink) 100%);background-size:250% 100%;background-position:100% 0;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:lpSlideUp .7s cubic-bezier(.16,1,.3,1) forwards .4s,lpShimmer 4.5s linear .4s infinite;}
 @keyframes lpShimmer{0%{background-position:150% 0;}100%{background-position:-50% 0;}}
@@ -296,6 +296,13 @@ body{background:var(--cr);color:var(--tx);font-family:var(--fs);min-height:100vh
       <div class="lp-rotate-text" id="lpRotateText">Trips designed around you</div>
     </div>
   </div>
+  <div style="margin:0 22px 4px;padding:15px 18px;border:1px solid rgba(245,239,230,.16);border-radius:14px;background:rgba(26,18,8,.35);">
+    <div style="font-family:var(--fm);font-size:9px;letter-spacing:2px;color:var(--sd);text-transform:uppercase;margin-bottom:9px;">What you're looking at</div>
+    <div style="font-size:12.5px;color:rgba(245,239,230,.72);line-height:1.65;">This is a working prototype of Romieaux, a travel intelligence platform. Two things are running side by side.</div>
+    <div style="font-size:12.5px;color:rgba(245,239,230,.72);line-height:1.65;margin-top:9px;"><strong style="color:#f5efe6;font-weight:600;">Seven trips are pre-built &mdash; three are previewable directly below.</strong> Real itineraries with real numbers, written in advance so you can walk through a finished trip end to end without waiting on anything.</div>
+    <div style="font-size:12.5px;color:rgba(245,239,230,.72);line-height:1.65;margin-top:9px;"><strong style="color:#f5efe6;font-weight:600;">&ldquo;Generate a trip live&rdquo; is not pre-built.</strong> You answer the same questions a real traveler would, Claude proposes actual venues and activities for your dates, and then the math runs here in your browser &mdash; every dollar figure in that trip is computed on the spot against a stated baseline, not written by the AI.</div>
+    <div style="font-size:12px;color:rgba(245,239,230,.5);line-height:1.6;margin-top:11px;padding-top:10px;border-top:1px solid rgba(245,239,230,.12);"><strong style="color:rgba(245,239,230,.72);font-weight:600;">What this demo does not do:</strong> it doesn't book anything, take payment, or create an account. Sharing and invitations are simulated. Nothing you enter leaves your browser except what generates your trip &mdash; your answers and your API key, sent only to Anthropic.</div>
+  </div>
   <div class="lp-footer">
     <button class="btn bsd" onclick="nav('s-signup')">Create Account</button>
     <button class="btn bwk" onclick="nav('s-signin')">Sign In</button>
@@ -307,6 +314,11 @@ body{background:var(--cr);color:var(--tx);font-family:var(--fs);min-height:100vh
         <button onclick="loadDemoTripBali()" style="padding:9px 16px;border-radius:20px;border:1px solid var(--rg);background:transparent;font-family:var(--fs);font-size:13px;color:#f5efe6;cursor:pointer;transition:all .2s;" onmouseover="this.style.background='var(--rg)';this.style.color='#1a1208';" onmouseout="this.style.background='transparent';this.style.color='#f5efe6';">Bali · Solo →</button>
         <button onclick="loadDemoTripLisbon()" style="padding:9px 16px;border-radius:20px;border:1px solid var(--rg);background:transparent;font-family:var(--fs);font-size:13px;color:#f5efe6;cursor:pointer;transition:all .2s;" onmouseover="this.style.background='var(--rg)';this.style.color='#1a1208';" onmouseout="this.style.background='transparent';this.style.color='#f5efe6';">Lisbon · Family + Pet →</button>
       </div>
+    </div>
+    <div style="margin-top:10px;padding:13px 18px;border:1px solid rgba(176,138,80,.55);border-radius:14px;background:rgba(176,138,80,.11);text-align:center;cursor:pointer;" onclick="LiveSliceResults.start()">
+      <div style="font-family:var(--fm);font-size:9px;letter-spacing:2px;color:var(--sd);text-transform:uppercase;margin-bottom:6px;">Generated live</div>
+      <div style="font-size:14px;color:#f5efe6;line-height:1.45;">Generate a trip live <span style="color:var(--rg);font-weight:600;">— watch Romieaux plan one for you →</span></div>
+      <div style="font-size:11px;color:rgba(245,239,230,.5);margin-top:5px;">Needs your own Anthropic API key. Takes about 20 seconds.</div>
     </div>
     <div style="display:flex;justify-content:center;gap:20px;margin-top:10px;">
       <span style="font-family:var(--fm);font-size:10px;color:var(--sd);letter-spacing:2px;cursor:pointer;text-transform:uppercase;" onclick="nav('s-pricing')">Pricing</span>
@@ -326,9 +338,9 @@ body{background:var(--cr);color:var(--tx);font-family:var(--fs);min-height:100vh
     <div style="font-size:13px;color:var(--tm);margin-top:6px;">Your travel profile lives here and grows with every trip.</div>
   </div>
   <div class="scr" style="padding-top:16px;">
-    <div style="padding:0 24px;margin-bottom:13px;"><label style="font-family:var(--fm);font-size:9px;letter-spacing:2px;color:var(--ts);text-transform:uppercase;margin-bottom:7px;display:block;">Your first name</label><input type="text" placeholder="Jordan" style="width:100%;padding:12px 0;background:transparent;border:none;border-bottom:1.5px solid var(--bd);font-family:var(--fs);font-size:15px;color:var(--tx);outline:none;box-sizing:border-box;"></div>
-    <div style="padding:0 24px;margin-bottom:13px;"><label style="font-family:var(--fm);font-size:9px;letter-spacing:2px;color:var(--ts);text-transform:uppercase;margin-bottom:7px;display:block;">Email address</label><input type="email" placeholder="jordan@email.com" style="width:100%;padding:12px 0;background:transparent;border:none;border-bottom:1.5px solid var(--bd);font-family:var(--fs);font-size:15px;color:var(--tx);outline:none;box-sizing:border-box;"></div>
-    <div style="padding:0 24px;margin-bottom:16px;"><label style="font-family:var(--fm);font-size:9px;letter-spacing:2px;color:var(--ts);text-transform:uppercase;margin-bottom:7px;display:block;">Password</label><input type="password" placeholder="••••••••" style="width:100%;padding:12px 0;background:transparent;border:none;border-bottom:1.5px solid var(--bd);font-family:var(--fs);font-size:15px;color:var(--tx);outline:none;box-sizing:border-box;"></div>
+    <div style="padding:0 24px;margin-bottom:13px;"><label style="font-family:var(--fm);font-size:9px;letter-spacing:2px;color:var(--ts);text-transform:uppercase;margin-bottom:7px;display:block;">Your first name</label><input type="text" placeholder="First name" autocomplete="off" style="width:100%;padding:12px 0;background:transparent;border:none;border-bottom:1.5px solid var(--bd);font-family:var(--fs);font-size:15px;color:var(--tx);outline:none;box-sizing:border-box;"></div>
+    <div style="padding:0 24px;margin-bottom:13px;"><label style="font-family:var(--fm);font-size:9px;letter-spacing:2px;color:var(--ts);text-transform:uppercase;margin-bottom:7px;display:block;">Email address</label><input type="email" placeholder="you@example.com" autocomplete="off" style="width:100%;padding:12px 0;background:transparent;border:none;border-bottom:1.5px solid var(--bd);font-family:var(--fs);font-size:15px;color:var(--tx);outline:none;box-sizing:border-box;"></div>
+    <div style="padding:0 24px;margin-bottom:16px;"><label style="font-family:var(--fm);font-size:9px;letter-spacing:2px;color:var(--ts);text-transform:uppercase;margin-bottom:7px;display:block;">Password</label><input type="password" autocomplete="new-password" placeholder="••••••••" style="width:100%;padding:12px 0;background:transparent;border:none;border-bottom:1.5px solid var(--bd);font-family:var(--fs);font-size:15px;color:var(--tx);outline:none;box-sizing:border-box;"></div>
     <div style="padding:0 24px 8px;">
       <button class="btn bsd" style="width:100%;" onclick="nav('s-join-check')">Create Account →</button>
     </div>
@@ -351,8 +363,8 @@ body{background:var(--cr);color:var(--tx);font-family:var(--fs);min-height:100vh
     <div style="display:flex;align-items:center;justify-content:center;gap:10px;margin:0 24px 9px;padding:14px;background:var(--ink);border-radius:40px;cursor:pointer;font-family:var(--fs);font-size:14px;color:var(--cr);" onclick="signInReturn()"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 01-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18A10.96 10.96 0 001 12c0 1.77.42 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>&nbsp;&nbsp;Continue with Google</div>
     <div style="display:flex;align-items:center;justify-content:center;gap:10px;margin:0 24px 9px;padding:14px;background:var(--ink);border-radius:40px;cursor:pointer;font-family:var(--fs);font-size:14px;color:var(--cr);" onclick="signInReturn()"><svg width="16" height="18" viewBox="0 0 17 20" fill="white"><path d="M13.25 10.06c-.02-2.14 1.75-3.17 1.83-3.22-1-1.46-2.55-1.66-3.1-1.68-1.32-.13-2.57.77-3.24.77-.67 0-1.7-.75-2.8-.73-1.44.02-2.77.84-3.51 2.13-1.5 2.6-.38 6.45 1.08 8.56.71 1.03 1.56 2.19 2.68 2.15 1.07-.04 1.48-.7 2.78-.7 1.3 0 1.67.7 2.78.67 1.16-.02 1.89-1.05 2.6-2.08.82-1.19 1.16-2.35 1.18-2.41-.03-.01-2.26-.87-2.28-3.46zM11.12 3.5c.59-.72 1-1.71.88-2.7-.86.03-1.89.57-2.5 1.29-.55.64-1.03 1.65-.9 2.63.95.07 1.93-.49 2.52-1.22z"/></svg>&nbsp;&nbsp;Continue with Apple</div>
     <div style="display:flex;align-items:center;gap:12px;padding:10px 24px;"><div style="flex:1;height:1px;background:var(--bd);"></div><div style="font-family:var(--fm);font-size:9px;color:var(--ts);letter-spacing:2px;">or sign in with email</div><div style="flex:1;height:1px;background:var(--bd);"></div></div>
-    <div style="padding:0 24px;margin-bottom:13px;"><label style="font-family:var(--fm);font-size:9px;letter-spacing:2px;color:var(--ts);text-transform:uppercase;margin-bottom:7px;display:block;">Email address</label><input type="email" placeholder="jordan@email.com" style="width:100%;padding:12px 0;background:transparent;border:none;border-bottom:1.5px solid var(--bd);font-family:var(--fs);font-size:15px;color:var(--tx);outline:none;box-sizing:border-box;"></div>
-    <div style="padding:0 24px;margin-bottom:16px;"><label style="font-family:var(--fm);font-size:9px;letter-spacing:2px;color:var(--ts);text-transform:uppercase;margin-bottom:7px;display:block;">Password</label><input type="password" placeholder="••••••••" style="width:100%;padding:12px 0;background:transparent;border:none;border-bottom:1.5px solid var(--bd);font-family:var(--fs);font-size:15px;color:var(--tx);outline:none;box-sizing:border-box;"></div>
+    <div style="padding:0 24px;margin-bottom:13px;"><label style="font-family:var(--fm);font-size:9px;letter-spacing:2px;color:var(--ts);text-transform:uppercase;margin-bottom:7px;display:block;">Email address</label><input type="email" placeholder="you@example.com" autocomplete="off" style="width:100%;padding:12px 0;background:transparent;border:none;border-bottom:1.5px solid var(--bd);font-family:var(--fs);font-size:15px;color:var(--tx);outline:none;box-sizing:border-box;"></div>
+    <div style="padding:0 24px;margin-bottom:16px;"><label style="font-family:var(--fm);font-size:9px;letter-spacing:2px;color:var(--ts);text-transform:uppercase;margin-bottom:7px;display:block;">Password</label><input type="password" autocomplete="new-password" placeholder="••••••••" style="width:100%;padding:12px 0;background:transparent;border:none;border-bottom:1.5px solid var(--bd);font-family:var(--fs);font-size:15px;color:var(--tx);outline:none;box-sizing:border-box;"></div>
     <div style="text-align:right;padding:0 24px 12px;"><span style="font-size:12px;color:var(--rg);cursor:pointer;" onclick="showToast('Password reset link sent to your email')">Forgot password?</span></div>
     <div style="padding:0 24px 8px;">
       <button class="btn bsd" style="width:100%;" onclick="signInReturn()">Sign In →</button>
@@ -548,8 +560,8 @@ body{background:var(--cr);color:var(--tx);font-family:var(--fs);min-height:100vh
       <div style="font-size:13px;color:var(--tm);line-height:1.7;">They tap your link → create a free account → instantly join your trip. You control what they can do: Planner (builds itinerary), Editor (adds & modifies), or Viewer (votes & views). Your subscription covers their trip intelligence.</div>
     </div>
 
-    <button class="btn bsd" style="width:100%;margin-bottom:10px;" onclick="nav('s-bp-mode')">Continue Planning →</button>
-    <button style="width:100%;padding:12px;border-radius:40px;border:none;background:transparent;font-family:var(--fs);font-size:14px;color:var(--ts);cursor:pointer;" onclick="nav('s-bp-mode')">I'll invite them later →</button>
+    <button class="btn bsd" style="width:100%;margin-bottom:10px;" onclick="nav('s-bp-mode')">Done — continue →</button>
+    <button style="width:100%;padding:12px;border-radius:40px;border:none;background:transparent;font-family:var(--fs);font-size:14px;color:var(--ts);cursor:pointer;" onclick="nav('s-bp-mode')">Skip — invite later →</button>
   </div>
 </div>
 
@@ -742,12 +754,12 @@ body{background:var(--cr);color:var(--tx);font-family:var(--fs);min-height:100vh
     <div style="font-family:var(--fm);font-size:9px;letter-spacing:2px;color:var(--rg);text-transform:uppercase;margin-bottom:8px;margin-top:10px;">Outbound Flight <span style="color:var(--ts);text-transform:none;letter-spacing:0;">(optional)</span></div>
     <div style="background:var(--pn);border:1px solid var(--bd);border-radius:12px;padding:14px;margin-bottom:14px;">
       <div style="display:flex;gap:10px;margin-bottom:10px;">
-        <div style="flex:1;"><label style="font-family:var(--fm);font-size:8px;letter-spacing:1px;color:var(--ts);text-transform:uppercase;margin-bottom:4px;display:block;">From</label><input type="text" id="td-from" placeholder="LAX" maxlength="3" style="width:100%;padding:10px;border:1px solid var(--bd);border-radius:8px;font-family:var(--fm);font-size:16px;font-weight:600;color:var(--tx);background:transparent;outline:none;text-transform:uppercase;text-align:center;box-sizing:border-box;" oninput="this.value=this.value.toUpperCase()"></div>
+        <div style="flex:1;"><label style="font-family:var(--fm);font-size:8px;letter-spacing:1px;color:var(--ts);text-transform:uppercase;margin-bottom:4px;display:block;">From</label><input type="text" id="td-from" placeholder="ABC" maxlength="3" onfocus="this.select()" style="width:100%;padding:10px;border:1px solid var(--bd);border-radius:8px;font-family:var(--fm);font-size:16px;font-weight:600;color:var(--tx);background:transparent;outline:none;text-transform:uppercase;text-align:center;box-sizing:border-box;" oninput="this.value=this.value.toUpperCase()"></div>
         <div style="display:flex;align-items:center;color:var(--sd);font-size:18px;padding-top:16px;">→</div>
-        <div style="flex:1;"><label style="font-family:var(--fm);font-size:8px;letter-spacing:1px;color:var(--ts);text-transform:uppercase;margin-bottom:4px;display:block;">To</label><input type="text" id="td-dest" placeholder="NAP" maxlength="3" style="width:100%;padding:10px;border:1px solid var(--bd);border-radius:8px;font-family:var(--fm);font-size:16px;font-weight:600;color:var(--tx);background:transparent;outline:none;text-transform:uppercase;text-align:center;box-sizing:border-box;" oninput="this.value=this.value.toUpperCase()"></div>
+        <div style="flex:1;"><label style="font-family:var(--fm);font-size:8px;letter-spacing:1px;color:var(--ts);text-transform:uppercase;margin-bottom:4px;display:block;">To</label><input type="text" id="td-dest" placeholder="ABC" maxlength="3" onfocus="this.select()" style="width:100%;padding:10px;border:1px solid var(--bd);border-radius:8px;font-family:var(--fm);font-size:16px;font-weight:600;color:var(--tx);background:transparent;outline:none;text-transform:uppercase;text-align:center;box-sizing:border-box;" oninput="this.value=this.value.toUpperCase()"></div>
       </div>
       <div style="display:flex;gap:10px;">
-        <div style="flex:1;"><label style="font-family:var(--fm);font-size:8px;letter-spacing:1px;color:var(--ts);text-transform:uppercase;margin-bottom:4px;display:block;">Flight #</label><input type="text" placeholder="DL 482" style="width:100%;padding:10px;border:1px solid var(--bd);border-radius:8px;font-family:var(--fs);font-size:14px;color:var(--tx);background:transparent;outline:none;box-sizing:border-box;"></div>
+        <div style="flex:1;"><label style="font-family:var(--fm);font-size:8px;letter-spacing:1px;color:var(--ts);text-transform:uppercase;margin-bottom:4px;display:block;">Flight #</label><input type="text" placeholder="XX 000" style="width:100%;padding:10px;border:1px solid var(--bd);border-radius:8px;font-family:var(--fs);font-size:14px;color:var(--tx);background:transparent;outline:none;box-sizing:border-box;"></div>
         <div style="flex:1;"><label style="font-family:var(--fm);font-size:8px;letter-spacing:1px;color:var(--ts);text-transform:uppercase;margin-bottom:4px;display:block;">Arrives (local)</label><input type="time" style="width:100%;padding:10px;border:1px solid var(--bd);border-radius:8px;font-family:var(--fs);font-size:14px;color:var(--tx);background:transparent;outline:none;box-sizing:border-box;"></div>
       </div>
     </div>
@@ -757,12 +769,12 @@ body{background:var(--cr);color:var(--tx);font-family:var(--fs);min-height:100vh
     <div style="font-family:var(--fm);font-size:9px;letter-spacing:2px;color:var(--rg);text-transform:uppercase;margin-bottom:8px;">Return Flight <span style="color:var(--ts);text-transform:none;letter-spacing:0;">(optional)</span></div>
     <div style="background:var(--pn);border:1px solid var(--bd);border-radius:12px;padding:14px;margin-bottom:18px;">
       <div style="display:flex;gap:10px;margin-bottom:10px;">
-        <div style="flex:1;"><label style="font-family:var(--fm);font-size:8px;letter-spacing:1px;color:var(--ts);text-transform:uppercase;margin-bottom:4px;display:block;">From</label><input type="text" id="td-home" placeholder="NAP" maxlength="3" style="width:100%;padding:10px;border:1px solid var(--bd);border-radius:8px;font-family:var(--fm);font-size:16px;font-weight:600;color:var(--tx);background:transparent;outline:none;text-transform:uppercase;text-align:center;box-sizing:border-box;" oninput="this.value=this.value.toUpperCase()"></div>
+        <div style="flex:1;"><label style="font-family:var(--fm);font-size:8px;letter-spacing:1px;color:var(--ts);text-transform:uppercase;margin-bottom:4px;display:block;">From</label><input type="text" id="td-home" placeholder="ABC" maxlength="3" onfocus="this.select()" style="width:100%;padding:10px;border:1px solid var(--bd);border-radius:8px;font-family:var(--fm);font-size:16px;font-weight:600;color:var(--tx);background:transparent;outline:none;text-transform:uppercase;text-align:center;box-sizing:border-box;" oninput="this.value=this.value.toUpperCase()"></div>
         <div style="display:flex;align-items:center;color:var(--sd);font-size:18px;padding-top:16px;">→</div>
-        <div style="flex:1;"><label style="font-family:var(--fm);font-size:8px;letter-spacing:1px;color:var(--ts);text-transform:uppercase;margin-bottom:4px;display:block;">To</label><input type="text" id="td-to" placeholder="LAX" maxlength="3" style="width:100%;padding:10px;border:1px solid var(--bd);border-radius:8px;font-family:var(--fm);font-size:16px;font-weight:600;color:var(--tx);background:transparent;outline:none;text-transform:uppercase;text-align:center;box-sizing:border-box;" oninput="this.value=this.value.toUpperCase()"></div>
+        <div style="flex:1;"><label style="font-family:var(--fm);font-size:8px;letter-spacing:1px;color:var(--ts);text-transform:uppercase;margin-bottom:4px;display:block;">To</label><input type="text" id="td-to" placeholder="ABC" maxlength="3" onfocus="this.select()" style="width:100%;padding:10px;border:1px solid var(--bd);border-radius:8px;font-family:var(--fm);font-size:16px;font-weight:600;color:var(--tx);background:transparent;outline:none;text-transform:uppercase;text-align:center;box-sizing:border-box;" oninput="this.value=this.value.toUpperCase()"></div>
       </div>
       <div style="display:flex;gap:10px;">
-        <div style="flex:1;"><label style="font-family:var(--fm);font-size:8px;letter-spacing:1px;color:var(--ts);text-transform:uppercase;margin-bottom:4px;display:block;">Flight #</label><input type="text" placeholder="DL 483" style="width:100%;padding:10px;border:1px solid var(--bd);border-radius:8px;font-family:var(--fs);font-size:14px;color:var(--tx);background:transparent;outline:none;box-sizing:border-box;"></div>
+        <div style="flex:1;"><label style="font-family:var(--fm);font-size:8px;letter-spacing:1px;color:var(--ts);text-transform:uppercase;margin-bottom:4px;display:block;">Flight #</label><input type="text" placeholder="XX 000" style="width:100%;padding:10px;border:1px solid var(--bd);border-radius:8px;font-family:var(--fs);font-size:14px;color:var(--tx);background:transparent;outline:none;box-sizing:border-box;"></div>
         <div style="flex:1;"><label style="font-family:var(--fm);font-size:8px;letter-spacing:1px;color:var(--ts);text-transform:uppercase;margin-bottom:4px;display:block;">Departs (local)</label><input type="time" style="width:100%;padding:10px;border:1px solid var(--bd);border-radius:8px;font-family:var(--fs);font-size:14px;color:var(--tx);background:transparent;outline:none;box-sizing:border-box;"></div>
       </div>
     </div>
@@ -1346,7 +1358,7 @@ body{background:var(--cr);color:var(--tx);font-family:var(--fs);min-height:100vh
     <div style="font-family:var(--fd);font-size:20px;font-weight:700;color:var(--ink);margin-bottom:4px;">Invite a Traveler</div>
     <div style="font-size:13px;color:var(--ts);margin-bottom:16px;">They'll get a link to join you in planning this trip.</div>
     <label style="font-family:var(--fm);font-size:9px;letter-spacing:2px;color:var(--ts);text-transform:uppercase;margin-bottom:7px;display:block;">Email or phone</label>
-    <input type="text" placeholder="alex@email.com" style="width:100%;padding:12px 0;background:transparent;border:none;border-bottom:1.5px solid var(--bd);font-family:var(--fs);font-size:15px;color:var(--tx);outline:none;box-sizing:border-box;margin-bottom:16px;">
+    <input type="text" placeholder="name@example.com" style="width:100%;padding:12px 0;background:transparent;border:none;border-bottom:1.5px solid var(--bd);font-family:var(--fs);font-size:15px;color:var(--tx);outline:none;box-sizing:border-box;margin-bottom:16px;">
     <div style="font-family:var(--fm);font-size:9px;letter-spacing:2px;color:var(--rg);text-transform:uppercase;margin-bottom:10px;">Their role</div>
     <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:20px;">
       <div id="role-planner" class="po" onclick="selectRole('planner')" style="display:flex;align-items:flex-start;gap:10px;padding:12px 14px;">
@@ -1501,7 +1513,7 @@ body{background:var(--cr);color:var(--tx);font-family:var(--fs);min-height:100vh
       </div>
       <div style="margin-bottom:14px;">
         <label style="font-family:var(--fm);font-size:9px;letter-spacing:2px;color:var(--ts);text-transform:uppercase;margin-bottom:6px;display:block;">Name on card</label>
-        <input type="text" placeholder="Jordan Smith" style="width:100%;padding:13px 12px;border:1.5px solid var(--bd);border-radius:10px;background:var(--pn);font-family:var(--fs);font-size:15px;color:var(--tx);outline:none;box-sizing:border-box;">
+        <input type="text" placeholder="Full name" style="width:100%;padding:13px 12px;border:1.5px solid var(--bd);border-radius:10px;background:var(--pn);font-family:var(--fs);font-size:15px;color:var(--tx);outline:none;box-sizing:border-box;">
       </div>
       <div style="display:flex;gap:10px;margin-bottom:14px;">
         <div style="flex:1;">
@@ -1547,7 +1559,7 @@ body{background:var(--cr);color:var(--tx);font-family:var(--fs);min-height:100vh
       <div style="display:flex;justify-content:space-between;align-items:center;padding:14px 0;border-bottom:1px solid var(--bd);cursor:pointer;" onclick="showToast('Edit music preferences')"><div><div style="font-family:var(--fd);font-size:14px;font-weight:600;color:var(--tx);">Music Preferences</div><div style="font-size:12px;color:var(--ts);margin-top:2px;">Jazz, R&amp;B, Ambient</div></div><div style="color:var(--ts);">›</div></div>
       <div style="display:flex;justify-content:space-between;align-items:center;padding:14px 0;border-bottom:1px solid var(--bd);cursor:pointer;" onclick="showToast('Edit engagement mode')"><div><div style="font-family:var(--fd);font-size:14px;font-weight:600;color:var(--tx);">Engagement Mode</div><div style="font-size:12px;color:var(--ts);margin-top:2px;" id="set-mode">Deeply Curated</div></div><div style="color:var(--ts);">›</div></div>
       <div style="display:flex;justify-content:space-between;align-items:center;padding:14px 0;border-bottom:1px solid var(--bd);cursor:pointer;" onclick="showToast('Edit accessibility preferences')"><div><div style="font-family:var(--fd);font-size:14px;font-weight:600;color:var(--tx);">Accessibility Needs</div><div style="font-size:12px;color:var(--ts);margin-top:2px;">None configured</div></div><div style="color:var(--ts);">›</div></div>
-      <div style="display:flex;justify-content:space-between;align-items:center;padding:14px 0;border-bottom:1px solid var(--bd);"><div><div style="font-family:var(--fd);font-size:14px;font-weight:600;color:var(--tx);">Home Airport</div><div style="font-size:12px;color:var(--ts);margin-top:2px;" id="set-home-airport">Not set</div></div><div style="display:flex;align-items:center;gap:8px;"><input type="text" id="home-airport-input" maxlength="3" placeholder="LAX" style="width:52px;padding:8px;border:1.5px solid var(--bd);border-radius:8px;font-family:var(--fm);font-size:15px;font-weight:700;color:var(--tx);background:transparent;outline:none;text-transform:uppercase;text-align:center;" oninput="this.value=this.value.toUpperCase()" onchange="setHomeAirport(this.value)"></div></div>
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:14px 0;border-bottom:1px solid var(--bd);"><div><div style="font-family:var(--fd);font-size:14px;font-weight:600;color:var(--tx);">Home Airport</div><div style="font-size:12px;color:var(--ts);margin-top:2px;" id="set-home-airport">Not set</div></div><div style="display:flex;align-items:center;gap:8px;"><input type="text" id="home-airport-input" maxlength="3" placeholder="ABC" onfocus="this.select()" style="width:52px;padding:8px;border:1.5px solid var(--bd);border-radius:8px;font-family:var(--fm);font-size:15px;font-weight:700;color:var(--tx);background:transparent;outline:none;text-transform:uppercase;text-align:center;" oninput="this.value=this.value.toUpperCase()" onchange="setHomeAirport(this.value)"></div></div>
     </div>
     <div class="sh"><div class="shl">Subscription</div><div class="sht">Your Plan</div></div>
     <div style="padding:0 20px;">
@@ -6837,124 +6849,14 @@ function runBP(){
   // Hard fallback: show button after 20s no matter what
   setTimeout(function(){showReady();},20000);
 
-  // Fetch destination intel if needed
-  var hasStub=false;
-  try{hasStub=!!(S.destName&&getDestContent(S.destName,null));}catch(e){}
-  if(S.destName&&!hasStub){
-    fetchDestIntel(S.destName,S.tripType,function(){
-      window._bpApiDone=true;
-      checkDone();
-    });
-  }else{
-    window._bpApiDone=true;
-    checkDone();
-  }
+  // AE: the destination-intel call was removed. It carried no API key and no
+  // browser-access opt-in, so its CORS preflight always failed and the success
+  // branch never ran — every destination already reached the generic
+  // fallbacks. There is nothing left to wait on.
+  window._bpApiDone=true;
+  checkDone();
 }
 
-function fetchDestIntel(destName,tripType,onDone){
-  var vibe={romantic:'romantic escape, candlelit dinners, private experiences, slow pacing',
-    reset:'rest and recovery, wellness, slow mornings, intentional activities',
-    cultural:'cultural immersion, temples, history, local food, neighborhood walks',
-    friends:'social and high-energy, nightlife, group dining, fun activities',
-    adventure:'active adventure, outdoor activities, hiking, adrenaline',
-    workcation:'work-friendly, cafes, coworking, calm evenings',
-    milestone:'milestone celebration, special dining, meaningful experiences',
-    honeymoon:'honeymoon, intimate, luxurious, private, romantic'}[tripType]||'curated travel';
-
-  var p1='Return ONLY valid JSON, no markdown, no backticks. Destination: '+destName+'. Trip vibe: '+vibe+'.';
-  var p2='JSON structure - fill with real '+destName+' specific content, keep string values under 60 chars, no apostrophes in values:';
-  var p3='{"activities":[{"i":"emoji","bg":"6hexchars","n":"name","s":"subtitle","m":"tip","b":"badge","bc":"bs"}],'
-        +'"dining":[{"i":"emoji","bg":"6hexchars","n":"name","s":"subtitle","m":"tip","b":"badge","bc":"bg"}],'
-        +'"transport":[{"i":"emoji","bg":"6hexchars","n":"name","s":"detail","m":"tip","b":"badge","bc":"bs"}],'
-        +'"stays":[{"emo":"emoji","bg":"linear-gradient(135deg,#3a4a6b,#1e2d4a)","n":"hotel name","s":"area detail","p":"$X/night","adv":"why stay","badge":"Top Pick"}],'
-        +'"safety":[{"i":"emoji","n":"category","t":"safety tip"}],'
-        +'"readiness":{"eye":"DEST Readiness","t":"Preparation for DEST.","s":"Your countdown.","checks":["c1","c2","c3","c4","c5","c6","c7","c8"],"tip":"tipping custom"},'
-        +'"playlist":[{"title":"song title","artist":"artist","moment":"when on trip","bg":"3a4a5a"}],'
-        +'"smartcheck":[{"ico":"emoji","label":"Alert","title":"issue title","desc":"what was caught","color":"rgba(180,140,40,.1)","tc":"#8a6a10","actions":[{"t":"action","m":"toast"}]}],'
-        +'"phrases":[{"phrase":"local phrase","pronunciation":"phonetic","meaning":"english"}]}';
-  var p4='Counts: 4 activities, 3 dining, 3 transport, 2 stays, 5 safety, 8 readiness checks, 6 playlist tracks, 3 smartcheck items, 4 phrases. Replace DEST with '+destName+'.';
-  var p5='activity badges: Cultural/Nature/Active/Local/Iconic/Art. dining: Fine Dining/Local/Street Food/Quick. transport: Primary/Cheapest/Scenic/Airport/Essential. bc: bs or bg or ba.';
-  // Build genre-aware playlist instruction
-  var genres=(S.musicGenres&&S.musicGenres.length)?S.musicGenres.join(', '):'Pop, R&B, Indie';
-  var wantsLocal=S.musicGenres&&S.musicGenres.indexOf('World / Local Music')>-1;
-  var p6=wantsLocal
-    ?'Playlist rule: mix genres ('+genres+') with local '+destName+' music — half each.'
-    :'Playlist rule: use ONLY these genres: '+genres+'. No local '+destName+' music unless that is the genre. Match mood of a '+vibe+' trip.';
-  var prompt=p1+' '+p2+' '+p3+' '+p4+' '+p5+' '+p6;
-
-  fetch('https://api.anthropic.com/v1/messages',{
-    method:'POST',
-    headers:{'Content-Type':'application/json'},
-    body:JSON.stringify({
-      model:'claude-sonnet-4-20250514',
-      max_tokens:3000,
-      messages:[{role:'user',content:prompt}]
-    })
-  })
-  .then(function(r){return r.json();})
-  .then(function(data){
-    var text=(data.content&&data.content[0]&&data.content[0].text)||'';
-    try{
-      var clean=text.replace(/```json|```/g,'').trim();
-      if(clean[clean.length-1]!=='}'){
-        var lastBrace=clean.lastIndexOf('}');
-        if(lastBrace>100)clean=clean.substring(0,lastBrace+1);
-        var opens=(clean.match(/\{/g)||[]).length;
-        var closes=(clean.match(/\}/g)||[]).length;
-        for(var ci=0;ci<opens-closes;ci++)clean+='}';
-      }
-      var intel=JSON.parse(clean);
-      var valid=intel.activities&&intel.dining&&intel.transport&&intel.stays&&intel.safety;
-      if(valid){
-        var key=destName.toLowerCase();
-        DEST_STUBS[key]=intel;
-        // Wire smartcheck items into SC_DATA
-        if(intel.smartcheck&&intel.smartcheck.length){
-          SC_DATA[S.destKey]=intel.smartcheck;
-        }
-        // Wire playlist into moduleContent
-        if(intel.playlist&&intel.playlist.length){
-          var tracks=intel.playlist.map(function(t){
-            return '<div class="trk"><div class="ta" style="background:#'+t.bg+'">🎵</div>'
-            +'<div style="flex:1;"><div style="font-family:var(--fd);font-size:14px;color:var(--tx);">'+t.title+'</div>'
-            +'<div style="font-size:11px;color:var(--ts);">'+t.artist+' · '+t.moment+'</div></div></div>';
-          }).join('');
-          var playlistScr='<div style="padding:18px 20px 6px;"><div style="font-family:var(--fm);font-size:8px;letter-spacing:3px;color:var(--rg);text-transform:uppercase;margin-bottom:6px;">Trip Playlist · '+destName+'</div></div>'
-            +'<div style="padding:0 20px;">'+tracks+'</div>'
-            +'<div style="padding:14px 20px 8px;"><button class="btn bink" style="width:100%;" onclick="showToast(\'Opening Spotify\')">Open in Spotify →</button></div>';
-          if(!moduleContent['s-mod-music'])moduleContent['s-mod-music']={};
-          moduleContent['s-mod-music'][S.destKey]={
-            ib:'<div class="ib-glow"></div><div class="ib-eye">Active Intelligence · Your '+destName+' Soundtrack</div><div class="ib-t">'+intel.playlist.length+' tracks. Built around your trip.</div><div class="ib-s">Music matched to '+destName+' and your listening history.</div>',
-            scr:playlistScr
-          };
-        }
-        // Wire translation phrases into moduleContent
-        if(intel.phrases&&intel.phrases.length){
-          var phraseRows=intel.phrases.map(function(p){
-            return '<div><div style="font-family:var(--fd);font-size:15px;color:var(--ink);">'+p.phrase+'</div>'
-            +'<div style="font-size:11px;color:var(--ts);">'+p.pronunciation+' · '+p.meaning+'</div></div>';
-          }).join('');
-          var translateScr='<div style="padding:18px 20px 6px;"><div style="font-family:var(--fm);font-size:8px;letter-spacing:3px;color:var(--rg);text-transform:uppercase;margin-bottom:6px;">Phrases for '+destName+'</div>'
-            +'<div style="background:var(--pn);border:1px solid var(--bd);border-radius:12px;padding:16px;">'
-            +'<div style="display:flex;flex-direction:column;gap:10px;">'+phraseRows+'</div></div></div>'
-            +'<div style="padding:14px 20px 6px;"><div style="font-family:var(--fm);font-size:8px;letter-spacing:3px;color:var(--rg);text-transform:uppercase;margin-bottom:6px;">Camera Translation</div>'
-            +'<div style="background:var(--pn);border:1px solid var(--bd);border-radius:12px;padding:16px;">'
-            +'<div style="font-size:13px;color:var(--tm);line-height:1.6;">Point your camera at any menu, sign, or label in '+destName+'. Translation appears in place.</div></div></div>';
-          if(!moduleContent['s-mod-translate'])moduleContent['s-mod-translate']={};
-          moduleContent['s-mod-translate'][S.destKey]={
-            ib:'<div class="ib-glow"></div><div class="ib-eye">More Than Words</div><div class="ib-t">Language for '+destName+', with context.</div><div class="ib-s">Phrases, customs, and what tourists get wrong.</div>',
-            scr:translateScr
-          };
-        }
-      }
-    }catch(e){console.warn('Romieaux: could not parse intel for '+destName,e);}
-    onDone();
-  })
-  .catch(function(e){
-    console.warn('Romieaux: intel fetch failed',e);
-    onDone();
-  });
-}
 function isPaid(){return S.mode==='curated'||S.mode==='concierge';}
 
 var MODULE_LOCK_MAP={
@@ -9191,5 +9093,402 @@ document.addEventListener('click', function(){
 });
 </script>
 <!-- TOOLTIP POPOVER -->
+
+<!-- ===================================================================
+     LIVE SLICE — P2 additions. Everything below this line is new.
+     No canonical markup above it is modified (ruling J: additive only).
+
+     .screen is display:none / .screen.active is display:flex, both
+     position-independent, so this screen renders identically to one
+     declared earlier in the body.
+     =================================================================== -->
+
+<!-- LIVE SLICE: THE ONE SUPPLEMENTAL SCREEN (ruling G) -->
+<div id="s-ls-detail" class="screen" style="background:var(--cr);">
+  <div class="tb"><button class="bk" onclick="nav('s-tripdetails')">← Back</button><div class="wm" style="font-family:var(--fm);font-size:9px;letter-spacing:2px;color:var(--sd);">LIVE SLICE</div><div></div></div>
+  <div class="qs" style="overflow-y:auto;">
+    <div style="font-family:var(--fm);font-size:8px;letter-spacing:4px;color:var(--rg);text-transform:uppercase;margin-bottom:14px;">Live Slice — Last Details</div>
+    <div class="qt" style="color:var(--ink)">Three things before we build it.</div>
+    <div class="qsub" style="color:var(--tm)">Pace sets how full your days are. Dietary and access needs are applied strictly — anything that conflicts is removed from your trip, not just flagged.</div>
+
+    <!-- PACE -->
+    <div style="font-family:var(--fm);font-size:9px;letter-spacing:2px;color:var(--rg);text-transform:uppercase;margin-bottom:10px;">How full should the days be?</div>
+    <div class="opts" id="ls-pace-opts"></div>
+
+    <!-- DIETARY HARD LINES -->
+    <div style="margin-top:22px;border-top:1px solid var(--bd);padding-top:18px;">
+      <div style="font-family:var(--fm);font-size:9px;letter-spacing:2px;color:var(--rg);text-transform:uppercase;margin-bottom:4px;">Dietary restrictions</div>
+      <div style="font-size:12px;color:var(--ts);line-height:1.6;margin-bottom:10px;">Select anything that must never appear on your trip. Romieaux removes any venue or dish that conflicts — strictly, no exceptions. Choose these for allergies and firm requirements; skip them for mere preferences.</div>
+      <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px;" id="ls-diet-chips"></div>
+      <input type="text" id="ls-diet-notes" placeholder="Anything else — separate with commas" oninput="LiveSlice.onDietaryNotes(this.value)" style="width:100%;padding:8px 0;background:transparent;border:none;border-bottom:1.5px solid var(--bd);font-family:var(--fs);font-size:13px;color:var(--tx);outline:none;box-sizing:border-box;">
+    </div>
+
+    <!-- ACCESSIBILITY DETAIL — shown only when the canonical toggle was set -->
+    <div id="ls-access-block" style="display:none;margin-top:22px;border-top:1px solid var(--bd);padding-top:18px;">
+      <div style="font-family:var(--fm);font-size:9px;letter-spacing:2px;color:var(--rg);text-transform:uppercase;margin-bottom:4px;">Accessibility detail</div>
+      <div style="font-size:12px;color:var(--ts);line-height:1.6;margin-bottom:10px;">Select all that apply. Each one becomes a hard predicate on stays, transport and activities.</div>
+      <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:10px;" id="ls-access-chips"></div>
+      <input type="text" id="ls-access-notes" placeholder="Anything else we should know? (optional)" oninput="LiveSlice.onAccessNotes(this.value)" style="width:100%;padding:8px 0;background:transparent;border:none;border-bottom:1.5px solid var(--bd);font-family:var(--fs);font-size:13px;color:var(--tx);outline:none;box-sizing:border-box;">
+    </div>
+
+    <div id="ls-detail-errors" style="display:none;margin-top:18px;background:rgba(196,85,63,.06);border:1px solid rgba(196,85,63,.3);border-radius:12px;padding:12px 14px;"></div>
+
+    <div style="background:var(--sdl);border:1px solid rgba(176,138,80,.25);border-radius:12px;padding:13px 15px;margin-top:18px;">
+      <div style="font-family:var(--fm);font-size:8px;letter-spacing:2px;color:var(--sd);text-transform:uppercase;margin-bottom:4px;">Why this is asked here</div>
+      <div style="font-size:12px;color:var(--tm);line-height:1.6;">Your luxury threshold is not asked — it is derived from the budget envelope you already set. Everything else on this screen the engines cannot infer.</div>
+    </div>
+
+    <button class="btn bsd" style="width:100%;margin-top:18px;" onclick="LiveSlice.continueFromDetail()">Build My Live Slice →</button>
+  </div>
+</div>
+
+<!-- LIVE SLICE: scripts. Loaded last so every canonical global (S, nav,
+     selectedEnergies, hasKidsFlag, hasAccessFlag, kidAges, userHourlyRate)
+     is already defined. engines.js was not previously loaded here. -->
+<script src="engines.js"></script>
+<script src="blueprint.js"></script>
+<script src="liveslice-intake.js"></script>
+
+<!-- ===================================================================
+     LIVE SLICE — P3 additions (API layer). Everything below this line is
+     new. No canonical markup, and no P2 markup, is modified — ruling J is
+     additive only, and the §8 step-5 byte proof still strips the whole
+     Live Slice region back to the 4a9c0e3 baseline.
+
+     Three fixed-position overlays and one launcher chip, all display:none
+     by default. A visitor walking the canonical 7-trip demo sees a
+     pixel-identical prototype; nothing here renders until Live Slice is
+     armed, LiveSliceAPI.openSettings() is called, or the page is opened at
+     #ls-settings.
+
+     No dollar figure appears in this markup. Every displayed dollar comes
+     from an engines.js function (CLAUDE.md).
+     =================================================================== -->
+
+<!-- LIVE SLICE: LAUNCHER — hidden until armed -->
+<div id="ls-launcher" style="display:none;position:fixed;right:16px;bottom:16px;z-index:9998;">
+  <button onclick="LiveSliceAPI.openSettings()" style="display:flex;align-items:center;gap:7px;padding:9px 14px;background:var(--ink);color:var(--cr);border:none;border-radius:999px;box-shadow:0 4px 16px rgba(46,30,14,.28);cursor:pointer;font-family:var(--fm);font-size:9px;letter-spacing:2px;text-transform:uppercase;">
+    <span style="width:6px;height:6px;border-radius:50%;background:var(--sd);display:inline-block;"></span>Live Slice
+  </button>
+</div>
+
+<!-- LIVE SLICE: SETTINGS PANEL — bring-your-own key, localStorage only -->
+<div id="ls-settings-overlay" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(46,30,14,.45);align-items:center;justify-content:center;padding:20px;box-sizing:border-box;">
+  <div style="width:100%;max-width:420px;max-height:88vh;overflow-y:auto;background:var(--pn);border:1px solid var(--bd);border-radius:16px;padding:22px;box-sizing:border-box;box-shadow:0 18px 48px rgba(46,30,14,.3);">
+    <div style="font-family:var(--fm);font-size:8px;letter-spacing:4px;color:var(--rg);text-transform:uppercase;margin-bottom:10px;">Live Slice — Settings</div>
+    <div style="font-size:17px;font-weight:600;color:var(--ink);line-height:1.35;margin-bottom:6px;">Your Anthropic API key</div>
+    <div style="font-size:12px;color:var(--tm);line-height:1.6;margin-bottom:14px;">The Live Slice generates one itinerary per trip using your own key. It is stored in this browser's local storage only — never sent anywhere but Anthropic, never written to the repository, and never included in a deploy.</div>
+
+    <!-- AB · RULING Y: one pure addition, at this line. The explainer sits
+         between the summary and the key field, so it is read BEFORE the
+         traveller is asked to paste anything. A native <details> keeps it
+         collapsed by default with no script and no build step. No P3 markup
+         is modified. Every claim below is verified against liveslice-api.js:
+         the storage key, the single destination, the header-not-content
+         placement, what Remove does, and the §8 step-6 grep. -->
+    <details style="margin-bottom:14px;border:1px solid var(--bd);border-radius:12px;background:var(--nt);">
+      <summary style="cursor:pointer;padding:11px 13px;font-family:var(--fm);font-size:9px;letter-spacing:1.5px;color:var(--rg);text-transform:uppercase;">Why this demo asks for a key &middot; how to get one &middot; what it costs</summary>
+      <div style="padding:0 13px 13px;">
+        <div style="font-size:12px;color:var(--tm);line-height:1.65;">This prototype has no server. It is a single page hosted as static files, so when it needs Claude to propose a trip, it calls Anthropic directly from your browser using a key you provide. <strong style="color:var(--ink);font-weight:600;">The real product runs on Romieaux's own infrastructure — a customer never needs an API key and never sees one.</strong> This is a property of the demo, not the product.</div>
+
+        <div style="font-size:12px;color:var(--tm);line-height:1.65;margin-top:10px;"><strong style="color:var(--ink);font-weight:600;">What an API key is:</strong> a password that lets a program use Claude and bills the usage to whoever owns the key. It is for software, not people — you don't log in with it.</div>
+
+        <div style="font-family:var(--fm);font-size:9px;letter-spacing:2px;color:var(--rg);text-transform:uppercase;margin-top:14px;margin-bottom:6px;">Getting one — about two minutes</div>
+        <div style="font-size:12px;color:var(--tm);line-height:1.7;">1. Go to <strong style="color:var(--ink);font-weight:600;">console.anthropic.com</strong> and sign in, or create an account.<br>2. Add a payment method under <strong style="color:var(--ink);font-weight:600;">Billing</strong>. New accounts need a small amount of credit before the key will work.<br>3. Open <strong style="color:var(--ink);font-weight:600;">API keys → Create key</strong>, name it something like &ldquo;Romieaux demo&rdquo;, and copy it. It starts with <span style="font-family:var(--fm);">sk-ant-</span> and is shown <strong style="color:var(--ink);font-weight:600;">once</strong> — copy it now.<br>4. Back here, paste it into the key field below and press <strong style="color:var(--ink);font-weight:600;">Save key</strong>.</div>
+
+        <div style="font-family:var(--fm);font-size:9px;letter-spacing:2px;color:var(--rg);text-transform:uppercase;margin-top:14px;margin-bottom:6px;">What happens to it</div>
+        <div style="font-size:12px;color:var(--tm);line-height:1.7;">· Stored in this browser's local storage under <span style="font-family:var(--fm);">romieaux.liveSlice.apiKey</span>, in plain text. Nothing else.<br>· Sent only to <span style="font-family:var(--fm);">api.anthropic.com</span>, as the request's authentication header. It is never part of the message content.<br>· Never sent to Romieaux — there is no Romieaux server to send it to.<br>· <strong style="color:var(--ink);font-weight:600;">Remove</strong> below deletes it immediately.<br>· It is never written to the repository. A check in the release process greps for key material and blocks the commit if any is found.</div>
+
+        <div style="font-family:var(--fm);font-size:9px;letter-spacing:2px;color:var(--rg);text-transform:uppercase;margin-top:14px;margin-bottom:6px;">What it costs</div>
+        <div style="font-size:12px;color:var(--tm);line-height:1.65;">One generated trip is a single request. On Claude Sonnet 5 that is <strong style="color:var(--ink);font-weight:600;">roughly 10&ndash;20 cents</strong>. Ten demo runs cost about a dollar or two.</div>
+
+        <div style="font-size:12px;color:var(--tm);line-height:1.65;margin-top:10px;"><strong style="color:var(--ink);font-weight:600;">When you're done:</strong> revoke the key in the Anthropic Console. A key held in a browser is readable by anything running in that browser.</div>
+      </div>
+    </details>
+
+    <input type="password" id="ls-key-input" placeholder="sk-ant-…" autocomplete="off" spellcheck="false" style="width:100%;padding:10px 0;background:transparent;border:none;border-bottom:1.5px solid var(--bd);font-family:var(--fm);font-size:13px;color:var(--tx);outline:none;box-sizing:border-box;">
+
+    <div id="ls-settings-status" style="font-size:12px;color:var(--tm);line-height:1.6;margin-top:10px;"></div>
+    <div id="ls-settings-note" style="display:none;font-size:12px;line-height:1.6;margin-top:8px;"></div>
+
+    <div style="display:flex;gap:8px;margin-top:16px;">
+      <button class="btn bsd" style="flex:1;" onclick="LiveSliceAPI.saveKeyFromPanel()">Save key</button>
+      <button class="btn" style="flex:1;background:transparent;border:1px solid var(--bd);color:var(--tm);" onclick="LiveSliceAPI.clearKeyFromPanel()">Remove</button>
+    </div>
+
+    <div style="margin-top:20px;border-top:1px solid var(--bd);padding-top:14px;">
+      <div style="font-family:var(--fm);font-size:9px;letter-spacing:2px;color:var(--rg);text-transform:uppercase;margin-bottom:6px;">Consent</div>
+      <div id="ls-settings-consent" style="font-size:12px;color:var(--tm);line-height:1.6;"></div>
+    </div>
+
+    <div style="margin-top:16px;border-top:1px solid var(--bd);padding-top:14px;">
+      <div style="font-family:var(--fm);font-size:9px;letter-spacing:2px;color:var(--rg);text-transform:uppercase;margin-bottom:6px;">Offline replay</div>
+      <div id="ls-settings-replay" style="font-size:12px;color:var(--tm);line-height:1.6;"></div>
+    </div>
+
+    <div style="background:var(--nt);border-radius:12px;padding:12px 14px;margin-top:16px;">
+      <div style="font-family:var(--fm);font-size:8px;letter-spacing:2px;color:var(--sd);text-transform:uppercase;margin-bottom:4px;">A note on browser keys</div>
+      <div style="font-size:11px;color:var(--tm);line-height:1.6;">A key held in a browser is readable by anything running in that browser. Use a key scoped to this demo, and revoke it in the Anthropic Console when the demo is over.</div>
+    </div>
+
+    <button class="btn" style="width:100%;margin-top:14px;background:transparent;border:1px solid var(--bd);color:var(--tm);" onclick="LiveSliceAPI.closeSettings()">Close</button>
+  </div>
+</div>
+
+<!-- LIVE SLICE: CONSENT MODAL — gates the first API call -->
+<div id="ls-consent-overlay" style="display:none;position:fixed;inset:0;z-index:10000;background:rgba(46,30,14,.5);align-items:center;justify-content:center;padding:20px;box-sizing:border-box;">
+  <div style="width:100%;max-width:440px;max-height:88vh;overflow-y:auto;background:var(--pn);border:1px solid var(--bd);border-radius:16px;padding:22px;box-sizing:border-box;box-shadow:0 18px 48px rgba(46,30,14,.32);">
+    <div style="font-family:var(--fm);font-size:8px;letter-spacing:4px;color:var(--rg);text-transform:uppercase;margin-bottom:10px;">Live Slice — Before we send anything</div>
+    <div style="font-size:17px;font-weight:600;color:var(--ink);line-height:1.35;margin-bottom:6px;">This sends your Blueprint to Anthropic.</div>
+    <div style="font-size:12px;color:var(--tm);line-height:1.6;margin-bottom:14px;">Claude generates candidate stays, restaurants, activities and transport as structured data. Every dollar figure you then see is computed locally by the Romieaux engines — Claude is never asked for one.</div>
+
+    <div style="font-family:var(--fm);font-size:9px;letter-spacing:2px;color:var(--rg);text-transform:uppercase;margin-bottom:8px;">Exactly what is sent</div>
+    <div id="ls-consent-payload" style="background:var(--nt);border-radius:12px;padding:12px 14px;margin-bottom:14px;"></div>
+
+    <div style="font-family:var(--fm);font-size:9px;letter-spacing:2px;color:var(--rg);text-transform:uppercase;margin-bottom:8px;">What is not sent</div>
+    <div style="font-size:12px;color:var(--tm);line-height:1.6;margin-bottom:14px;">No name, no email, no payment details, no account. Your API key authenticates the request and is not part of its content. Nothing is stored on any Romieaux server — there is no Romieaux server.</div>
+
+    <div style="font-size:12px;color:var(--tm);line-height:1.6;margin-bottom:16px;">Sent to <strong style="color:var(--ink);">Anthropic (api.anthropic.com)</strong>, directly from this browser, under Anthropic's own terms and privacy policy.</div>
+
+    <!-- AB · RULING Y: one pure addition, at this line — the key explainer's
+         summary, on the screen where the traveller is deciding. The detail
+         lives in the settings panel; this is the one-line version plus the
+         sentence that matters most, that the real product needs no key. -->
+    <div style="background:var(--nt);border-radius:12px;padding:12px 14px;margin-bottom:16px;">
+      <div style="font-family:var(--fm);font-size:8px;letter-spacing:2px;color:var(--sd);text-transform:uppercase;margin-bottom:4px;">Why your own key</div>
+      <div style="font-size:11.5px;color:var(--tm);line-height:1.6;">This demo has no server, so it calls Anthropic straight from your browser with a key you supply — roughly 10&ndash;20 cents a trip. <strong style="color:var(--ink);font-weight:600;">The real product runs on Romieaux's own infrastructure; a customer never needs an API key.</strong> Full details are in Live Slice settings.</div>
+    </div>
+
+    <div style="display:flex;gap:8px;">
+      <button class="btn bsd" style="flex:1;" onclick="LiveSliceAPI.acceptConsent()">Send it — generate my trip</button>
+      <button class="btn" style="flex:1;background:transparent;border:1px solid var(--bd);color:var(--tm);" onclick="LiveSliceAPI.declineConsent()">Not now</button>
+    </div>
+    <div style="font-size:11px;color:var(--ts);line-height:1.6;margin-top:10px;">Asked once. You can withdraw it any time in Live Slice settings.</div>
+  </div>
+</div>
+
+<script src="liveslice-api.js"></script>
+
+<!-- ===================================================================
+     LIVE SLICE — P4 additions (scoring pipeline + results UI). Everything
+     below this line is new. No canonical markup, no P2 markup and no P3
+     markup is modified — ruling J is additive only, and the §8 step-5 byte
+     proof still strips the whole Live Slice region back to the 4a9c0e3
+     baseline.
+
+     Two things are added: one hidden entry card, and one screen. Both are
+     display:none by default, so a visitor walking the canonical 7-trip demo
+     still sees a pixel-identical prototype. The screen fills itself from
+     liveslice-results.js — every node below is an empty render target.
+
+     NO DOLLAR FIGURE APPEARS IN THIS MARKUP. Every figure the screen shows
+     is written in by an engines.js result at render time: the ledger rows
+     and their tooltips come from Engines.buildLedger(), and the model's own
+     price estimates are rendered only through price(), which cannot emit a
+     figure without the word "estimate" beside it (CLAUDE.md, work order §6).
+     =================================================================== -->
+
+<!-- LIVE SLICE: ENTRY CARD — work order §6's "Generate my trip — live".
+     Ruling J forbids inserting it into the canonical dashboard, so it is a
+     fixed Live Slice element instead, hidden until the page is opened at
+     #ls-start or LiveSliceResults.showEntry() is called. It sits above the
+     P3 settings launcher rather than replacing it. -->
+<div id="ls-entry" style="display:none;position:fixed;right:16px;bottom:64px;z-index:9998;max-width:290px;">
+  <div style="background:var(--pn);border:1.5px solid var(--sd);border-radius:14px;padding:14px 16px;box-shadow:0 10px 30px rgba(46,30,14,.22);">
+    <div style="font-family:var(--fm);font-size:8px;letter-spacing:2.5px;color:var(--sd);text-transform:uppercase;margin-bottom:5px;">Generated live</div>
+    <div style="font-family:var(--fd);font-size:16px;font-weight:600;color:var(--ink);line-height:1.3;margin-bottom:4px;">Generate my trip — live</div>
+    <div style="font-size:11px;color:var(--tm);line-height:1.55;margin-bottom:11px;">A real Blueprint, a real generation, and a ledger where every dollar is computed here against a named baseline.</div>
+    <button class="btn bsd" style="width:100%;padding:11px;font-size:13px;" onclick="LiveSliceResults.start()">Start a Live Slice →</button>
+    <!-- P6 · RULING Y: one pure addition, at this line. The offline Replay
+         affordance sits directly under the primary action and above the P4
+         link row, so the card reads start-then-fallback. Filled by
+         LiveSliceResults.renderEntryReplay(), which prints a button only
+         when a trip is actually cached. No P4 markup is modified. -->
+    <div id="ls-entry-replay"></div>
+    <div style="display:flex;gap:10px;margin-top:9px;justify-content:center;">
+      <span style="font-size:11px;color:var(--sd);cursor:pointer;text-decoration:underline;" onclick="LiveSliceResults.run('replay')">Replay last trip</span>
+      <span style="font-size:11px;color:var(--ts);">·</span>
+      <span style="font-size:11px;color:var(--ts);cursor:pointer;text-decoration:underline;" onclick="LiveSliceResults.openSettings()">Settings</span>
+    </div>
+  </div>
+</div>
+
+<!-- LIVE SLICE: RESULTS SCREEN (work order §6)
+     Day-by-day itinerary, an IdentityFit badge on every item, "estimate" on
+     every price, and a traceability tooltip carrying the formula and the
+     named baseline on every intervention. Rendered entirely by
+     liveslice-results.js; the canonical tooltip machinery (showTtip /
+     toggleTtip / TTIP_DATA) is reused rather than duplicated. -->
+<div id="s-ls-results" class="screen" style="background:var(--cr);">
+  <div class="tb">
+    <button class="bk" onclick="nav('s-ls-detail')">← Blueprint</button>
+    <div class="wm" style="font-family:var(--fm);font-size:9px;letter-spacing:2px;color:var(--sd);">LIVE SLICE</div>
+    <div></div>
+  </div>
+
+  <div class="ib">
+    <div class="ib-glow"></div>
+    <div class="ib-eye" id="ls-res-eye">Generated live</div>
+    <div class="ib-t" id="ls-res-title">Your Live Slice</div>
+    <div class="ib-s" id="ls-res-sub"></div>
+  </div>
+
+  <div class="scr" style="padding-top:0;">
+    <!-- Staged progress. The middle stages are real local work, so the copy
+         is honest: each line is written immediately before the step it names. -->
+    <div id="ls-res-progress"></div>
+
+    <div id="ls-res-body" style="display:none;">
+      <div id="ls-res-summary" style="padding-top:12px;"></div>
+      <div id="ls-res-days"></div>
+      <div id="ls-res-interventions"></div>
+      <!-- P5: the Live Slice ledger panel. One empty render target, filled by
+           liveslice-ledger.js. Every figure it shows is written in by an
+           Engines.buildLedger() result at render time — there is no dollar
+           figure in this markup, and none can be added to it. -->
+      <div id="ls-res-ledger"></div>
+      <div id="ls-res-notes"></div>
+      <div id="ls-res-footer"></div>
+      <!-- The canonical toggleTtip() reads a NODE with the tooltip's id while
+           showTtip() reads TTIP_DATA, so the same markup is mirrored here for
+           the click path. Empty until a Live Slice renders. -->
+      <div id="ls-res-tooltips"></div>
+    </div>
+  </div>
+</div>
+
+<!-- LIVE SLICE: P4 scripts. Loaded after the P2 and P3 blocks above, so
+     Engines, Blueprint, LiveSlice and LiveSliceAPI all exist by the time
+     liveslice-results.js wraps LiveSlice.continueFromDetail(). -->
+<script src="liveslice-scoring.js"></script>
+<script src="liveslice-results.js"></script>
+
+<!-- ===================================================================
+     LIVE SLICE — P5 additions (ledger panel + reconciliation). Everything
+     below this line is new. No canonical markup, and no P2 or P3 markup, is
+     modified — ruling J is additive only, and the §8 step-5 byte proof still
+     strips the whole Live Slice region, from the P2 banner to the last
+     </body>, back to the 4a9c0e3 baseline.
+
+     P5 adds NO new screen and NO new overlay. The panel renders inside the
+     P4 results screen, at the #ls-res-ledger target above, so a visitor
+     walking the canonical 7-trip demo still sees a pixel-identical
+     prototype. That one target is P5's only insertion into a prior phase's
+     block, and it lands under ruling Y: a pure addition at a stated line,
+     presented at the hard gate. No P4 markup is modified or reordered.
+
+     NO DOLLAR FIGURE APPEARS IN THIS MARKUP. Cash Savings, Intelligence
+     Savings, Net Budget, Hours Saved, Time Value, Fees and Total Romieaux
+     Value are every one of them written in by an engines.js result at
+     render time — and the panel renders none of them at all unless BOTH
+     render-time reconciliations pass, dollars and decisions (ruling E,
+     decisions ruling 1). An unreconciled figure is never displayed.
+
+     liveslice-ledger.js loads last. It READS the canonical userHourlyRate
+     and WRAPS the canonical updateTimeRate() original-first — ruling L: the
+     canonical function is never edited — so the Live Slice Time Value and
+     the canonical Profile dashboard move together off one variable.
+     =================================================================== -->
+<script src="liveslice-ledger.js"></script>
+
+<!-- ===================================================================
+     LIVE SLICE — P6 additions (polish). Everything below this line is new.
+     No canonical markup, and no P2, P3, P4 or P5 markup, is modified —
+     ruling J is additive only, and the §8 step-5 byte proof still strips
+     the whole Live Slice region, from the P2 banner to the last </body>,
+     back to the 4a9c0e3 baseline.
+
+     P6 adds NO screen, NO overlay and NO script. It adds one stylesheet,
+     plus the entry card's Replay target above (ruling Y, second application).
+
+     EVERY SELECTOR BELOW IS REACHED THROUGH A LIVE SLICE ID. Not one
+     canonical screen and not one bare canonical class is in any of them:
+     the canonical classes that do appear (.ar, .at, .an, .ab2, .as2, .dcb,
+     .dch, .qs, .btn) are reached only through #s-ls-results, #s-ls-detail,
+     #ls-entry or the two P3 overlays — so the canonical 65 screens render
+     identically with this block present or absent. The canonical Profile
+     slider #rate-slider appears NOWHERE here: ruling L, it is untouchable,
+     and the Live Slice slider is deliberately left looking exactly like it.
+
+     NO DOLLAR FIGURE APPEARS IN THIS MARKUP. A stylesheet has no content.
+     =================================================================== -->
+<style>
+/* ---------------------------------------------------------------------
+   Live Slice mobile pass (work order §9, P6). Verified at 380px.
+
+   Most of the pass is NOT here. It is inline in the render code, where the
+   rest of those elements' styles already live, and it is width-agnostic:
+   flex rows that wrap, and flex children allowed to shrink below their own
+   content, need no breakpoint and cannot misfire on a wide screen. What is
+   here is only what could not be written inline — rules on canonical
+   classes the Live Slice reuses, and the one genuinely width-dependent set.
+   ------------------------------------------------------------------- */
+
+/* A flex or grid child defaults to min-width:auto and so refuses to shrink
+   below its own content — which is what turns one long venue name into a
+   horizontally scrolling page. Every Live Slice surface opts out, and long
+   unbroken strings break rather than overflow. */
+#s-ls-results,
+#s-ls-detail,
+#ls-entry,
+#ls-settings-overlay,
+#ls-consent-overlay { overflow-wrap: anywhere; }
+
+#s-ls-results div,
+#s-ls-results span,
+#s-ls-detail div,
+#ls-entry div { min-width: 0; }
+
+/* The canonical itinerary row, inside the Live Slice results screen only. */
+#s-ls-results .ab2,
+#s-ls-results .an,
+#s-ls-results .as2 { min-width: 0; overflow-wrap: anywhere; }
+
+/* In the day header the date may wrap; the pacing badge may not shrink. */
+#s-ls-results .dcb { flex-shrink: 0; }
+
+/* The generation-wait liveness dot (work order §6). It marks that a request is
+   outstanding — it is not a progress bar, and it encodes no estimate. A
+   pseudo-class animation cannot be written inline, so it lives here; the
+   keyframe name is ls- prefixed and harness §11.7 asserts that stays true.
+   `prefers-reduced-motion` turns the pulse off and leaves the dot visible. */
+@keyframes ls-pulse {
+  0%, 100% { opacity: .3; }
+  50%      { opacity: 1; }
+}
+#s-ls-results .ls-pulse { animation: ls-pulse 1.4s ease-in-out infinite; }
+@media (prefers-reduced-motion: reduce) {
+  #s-ls-results .ls-pulse { animation: none; opacity: .8; }
+}
+
+/* ---------------------------------------------------------------------
+   380px. The breakpoint is 400px so the common 390px phone viewport falls
+   inside it as well as the 380px verification width. This is the first
+   @media rule in the file — the canonical prototype has none.
+   ------------------------------------------------------------------- */
+@media (max-width: 400px) {
+
+  /* The 42px time gutter is the widest fixed dimension on the screen. */
+  #s-ls-results .ar { gap: 8px; padding-left: 13px; padding-right: 13px; }
+  #s-ls-results .at { width: 34px; }
+  #s-ls-results .dch { gap: 8px; }
+
+  /* Two-up button rows wrap their labels rather than overflow; less side
+     padding usually means they do not have to. */
+  #s-ls-results .btn,
+  #ls-entry .btn,
+  #ls-settings-overlay .btn,
+  #ls-consent-overlay .btn { padding-left: 12px; padding-right: 12px; }
+
+  /* The ruling-G screen's own gutter. */
+  #s-ls-detail .qs { padding-left: 18px; padding-right: 18px; }
+
+  /* Work order §6's live control, and the one the narrow viewport fights.
+     The TOUCH TARGET grows. The control itself stays native and
+     accent-coloured, exactly like the canonical Profile slider it is
+     meant to read as — no custom thumb, on purpose. */
+  #ls-lg-rate-slider { height: 34px; }
+}
+</style>
 </body>
 </html>
