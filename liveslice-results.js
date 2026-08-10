@@ -201,7 +201,7 @@ var LiveSliceResults = (function (root) {
     var rows = decisions.rows.map(function (r) {
       return '<div class="ttip-row"><span>' + esc(r.label) + '</span><strong>' + r.count + '</strong></div>';
     }).join('');
-    return '<div class="ttip-h">Decisions Automated · Live Slice</div>' + rows +
+    return '<div class="ttip-h">Decisions Automated · Generated live</div>' + rows +
       '<div class="ttip-total"><span>Total</span><span>' + decisions.total + '</span></div>' +
       '<div class="ttip-note">One planning pass, scored locally. Every count is engine work that actually ran.</div>';
   }
@@ -217,7 +217,7 @@ var LiveSliceResults = (function (root) {
     html('ls-res-progress',
       '<div style="padding:34px 24px;text-align:center;">' +
       '<div style="font-family:var(--fd);font-size:42px;font-style:italic;color:var(--sd);opacity:.8;margin-bottom:16px;">R</div>' +
-      '<div style="font-family:var(--fm);font-size:9px;letter-spacing:4px;color:var(--sd);text-transform:uppercase;margin-bottom:10px;">Live Slice</div>' +
+      '<div style="font-family:var(--fm);font-size:9px;letter-spacing:4px;color:var(--sd);text-transform:uppercase;margin-bottom:10px;">Generated live</div>' +
       '<div style="font-family:var(--fd);font-size:20px;font-weight:700;color:var(--ink);margin-bottom:6px;">' + esc(title) + '</div>' +
       '<div style="font-size:12px;color:var(--tm);line-height:1.6;">' + esc(detail || '') + '</div>' +
       '<div id="ls-res-liveness" style="font-size:11px;color:var(--tm);line-height:1.6;margin-top:12px;min-height:16px;"></div>' +
@@ -289,7 +289,7 @@ var LiveSliceResults = (function (root) {
     var detail = (error && error.detail) ? error.detail : '';
     html('ls-res-progress',
       '<div style="margin:24px 20px;background:rgba(196,85,63,.06);border:1px solid rgba(196,85,63,.3);border-radius:12px;padding:16px 18px;">' +
-      '<div style="font-family:var(--fm);font-size:8px;letter-spacing:2px;color:var(--rd);text-transform:uppercase;margin-bottom:6px;">Live Slice could not run</div>' +
+      '<div style="font-family:var(--fm);font-size:8px;letter-spacing:2px;color:var(--rd);text-transform:uppercase;margin-bottom:6px;">Generated live — could not run</div>' +
       '<div style="font-size:13px;color:var(--tx);line-height:1.6;">' + esc(message) + '</div>' +
       (detail ? '<div style="font-size:11px;color:var(--ts);line-height:1.6;margin-top:8px;">' + esc(detail) + '</div>' : '') +
       '<div style="display:flex;gap:8px;margin-top:14px;">' +
@@ -312,7 +312,7 @@ var LiveSliceResults = (function (root) {
     var replayed = result.source === 'replay';
 
     html('ls-res-eye', 'Generated live' + (replayed ? ' · replayed offline' : ''));
-    html('ls-res-title', esc(trip.destination || (result.blueprint && result.blueprint.destination_name) || 'Your Live Slice'));
+    html('ls-res-title', esc(trip.destination || (result.blueprint && result.blueprint.destination_name) || 'Your trip'));
     html('ls-res-sub', esc([dates, nights, result.blueprint && result.blueprint.pace ? result.blueprint.pace + ' pace' : '']
       .filter(Boolean).join(' · ')));
   }
@@ -502,7 +502,7 @@ var LiveSliceResults = (function (root) {
       html('ls-res-interventions',
         '<div class="sh"><div class="shl">Value Attribution</div><div class="sht">No savings opportunities detected in this itinerary</div></div>' +
         '<div style="padding:0 20px 8px;font-size:12px;color:var(--tm);line-height:1.6;">' +
-        'Nothing in this generation cleared a Ledger Law gate. The Live Slice shows a figure only when an engine can name the baseline it was measured against.</div>');
+        'Nothing in this generation cleared a Ledger Law gate. A figure appears only when an engine can name the baseline it was measured against.</div>');
       return;
     }
 
@@ -533,7 +533,7 @@ var LiveSliceResults = (function (root) {
     else if (root.console && root.console.info) root.console.info(check.message);
 
     html('ls-res-interventions',
-      '<div class="sh"><div class="shl">Value Attribution · Live Slice</div>' +
+      '<div class="sh"><div class="shl">Value Attribution · Generated live</div>' +
       '<div class="sht">' + ledger.interventionCount + ' interventions detected</div></div>' + rows);
   }
 
@@ -625,10 +625,10 @@ var LiveSliceResults = (function (root) {
       '<div style="padding:14px 20px 28px;">' +
       '<div style="background:var(--sdl);border:1px solid rgba(176,138,80,.25);border-radius:12px;padding:13px 15px;">' +
       '<div style="font-family:var(--fm);font-size:8px;letter-spacing:2px;color:var(--sd);text-transform:uppercase;margin-bottom:4px;">' +
-      (replayed ? 'Replayed — no network call' : 'Live Slice') + '</div>' +
+      (replayed ? 'Replayed — no network call' : 'Generated live') + '</div>' +
       '<div style="font-size:12px;color:var(--tm);line-height:1.6;">' + FOOTER_LINE + '</div></div>' +
       '<div style="display:flex;gap:8px;margin-top:12px;">' +
-      '<button class="btn" style="flex:1;background:transparent;border:1px solid var(--bd);color:var(--tm);" onclick="LiveSliceAPI.openSettings()">Live Slice settings</button>' +
+      '<button class="btn" style="flex:1;background:transparent;border:1px solid var(--bd);color:var(--tm);" onclick="LiveSliceAPI.openSettings()">Generated live settings</button>' +
       '<button class="btn bsd" style="flex:1;" onclick="LiveSliceResults.run(\'replay\')">Replay this trip</button>' +
       '</div></div>');
   }
@@ -828,7 +828,7 @@ var LiveSliceResults = (function (root) {
    * silently scored against the wrong one. */
   function loadTrip(source) {
     if (!API) {
-      return Promise.reject(new Error('The Live Slice API layer is not loaded.'));
+      return Promise.reject(new Error('The generation layer is not loaded.'));
     }
     if (source === 'replay') {
       return API.replay().then(function (cached) {
@@ -861,7 +861,7 @@ var LiveSliceResults = (function (root) {
 
     navTo('s-ls-results');
     stage(source === 'replay'
-        ? 'Replaying your last Live Slice…'
+        ? 'Replaying your last trip…'
         : 'Asking Claude for trip ideas — venues, activities, stays…',
       source === 'replay'
         ? 'No network call — scoring the cached trip against the Blueprint it was generated from.'

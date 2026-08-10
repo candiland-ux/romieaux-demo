@@ -510,7 +510,7 @@ var Blueprint = (function (Engines) {
 
     // destination + dates
     if (!str(bp.destination_name)) {
-      err('destination_name', 'Choose a destination before generating a Live Slice.', 's-dest');
+      err('destination_name', 'Choose a destination before generating your trip.', 's-dest');
     }
     if (bp.start_date && bp.end_date && !nightsBetween(bp.start_date, bp.end_date)) {
       err('end_date', 'The return date must be after the departure date.', 's-tripdetails');

@@ -680,7 +680,7 @@ var LiveSliceAPI = (function (root) {
     if (!hasKey()) {
       openSettings();
       return Promise.reject(apiError('no_key',
-        'No API key saved yet. Add one in Live Slice settings — it is stored in this browser only.', '', null));
+        'No API key saved yet. Add one in Generated live settings — it is stored in this browser only.', '', null));
     }
 
     // (c) consent is read from the ref at call time, never from a captured

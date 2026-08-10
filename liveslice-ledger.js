@@ -288,13 +288,13 @@ var LiveSliceLedger = (function (root) {
     var rows = decisions.rows.map(function (r) {
       return '<div class="ttip-row"><span>' + esc(r.label) + '</span><strong>' + r.count + '</strong></div>';
     }).join('');
-    return '<div class="ttip-h">Decisions Automated · Live Slice</div>' + rows +
+    return '<div class="ttip-h">Decisions Automated · Generated live</div>' + rows +
       '<div class="ttip-total"><span>Total</span><span>' + decisions.total + '</span></div>' +
       '<div class="ttip-note">One planning pass, scored locally. Every count is engine work that actually ran.</div>';
   }
 
   function hoursTooltip(ledger) {
-    return '<div class="ttip-h">Hours Saved · Live Slice</div>' +
+    return '<div class="ttip-h">Hours Saved · Generated live</div>' +
       '<div class="ttip-row"><span>Formula</span><strong>decisions × ' +
       Engines.MINUTES_PER_DECISION + ' min</strong></div>' +
       '<div class="ttip-row"><span>Decisions</span><strong>' + ledger.decisions + '</strong></div>' +
@@ -318,7 +318,7 @@ var LiveSliceLedger = (function (root) {
   }
 
   function timeValueTooltip(ledger) {
-    return '<div class="ttip-h">Time Value · Live Slice</div>' +
+    return '<div class="ttip-h">Time Value · Generated live</div>' +
       '<div class="ttip-row"><span>Formula</span><strong>hours × hourly rate</strong></div>' +
       '<div class="ttip-row"><span>Hours</span><strong>' + hoursText(ledger.hoursSaved) + '</strong></div>' +
       '<div class="ttip-row"><span>Your rate</span><strong>' + rateText(ledger.hourlyRate) + PER_HOUR + '</strong></div>' +
@@ -428,7 +428,7 @@ var LiveSliceLedger = (function (root) {
    * ================================================================== */
 
   function sectionHeader(subtitle) {
-    return '<div class="sh"><div class="shl">Live Slice · Value Ledger</div>' +
+    return '<div class="sh"><div class="shl">Generated live · Value Ledger</div>' +
       '<div class="sht">' + esc(subtitle) + '</div></div>';
   }
 
@@ -485,7 +485,7 @@ var LiveSliceLedger = (function (root) {
     var body = ledger.isEmpty
       ? '<div style="font-size:12px;color:var(--tm);line-height:1.6;padding:4px 0 2px;">' +
         'No savings opportunities detected in this itinerary. Nothing in this generation cleared a Ledger Law gate, ' +
-        'and the Live Slice shows a figure only when an engine can name the baseline it was measured against.</div>'
+        'and a figure appears only when an engine can name the baseline it was measured against.</div>'
       : rows;
 
     emitted.headline = ledger.intelligenceSavings;   // the figure printed below
@@ -646,7 +646,7 @@ var LiveSliceLedger = (function (root) {
       '<div style="margin:0 20px 14px;background:rgba(196,85,63,.06);border:1px solid rgba(196,85,63,.3);border-radius:12px;padding:15px 16px;">' +
       '<div style="font-family:var(--fm);font-size:8px;letter-spacing:2px;color:var(--rd);text-transform:uppercase;margin-bottom:6px;">Ledger withheld</div>' +
       '<div style="font-size:13px;color:var(--tx);line-height:1.55;margin-bottom:8px;">' +
-      'The Live Slice could not reconcile this ledger against its own rows, so it is showing none of it. ' +
+      'This ledger could not be reconciled against its own rows, so the panel is showing none of it. ' +
       'A figure that does not reconcile is the one thing this panel exists to prevent.</div>' +
       items +
       note('The full arithmetic is in the console. Replay or regenerate the trip; if it repeats, the engine and the ' +
@@ -659,7 +659,7 @@ var LiveSliceLedger = (function (root) {
     html(PANEL_ID,
       sectionHeader('No scored trip to price') +
       '<div style="margin:0 20px 14px;font-size:12px;color:var(--tm);line-height:1.6;">' +
-      'The ledger panel prices a scored Live Slice. Generate or replay one and it fills itself in.</div>');
+      'The ledger panel prices a scored trip. Generate or replay one and it fills itself in.</div>');
   }
 
   /* =====================================================================

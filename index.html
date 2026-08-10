@@ -4,6 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ROMIEAUX™ — Journey, Elevated.</title>
+<link rel="icon" href="favicon.ico" sizes="32x32">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap');
 :root{--cr:#f5efe6;--cr2:#ebe3d6;--pn:#faf7f2;--ink:#2e1e0e;--bk:#5a4230;--sd:#b08a50;--rg:#c4877a;--rgl:rgba(196,135,122,.14);--sdl:rgba(176,138,80,.12);--nt:#e8ddd0;--n2:#dfd3c4;--bd:#d4c4b0;--bdk:rgba(61,44,26,.12);--tx:#2e1e0e;--tm:#6b4e30;--ts:#8a6a48;--gn:#4a7a3a;--rd:#8b1a1a;--fd:'Playfair Display',serif;--fs:'DM Sans',sans-serif;--fm:'DM Mono',monospace;}
@@ -9112,9 +9114,9 @@ document.addEventListener('click', function(){
 
 <!-- LIVE SLICE: THE ONE SUPPLEMENTAL SCREEN (ruling G) -->
 <div id="s-ls-detail" class="screen" style="background:var(--cr);">
-  <div class="tb"><button class="bk" onclick="nav('s-tripdetails')">← Back</button><div class="wm" style="font-family:var(--fm);font-size:9px;letter-spacing:2px;color:var(--sd);">LIVE SLICE</div><div></div></div>
+  <div class="tb"><button class="bk" onclick="nav('s-tripdetails')">← Back</button><div class="wm" style="font-family:var(--fm);font-size:9px;letter-spacing:2px;color:var(--sd);">GENERATED LIVE</div><div></div></div>
   <div class="qs" style="overflow-y:auto;">
-    <div style="font-family:var(--fm);font-size:8px;letter-spacing:4px;color:var(--rg);text-transform:uppercase;margin-bottom:14px;">Live Slice — Last Details</div>
+    <div style="font-family:var(--fm);font-size:8px;letter-spacing:4px;color:var(--rg);text-transform:uppercase;margin-bottom:14px;">Generated live — Last Details</div>
     <div class="qt" style="color:var(--ink)">Three things before we build it.</div>
     <div class="qsub" style="color:var(--tm)">Pace sets how full your days are. Dietary and access needs are applied strictly — anything that conflicts is removed from your trip, not just flagged.</div>
 
@@ -9145,7 +9147,7 @@ document.addEventListener('click', function(){
       <div style="font-size:12px;color:var(--tm);line-height:1.6;">Your luxury threshold is not asked — it is derived from the budget envelope you already set. Everything else on this screen the engines cannot infer.</div>
     </div>
 
-    <button class="btn bsd" style="width:100%;margin-top:18px;" onclick="LiveSlice.continueFromDetail()">Build My Live Slice →</button>
+    <button class="btn bsd" style="width:100%;margin-top:18px;" onclick="LiveSlice.continueFromDetail()">Generate live →</button>
   </div>
 </div>
 
@@ -9175,16 +9177,16 @@ document.addEventListener('click', function(){
 <!-- LIVE SLICE: LAUNCHER — hidden until armed -->
 <div id="ls-launcher" style="display:none;position:fixed;right:16px;bottom:16px;z-index:9998;">
   <button onclick="LiveSliceAPI.openSettings()" style="display:flex;align-items:center;gap:7px;padding:9px 14px;background:var(--ink);color:var(--cr);border:none;border-radius:999px;box-shadow:0 4px 16px rgba(46,30,14,.28);cursor:pointer;font-family:var(--fm);font-size:9px;letter-spacing:2px;text-transform:uppercase;">
-    <span style="width:6px;height:6px;border-radius:50%;background:var(--sd);display:inline-block;"></span>Live Slice
+    <span style="width:6px;height:6px;border-radius:50%;background:var(--sd);display:inline-block;"></span>Generated live
   </button>
 </div>
 
 <!-- LIVE SLICE: SETTINGS PANEL — bring-your-own key, localStorage only -->
 <div id="ls-settings-overlay" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(46,30,14,.45);align-items:center;justify-content:center;padding:20px;box-sizing:border-box;">
   <div style="width:100%;max-width:420px;max-height:88vh;overflow-y:auto;background:var(--pn);border:1px solid var(--bd);border-radius:16px;padding:22px;box-sizing:border-box;box-shadow:0 18px 48px rgba(46,30,14,.3);">
-    <div style="font-family:var(--fm);font-size:8px;letter-spacing:4px;color:var(--rg);text-transform:uppercase;margin-bottom:10px;">Live Slice — Settings</div>
+    <div style="font-family:var(--fm);font-size:8px;letter-spacing:4px;color:var(--rg);text-transform:uppercase;margin-bottom:10px;">Generated live — Settings</div>
     <div style="font-size:17px;font-weight:600;color:var(--ink);line-height:1.35;margin-bottom:6px;">Your Anthropic API key</div>
-    <div style="font-size:12px;color:var(--tm);line-height:1.6;margin-bottom:14px;">The Live Slice generates one itinerary per trip using your own key. It is stored in this browser's local storage only — never sent anywhere but Anthropic, never written to the repository, and never included in a deploy.</div>
+    <div style="font-size:12px;color:var(--tm);line-height:1.6;margin-bottom:14px;">&ldquo;Generate a trip live&rdquo; makes one itinerary per trip using your own key. It is stored in this browser's local storage only — never sent anywhere but Anthropic, never written to the repository, and never included in a deploy.</div>
 
     <!-- AB · RULING Y: one pure addition, at this line. The explainer sits
          between the summary and the key field, so it is read BEFORE the
@@ -9245,7 +9247,7 @@ document.addEventListener('click', function(){
 <!-- LIVE SLICE: CONSENT MODAL — gates the first API call -->
 <div id="ls-consent-overlay" style="display:none;position:fixed;inset:0;z-index:10000;background:rgba(46,30,14,.5);align-items:center;justify-content:center;padding:20px;box-sizing:border-box;">
   <div style="width:100%;max-width:440px;max-height:88vh;overflow-y:auto;background:var(--pn);border:1px solid var(--bd);border-radius:16px;padding:22px;box-sizing:border-box;box-shadow:0 18px 48px rgba(46,30,14,.32);">
-    <div style="font-family:var(--fm);font-size:8px;letter-spacing:4px;color:var(--rg);text-transform:uppercase;margin-bottom:10px;">Live Slice — Before we send anything</div>
+    <div style="font-family:var(--fm);font-size:8px;letter-spacing:4px;color:var(--rg);text-transform:uppercase;margin-bottom:10px;">Generated live — Before we send anything</div>
     <div style="font-size:17px;font-weight:600;color:var(--ink);line-height:1.35;margin-bottom:6px;">This sends your Blueprint to Anthropic.</div>
     <div style="font-size:12px;color:var(--tm);line-height:1.6;margin-bottom:14px;">Claude generates candidate stays, restaurants, activities and transport as structured data. Every dollar figure you then see is computed locally by the Romieaux engines — Claude is never asked for one.</div>
 
@@ -9263,14 +9265,14 @@ document.addEventListener('click', function(){
          sentence that matters most, that the real product needs no key. -->
     <div style="background:var(--nt);border-radius:12px;padding:12px 14px;margin-bottom:16px;">
       <div style="font-family:var(--fm);font-size:8px;letter-spacing:2px;color:var(--sd);text-transform:uppercase;margin-bottom:4px;">Why your own key</div>
-      <div style="font-size:11.5px;color:var(--tm);line-height:1.6;">This demo has no server, so it calls Anthropic straight from your browser with a key you supply — roughly 10&ndash;20 cents a trip. <strong style="color:var(--ink);font-weight:600;">The real product runs on Romieaux's own infrastructure; a customer never needs an API key.</strong> Full details are in Live Slice settings.</div>
+      <div style="font-size:11.5px;color:var(--tm);line-height:1.6;">This demo has no server, so it calls Anthropic straight from your browser with a key you supply — roughly 10&ndash;20 cents a trip. <strong style="color:var(--ink);font-weight:600;">The real product runs on Romieaux's own infrastructure; a customer never needs an API key.</strong> Full details are in &ldquo;Generated live&rdquo; settings.</div>
     </div>
 
     <div style="display:flex;gap:8px;">
       <button class="btn bsd" style="flex:1;" onclick="LiveSliceAPI.acceptConsent()">Send it — generate my trip</button>
       <button class="btn" style="flex:1;background:transparent;border:1px solid var(--bd);color:var(--tm);" onclick="LiveSliceAPI.declineConsent()">Not now</button>
     </div>
-    <div style="font-size:11px;color:var(--ts);line-height:1.6;margin-top:10px;">Asked once. You can withdraw it any time in Live Slice settings.</div>
+    <div style="font-size:11px;color:var(--ts);line-height:1.6;margin-top:10px;">Asked once. You can withdraw it any time in &ldquo;Generated live&rdquo; settings.</div>
   </div>
 </div>
 
@@ -9305,7 +9307,7 @@ document.addEventListener('click', function(){
     <div style="font-family:var(--fm);font-size:8px;letter-spacing:2.5px;color:var(--sd);text-transform:uppercase;margin-bottom:5px;">Generated live</div>
     <div style="font-family:var(--fd);font-size:16px;font-weight:600;color:var(--ink);line-height:1.3;margin-bottom:4px;">Generate my trip — live</div>
     <div style="font-size:11px;color:var(--tm);line-height:1.55;margin-bottom:11px;">A real Blueprint, a real generation, and a ledger where every dollar is computed here against a named baseline.</div>
-    <button class="btn bsd" style="width:100%;padding:11px;font-size:13px;" onclick="LiveSliceResults.start()">Start a Live Slice →</button>
+    <button class="btn bsd" style="width:100%;padding:11px;font-size:13px;" onclick="LiveSliceResults.start()">Generate live →</button>
     <!-- P6 · RULING Y: one pure addition, at this line. The offline Replay
          affordance sits directly under the primary action and above the P4
          link row, so the card reads start-then-fallback. Filled by
@@ -9329,14 +9331,14 @@ document.addEventListener('click', function(){
 <div id="s-ls-results" class="screen" style="background:var(--cr);">
   <div class="tb">
     <button class="bk" onclick="nav('s-ls-detail')">← Blueprint</button>
-    <div class="wm" style="font-family:var(--fm);font-size:9px;letter-spacing:2px;color:var(--sd);">LIVE SLICE</div>
+    <div class="wm" style="font-family:var(--fm);font-size:9px;letter-spacing:2px;color:var(--sd);">GENERATED LIVE</div>
     <div></div>
   </div>
 
   <div class="ib">
     <div class="ib-glow"></div>
     <div class="ib-eye" id="ls-res-eye">Generated live</div>
-    <div class="ib-t" id="ls-res-title">Your Live Slice</div>
+    <div class="ib-t" id="ls-res-title">Your trip</div>
     <div class="ib-s" id="ls-res-sub"></div>
   </div>
 

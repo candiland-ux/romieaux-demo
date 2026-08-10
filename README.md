@@ -16,8 +16,8 @@ book anything, take payment, or create accounts.
 
 ## What's here
 
-`index.html` and the seven scripts it loads. Scoring is pure client-side
-JavaScript — no build step, no backend.
+`index.html`, the seven scripts it loads, and a favicon. Scoring is pure
+client-side JavaScript — no build step, no backend.
 
 ## Status
 

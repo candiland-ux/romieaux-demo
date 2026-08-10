@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img" aria-label="Romieaux">
+  <!-- The Romieaux mark: the serif R the progress screen already draws, in
+       the sand gold #b08a50 on the ink brown #2e1e0e. Authored as a PATH and
+       not as a text element, because an SVG favicon cannot fetch Playfair
+       Display: a text mark would render in whatever serif the viewer has.
+       (No CSS variable names appear above. An XML comment may not contain a
+       double hyphen, and every Romieaux custom property starts with one.) -->
+  <rect width="64" height="64" rx="13" fill="#2e1e0e"/>
+  <path fill="#b08a50" fill-rule="evenodd" d="
+    M15.5 13
+    H34
+    C42.3 13 47.5 17.7 47.5 24.6
+    C47.5 30.2 44.1 34.3 38.2 35.7
+    L48.5 51
+    H37.1
+    L27.9 37.1
+    H25.1
+    V51
+    H15.5
+    Z
+    M25.1 20.4
+    V29.9
+    H32.7
+    C36.4 29.9 38.1 28.1 38.1 25.1
+    C38.1 22.1 36.4 20.4 32.7 20.4
+    Z"/>
+</svg>
