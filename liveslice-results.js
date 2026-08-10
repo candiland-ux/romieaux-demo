@@ -104,11 +104,53 @@ var LiveSliceResults = (function (root) {
       .replace(/"/g, '&quot;');
   }
 
+  /* =====================================================================
+   * §19 — SILENT SINKS (RULINGS §5a). The one place this file is allowed to
+   * fail quietly is where a failure has a stated, checked consequence. These
+   * two did not.
+   *
+   * sinkError() is the reporting half. It is deliberately console.ERROR, not
+   * warn: warn is what this file uses for a degraded render that still put
+   * something honest on screen, and none of the §19 sinks did that — each one
+   * ends with the traveller looking at a page that did not do what they asked.
+   *
+   * The message keeps the build-side name (CLAUDE.md as scoped at AH, and §5f's
+   * precedent): the console is a developer surface. The literals therefore sit
+   * INSIDE the console call, which is also what keeps harness §20.2's lexer
+   * able to tell them apart from rendered copy.
+   * ================================================================== */
+
+  function sinkError(what, error) {
+    if (root.console && root.console.error) {
+      root.console.error('Live Slice: ' + what, error || '');
+    }
+    return false;
+  }
+
+  /* navTo's boolean contract is UNCHANGED — true when the canonical nav() ran,
+   * false otherwise. What is new is that a false now always carries a reason.
+   *
+   * Both of its failure modes were silent, and the second one is not the
+   * interesting one. A THROWN nav() hit the empty catch. A MISSING nav() never
+   * reached the catch at all: it fell straight out of the `if` and off the end
+   * of the function. Missing is exactly the state ruling AG's outage left the
+   * page in — a SyntaxError had discarded the canonical inline block, so nav()
+   * did not exist — and it is the mode that returned false into callers that
+   * were not reading it.
+   *
+   * The other three call sites (renderRun, rescore, wireIntake) still discard
+   * this return. They are outside §5a's four, and they are no longer silent:
+   * navTo speaks for itself now, wherever it is called from. */
   function navTo(id) {
     try {
       if (typeof root.nav === 'function') { root.nav(id); return true; }
-    } catch (e) { /* fall through */ }
-    return false;
+      return sinkError('navTo("' + id + '") found no canonical nav() on this page, so the '
+        + 'traveller did not move. On a page whose inline script died this is the '
+        + 'symptom, not the cause — check that index.html still parses (harness §18).', null);
+    } catch (e) {
+      return sinkError('navTo("' + id + '") — the canonical nav() threw, so the traveller '
+        + 'did not move.', e);
+    }
   }
 
   /* =====================================================================
@@ -1030,14 +1072,69 @@ var LiveSliceResults = (function (root) {
     return !!card;
   }
 
+  /* §19, the traveller's half. A start that cannot navigate leaves the
+   * traveller exactly where they tapped, with the entry card hidden one line
+   * earlier by start() itself — a tap, and then nothing. That is the AG shape
+   * precisely, and for the length of that outage this path had no way to say
+   * so. Put the card back, and say it on the card.
+   *
+   * The message takes ls-entry-replay, the card's one script-owned slot.
+   * Giving that slot up costs nothing at this moment: run('replay') reaches
+   * the results screen through the same navTo that just failed, so on a page
+   * where navigation is dead the Replay affordance is dead with it, and
+   * offering it would be the second false promise in a row. The next
+   * showEntry() renders the affordance back over this.
+   *
+   * Traveller vocabulary, CLAUDE.md as scoped at AH: the eyebrow takes the
+   * approved eyebrow form — the same one stageError() already uses for the
+   * refusal panel — and the sentence carries no form of the name at all,
+   * which the scoping provides for rather than inventing a fourth. */
+  function failedToStart() {
+    showEntry();
+    html('ls-entry-replay',
+      '<div style="margin-top:9px;background:rgba(196,85,63,.06);border:1px solid rgba(196,85,63,.3);' +
+      'border-radius:10px;padding:10px 12px;">' +
+      '<div style="font-family:var(--fm);font-size:8px;letter-spacing:2px;color:var(--rd);' +
+      'text-transform:uppercase;margin-bottom:5px;">Generated live — could not start</div>' +
+      '<div style="font-size:11px;color:var(--tx);line-height:1.55;">This page did not finish ' +
+      'loading, so nothing happened when you tapped. Reload the page and try again.</div></div>');
+    return false;
+  }
+
+  /* §19 (RULINGS §5a). Three of the four recorded sinks were in these nine
+   * lines: an empty catch that dropped whatever begin() or showLauncher()
+   * threw, a discarded navTo() return, and `return true` regardless of either.
+   * The fourth was navTo's own, above.
+   *
+   * Three things change and nothing else does. The catch reports instead of
+   * absorbing; the navigation's answer is read and acted on; and the returned
+   * value is the truth about both, so a caller — and the harness — can tell a
+   * start that worked from one that did not.
+   *
+   * ARMING AND NAVIGATING FAIL SEPARATELY, and are kept separate. An unarmed
+   * intake that still navigates leaves the traveller on a real screen, so the
+   * card must NOT come back over it; a failed navigation leaves them nowhere,
+   * and it must. Only the second has a traveller-visible half. */
   function start() {
     hideEntry();
+
+    var armed = true;
     try {
       if (root.LiveSlice && typeof root.LiveSlice.begin === 'function') root.LiveSlice.begin();
       if (API && typeof API.showLauncher === 'function') API.showLauncher();
-    } catch (e) { /* the intake is absent — the Blueprint screens will say so */ }
-    navTo('s-bp-energy');
-    return true;
+    } catch (e) {
+      /* What stood here read "the intake is absent — the Blueprint screens will
+       * say so". That is true of exactly one cause and silent about every
+       * other, and an absent intake is not the only way begin() throws. */
+      armed = sinkError('start() could not arm the intake — LiveSlice.begin() or '
+        + 'API.showLauncher() threw. The Blueprint screens will open unarmed, so the '
+        + 'traveller reaches them and generation does not follow.', e);
+    }
+
+    var navigated = navTo('s-bp-energy');
+    if (!navigated) failedToStart();
+
+    return armed && navigated;
   }
 
   /* =====================================================================
