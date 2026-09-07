@@ -334,7 +334,11 @@ var LiveSlice = (function () {
     var result = Blueprint.validate(bp);
     if (!result.ok) {
       showErrors(result.errors);
-      if (typeof showToast === 'function') showToast('A few Blueprint answers are still missing');
+      // RULING AK. A traveller-visible toast, in a file neither AH's nor AK's
+      // ruling named — found by §20.5's own assertion, exactly as AH's §20.2
+      // found two outside its file list. The ruling's words govern: no surface
+      // a traveller reads speaks the workshop's vocabulary.
+      if (typeof showToast === 'function') showToast('A few answers are still missing');
       console.warn('Live Slice: Blueprint incomplete', result.errors);
       return false;
     }

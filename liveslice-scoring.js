@@ -624,7 +624,12 @@ var LiveSliceScoring = (function (Engines, Blueprint) {
     var rep = newReport();
 
     if (!isObject(raw)) {
-      note(rep.errors, 'root', 'the generation is not a JSON object');
+      /* RULING AK. The `errors` channel is the ONE validator channel a
+       * traveller reads — liveslice-results.js prints errors[0].detail through
+       * stageError(). The ~50 dropped/clamped/defaulted/warning notes in this
+       * file are console-only and keep their build-side vocabulary per §5f.
+       * These three are the exception and are written for the screen. */
+      note(rep.errors, 'root', 'the reply was not in a form this demo could read');
       return { ok: false, trip: null, report: rep };
     }
     dropUnknown(raw, ROOT_KEYS, 'root', rep);
@@ -656,7 +661,7 @@ var LiveSliceScoring = (function (Engines, Blueprint) {
     // days
     var rawDays = isArray(raw.days) ? raw.days : [];
     if (!isArray(raw.days)) {
-      note(rep.errors, 'days', 'missing or not an array — there is no itinerary to score');
+      note(rep.errors, 'days', 'the reply carried no days, so there is no trip to build');
     }
     if (rawDays.length > DAYS_MAX) {
       note(rep.clamped, 'days', rawDays.length + ' days supplied — kept the first ' + DAYS_MAX);
@@ -729,7 +734,7 @@ var LiveSliceScoring = (function (Engines, Blueprint) {
     }
 
     var itemCount = trip.days.reduce(function (n, d) { return n + d.items.length; }, 0);
-    if (!itemCount) note(rep.errors, 'days', 'no usable items survived validation');
+    if (!itemCount) note(rep.errors, 'days', 'nothing in the reply could be used');
 
     return { ok: rep.errors.length === 0, trip: trip, report: rep };
   }
@@ -812,7 +817,12 @@ var LiveSliceScoring = (function (Engines, Blueprint) {
        * live site it claimed one for a vegetarian tasting menu. */
       var verdict = dietaryConflict(item, engineInput.dietary_hard_lines);
       if (verdict && verdict.kind === 'unstated') {
-        return 'does not state what it contains, so it is unverified against your dietary restrictions';
+        /* RULING AK item 6, on ruling S's convention. Same removal, two
+         * different facts about the world, so the traveller is told which:
+         * a venue that did not say, or a trip that predates the check. */
+        return engineInput._legacy_dietary
+          ? 'was saved before Romieaux started checking dishes, so it cannot be checked against your dietary needs now'
+          : 'does not state what it contains, so it is unverified against your dietary restrictions';
       }
       if (verdict && verdict.kind === 'unintelligible') {
         return 'lists "' + verdict.term + '" without saying what kind of ingredient it is, ' +
@@ -830,7 +840,8 @@ var LiveSliceScoring = (function (Engines, Blueprint) {
     }
     if (entry.reason === 'accessibility predicate') {
       var unmet = unmetAccessibilityKeys(item, engineInput.accessibility_needs);
-      return 'not verified for: ' + unmet.join(', ') + ' — an unverified need removes the option';
+      // RULING AK: em dash out, and "unverified" said in the traveller's words.
+      return 'not confirmed for: ' + unmet.join(', ') + '. Anything not confirmed is left out';
     }
     if (entry.reason === 'kids age gate') {
       return 'minimum age ' + num(item.min_age_years, 0) + ' excludes a child on this trip';
@@ -889,7 +900,7 @@ var LiveSliceScoring = (function (Engines, Blueprint) {
       var unmet = unmetAccessibilityKeys(stay, engineInput.accessibility_needs);
       return refusal('accessibility predicate',
         stay._accessibility_declared
-          ? 'not verified for: ' + unmet.join(', ') + ' — an unverified need refuses the booking'
+          ? 'not confirmed for: ' + unmet.join(', ') + '. Anything not confirmed is not booked'
           : 'this trip was generated before the stay carried accessibility details, so ' +
             unmet.join(', ') + ' was never verified');
     }
@@ -1167,11 +1178,41 @@ var LiveSliceScoring = (function (Engines, Blueprint) {
         removals: [],
         suppressed: [],
         ledger: null,
-        decisions: null
+        decisions: null,
+        legacyDietary: false
       };
     }
 
     var trip = validation.trip;
+
+    /* RULING AK item 6 — the §5a item ruling AJ recorded and did not fix.
+     *
+     * A generation cached BEFORE AJ carries no `contains` anywhere, so on a
+     * trip with a declared restriction every dining item is removed as
+     * unverified. The removal is correct — a legacy trip's dining items
+     * genuinely are unverified — but the traveller was told each venue "does
+     * not state what it contains", which reads as a fault in the restaurant
+     * rather than in the age of the trip. Ruling S drew exactly this
+     * distinction for legacy STAY caches and AJ did not carry it to items.
+     *
+     * The test is deliberately narrow, and all four clauses are load-bearing:
+     * it is a REPLAY (so this is a statement about the cache, not about the
+     * model), a restriction is declared (so the wording is reached at all),
+     * there are dining items to judge, and EVERY one of them omitted the
+     * field. A fresh generation that dropped the field, or a cached trip that
+     * declared it on some items, is a different fact and keeps AJ's wording —
+     * which is also what stops this becoming an excuse a non-compliant model
+     * can hide behind.
+     *
+     * Carried on engineInput under the `_` convention the validator already
+     * uses for `_contains_declared` and `_accessibility_declared`, so
+     * explainRemoval() reads it without a second parameter threaded through
+     * four call sites. engineInput is built fresh per score() call. */
+    var rep = validation.report;
+    engineInput._legacy_dietary = opts.source === 'replay' &&
+      (engineInput.dietary_hard_lines || []).length > 0 &&
+      rep.diningTotal > 0 &&
+      rep.diningWithoutContains === rep.diningTotal;
 
     /* --- work counters. Every one is incremented at the site of the real
      * work, never from the length of something the model sent (amendment 1),
@@ -1467,6 +1508,9 @@ var LiveSliceScoring = (function (Engines, Blueprint) {
       work: work,
       ledger: ledger,
       decisions: decisions,
+      // RULING AK item 6: the trip-level half, so five identical per-item
+      // sentences are explained once by their one shared cause.
+      legacyDietary: !!engineInput._legacy_dietary,
       source: opts.source || 'generate'
     };
   }
@@ -1543,6 +1587,22 @@ var LiveSliceScoring = (function (Engines, Blueprint) {
     (rep.errors || []).forEach(function (n) { warn('Live Slice: generation error at ' + n.path + ' — ' + n.detail); });
     (rep.dropped || []).forEach(function (n) { info('Live Slice: dropped ' + n.path + ' — ' + n.detail); });
     (rep.clamped || []).forEach(function (n) { warn('Live Slice: clamped ' + n.path + ' — ' + n.detail); });
+
+    /* RULING AK, class (a). The results screen used to print
+     * `N fields in the generated JSON were dropped or clamped by the schema
+     * validator. The full list is in the console.` — a fact about this file's
+     * handling of an untrusted payload, addressed to a traveller who can do
+     * nothing with it, and §5a had already queued it for its own phase.
+     *
+     * It MOVES rather than disappears. The per-field lines above have always
+     * been here; what the screen carried and this did not is the COUNT, so the
+     * count is stated here now. Printed on every run, including zero, because
+     * a number that only appears when it is non-zero cannot be read as a
+     * baseline — the same reasoning AJ applied to the omission count. */
+    var noisy = (rep.dropped || []).length + (rep.clamped || []).length;
+    (noisy ? warn : info)('Live Slice: ' + noisy + ' field' + (noisy === 1 ? '' : 's') +
+      ' in the generated JSON were dropped or clamped by the schema validator' +
+      (noisy ? ' — each one is listed above.' : '.'));
     (rep.defaulted || []).forEach(function (n) { info('Live Slice: defaulted ' + n.path + ' — ' + n.detail); });
     (rep.warnings || []).forEach(function (n) { warn('Live Slice: ' + n.path + ' — ' + n.detail); });
 

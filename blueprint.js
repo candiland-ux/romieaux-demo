@@ -584,7 +584,7 @@ var Blueprint = (function (Engines) {
 
     // mindset
     if (!(bp.mindset || []).length) {
-      err('mindset', 'Choose what this trip needs to be — it builds the taste vector.', 's-bp-energy');
+      err('mindset', 'Choose what this trip needs to be. It shapes everything Romieaux suggests.', 's-bp-energy');
     }
 
     // pace — ruling G screen
@@ -598,7 +598,7 @@ var Blueprint = (function (Engines) {
     } else if (bp.budget_mode === 'set' && !(num(bp.budget_total_usd, 0) > 0)) {
       err('budget_total_usd', 'Enter a budget above $0.', 's-bp-budget');
     } else if (bp.budget_mode === 'agnostic') {
-      warn('budget_total_usd', 'No budget set — BudgetFit and the luxury threshold are inactive.');
+      warn('budget_total_usd', 'No budget set, so nothing is measured against one.');
     }
 
     // engagement + rate
@@ -612,7 +612,7 @@ var Blueprint = (function (Engines) {
 
     // dining — captured where a screen exists for it
     if (!(bp.cuisine_loves || []).length) {
-      warn('cuisine_loves', 'No cuisine preferences captured — dining ranking falls back to the taste vector alone.');
+      warn('cuisine_loves', 'No cuisine preferences captured, so restaurants are ranked on the rest of your answers.');
     }
 
     return { ok: errors.length === 0, errors: errors, warnings: warnings, missing: missing };

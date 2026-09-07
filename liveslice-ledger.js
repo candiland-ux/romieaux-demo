@@ -290,7 +290,8 @@ var LiveSliceLedger = (function (root) {
     }).join('');
     return '<div class="ttip-h">Decisions Automated · Generated live</div>' + rows +
       '<div class="ttip-total"><span>Total</span><span>' + decisions.total + '</span></div>' +
-      '<div class="ttip-note">One planning pass, scored locally. Every count is engine work that actually ran.</div>';
+      // RULING AK: the claim is unchanged, the workshop vocabulary is gone.
+      '<div class="ttip-note">Every count here is work that actually ran when your trip was planned.</div>';
   }
 
   function hoursTooltip(ledger) {
@@ -361,7 +362,7 @@ var LiveSliceLedger = (function (root) {
     if (!dollars.countOk) fail('The stated intervention count does not match the rows shown.', dollars.message);
 
     if (printed.rowCount !== (ledger.rows || []).length) {
-      fail('The panel did not print every intervention the engine detected.',
+      fail('Not every intervention was shown.',
         'printed ' + printed.rowCount + ' of ' + (ledger.rows || []).length + ' rows');
     }
     if (printed.rowSum !== printed.headline) {
@@ -392,7 +393,7 @@ var LiveSliceLedger = (function (root) {
           'ruling T: floorApplied with ' + decisions.rows.length + ' rows');
       }
       if (decisions.total !== decisions.interventionCount) {
-        fail('The withheld decision count is not the intervention floor.',
+        fail('The decision count does not match the number of interventions.',
           'stated ' + decisions.total + ' vs floor ' + decisions.interventionCount);
       }
     } else if (sum !== decisions.total) {
@@ -408,7 +409,7 @@ var LiveSliceLedger = (function (root) {
         'ledger ' + ledger.decisions + ' vs stated ' + decisions.total);
     }
     if (Engines.hoursSaved(ledger.decisions) !== ledger.hoursSavedExact) {
-      fail('Hours Saved does not follow the DIY-minutes baseline.',
+      fail('Hours Saved does not match the time it was measured against.',
         'expected ' + Engines.hoursSaved(ledger.decisions) + ', ledger carries ' + ledger.hoursSavedExact);
     }
 
@@ -484,8 +485,11 @@ var LiveSliceLedger = (function (root) {
     /* Work order §7: zero interventions says so, and never pads. */
     var body = ledger.isEmpty
       ? '<div style="font-size:12px;color:var(--tm);line-height:1.6;padding:4px 0 2px;">' +
-        'No savings opportunities detected in this itinerary. Nothing in this generation cleared a Ledger Law gate, ' +
-        'and a figure appears only when an engine can name the baseline it was measured against.</div>'
+        /* Work order §7's sentence is REQUIRED and survives verbatim. RULING
+         * AK rewrites only the prose after it: "Ledger Law" is the work
+         * order's name for the rule, and the discipline is unchanged. */
+        'No savings opportunities detected in this itinerary. Nothing here cleared the bar for a saving, ' +
+        'and a dollar figure appears only when Romieaux can name what it was measured against.</div>'
       : rows;
 
     emitted.headline = ledger.intelligenceSavings;   // the figure printed below
@@ -494,10 +498,19 @@ var LiveSliceLedger = (function (root) {
       headlineRow('Cash Savings', 'ls-lg-cash', money(ledger.cashSavings), 26, 'var(--gn)') +
       '<div style="margin:10px 0 4px;">' + body + '</div>' +
       minorRow('Intelligence Savings', money(ledger.intelligenceSavings), 'ls-lg-intel') +
-      // Ruling C: Net Budget is shown at zero for a generated trip, not hidden.
+      /* Ruling C: Net Budget is shown at zero for a generated trip, not
+       * hidden — and RULING AK left that intact rather than hiding the row.
+       * Hiding it was put to the founder and refused: C ruled the zero is
+       * shown on the same principle as the Fees line, so that the framework
+       * reads identically to the canonical trips. Only the note under it
+       * moved. (No numeral in this comment: §9.13's no-hardcoded-dollar grep
+       * reads raw source, comments included, and it is right to.)
+       * It was `what the trip came in under its envelope … has no actuals
+       * yet … shown rather than hidden` — three pieces of build-side
+       * vocabulary explaining a display decision to somebody who wanted to
+       * know what the number meant. */
       minorRow('Net Budget', money(ledger.netBudget), 'ls-lg-netbudget') +
-      note('Net Budget is what the trip came in under its envelope. A generated trip has no actuals yet, ' +
-        'so it is shown rather than hidden — the framework reads the same as every other trip.') +
+      note('Net Budget is what you come in under once things are booked. Nothing is booked yet.') +
       '</div>';
   }
 
@@ -513,9 +526,8 @@ var LiveSliceLedger = (function (root) {
     if (decisions.floorApplied) {
       // RULING T: the floor is stated and the breakdown is withheld.
       decisionsLine = minorRow('Decisions automated (at least)', decisions.total, 'ls-lg-decisions') +
-        note('The breakdown is withheld for this run: the categories that could be derived summed below the ' +
-          'intervention count, and a breakdown that does not sum to its own total would not be honest. ' +
-          'The floor stands — each intervention took at least one decision.');
+        note('The breakdown of decisions is not shown for this trip, because it would not have added up. ' +
+          'The total above still stands: each intervention took at least one decision.');
     } else {
       var decisionsKey = registerTooltip('ls-lg-da', decisionsTooltip(decisions));
       decisionsLine = minorRow('Decisions automated', decisions.total, 'ls-lg-decisions', tooltipTrigger(decisionsKey));
@@ -528,10 +540,17 @@ var LiveSliceLedger = (function (root) {
      * reading as a shortfall — and ruling 4 forbids the alternative, which
      * would be inflating the count until it looks like the others.
      *
-     * It states no figure of its own. The count beside it is the engine's. */
-    decisionsLine += note('A single planning pass. The canonical trips have months of live monitoring and ROAM ' +
-      'behind their decision counts; this is what the engines decided in one pass, and every count in it is ' +
-      'work that actually ran.');
+     * It states no figure of its own. The count beside it is the engine's.
+     *
+     * RULING AK rewrote the sentence and NOT the reasoning above it. The note
+     * said `A single planning pass. The canonical trips have months of live
+     * monitoring and ROAM behind their decision counts…` — the honesty
+     * decisions ruling 3 asked for, delivered in four words a traveller does
+     * not have. `pre-built` is AB's own shipped word for the seven trips.
+     * harness.js §13's three assertions on the old wording are amended with
+     * this ruling cited beside them, on ruling X point 3's protocol. */
+    decisionsLine += note('This trip was planned in one go, so its count is smaller than the pre-built trips, ' +
+      'which were watched and adjusted over months. Every decision counted here is one that really happened.');
 
     /* P6 mobile pass. This is the one Live Slice control a narrow viewport
      * actually fights, so it is built for the narrow case first: the input is
@@ -598,8 +617,15 @@ var LiveSliceLedger = (function (root) {
 
   /* --- Total Romieaux Value, and the fees line beside it (ruling B) */
   function totalBlock(ledger) {
+    /* RULING AK, ruling 1's "same treatment for Fees". The zero branch read
+     * `No fee was taken on this trip, so there is no multiple to state` —
+     * which explains why a line is empty in the vocabulary of the person who
+     * built the line. It now says the same thing the Net Budget note does, in
+     * the same shape: what the number is, and why it is zero today. The
+     * non-zero branch is the canonical prototype's own wording (ruling B,
+     * "38× return on fees paid") and is untouched. */
     var multiple = ledger.returnMultiple === null || ledger.returnMultiple === undefined
-      ? 'No fee was taken on this trip, so there is no multiple to state.'
+      ? 'Fees are what you would pay Romieaux. Nothing has been charged on this trip.'
       : Math.round(ledger.returnMultiple) + '× return on fees paid.';
 
     return '<div style="margin:0 20px 14px;background:var(--sdl);border:1px solid rgba(176,138,80,.28);border-radius:12px;padding:15px 16px;">' +
@@ -610,8 +636,8 @@ var LiveSliceLedger = (function (root) {
       // Ruling B: fees are a line item and a multiple, never subtracted.
       minorRow('Fees', money(ledger.fees), 'ls-lg-fees') +
       '</div>' +
-      note('Cash Savings plus Time Value. Fees are shown beside the total and as a return multiple — ' +
-        'never subtracted from it. ' + multiple) +
+      note('Cash Savings plus Time Value. Fees are shown next to the total, never taken off it. ' +
+        multiple) +
       '</div>';
   }
 
@@ -622,7 +648,7 @@ var LiveSliceLedger = (function (root) {
     // number of rows the ledger actually carries (ruling E, second axis).
     emitted.count = ledger.isEmpty ? 0 : ledger.interventionCount;
     var subtitle = ledger.isEmpty
-      ? 'Nothing cleared a Ledger Law gate on this trip'
+      ? 'Nothing on this trip cleared the bar for a saving'
       : emitted.count + ' interventions, reconciled against their rows';
 
     var body = sectionHeader(subtitle) +
@@ -649,17 +675,23 @@ var LiveSliceLedger = (function (root) {
       'This ledger could not be reconciled against its own rows, so the panel is showing none of it. ' +
       'A figure that does not reconcile is the one thing this panel exists to prevent.</div>' +
       items +
-      note('The full arithmetic is in the console. Replay or regenerate the trip; if it repeats, the engine and the ' +
-        'render have drifted apart and that is a bug worth stopping for.') +
+      /* RULING AK. §5d ruled this panel tells the traveller the truth about a
+       * software failure rather than hiding it, and that is unchanged — what
+       * went is the pointer at the console and the sentence describing which
+       * two internal parts disagreed. The logError call below still sends the
+       * whole arithmetic there, so nothing is lost. (Naming that call's
+       * argument here would break §20.2's two-uses count, which is how the
+       * console-bound exemption is proven — and it is right to.) */
+      note('Replay or generate the trip again. If it happens twice, this is a bug and it is worth stopping for.') +
       '</div>');
     logError(check.message);
   }
 
   function renderUnavailable() {
     html(PANEL_ID,
-      sectionHeader('No scored trip to price') +
+      sectionHeader('No trip to price yet') +
       '<div style="margin:0 20px 14px;font-size:12px;color:var(--tm);line-height:1.6;">' +
-      'The ledger panel prices a scored trip. Generate or replay one and it fills itself in.</div>');
+      'This panel prices a trip once you have one. Generate or replay a trip and it fills itself in.</div>');
   }
 
   /* =====================================================================

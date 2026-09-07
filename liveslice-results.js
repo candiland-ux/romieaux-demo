@@ -192,8 +192,12 @@ var LiveSliceResults = (function (root) {
 
   function fitBadge(fit, band) {
     var badge = BAND_BADGE[band] || BAND_BADGE.alternative;
-    return '<span class="ib2 ' + badge.cls + '" title="IdentityFit ' + Math.round(fit) +
-      ' — cosine similarity against your taste vector">' +
+    /* RULING AK. The badge is the first thing a traveller reads on every item,
+     * and its hover said `IdentityFit NN — cosine similarity against your
+     * taste vector`: the method, the internal name for it, and the internal
+     * name for the input. The number is unchanged and so is what it measures. */
+    return '<span class="ib2 ' + badge.cls + '" title="Fit ' + Math.round(fit) +
+      ' out of 100, measured against what you told us">' +
       badge.label + ' · fit ' + Math.round(fit) + '</span>';
   }
 
@@ -245,7 +249,8 @@ var LiveSliceResults = (function (root) {
     }).join('');
     return '<div class="ttip-h">Decisions Automated · Generated live</div>' + rows +
       '<div class="ttip-total"><span>Total</span><span>' + decisions.total + '</span></div>' +
-      '<div class="ttip-note">One planning pass, scored locally. Every count is engine work that actually ran.</div>';
+      // RULING AK: the claim is unchanged, the workshop vocabulary is gone.
+      '<div class="ttip-note">Every count here is work that actually ran when your trip was planned.</div>';
   }
 
   /* =====================================================================
@@ -280,10 +285,13 @@ var LiveSliceResults = (function (root) {
    * thing to tell someone is how to get out.
    * ================================================================== */
 
+  /* RULING AK. `Blueprint` is the work order's word for the traveller's own
+   * answers; it reaches the canonical prototype exactly once, inside an HTML
+   * comment. Same class as AH's "Live Slice" and banned on the same terms. */
   var LIVENESS_LINES = [
-    'Your Blueprint is with Claude.',
-    'Nothing is priced yet — every dollar is computed here, after the reply.',
-    'One request, not many. The scoring never leaves this browser.'
+    'Your answers are with Claude.',
+    'Nothing is priced yet. Every dollar is worked out here, after the reply.',
+    'One request, not many. Nothing else leaves this browser.'
   ];
   var LIVENESS_ROTATE_MS = 4000;
   var LIVENESS_TICK_MS = 1000;
@@ -293,11 +301,11 @@ var LiveSliceResults = (function (root) {
 
   function livenessText(seconds) {
     if (seconds >= LIVENESS_SLOW_S) {
-      return 'Taking longer than usual. Hotel wifi is usually the reason — ' +
+      return 'Taking longer than usual. Hotel wifi is usually the reason. ' +
         'Replay runs your last trip with no network at all.';
     }
     if (seconds >= LIVENESS_SETTLED_S) {
-      return 'Still working — a full trip takes about 20 seconds.';
+      return 'Still working. A full trip takes about 20 seconds.';
     }
     return LIVENESS_LINES[Math.floor(seconds / (LIVENESS_ROTATE_MS / 1000)) % LIVENESS_LINES.length];
   }
@@ -490,8 +498,8 @@ var LiveSliceResults = (function (root) {
       }).join('') +
       '<div style="font-size:11px;color:var(--ts);line-height:1.6;margin-top:7px;">' +
       'Romieaux does not substitute a best match or pad the day to fill it. If this is more ' +
-      'restrictive than you intended, your dietary and access needs are on the previous screen ' +
-      'and can be loosened.</div></div>';
+      'restrictive than you intended, your dietary and access needs are on the Last details ' +
+      'screen and can be loosened.</div></div>';
   }
 
   function renderDays(result) {
@@ -556,7 +564,9 @@ var LiveSliceResults = (function (root) {
       html('ls-res-interventions',
         '<div class="sh"><div class="shl">Value Attribution</div><div class="sht">No savings opportunities detected in this itinerary</div></div>' +
         '<div style="padding:0 20px 8px;font-size:12px;color:var(--tm);line-height:1.6;">' +
-        'Nothing in this generation cleared a Ledger Law gate. A figure appears only when an engine can name the baseline it was measured against.</div>');
+        // RULING AK: "Ledger Law" is the work order's name for the rule, not a
+        // traveller's. The discipline it refuses on is unchanged.
+        'Nothing on this trip cleared the bar for a saving. A dollar figure appears only when Romieaux can name what it was measured against.</div>');
       return;
     }
 
@@ -632,27 +642,62 @@ var LiveSliceResults = (function (root) {
             esc(entry.item.name || entry.item.id) + ' — ' + esc(entry.detail) + '</div>';
         }).join('') +
         '<div style="font-size:11px;color:var(--ts);line-height:1.6;margin-top:6px;">' +
-        'Removed, not crossed out. Each one is in the console for QA.</div>');
+        /* RULING AK. The §5f honesty behaviour is unchanged and so is this
+         * sentence's job: removals are named above, and nothing is put in
+         * their place. What went is the second half, which told the traveller
+         * where a developer could go and read about it. */
+        'These were taken out of your trip rather than shown crossed out, and nothing was added to replace them.</div>');
     }
 
     if (result.suppressed.length) {
+      /* RULING AK. Was `N candidate(s) scored below the IdentityFit floor of
+       * 35 and are not shown` — the method, the internal name and the internal
+       * threshold, and `1 candidate … are not shown` did not agree with
+       * itself. The count is unchanged; every one is still named in the
+       * console by logResult(). */
+      var one = result.suppressed.length === 1;
       parts.push('<div style="font-size:12px;color:var(--tm);line-height:1.6;margin-top:10px;">' +
-        result.suppressed.length + ' candidate' + (result.suppressed.length === 1 ? '' : 's') +
-        ' scored below the IdentityFit floor of ' + Engines.FIT_SUPPRESS + ' and are not shown.</div>');
+        result.suppressed.length + ' option' + (one ? ' was' : 's were') +
+        ' too far from what you asked for to be worth showing, so ' +
+        (one ? 'it is' : 'they are') + ' not on your trip.</div>');
     }
 
     if (result.decisions.floorApplied) {
       parts.push('<div style="font-size:12px;color:var(--tm);line-height:1.6;margin-top:10px;">' +
-        'The decisions breakdown is withheld for this run: the categories that could be derived summed below the intervention count, ' +
-        'and a breakdown that does not sum to its own total would not be honest.</div>');
+        'The breakdown of decisions is not shown for this trip, because it would not have added up. ' +
+        'The total above still stands.</div>');
     }
 
-    var validation = result.validation || {};
-    var noisy = (validation.dropped || []).length + (validation.clamped || []).length;
-    if (noisy) {
-      parts.push('<div style="font-size:12px;color:var(--tm);line-height:1.6;margin-top:10px;">' +
-        noisy + ' field' + (noisy === 1 ? '' : 's') +
-        ' in the generated JSON were dropped or clamped by the schema validator. The full list is in the console.</div>');
+    /* RULING AK, and §5a's own open item, class (a): this MOVES rather than
+     * changes. It counted the fields the validator dropped or clamped in the
+     * model's reply — a fact about the software's handling of a JSON payload,
+     * not about the traveller's trip, and there is nothing they can do with
+     * it. logResult() already prints one line per field and now prints the
+     * count beside them, so the number the founder photographed still exists
+     * in the one place it was ever addressed to. */
+
+    /* RULING AK item 6 — the §5a item AJ recorded and did not fix.
+     *
+     * A trip cached before AJ carries no `contains` anywhere, so on a trip
+     * with a dietary restriction EVERY dining item is removed as unverified
+     * and the traveller reads a per-item sentence that is true and tells them
+     * the wrong thing. The removal is correct; the wording was the gap.
+     *
+     * Ruling S drew this distinction for legacy STAY caches — "the wording
+     * says the trip predates the check rather than implying the hotel was
+     * found wanting" — and AJ did not carry it to items. It is carried here,
+     * at the trip level as well as the item level, because a traveller
+     * reading five identical per-item sentences needs to be told once that
+     * the cause is one schema change and the cure is one fresh generation.
+     *
+     * The signal needs nothing new: `legacyDietary` is set by the pipeline
+     * when a REPLAYED trip has a declared restriction and every one of its
+     * dining items omitted the field. A fresh generation that merely dropped
+     * the field on some items is a different fact and does not read this. */
+    if (result.legacyDietary) {
+      parts.push('<div style="font-size:12px;color:var(--tx);line-height:1.6;margin-top:10px;">' +
+        'This trip was saved before Romieaux started checking dishes against your dietary needs, ' +
+        'so none of its restaurants can be checked now. Generate a fresh trip and they will be.</div>');
     }
 
     if (!parts.length) {
@@ -665,13 +710,24 @@ var LiveSliceResults = (function (root) {
       parts.join('') + '</div>');
   }
 
-  /* Work order §6's footer line, VERBATIM and as one line. P4 assembled it out
-   * of an eyebrow plus a sentence, which meant the replay path — where the
-   * eyebrow becomes "Replayed" — printed the claim without the words that
-   * frame it. It is the sentence the whole architecture is defending, so it is
-   * printed whole and the replay badge sits above it instead. */
-  var FOOTER_LINE = 'Live demo — candidates generated by AI, every dollar computed by ' +
-    'Romieaux engines against a named baseline.';
+  /* Work order §6's footer line. It is the sentence the whole architecture is
+   * defending, so it is printed WHOLE and as one string, with the replay badge
+   * above it rather than inside it — P4 assembled it from an eyebrow plus a
+   * sentence, which meant the replay path printed the claim without the words
+   * that frame it.
+   *
+   * RULING AK AMENDS WORK ORDER §6. It was printed verbatim from §6 until
+   * here, and §5e recorded that as a decision of record. §6's wording is
+   * `Live demo — candidates generated by AI, every dollar computed by Romieaux
+   * engines against a named baseline.` — four pieces of build-side vocabulary
+   * in the one sentence a traveller is most likely to actually read. The CLAIM
+   * is unchanged, and that is the test this rewrite had to meet: AI proposes,
+   * Romieaux prices, against a named baseline. Only the reader changed.
+   *
+   * harness.js §11.4's byte-exact lock is INVERTED with this ruling cited
+   * beside it, on ruling X point 3's protocol — the lock is not deleted. */
+  var FOOTER_LINE = 'Planned live. The options were generated by AI, and every dollar ' +
+    'shown was worked out against a named baseline.';
 
   function renderFooter(result) {
     var replayed = result.source === 'replay';
@@ -887,7 +943,8 @@ var LiveSliceResults = (function (root) {
     if (source === 'replay') {
       return API.replay().then(function (cached) {
         if (!cached.blueprint) {
-          var err = new Error('That cached trip was stored without the Blueprint it was generated from, so it cannot be scored honestly. Generate a new one.');
+          // RULING AK: `Blueprint` and `scored` out; §5b's reason unchanged.
+          var err = new Error('That saved trip was stored without the answers it was built from, so it cannot be priced honestly. Generate a new one.');
           err.code = 'no_cached_blueprint';
           throw err;
         }
@@ -918,8 +975,8 @@ var LiveSliceResults = (function (root) {
         ? 'Replaying your last trip…'
         : 'Asking Claude for trip ideas — venues, activities, stays…',
       source === 'replay'
-        ? 'No network call — scoring the cached trip against the Blueprint it was generated from.'
-        : 'Every dollar is computed here, afterwards.');
+        ? 'No network call. Your saved trip is priced again against the answers it came from.'
+        : 'Every dollar is worked out here, afterwards.');
 
     // Only the generate path waits on a network call, so only it needs liveness.
     if (source !== 'replay') startLiveness();
@@ -938,20 +995,22 @@ var LiveSliceResults = (function (root) {
       };
 
       stage('Scoring ' + countCandidates(payload) + ' candidates…',
-        'Validating the schema, applying your hard constraints, then IdentityFit and ExperienceROI — all locally.');
+        'Checking the reply, applying your firm rules, then working out how well each option fits you and what it is worth. All here in your browser.');
 
       var result = Scoring.score(payload.trip, payload.blueprint, { source: payload.source });
       Scoring.logResult(result, root.console);
 
       if (!result.ok) {
         var first = (result.validation.errors || [])[0];
-        var err = new Error('The generated itinerary did not survive validation' +
+        // RULING AK. The three validator notes that reach this sentence are
+        // rewritten in liveslice-scoring.js; the other ~50 are console-only.
+        var err = new Error('Claude\'s reply could not be used to build a trip' +
           (first ? ': ' + first.detail : '.'));
         err.code = 'invalid_generation';
         throw err;
       }
 
-      stage('Running the ledger…', 'Every Ledger Law formula, against a named baseline.');
+      stage('Running the ledger…', 'Every saving worked out against a named baseline.');
       return render(result);
     }).then(function (result) {
       stopLiveness();
@@ -996,8 +1055,8 @@ var LiveSliceResults = (function (root) {
     running = true;
     navTo('s-ls-results');
     stage(rescoreTitle(moved, blueprint),
-      'No network call. The candidates already generated are equally valid at any pace or rate — only ' +
-      'what the engines weigh them against moved, so the whole pipeline re-runs here, locally.');
+      'No network call. The options Claude already suggested are just as good at any pace or hourly ' +
+      'rate, so your trip is simply built again here in your browser.');
 
     if (root.console && root.console.info) {
       root.console.info('Live Slice: ' + moved.join(', ') +

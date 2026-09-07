@@ -310,7 +310,7 @@ var LiveSliceAPI = (function (root, Blueprint) {
     }
     if (status === 413) {
       return apiError('too_large',
-        'The Blueprint was too large to send. Shorten the free-text notes and try again.',
+        'Your answers were too long to send. Shorten the free-text notes and try again.',
         detail, status);
     }
     if (status >= 500) {
@@ -376,7 +376,11 @@ var LiveSliceAPI = (function (root, Blueprint) {
       }
       return { ok: true, value: value };
     }
-    return { ok: false, reason: 'no parseable JSON object in the response' };
+    /* RULING AK. This `reason` becomes apiError()'s `detail`, and stageError()
+     * RENDERS detail under the message — so it is traveller copy, not a
+     * console note. §5b's "kept alongside in detail for the console" was read
+     * the other way here until §20.5 asserted it. */
+    return { ok: false, reason: 'the reply did not contain a trip we could read' };
   }
 
   /* Pulls the concatenated text out of a Messages API response body. */
@@ -708,7 +712,7 @@ var LiveSliceAPI = (function (root, Blueprint) {
         }
         if (!body) {
           throw apiError('bad_response',
-            'The API returned a response this build could not read.',
+            'Claude returned a response this demo could not read.',
             String(raw).slice(0, 300), response.status);
         }
         return body;
@@ -741,7 +745,7 @@ var LiveSliceAPI = (function (root, Blueprint) {
     return requestConsent().then(function () {
       if (!hasConsent()) {
         throw apiError('no_consent',
-          'Generation needs your go-ahead to send the Blueprint to Anthropic.', '', null);
+          'Generating a trip needs your go-ahead to send your answers to Anthropic.', '', null);
       }
       return callOnce(bp, false);
     }).then(function (body) {
@@ -929,7 +933,7 @@ var LiveSliceAPI = (function (root, Blueprint) {
       // No modal in the DOM (node, or a stripped page): cannot obtain
       // consent, so refuse rather than silently proceeding.
       return Promise.reject(apiError('no_consent',
-        'Generation needs your go-ahead to send the Blueprint to Anthropic.', '', null));
+        'Generating a trip needs your go-ahead to send your answers to Anthropic.', '', null));
     }
 
     var summary = el('ls-consent-payload');
@@ -998,7 +1002,7 @@ var LiveSliceAPI = (function (root, Blueprint) {
     row('Notes', [bp.dietary_notes, bp.accessibility_notes].filter(Boolean).join(' · '));
 
     if (!rows.length) {
-      return '<div style="font-size:12px;color:var(--tm,#6b6257);">Your Blueprint is empty so far — nothing would be sent yet.</div>';
+      return '<div style="font-size:12px;color:var(--tm,#6b6257);">You have not answered anything yet, so nothing would be sent.</div>';
     }
     return rows.join('');
   }
