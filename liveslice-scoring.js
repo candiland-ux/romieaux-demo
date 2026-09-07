@@ -1616,6 +1616,33 @@ var LiveSliceScoring = (function (Engines, Blueprint) {
         Math.round(entry.fit) + ' is below the ' + Engines.FIT_SUPPRESS + ' floor, so it is not shown.');
     });
 
+    /* RULING AM item 1. THE DAY-CARD HOURS MOVE HERE, they are not lost.
+     *
+     * The badge printed `3.9 h of 9 h scheduled` on every day card — correct,
+     * reconciled, and addressed to whoever wanted to know how the packer
+     * decided. AK's rule governs: traveller copy says what happened to their
+     * trip, never how the software decided, and every diagnostic still goes to
+     * the console at the same detail. This is AK class (a)'s disposition —
+     * nothing is lost; it moves.
+     *
+     * Printed on EVERY run including a fully packed one, because a number that
+     * appears only when it is interesting cannot be read as a baseline — the
+     * same reasoning AJ applied to the omission count and AK to the field-drop
+     * count.
+     *
+     * It also carries the ONE signal that left the badge with the hours: a day
+     * OVER its energy budget. packDay() holds items back to stay under, so it
+     * is near-unreachable, but where the badge used to show it in the warning
+     * style this is now the only place it is stated. */
+    (result.days || []).forEach(function (day, i) {
+      var over = Engines._num(day.hoursUsed, 0) > Engines._num(day.energyBudget, 0);
+      var line = 'Live Slice: day ' + (i + 1) + (day.date ? ' (' + day.date + ')' : '') +
+        ' packed ' + day.hoursUsed + ' h of a ' + day.energyBudget + ' h pace budget, ' +
+        day.scheduled.length + ' item' + (day.scheduled.length === 1 ? '' : 's') +
+        ' scheduled, ' + day.skipped.length + ' held back.';
+      over ? warn(line + ' OVER BUDGET — packDay() should have held this back.') : info(line);
+    });
+
     var rep = result.validation || {};
     (rep.errors || []).forEach(function (n) { warn('Live Slice: generation error at ' + n.path + ' — ' + n.detail); });
     (rep.dropped || []).forEach(function (n) { info('Live Slice: dropped ' + n.path + ' — ' + n.detail); });

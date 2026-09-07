@@ -429,7 +429,10 @@ var LiveSliceLedger = (function (root) {
    * ================================================================== */
 
   function sectionHeader(subtitle) {
-    return '<div class="sh"><div class="shl">Generated live · Value Ledger</div>' +
+    // RULING AM item 4: the eyebrow keeps its other words byte for byte and
+    // drops the name. `Value Ledger` is a canonical framework label (AK class
+    // (c)), so it is not re-cased for tidiness either.
+    return '<div class="sh"><div class="shl">Value Ledger</div>' +
       '<div class="sht">' + esc(subtitle) + '</div></div>';
   }
 
@@ -668,7 +671,7 @@ var LiveSliceLedger = (function (root) {
     }).join('');
 
     html(PANEL_ID,
-      sectionHeader('Withheld — this run did not reconcile') +
+      sectionHeader('Withheld: this run did not reconcile') +
       '<div style="margin:0 20px 14px;background:rgba(196,85,63,.06);border:1px solid rgba(196,85,63,.3);border-radius:12px;padding:15px 16px;">' +
       '<div style="font-family:var(--fm);font-size:8px;letter-spacing:2px;color:var(--rd);text-transform:uppercase;margin-bottom:6px;">Ledger withheld</div>' +
       '<div style="font-size:13px;color:var(--tx);line-height:1.55;margin-bottom:8px;">' +

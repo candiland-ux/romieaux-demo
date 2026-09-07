@@ -339,7 +339,7 @@ var LiveSliceResults = (function (root) {
     var detail = (error && error.detail) ? error.detail : '';
     html('ls-res-progress',
       '<div style="margin:24px 20px;background:rgba(196,85,63,.06);border:1px solid rgba(196,85,63,.3);border-radius:12px;padding:16px 18px;">' +
-      '<div style="font-family:var(--fm);font-size:8px;letter-spacing:2px;color:var(--rd);text-transform:uppercase;margin-bottom:6px;">Generated live — could not run</div>' +
+      '<div style="font-family:var(--fm);font-size:8px;letter-spacing:2px;color:var(--rd);text-transform:uppercase;margin-bottom:6px;">Generated live - could not run</div>' +
       '<div style="font-size:13px;color:var(--tx);line-height:1.6;">' + esc(message) + '</div>' +
       (detail ? '<div style="font-size:11px;color:var(--ts);line-height:1.6;margin-top:8px;">' + esc(detail) + '</div>' : '') +
       '<div style="display:flex;gap:8px;margin-top:14px;">' +
@@ -364,7 +364,23 @@ var LiveSliceResults = (function (root) {
     html('ls-res-eye', 'Generated live' + (replayed ? ' · replayed offline' : ''));
     html('ls-res-title', esc(trip.destination || (result.blueprint && result.blueprint.destination_name) || 'Your trip'));
     html('ls-res-sub', esc([dates, nights, result.blueprint && result.blueprint.pace ? result.blueprint.pace + ' pace' : '']
-      .filter(Boolean).join(' · ')));
+      .filter(Boolean).join(' · ')) + assumedDatesNote(result));
+  }
+
+  /* RULING AM item 6. SAID ONCE, in traveller words, when the dates on these
+   * day cards were not the traveller's own.
+   *
+   * Derived, so it needs no new field and no pipeline change: the Blueprint
+   * carries no start date and the trip came back with one, which is true
+   * exactly when liveslice-api.js assumed them. It reads correctly on a
+   * REPLAYED trip too — §5b scores that against the cached Blueprint, so the
+   * condition describes the generation that actually produced these dates. */
+  function assumedDatesNote(result) {
+    var bp = result.blueprint;
+    var trip = result.trip.trip;
+    if (!trip.start || (bp && bp.start_date)) return '';
+    return '<div style="font-size:11px;color:var(--ts);line-height:1.6;margin-top:4px;">' +
+      'You did not set travel dates, so these were assumed from your trip length.</div>';
   }
 
   function renderSummary(result) {
@@ -421,7 +437,7 @@ var LiveSliceResults = (function (root) {
       '<div class="an" style="min-width:0;overflow-wrap:anywhere;">' + esc(item.name || item.id) + '</div>' +
       '<div style="font-family:var(--fd);font-size:13px;color:var(--tx);flex-shrink:0;">' + price(item.est_price_usd) + '</div>' +
       '</div>' +
-      '<div class="as2">' + esc(meta.join(' · ')) + (item.notes ? ' — ' + esc(item.notes) : '') + '</div>' +
+      '<div class="as2">' + esc(meta.join(' · ')) + (item.notes ? ' - ' + esc(item.notes) : '') + '</div>' +
       '<div style="margin-top:5px;">' + fitBadge(entry.fit, entry.band) + '</div>' +
       (flags ? '<div style="margin-top:4px;">' + flags + '</div>' : '') +
       '</div></div>';
@@ -448,6 +464,32 @@ var LiveSliceResults = (function (root) {
 
   function removalLabel(reason) {
     return REMOVAL_LABEL[reason] || 'requirement you set';
+  }
+
+  /* RULING AM item 1. The day badge's word is the TRAVELLER'S OWN. The intake
+   * screen's pace labels were checked before this text was chosen rather than
+   * assumed, per the founder's instruction: they are single plain words
+   * already (`liveslice-intake.js` PACE_COPY — Slow / Moderate / Full), so the
+   * badge adopts them instead of inventing a fourth vocabulary for pace.
+   *
+   * Keyed on the same tokens `Blueprint.PACES` carries, so the map is closed
+   * by construction — ruling AL's copy-map precedent, and NOT the taxonomy AJ
+   * refused: it has exactly as many entries as there are paces, and harness
+   * §20.6 asserts every pace has one, so it has no gap to fail silently in. */
+  var PACE_BADGE = { slow: 'Slow pace', moderate: 'Moderate pace', full: 'Full pace' };
+
+  function paceBadge(bp) {
+    return PACE_BADGE[bp && bp.pace] || 'Your pace';
+  }
+
+  /* The held-back note's lead sentence. `validate()` makes pace an error, so
+   * the unpaced branch is unreachable through the UI; it exists so a legacy
+   * cache without one degrades to a true sentence rather than "a null pace". */
+  function skippedLead(bp) {
+    var pace = bp && bp.pace;
+    return pace
+      ? 'Not scheduled: your day was already full at a ' + pace + ' pace.'
+      : 'Not scheduled: your day was already full.';
   }
 
   /* A DAY THAT LOST OPTIONS SAYS SO, WHERE THE GAP IS.
@@ -495,11 +537,11 @@ var LiveSliceResults = (function (root) {
 
     return '<div style="padding:11px 16px;background:rgba(196,85,63,.05);border-bottom:1px solid var(--bd);">' +
       '<div style="font-family:var(--fm);font-size:8px;letter-spacing:2px;color:var(--rd);text-transform:uppercase;margin-bottom:5px;">' +
-      'Removed from this day — ' + mine.length + ' option' + (mine.length === 1 ? '' : 's') + '</div>' +
+      'Removed from this day - ' + mine.length + ' option' + (mine.length === 1 ? '' : 's') + '</div>' +
       '<div style="font-size:12.5px;color:var(--tx);line-height:1.55;margin-bottom:6px;">' + esc(lead) + '</div>' +
       mine.map(function (entry) {
         return '<div style="font-size:11.5px;color:var(--tm);line-height:1.6;">· ' +
-          esc(entry.item.name || entry.item.id) + ' — ' + esc(entry.detail) + '</div>';
+          esc(entry.item.name || entry.item.id) + ' - ' + esc(entry.detail) + '</div>';
       }).join('') +
       '<div style="font-size:11px;color:var(--ts);line-height:1.6;margin-top:7px;">' +
       'Romieaux does not substitute a best match or pad the day to fill it. If this is more ' +
@@ -516,17 +558,33 @@ var LiveSliceResults = (function (root) {
     html('ls-res-days', result.days.map(function (day, i) {
       var label = day.date || ('Day ' + (i + 1));
 
-      /* THE BADGE MUST NOT READ SUCCESS-GREEN ON AN EMPTY DAY.
+      /* RULING AM item 1. The badge read `3.9 h of 9 h scheduled` — the pace
+       * BUDGET and the hours packed against it. Both are true, and both
+       * describe how the software decided rather than anything the traveller
+       * asked for; AK's one-line rule governs. It now shows the pace they
+       * chose, in the word they chose it with, and nothing else.
+       *
+       * THE HOURS ARE NOT LOST, THEY MOVE. logResult() prints hours planned
+       * and the budget per day, at the same detail, on every run — AK class
+       * (a)'s disposition exactly.
+       *
+       * §5f RULING 2 SURVIVES, and AM's "nothing else" is scoped to the HOURS.
        * `withinBudget` was `hoursUsed <= energyBudget`, which is true at zero —
        * so a day the hard filters had emptied rendered "0 h of 7 h scheduled"
        * in the same green as a well-packed one, and read as a light day rather
        * than a day nothing survived. Nothing scheduled is not within budget;
-       * it is nothing. */
+       * it is nothing. A badge showing only the pace would have deleted the one
+       * signal §5f called the most important part of that decision, so the
+       * branch is kept and only the other half of the label changed.
+       *
+       * ONE SIGNAL GOES TO THE CONSOLE WITH THE HOURS, stated rather than left
+       * to be discovered: with no figures on the badge, `bok`/`bwn` can no
+       * longer mark a day OVER its budget. packDay() holds items back to stay
+       * under, so the case is near-unreachable, but where it did show on the
+       * badge it now shows in logResult() alone. */
       var nothingScheduled = !day.scheduled.length;
-      var pacing = nothingScheduled
-        ? 'nothing scheduled'
-        : hoursLabel(day.hoursUsed) + ' of ' + day.energyBudget + ' h scheduled';
-      var withinBudget = !nothingScheduled && day.hoursUsed <= day.energyBudget;
+      var pacing = nothingScheduled ? 'nothing scheduled' : paceBadge(result.blueprint);
+      var withinBudget = !nothingScheduled;
 
       var stays = day.stays.length
         ? '<div style="padding:10px 16px;border-bottom:1px solid var(--bd);">' +
@@ -542,10 +600,16 @@ var LiveSliceResults = (function (root) {
       var skipped = day.skipped.length
         ? '<div style="padding:10px 16px;background:rgba(0,0,0,.015);">' +
           '<div style="font-family:var(--fm);font-size:8px;letter-spacing:2px;color:var(--rg);text-transform:uppercase;margin-bottom:4px;">' +
-          'Held back by your pace budget</div>' +
+          /* RULING AM item 1. `HELD BACK BY YOUR PACE BUDGET` named the
+           * mechanism that did it; this says what happened to the traveller's
+           * day. The eyebrow carries the fact and the sentence carries the
+           * reason, in their own pace word. No em dash. */
+          'Not scheduled</div>' +
+          '<div style="font-size:12px;color:var(--tm);line-height:1.6;margin-bottom:5px;">' +
+          esc(skippedLead(result.blueprint)) + '</div>' +
           day.skipped.map(function (entry) {
             return '<div style="font-size:12px;color:var(--ts);line-height:1.6;">· ' + esc(entry.item.name || entry.item.id) +
-              ' — ' + hoursLabel(entry.item.duration_hours) + ', fit ' + Math.round(entry.fit) + '</div>';
+              ' - ' + hoursLabel(entry.item.duration_hours) + ', fit ' + Math.round(entry.fit) + '</div>';
           }).join('') + '</div>'
         : '';
 
@@ -561,7 +625,40 @@ var LiveSliceResults = (function (root) {
     }).join(''));
   }
 
-  function renderInterventions(result) {
+  /* RULING AM item 2. THE ROWS RENDER ONCE.
+   *
+   * This block and the P5 ledger panel below it printed the SAME
+   * `ledger.rows` — label, kind, baseline, amount — back to back, because
+   * ruling Y put #ls-res-ledger directly under #ls-res-interventions. Work
+   * order §7's empty-state sentence was duplicated the same way.
+   *
+   * Rulings B and C were checked and do NOT require both: they govern the
+   * framework LINES, and §6 records that the canonical shape is an advertised
+   * count with the rows in a TOOLTIP — the Paris card advertises ten and its
+   * tooltip carries ten. The canonical trips show the rows once.
+   *
+   * What DOES require rows is ruling E through §5d, and only in the panel:
+   * cashBlock() accumulates its reconciliation totals FROM THE MARKUP IT IS
+   * COMPOSING, and collecting them from the ledger instead would make the
+   * dollar axis tautological. So the panel keeps its copy and this one yields.
+   *
+   * IT YIELDS; IT IS NOT DELETED. §5d records that with liveslice-ledger.js
+   * absent the screen is exactly what P4 shipped, and renderLedgerPanel()
+   * already returns the truth about whether the panel displayed figures. A
+   * missing file, a throw inside the panel, and a REFUSAL on either
+   * reconciliation axis all return false and all bring this block back whole
+   * — which is today's behaviour on those three paths, unchanged.
+   *
+   * §5c's decision of record ("P4 renders the intervention rows and their
+   * tooltips, and says so on screen") is AMENDED with AM cited beside it, on
+   * ruling X point 3's protocol. It was right until P5 put a second, richer
+   * copy of the same rows immediately below the first. */
+  function renderInterventions(result, panelRendered) {
+    if (panelRendered) {
+      html('ls-res-interventions', '');
+      return;
+    }
+
     var ledger = result.ledger;
 
     if (ledger.isEmpty) {
@@ -602,7 +699,9 @@ var LiveSliceResults = (function (root) {
     else if (root.console && root.console.info) root.console.info(check.message);
 
     html('ls-res-interventions',
-      '<div class="sh"><div class="shl">Value Attribution · Generated live</div>' +
+      // RULING AM item 4: the eyebrow keeps its other words byte for byte and
+      // drops the name. The toolbar and the pill carry it on this screen.
+      '<div class="sh"><div class="shl">Value Attribution</div>' +
       '<div class="sht">' + ledger.interventionCount + ' interventions detected</div></div>' + rows);
   }
 
@@ -629,9 +728,9 @@ var LiveSliceResults = (function (root) {
       parts.push(
         '<div style="font-family:var(--fm);font-size:8px;letter-spacing:2px;color:var(--rd);text-transform:uppercase;margin-bottom:6px;">' +
         // Display vocabulary, not the internal token (which stays in console).
-        'Stay refused — ' + esc(removalLabel(result.stayRefusal.reason)) + '</div>' +
+        'Stay refused - ' + esc(removalLabel(result.stayRefusal.reason)) + '</div>' +
         '<div style="font-size:13px;color:var(--tx);line-height:1.55;">' +
-        esc(result.stayRefusal.stay.name || 'The generated stay') + ' — ' +
+        esc(result.stayRefusal.stay.name || 'The generated stay') + ' - ' +
         esc(result.stayRefusal.detail) + '.</div>' +
         '<div style="font-size:12px;color:var(--tm);line-height:1.6;margin-top:6px;">' +
         'It is not booked and nothing is attributed to it, so no stay savings appear in the ledger below. ' +
@@ -644,7 +743,7 @@ var LiveSliceResults = (function (root) {
         result.removals.length + ' options removed by a requirement you set</div>' +
         result.removals.map(function (entry) {
           return '<div style="font-size:12px;color:var(--tm);line-height:1.6;">· ' +
-            esc(entry.item.name || entry.item.id) + ' — ' + esc(entry.detail) + '</div>';
+            esc(entry.item.name || entry.item.id) + ' - ' + esc(entry.detail) + '</div>';
         }).join('') +
         '<div style="font-size:11px;color:var(--ts);line-height:1.6;margin-top:6px;">' +
         /* RULING AK. The §5f honesty behaviour is unchanged and so is this
@@ -736,16 +835,32 @@ var LiveSliceResults = (function (root) {
   var FOOTER_LINE = 'Planned live. The options were generated by AI, and every dollar ' +
     'shown was worked out against a named baseline.';
 
+  /* RULING AM item 4. The footer card KEEPS ITS SENTENCE AND LOSES ITS
+   * EYEBROW. §5e put the badge above the line rather than inside it, so that
+   * the replay path could not print work order §6's claim without the words
+   * that frame it — that reasoning is untouched and the line is still printed
+   * whole, as one string. What goes is the badge itself, which was the seventh
+   * statement of the same two words on one screen.
+   *
+   * THE SOURCE STATE IS NOT LOST. It moves to the one surface AM ruled in
+   * scope to keep it: `.ib-eye`, which says `Generated live` or
+   * `Generated live · replayed offline` at the top of the screen, and which is
+   * where §5g's parked cold-link phase reserves its third state. This is why
+   * `.ib-eye` was ruled OUT of item 4 — removing both would have deleted the
+   * traveller's only way to tell a live generation from a replayed one. */
   function renderFooter(result) {
-    var replayed = result.source === 'replay';
     html('ls-res-footer',
       '<div style="padding:14px 20px 28px;">' +
       '<div style="background:var(--sdl);border:1px solid rgba(176,138,80,.25);border-radius:12px;padding:13px 15px;">' +
-      '<div style="font-family:var(--fm);font-size:8px;letter-spacing:2px;color:var(--sd);text-transform:uppercase;margin-bottom:4px;">' +
-      (replayed ? 'Replayed — no network call' : 'Generated live') + '</div>' +
       '<div style="font-size:12px;color:var(--tm);line-height:1.6;">' + FOOTER_LINE + '</div></div>' +
       '<div style="display:flex;gap:8px;margin-top:12px;">' +
-      '<button class="btn" style="flex:1;background:transparent;border:1px solid var(--bd);color:var(--tm);" onclick="LiveSliceAPI.openSettings()">Generated live settings</button>' +
+      // RULING AM item 4, INVERTING ruling AH's build table with AM cited, and
+      // scoped to this button alone. AH turned `Live Slice settings` into
+      // `"Generated live" settings` when the question was WHICH name; on a
+      // screen already carrying the name in its toolbar and its pill, the
+      // answer to HOW MANY TIMES is once. The consent-modal pointers and
+      // liveslice-api.js:776 are other surfaces and keep AH's wording.
+      '<button class="btn" style="flex:1;background:transparent;border:1px solid var(--bd);color:var(--tm);" onclick="LiveSliceAPI.openSettings()">Settings</button>' +
       '<button class="btn bsd" style="flex:1;" onclick="LiveSliceResults.run(\'replay\')">Replay this trip</button>' +
       '</div></div>');
   }
@@ -909,8 +1024,12 @@ var LiveSliceResults = (function (root) {
     renderHeader(result);
     renderSummary(result);
     renderDays(result);
-    renderInterventions(result);
-    renderLedgerPanel(result);
+    /* RULING AM item 2. The panel runs FIRST so this block knows whether it is
+     * the fallback or the duplicate. DOM order is fixed by index.html, so
+     * nothing moves on screen and ruling Y is untouched — only the order the
+     * two targets are filled in changes. */
+    var panelRendered = renderLedgerPanel(result);
+    renderInterventions(result, panelRendered);
     renderNotes(result);
     renderFooter(result);
     reconcileDecisions(result.decisions);
@@ -980,7 +1099,7 @@ var LiveSliceResults = (function (root) {
     navTo('s-ls-results');
     stage(source === 'replay'
         ? 'Replaying your last trip…'
-        : 'Asking Claude for trip ideas — venues, activities, stays…',
+        : 'Asking Claude for trip ideas: venues, activities, stays…',
       source === 'replay'
         ? 'No network call. Your saved trip is priced again against the answers it came from.'
         : 'Every dollar is worked out here, afterwards.');
@@ -1131,7 +1250,7 @@ var LiveSliceResults = (function (root) {
     node.innerHTML =
       '<button class="btn" style="width:100%;margin-top:9px;padding:10px;font-size:12px;background:transparent;' +
       'border:1px solid var(--sd);border-radius:40px;color:var(--sd);" ' +
-      'onclick="LiveSliceResults.run(\'replay\')">Replay last trip — offline</button>' +
+      'onclick="LiveSliceResults.run(\'replay\')">Replay last trip - offline</button>' +
       '<div style="font-size:10.5px;color:var(--ts);line-height:1.55;margin-top:6px;text-align:center;">' +
       esc(where) + (when ? ' · cached ' + esc(when) : '') + '. No network call.</div>';
     return true;
@@ -1173,7 +1292,7 @@ var LiveSliceResults = (function (root) {
       '<div style="margin-top:9px;background:rgba(196,85,63,.06);border:1px solid rgba(196,85,63,.3);' +
       'border-radius:10px;padding:10px 12px;">' +
       '<div style="font-family:var(--fm);font-size:8px;letter-spacing:2px;color:var(--rd);' +
-      'text-transform:uppercase;margin-bottom:5px;">Generated live — could not start</div>' +
+      'text-transform:uppercase;margin-bottom:5px;">Generated live - could not start</div>' +
       '<div style="font-size:11px;color:var(--tx);line-height:1.55;">This page did not finish ' +
       'loading, so nothing happened when you tapped. Reload the page and try again.</div></div>');
     return false;

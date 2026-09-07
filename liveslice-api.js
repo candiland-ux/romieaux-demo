@@ -106,6 +106,49 @@ var LiveSliceAPI = (function (root, Blueprint) {
 
   var CACHE_VERSION = 1;
 
+  /* RULING AM item 6, and RULINGS §5c records it as the FIFTH invented
+   * constant, beside IMPLAUSIBLE_RATE, WELLNESS_TAGS, AGE_GATE_SIGNALS and
+   * the coordinated-trip rule. It is in no source document.
+   *
+   * When the traveller set nights but no dates, the trip is planned to start
+   * thirty days out. Far enough that advance-purchase and rate-timing rows are
+   * plausible at all; near enough that it reads as a trip somebody is about to
+   * take. IT ATTRIBUTES NO DOLLAR — it shapes the request and never the
+   * ledger, so the Ledger Law is untouched.
+   *
+   * A DECLARED DATE ALWAYS WINS. This is consulted only on absence, which is
+   * ruling R's convention applied to a fifth field. */
+  var DEFAULT_LEAD_DAYS = 30;
+
+  /* The dates the request is built from. Returns null only when there is
+   * nothing to derive from — no dates AND no nights — in which case the prompt
+   * carries no date line at all, exactly as it did before.
+   *
+   * `assumed` is what the results screen reads to tell the traveller their
+   * dates were chosen for them, and what consentPayloadSummary() reads to say
+   * so in the modal before anything is sent. */
+  function effectiveDates(bp) {
+    if (!bp) return null;
+    if (bp.start_date && bp.end_date) {
+      return { start: bp.start_date, end: bp.end_date, assumed: false };
+    }
+    /* Blueprint does not re-export Engines._num, and reaching for one that is
+     * not there would silently take the `|| 0` branch on every trip. */
+    var nights = Math.round(Number(bp.nights) || 0);
+    if (!(nights > 0)) return null;
+
+    var start = new Date();
+    start.setDate(start.getDate() + DEFAULT_LEAD_DAYS);
+    var end = new Date(start.getTime());
+    end.setDate(end.getDate() + nights);
+    return { start: iso(start), end: iso(end), assumed: true };
+  }
+
+  function iso(d) {
+    function pad(n) { return (n < 10 ? '0' : '') + n; }
+    return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate());
+  }
+
   /* Ruling A / §3: DCC-exposed spend runs 36–55% of total foreign spend
    * across the canonical corpus. Stated to the model explicitly, or it
    * conflates the two and the AVOIDED DCC row comes out several times too
@@ -303,7 +346,7 @@ var LiveSliceAPI = (function (root, Blueprint) {
       // and it is the failure that cost Decipher the most time, because the
       // raw message reads like a malformed request.
       return apiError('billing',
-        'The request was rejected. The usual cause is an account with no credit — check billing and credit balance in the Anthropic Console. The API\'s own reason is below.',
+        'The request was rejected. The usual cause is an account with no credit. Check billing and credit balance in the Anthropic Console. The API\'s own reason is below.',
         detail, status);
     }
     if (status === 429) {
@@ -594,11 +637,26 @@ var LiveSliceAPI = (function (root, Blueprint) {
     lines.push('');
     lines.push('TRIP');
     lines.push('- Destination: ' + (bp.destination_name || 'not yet chosen — pick one that fits the profile below and name it in trip.destination'));
-    if (bp.start_date && bp.end_date) {
-      lines.push('- Dates: ' + bp.start_date + ' to ' + bp.end_date + (nights ? ' (' + nights + ' nights)' : ''));
+    /* RULING AM item 6. THE MODEL NEVER INVENTS DATES.
+     *
+     * This was two branches. The second read `- Length: N nights. Use
+     * plausible dates and produce one entry in "days" per night.` — and
+     * nothing in this bundle ever told the model what day it is, so
+     * "plausible" was answered from its own training era. A Kyoto trip
+     * generated on 2026-09-06 came back dated 2025-04-11. The year was never
+     * rendered from the wrong field; it was correct all the way through, and
+     * wrong at the source.
+     *
+     * `effectiveDates()` computes them here instead, and there is now ONE
+     * branch: the traveller's dates when they set them, otherwise
+     * today + DEFAULT_LEAD_DAYS across their own nights. Both produce the same
+     * shape — nightsBetween() yields N nights and this instruction asks for
+     * one entry per date inclusive, so both emit N+1 day entries and there is
+     * no second convention to drift. */
+    var dates = effectiveDates(bp);
+    if (dates) {
+      lines.push('- Dates: ' + dates.start + ' to ' + dates.end + (nights ? ' (' + nights + ' nights)' : ''));
       lines.push('- Produce one entry in "days" for every date from start to end inclusive.');
-    } else if (nights) {
-      lines.push('- Length: ' + nights + ' nights. Use plausible dates and produce one entry in "days" per night.');
     }
     if (bp.trip_type) lines.push('- Trip type: ' + bp.trip_type);
     if (bp.trip_types && bp.trip_types.length > 1) lines.push('- Also: ' + bp.trip_types.join(', '));
@@ -758,7 +816,7 @@ var LiveSliceAPI = (function (root, Blueprint) {
       // A CORS rejection and a dead wifi connection are indistinguishable to
       // fetch, so the message names both, and Replay as the way out.
       throw apiError('network',
-        'Could not reach the Anthropic API. Check the connection — or use Replay to show the last generated trip with no network call.',
+        'Could not reach the Anthropic API. Check the connection, or use Replay to show the last generated trip with no network call.',
         networkError && networkError.message ? networkError.message : '', null);
     });
   }
@@ -773,7 +831,7 @@ var LiveSliceAPI = (function (root, Blueprint) {
     if (!hasKey()) {
       openSettings();
       return Promise.reject(apiError('no_key',
-        'No API key saved yet. Add one in Generated live settings — it is stored in this browser only.', '', null));
+        'No API key saved yet. Add one in Generated live settings. It is stored in this browser only.', '', null));
     }
 
     // (c) consent is read from the ref at call time, never from a captured
@@ -871,7 +929,7 @@ var LiveSliceAPI = (function (root, Blueprint) {
     var cached = cachedGeneration();
     if (!cached) {
       return Promise.reject(apiError('no_cache',
-        'Nothing to replay yet — no trip has been generated in this browser.', '', null));
+        'Nothing to replay yet. No trip has been generated in this browser.', '', null));
     }
     return Promise.resolve(cached);
   }
@@ -1021,7 +1079,31 @@ var LiveSliceAPI = (function (root, Blueprint) {
     }
 
     row('Destination', bp.destination_name);
-    if (bp.start_date && bp.end_date) row('Dates', bp.start_date + ' → ' + bp.end_date);
+    /* RULING AM item 6. THE DATES ROW ALWAYS RENDERS.
+     *
+     * It used to render only when the Blueprint carried dates, which was exact
+     * while no dates meant no dates in the request. After AM the request
+     * ALWAYS carries them, so the row would have gone missing under a heading
+     * that reads, literally, "Exactly what is sent" — a true claim going false
+     * because something downstream changed, which is the AD-class defect and
+     * the one ruling AE exists to close.
+     *
+     * CONSENT_VERSION STAYS AT 1, on ruling AH's descriptive-label test, run
+     * rather than assumed: the question is whether the DISCLOSURE changed, not
+     * whether the modal changed. The recipient is unchanged; travel dates are
+     * already a v1-disclosed category and this row renders today whenever the
+     * traveller set them, so only the FREQUENCY changes; and the assumed dates
+     * are derived from the nights the traveller entered themselves, not a new
+     * answer collected from them. Bumping would re-prompt every returning
+     * visitor for nothing. Contrast the scheduled intel phase (§5g), a real
+     * bump, because music genres are in no part of the v1 disclosure.
+     *
+     * No em dash and no arrow character, per ruling AM item 5. */
+    var consentDates = effectiveDates(bp);
+    if (consentDates) {
+      row('Dates', consentDates.start + ' to ' + consentDates.end +
+        (consentDates.assumed ? ' (assumed, you did not set any)' : ''));
+    }
     row('Nights', bp.nights);
     row('Trip type', (bp.trip_types && bp.trip_types.length) ? bp.trip_types.join(', ') : bp.trip_type);
     row('Travel mode', bp.travel_mode);
@@ -1136,6 +1218,11 @@ var LiveSliceAPI = (function (root, Blueprint) {
     DCC_RATIO_LOW_PCT: DCC_RATIO_LOW_PCT,
     DCC_RATIO_HIGH_PCT: DCC_RATIO_HIGH_PCT,
     CONSENT_VERSION: CONSENT_VERSION,
+    /* RULING AM item 6. Exported so the suites assert the assumed dates are
+     * DERIVED from it rather than pinned to a literal that would rot on the
+     * calendar. Nothing in the bundle reads it back. */
+    DEFAULT_LEAD_DAYS: DEFAULT_LEAD_DAYS,
+    effectiveDates: effectiveDates,
 
     // key
     hasKey: hasKey,
