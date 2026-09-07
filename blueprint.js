@@ -122,6 +122,31 @@ var Blueprint = (function (Engines) {
   ];
   var DIETARY_KEYS = DIETARY_PRESETS.map(function (p) { return p.key; });
 
+  /* RULING AJ — the vocabulary the model's `contains` field is drawn from.
+   *
+   * DERIVED from DIETARY_PRESETS rather than re-typed, because that is already
+   * the exact token set a restriction is expressed in: `dietaryHardLines()`
+   * builds the restriction list out of these same terms, so the conflict test
+   * downstream is a plain set intersection with no mapping layer to drift.
+   * Add a preset term and the schema vocabulary follows it in the same edit.
+   *
+   * 51 tokens as of AJ. Order follows preset order, deduplicated. */
+  var DIETARY_VOCAB = (function () {
+    var out = [];
+    DIETARY_PRESETS.forEach(function (p) {
+      p.terms.forEach(function (t) { if (out.indexOf(t) === -1) out.push(t); });
+    });
+    return out;
+  })();
+
+  /* RULING AJ, item 4 — the family tokens are DEFINED IN engines.js, beside
+   * the predicate that enforces them, and are re-exported here so the schema
+   * and the prompt have one place to read them from. One definition, two
+   * readers: the filter and the request. See the block above
+   * `violatesDietary()` in engines.js for why the rule exists and why it is
+   * not a specific-to-family map. */
+  var DIETARY_FAMILIES = (Engines && Engines.DIETARY_FAMILIES) || [];
+
   /* ---------------------------------------------------------------------
    * Bounds
    * ------------------------------------------------------------------- */
@@ -653,6 +678,8 @@ var Blueprint = (function (Engines) {
     ACCESSIBILITY_KEYS: ACCESSIBILITY_KEYS,
     DIETARY_PRESETS: DIETARY_PRESETS,
     DIETARY_KEYS: DIETARY_KEYS,
+    DIETARY_VOCAB: DIETARY_VOCAB,          // ruling AJ
+    DIETARY_FAMILIES: DIETARY_FAMILIES,    // ruling AJ, item 4
 
     // bounds
     HOURLY_RATE_MIN: HOURLY_RATE_MIN,

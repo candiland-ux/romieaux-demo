@@ -630,16 +630,118 @@ var Engines = (function () {
    * hard predicate is removed, never rendered crossed-out (PDF rule 41).
    * ------------------------------------------------------------------- */
 
+  /* RULING AJ — the dietary predicate reads a STRUCTURED claim, never prose.
+   *
+   * SUPERSEDES ruling P's substring scan over name + notes + tags. P ruled
+   * that direction deliberately and this is a deliberate reversal of it, not a
+   * drift: recorded as an amendment in RULINGS §5 with the trace as evidence.
+   *
+   * WHY P HAD TO GO. P's over-removal bias does not merely catch "coconut" for
+   * "nut" — it deletes the traveller's own accommodation, because the words a
+   * model uses to say THIS DISH IS SAFE FOR YOU are the forbidden terms
+   * themselves. A vegetarian tasting menu is described as having no MEAT; a
+   * coastal cruise is sold as having no FISHING stop. On the live site this
+   * removed six options of seven, every one of which satisfied the
+   * restriction, and left the itinerary hollow. The failure is structural in
+   * scanning prose for a term whose presence is as likely to mean EXCLUDED as
+   * SERVED, so the substrate changes rather than the threshold.
+   *
+   * VERIFIED-OR-DROP IS NOT RELAXED. It moves onto the new field, and the
+   * three arms below are the whole of the rule:
+   *
+   *   1. `contains` declared and non-empty -> conflict iff it INTERSECTS the
+   *      restriction list. A declared value always wins, on ruling R's rule
+   *      for the age gate applied to a third field.
+   *   2. `contains` declared and non-empty but carrying no FAMILY token -> the
+   *      model did not meet the contract, so the claim is unintelligible and
+   *      the item is unverified. See DIETARY_FAMILIES below.
+   *   3. `contains` NOT declared -> unverified, and unverified is removed —
+   *      but for `module === 'dining'` ONLY. That scoping is what stops this
+   *      ruling recreating the defect it fixes: a boat, a museum and a train
+   *      can never be removed by the dietary filter, whether they state
+   *      anything or not. A hotel is not a meal either, so the booked stay is
+   *      checked on its DECLARED value alone (ruling AJ item 5) — refusing
+   *      every hotel on every restricted trip is the hollowing-out failure at
+   *      the worst possible place.
+   *
+   * `contains: []` is an affirmative claim of "none of these", and is kept.
+   *
+   * The declared/absent distinction survives validation because `cleanItem()`
+   * always emits an array: it stamps `_contains_declared`, exactly as rulings
+   * S and U stamp `_accessibility_declared`, `_pet_friendly_declared` and
+   * `_min_age_declared`. On a raw object that never met the validator, the
+   * presence of the array is the signal instead, so this predicate behaves
+   * correctly whether it is handed pipeline output or a hand-built fixture.
+   */
+
+  /* RULING AJ, item 4 — the family tokens, and why the rule is not a map.
+   *
+   * Branch A of the founder's addition 2 holds: every preset carries specific
+   * ingredients beside its family word, so `contains:["beef"]` intersects the
+   * vegetarian list on `beef` alone and needs no family token to be caught.
+   *
+   * Branch B is ALSO required, and it is load-bearing. The preset lists are
+   * not exhaustive over the world's ingredients, and — the sharper finding —
+   * some IN-VOCABULARY specifics belong to a DIFFERENT preset, so they pass a
+   * membership check and still slip a vegetarian restriction:
+   *
+   *     contains:["prosciutto"] vs vegetarian -> no intersection (halal/kosher)
+   *     contains:["crab"]       vs vegetarian -> no intersection (shellfish_allergy)
+   *     contains:["duck"]       vs vegetarian -> no intersection (in no preset)
+   *
+   * The prompt therefore requires the family token alongside any specific, and
+   * arm 2 above enforces the half that can be checked deterministically.
+   *
+   * Deliberately NOT a specific-to-family map. Such a map would be a fourth
+   * invented vocabulary, would need an entry for every ingredient on earth to
+   * be sound, and its gaps would fail SILENTLY — the exact property that made
+   * the substring scan indefensible. This rule is a property of the array the
+   * model sent, not of a taxonomy we maintain, so it has no gaps to hide in.
+   *
+   * Every token here is also in Blueprint.DIETARY_VOCAB; tests.js asserts it,
+   * so a family word can never be one the model is forbidden to send. */
+  var DIETARY_FAMILIES = [
+    'meat', 'fish', 'seafood', 'shellfish', 'dairy', 'gluten',
+    'nut', 'peanut', 'alcohol', 'egg', 'honey'
+  ];
+
+  function containsDeclared(item) {
+    if (!item) return false;
+    if (item._contains_declared !== undefined) return item._contains_declared === true;
+    return Object.prototype.toString.call(item.contains) === '[object Array]';
+  }
+
   function violatesDietary(item, dietaryLines) {
     var lines = dietaryLines || [];
-    if (!lines.length) return false;
-    var haystack = [
-      item && item.name,
-      item && item.notes
-    ].concat((item && item.tags) || []).join(' ').toLowerCase();
-    for (var i = 0; i < lines.length; i++) {
-      var line = String(lines[i] || '').trim().toLowerCase();
-      if (line && haystack.indexOf(line) !== -1) return true;
+    if (!lines.length) return false;                 // nothing declared: never runs
+
+    var it = item || {};
+
+    // Arm 3 — absence. Dining only; see the block above.
+    if (!containsDeclared(it)) return it.module === 'dining';
+
+    var raw = Object.prototype.toString.call(it.contains) === '[object Array]'
+      ? it.contains : [];
+    var tokens = [];
+    for (var i = 0; i < raw.length; i++) {
+      var t = String(raw[i] === null || raw[i] === undefined ? '' : raw[i])
+        .trim().toLowerCase();
+      if (t) tokens.push(t);
+    }
+
+    if (!tokens.length) return false;                // verified as containing none
+
+    // Arm 2 — a non-empty claim must carry a family token to be intelligible.
+    var hasFamily = false;
+    for (var f = 0; f < tokens.length; f++) {
+      if (DIETARY_FAMILIES.indexOf(tokens[f]) !== -1) { hasFamily = true; break; }
+    }
+    if (!hasFamily) return true;
+
+    // Arm 1 — conflict iff the claim intersects the restriction list.
+    for (var j = 0; j < lines.length; j++) {
+      var line = String(lines[j] || '').trim().toLowerCase();
+      if (line && tokens.indexOf(line) !== -1) return true;
     }
     return false;
   }
@@ -948,6 +1050,7 @@ var Engines = (function () {
     reconcile: reconcile,
 
     // guardrails
+    DIETARY_FAMILIES: DIETARY_FAMILIES,   // ruling AJ item 4
     violatesDietary: violatesDietary,
     violatesAccessibility: violatesAccessibility,
     violatesAgeGate: violatesAgeGate,

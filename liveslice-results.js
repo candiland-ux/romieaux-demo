@@ -427,7 +427,10 @@ var LiveSliceResults = (function (root) {
     'dietary hard line': 'dietary restriction',
     'accessibility predicate': 'accessibility need',
     'kids age gate': 'age restriction',
-    'pet constraint': 'pet requirement'
+    'pet constraint': 'pet requirement',
+    // Ruling AJ item 6. The internal token stays 'included with a removed
+    // item' in code and console; this is the traveller's half, §5f's rule.
+    'included with a removed item': 'the item it came with'
   };
 
   function removalLabel(reason) {
@@ -454,12 +457,21 @@ var LiveSliceResults = (function (root) {
     if (!mine.length) return '';
 
     var dietary = mine.filter(function (e) { return e.reason === 'dietary hard line'; });
+    var cascaded = mine.filter(function (e) { return e.reason === 'included with a removed item'; });
     var everythingWent = !day.scheduled.length && !day.skipped.length && !day.stays.length;
 
+    /* RULING AJ item 6. A cascade removal is not an independent failure — it
+     * is the consequence of the one above it, and §5f's four branches all read
+     * as though each removal stood on its own. A day whose only non-dietary
+     * removal is a child of a dietary one is still a dietary day, so it keeps
+     * the dietary wording rather than falling through to the generic count.
+     * Each line already names the parent, via explainRemoval(). */
+    var dietaryAndItsChildren = dietary.length + cascaded.length === mine.length && dietary.length > 0;
+
     var lead;
-    if (dietary.length === mine.length && everythingWent) {
+    if ((dietary.length === mine.length || dietaryAndItsChildren) && everythingWent) {
       lead = 'No venue on this day met your stated dietary requirements, so nothing is scheduled for it.';
-    } else if (dietary.length === mine.length) {
+    } else if (dietary.length === mine.length || dietaryAndItsChildren) {
       lead = 'No restaurant on this day met your stated dietary requirements. What remains is scheduled as normal.';
     } else if (everythingWent) {
       lead = 'Nothing on this day met the requirements you set, so nothing is scheduled for it.';

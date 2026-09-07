@@ -16,8 +16,26 @@
  * there are no test-only hooks in the public surface; the harness controls the
  * environment instead, exactly as it does for liveslice-intake.js.
  */
-var LiveSliceAPI = (function (root) {
+var LiveSliceAPI = (function (root, Blueprint) {
   'use strict';
+
+  /* RULING AJ. The schema quotes the dietary vocabulary and the family tokens,
+   * both of which are DERIVED in blueprint.js from DIETARY_PRESETS — so the
+   * prompt and the filter read one definition and cannot drift apart. That
+   * makes blueprint.js a real dependency of this file for the first time, and
+   * it is taken as an IIFE parameter on exactly the pattern blueprint.js and
+   * liveslice-scoring.js already use for theirs, rather than reached for off
+   * the global at call time. `index.html` loads blueprint.js at 9158 and this
+   * file at 9279, so the browser arm is satisfied by load order.
+   *
+   * Guarded loudly rather than defaulted quietly: a prompt built without the
+   * vocabulary would ask the model for a closed-vocabulary field and name no
+   * vocabulary, and every dining item would come back unverified. That is the
+   * hollow-itinerary failure again, arriving as a load-order accident. The
+   * throw fires before any UI exists, on blueprint.js:23's precedent. */
+  if (!Blueprint) {
+    throw new Error('Live Slice: liveslice-api.js requires blueprint.js to be loaded first.');
+  }
 
   /* =====================================================================
    * RULING K — model string and browser-access header, verified at build
@@ -427,6 +445,8 @@ var LiveSliceAPI = (function (root) {
     '          "pet_friendly": true,',
     '          "tags": [],',
     '          "accessibility": { "wheelchair": true, "limited_mobility": true, "visual": true, "hearing": true, "sensory": true },',
+    '          "contains": [],',
+    '          "included_with": "",',
     '          "notes": ""',
     '        }',
     '      ]',
@@ -445,6 +465,7 @@ var LiveSliceAPI = (function (root) {
     '    "attributes": { "romantic": 0.0, "adventurous": 0.0, "cultural": 0.0, "restful": 0.0, "family": 0.0, "luxury": 0.0 },',
     '    "accessibility": { "wheelchair": true, "limited_mobility": true, "visual": true, "hearing": true, "sensory": true },',
     '    "tags": [],',
+    '    "contains": [],',
     '    "pet_friendly": true,',
     '    "min_age_years": 0',
     '  },',
@@ -487,6 +508,27 @@ var LiveSliceAPI = (function (root) {
     lines.push('- tickets: number of admissions for an activity; use the party size.');
     lines.push('- accessibility: true means the item MEETS that need. Omit any key you are unsure of rather than guessing true.');
     lines.push('- tags: short lowercase descriptors (cuisine, style, "wellness", "spa", "outdoor"). Used for filtering.');
+
+    /* RULING AJ — the structured dietary claim replaces the prose scan.
+     *
+     * The old instruction was "these terms must not appear in any dining
+     * item's name, notes or tags", which a model CANNOT follow while writing
+     * an honest description of a compliant venue — "no meat" contains "meat".
+     * The filter read that prose and removed the very options that satisfied
+     * the restriction. Both halves are replaced here: the model states what an
+     * item CONTAINS, in a closed vocabulary, and the filter reads only that.
+     *
+     * Stated on every request, not only on restricted trips, because the field
+     * has to be habitual for the count in the validation report to mean
+     * anything on the run before the traveller declares a restriction. */
+    lines.push('- contains: which EXCLUDED-INGREDIENT tokens the item\'s food actually contains, drawn ONLY from this closed vocabulary: ' +
+      (Blueprint.DIETARY_VOCAB || []).join(', ') + '.');
+    lines.push('  REQUIRED on every dining item. Emit [] when the food contains none of them. An empty array is a positive statement that none are present, and it is what keeps a vegetarian restaurant on the itinerary.');
+    lines.push('  Whenever you name a SPECIFIC (beef, prosciutto, crab, shrimp, cheese), you MUST also name its FAMILY token in the same array: ' +
+      (Blueprint.DIETARY_FAMILIES || []).join(', ') + '. So a beef dish is ["meat","beef"], a crab dish is ["seafood","shellfish","crab"], a cheese dish is ["dairy","cheese"].');
+    lines.push('  Describe the FOOD, never the prose about it. A vegetarian tasting menu is [] even though its description says "no meat". A boat trip is not food and carries no "contains" at all.');
+    lines.push('  A dining item with no "contains", or with specifics and no family token, is treated as UNVERIFIED and is REMOVED from the itinerary on any trip with a dietary restriction. State it on every dining item.');
+    lines.push('- included_with: when an item is only available as part of another item on the itinerary (the meal eaten at a cooking class, the tasting at the end of a tour), set this to that other item\'s "id". If the parent is removed, the child is removed with it. Omit it for anything independently bookable.');
     lines.push('- min_age_years: the venue\'s own minimum age, when it has one. Omit if there is none.');
     lines.push('- stay: the stay carries attributes, accessibility, tags, pet_friendly and min_age_years on exactly the same terms as an item above. The traveller sleeps there every night, so it is scored and filtered like any other option — and it faces the same hard constraints.');
     lines.push('- stay.locked_rate_usd / stay.flexible_rate_at_decision_usd: include BOTH only when the stay genuinely has a flexible rate that is currently higher than a lockable rate. Otherwise omit both.');
@@ -565,9 +607,19 @@ var LiveSliceAPI = (function (root) {
 
     if (bp.dietary_hard_lines && bp.dietary_hard_lines.length) {
       lines.push('');
-      lines.push('DIETARY HARD LINES — ABSOLUTE');
-      lines.push('- These terms must not appear in any dining item\'s name, notes or tags, and no dining item may serve them as the dish being recommended: ' + bp.dietary_hard_lines.join(', ') + '.');
-      lines.push('- A venue that cannot reliably accommodate this is simply not included.');
+      /* RULING AJ. The instruction here used to be "these terms must not
+       * appear in any dining item's name, notes or tags" — which the model
+       * cannot obey while describing a compliant venue honestly, because "no
+       * meat" contains "meat". The filter then read that prose and removed
+       * exactly the options that satisfied the restriction. The constraint is
+       * now expressed against the structured field, and the prose is
+       * explicitly freed. */
+      lines.push('DIETARY RESTRICTIONS — ABSOLUTE');
+      lines.push('- The traveller cannot eat: ' + bp.dietary_hard_lines.join(', ') + '.');
+      lines.push('- Do not recommend any dining item whose food contains one of those. A venue that cannot reliably accommodate the restriction is simply not included.');
+      lines.push('- Declare this in the "contains" array on EVERY dining item, using the closed vocabulary and the family-token rule above. A compliant restaurant carries "contains": [], which is what keeps it on the itinerary.');
+      lines.push('- A dining item with no "contains" is unverified and will be REMOVED, so state it on every one of them.');
+      lines.push('- Write the names and descriptions naturally. You may say "no meat" or "vegetarian tasting menu" — the prose is not scanned, only "contains" is.');
     }
 
     lines.push('');
@@ -1075,7 +1127,9 @@ var LiveSliceAPI = (function (root) {
     hideLauncher: hideLauncher,
     syncLauncher: syncLauncher
   };
-})(typeof globalThis !== 'undefined' ? globalThis : this);
+})(typeof globalThis !== 'undefined' ? globalThis : this,
+   typeof require === 'function' ? require('./blueprint.js')
+   : (typeof window !== 'undefined' ? window.Blueprint : undefined));
 
 /* No-op in the browser; lets harness.js load this under node without a build step. */
 if (typeof module !== 'undefined' && module.exports) { module.exports = LiveSliceAPI; }

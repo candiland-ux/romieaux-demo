@@ -94,6 +94,10 @@ var LiveSliceScoring = (function (Engines, Blueprint) {
   var ITEMS_PER_DAY_MAX = 40;
   var SEGMENTS_MAX = 24;
   var TAGS_MAX = 12;
+  /* Ruling AJ. The vocabulary is 51 tokens and no real dish draws on a third
+   * of it; the bound exists because `contains` is untrusted input like every
+   * other array in §7, not because a legitimate value approaches it. */
+  var CONTAINS_MAX = 20;
   var TAG_MAX_CHARS = 40;
   var TEXT_MAX = 400;
   var ID_MAX = 40;
@@ -129,7 +133,9 @@ var LiveSliceScoring = (function (Engines, Blueprint) {
     'advance_discount_pct', 'area_median_rate_usd', 'crowd_shift',
     'weather_sensitive', 'covers', 'tags', 'accessibility', 'notes',
     // engine-read, not yet listed in §4 — see the header block
-    'tickets', 'min_age_years', 'pet_friendly'
+    'tickets', 'min_age_years', 'pet_friendly',
+    // ruling AJ — the structured dietary claim, and the parent link
+    'contains', 'included_with'
   ];
   var STAY_KEYS = [
     'name', 'nightly_direct_usd', 'nightly_portal_usd', 'nights',
@@ -138,7 +144,10 @@ var LiveSliceScoring = (function (Engines, Blueprint) {
     // ruling S — the stay is scored and filtered like any other option
     'attributes', 'accessibility', 'tags',
     // ruling U — …and faces the same four hard constraints
-    'pet_friendly', 'min_age_years'
+    'pet_friendly', 'min_age_years',
+    // ruling AJ item 5 — a DECLARED claim refuses the booking; absence does
+    // not, because a hotel is not a meal
+    'contains'
   ];
   var SEGMENT_KEYS = ['name', 'direct_usd', 'portal_usd', 'tickets',
                       'single_fare_usd', 'planned_rides', 'pass_price_usd'];
@@ -160,7 +169,21 @@ var LiveSliceScoring = (function (Engines, Blueprint) {
       warnings: [],   // scored, but something is worth a human's attention
       dropped: [],    // unknown / forbidden fields and unusable rows
       clamped: [],    // numbers pulled back inside their bound
-      defaulted: []   // missing fields that fell back to zero attribution
+      defaulted: [],  // missing fields that fell back to zero attribution
+
+      /* RULING AJ, founder addition 1. `contains` is REQUIRED on dining items,
+       * and absence means the item is removed as unverified. That is the safe
+       * direction, but its own failure mode is a model that drops the field
+       * wholesale and hollows the itinerary out through a different door —
+       * which is exactly the defect AJ exists to fix, arriving by another
+       * route. So the omission is caught by a NUMBER rather than by a hollow
+       * itinerary: every dining item that omitted it is counted here, reported
+       * to the console by logResult(), and carried into the phase report.
+       *
+       * Counted on EVERY run, not only on restricted trips, so the signal is
+       * available before a traveller with a restriction ever hits it. */
+      diningWithoutContains: 0,
+      diningTotal: 0
     };
   }
 
@@ -363,6 +386,49 @@ var LiveSliceScoring = (function (Engines, Blueprint) {
     return out;
   }
 
+  /* RULING AJ — the structured dietary claim.
+   *
+   * Returns { list, declared }. `declared` is what carries the absent/empty
+   * distinction past validation, because the list itself is always an array
+   * afterwards: `[]` is an affirmative "contains none of these" and is KEPT,
+   * while absence is unverified and, for a dining item, removed. Same shape as
+   * rulings S and U's `_accessibility_declared` / `_pet_friendly_declared` /
+   * `_min_age_declared`.
+   *
+   * The vocabulary is CLOSED to Blueprint.DIETARY_VOCAB — the union of the
+   * preset terms, which is the same token set a restriction is expressed in.
+   * A token outside it carries no meaning for any restriction, so it is
+   * dropped with a note rather than kept as decoration. That is safe in one
+   * direction only, and deliberately so: dropping cannot turn a conflict into
+   * a pass, because a token that matches no restriction term could never have
+   * produced a conflict. What protects the traveller from `["duck"]` is not
+   * this cleaner but the family rule in engines.violatesDietary(). */
+  function cleanContains(raw, path, rep) {
+    if (raw === undefined || raw === null) return { list: [], declared: false };
+    if (!isArray(raw)) {
+      note(rep.dropped, path, 'not an array — dropped, and the item is treated as unstated');
+      return { list: [], declared: false };
+    }
+    var vocab = Blueprint.DIETARY_VOCAB || [];
+    var out = [];
+    for (var i = 0; i < raw.length && out.length < CONTAINS_MAX; i++) {
+      var token = text(raw[i], TAG_MAX_CHARS).toLowerCase();
+      if (!token) continue;
+      if (vocab.indexOf(token) === -1) {
+        note(rep.dropped, path,
+          JSON.stringify(token) + ' is not one of the ' + vocab.length +
+          ' dietary vocabulary tokens — dropped');
+        continue;
+      }
+      if (out.indexOf(token) === -1) out.push(token);
+    }
+    if (raw.length > CONTAINS_MAX) {
+      note(rep.clamped, path,
+        raw.length + ' tokens supplied — kept the first ' + CONTAINS_MAX);
+    }
+    return { list: out, declared: true };
+  }
+
   function cleanCrowdShift(raw, path, rep) {
     if (!isObject(raw)) return { suggested_start: '', queue_min_saved: 0 };
     dropUnknown(raw, ['suggested_start', 'queue_min_saved'], path, rep);
@@ -429,6 +495,33 @@ var LiveSliceScoring = (function (Engines, Blueprint) {
       notes: text(raw.notes)
     };
 
+    /* RULING AJ — the structured dietary claim, and the count that catches a
+     * model dropping it wholesale (founder addition 1). */
+    var contains = cleanContains(raw.contains, path + '.contains', rep);
+    item.contains = contains.list;
+    item._contains_declared = contains.declared;
+
+    if (module === 'dining') {
+      rep.diningTotal++;
+      if (!contains.declared) {
+        rep.diningWithoutContains++;
+        /* Not an error and not a drop: on a trip with no dietary restriction
+         * this changes nothing at all, and on one that has a restriction the
+         * removal itself is already reported by name in the day note and the
+         * trip-level audit trail. What the count adds is the wholesale case,
+         * which no single removal makes visible. */
+        note(rep.warnings, path + '.contains',
+          'a dining item did not state what it contains — it is unverified, so ' +
+          'a declared dietary restriction removes it (ruling AJ)');
+      }
+    }
+
+    /* RULING AJ item 6 — the parent link. Held as a plain id; the cascade that
+     * reads it runs trip-wide in score(), because the model may place a parent
+     * and its child on different days. */
+    var includedWith = text(raw.included_with, ID_MAX);
+    if (includedWith) item.included_with = includedWith;
+
     // Engine-read fields §4 does not yet list — see the header block.
     if (raw.tickets !== undefined && raw.tickets !== null) {
       item.tickets = boundedInt(raw.tickets, path + '.tickets', rep, partyMax);
@@ -450,7 +543,19 @@ var LiveSliceScoring = (function (Engines, Blueprint) {
     }
     dropUnknown(raw, STAY_KEYS, path, rep);
     var flexibility = oneOf(raw.flexibility, FLEXIBILITIES, null);
+    /* Ruling AJ item 5. The stay carries the same structured claim as an item,
+     * and a DECLARED conflict refuses the booking on ruling S's convention.
+     * Absence does NOT refuse it: verified-or-drop on absence is scoped to
+     * dining items, and a hotel is not a meal. Refusing every unstated hotel
+     * on every restricted trip would be the hollowing-out failure at the worst
+     * possible place — the traveller with nowhere to sleep — and the stay has
+     * no `module`, so engines.violatesDietary()'s dining-only arm 3 already
+     * expresses this. The field is cleaned here so a declared value is
+     * vocabulary-checked exactly as an item's is. */
+    var stayContains = cleanContains(raw.contains, path + '.contains', rep);
     return {
+      contains: stayContains.list,
+      _contains_declared: stayContains.declared,
       name: text(raw.name),
       nightly_direct_usd: bounded(raw.nightly_direct_usd, path + '.nightly_direct_usd', rep, MONEY_MAX),
       nightly_portal_usd: bounded(raw.nightly_portal_usd, path + '.nightly_portal_usd', rep, MONEY_MAX),
@@ -638,18 +743,51 @@ var LiveSliceScoring = (function (Engines, Blueprint) {
    * tart'" is. Ruling P's over-removal is meant to be visible.
    * ------------------------------------------------------------------- */
 
-  function haystack(item) {
-    return [item && item.name, item && item.notes]
-      .concat((item && item.tags) || []).join(' ').toLowerCase();
-  }
+  /* RULING AJ. This used to join name + notes + tags and search it for the
+   * restriction term. It reads the structured claim now, for the same reason
+   * the predicate does — and, critically, it must agree with the predicate on
+   * every input, because the predicate decides and this explains. The three
+   * return shapes below are the three arms of engines.violatesDietary(), in
+   * the same order, so a divergence would show up as a removal with no
+   * explanation rather than as a wrong one.
+   *
+   * Returns null when nothing conflicts. Otherwise `{ kind, term }`:
+   *   'conflict'    — `term` is the restriction token the claim intersects
+   *   'unstated'    — the item never said (dining only)
+   *   'unintelligible' — a claim with no family token (ruling AJ item 4) */
+  function dietaryConflict(item, lines) {
+    if (!(lines || []).length) return null;
+    var it = item || {};
+    var declared = it._contains_declared !== undefined
+      ? it._contains_declared === true
+      : isArray(it.contains);
 
-  function matchedDietaryTerm(item, lines) {
-    var hay = haystack(item);
-    for (var i = 0; i < (lines || []).length; i++) {
+    if (!declared) {
+      return it.module === 'dining' ? { kind: 'unstated', term: null } : null;
+    }
+
+    var tokens = (isArray(it.contains) ? it.contains : []).map(function (t) {
+      return String(t === null || t === undefined ? '' : t).trim().toLowerCase();
+    }).filter(function (t) { return !!t; });
+
+    if (!tokens.length) return null;
+
+    var families = Engines.DIETARY_FAMILIES || [];
+    var hasFamily = tokens.some(function (t) { return families.indexOf(t) !== -1; });
+    if (!hasFamily) return { kind: 'unintelligible', term: tokens[0] };
+
+    for (var i = 0; i < lines.length; i++) {
       var line = String(lines[i] || '').trim().toLowerCase();
-      if (line && hay.indexOf(line) !== -1) return line;
+      if (line && tokens.indexOf(line) !== -1) return { kind: 'conflict', term: line };
     }
     return null;
+  }
+
+  /* Kept as a named helper because the ledger-side callers and the harness
+   * both read "which term fired" rather than the whole verdict. */
+  function matchedDietaryTerm(item, lines) {
+    var verdict = dietaryConflict(item, lines);
+    return verdict && verdict.kind === 'conflict' ? verdict.term : null;
   }
 
   function unmetAccessibilityKeys(item, needs) {
@@ -668,8 +806,27 @@ var LiveSliceScoring = (function (Engines, Blueprint) {
   function explainRemoval(entry, engineInput) {
     var item = entry.item;
     if (entry.reason === 'dietary hard line') {
-      var term = matchedDietaryTerm(item, engineInput.dietary_hard_lines);
-      return 'conflicts with your dietary restriction "' + term + '"';
+      /* RULING AJ. Three removals wear this reason now, and they are three
+       * different facts about the world, so the traveller is told which. The
+       * old single sentence claimed a conflict in all three cases, and on the
+       * live site it claimed one for a vegetarian tasting menu. */
+      var verdict = dietaryConflict(item, engineInput.dietary_hard_lines);
+      if (verdict && verdict.kind === 'unstated') {
+        return 'does not state what it contains, so it is unverified against your dietary restrictions';
+      }
+      if (verdict && verdict.kind === 'unintelligible') {
+        return 'lists "' + verdict.term + '" without saying what kind of ingredient it is, ' +
+          'so it is unverified against your dietary restrictions';
+      }
+      return 'conflicts with your dietary restriction "' +
+        ((verdict && verdict.term) || '') + '"';
+    }
+    /* RULING AJ item 6. The child names its parent, because "removed" with no
+     * parent named reads as a second independent failure rather than as the
+     * consequence of the one above it. */
+    if (entry.reason === 'included with a removed item') {
+      return 'included with "' + (entry.parentName || entry.parentId) +
+        '", which was removed';
     }
     if (entry.reason === 'accessibility predicate') {
       var unmet = unmetAccessibilityKeys(item, engineInput.accessibility_needs);
@@ -714,10 +871,18 @@ var LiveSliceScoring = (function (Engines, Blueprint) {
       return { stay: stay, reason: reason, detail: detail };
     }
 
+    /* RULING AJ item 5. A stay carries no `module`, so violatesDietary()'s
+     * dining-only absence arm cannot fire on it: only a DECLARED claim can
+     * refuse a booking. The two arms that survive are a real conflict and an
+     * unintelligible claim, and each says which it was. */
     if (Engines.violatesDietary(stay, engineInput.dietary_hard_lines)) {
+      var stayVerdict = dietaryConflict(stay, engineInput.dietary_hard_lines);
       return refusal('dietary hard line',
-        'conflicts with your dietary restriction "' +
-        matchedDietaryTerm(stay, engineInput.dietary_hard_lines) + '"');
+        stayVerdict && stayVerdict.kind === 'unintelligible'
+          ? 'lists "' + stayVerdict.term + '" without saying what kind of ingredient it is, ' +
+            'so it is unverified against your dietary restrictions'
+          : 'conflicts with your dietary restriction "' +
+            ((stayVerdict && stayVerdict.term) || '') + '"');
     }
 
     if (Engines.violatesAccessibility(stay, engineInput.accessibility_needs)) {
@@ -1022,10 +1187,100 @@ var LiveSliceScoring = (function (Engines, Blueprint) {
     var stayCandidates = [];
     var days = [];
 
+    /* (1b) RULING AJ item 6 — the parent/child cascade.
+     *
+     * Run TRIP-WIDE and BEFORE the per-day loop, for two reasons. The model
+     * may place a parent and its child on different days, so a per-day pass
+     * would miss exactly the case that produced the defect. And the cascade
+     * must settle before anything is scored: an item that will be removed
+     * must never reach identityFit(), packDay() or a ledger row, which is the
+     * same rule §5c states for every hard-filter removal.
+     *
+     * The pass is a fixpoint with a hard iteration bound. `included_with` is
+     * untrusted input like every other field, so a cycle (a -> b -> a) or a
+     * self-reference is assumed possible; the bound is the number of items,
+     * which is strictly more passes than any acyclic chain can need, and a
+     * cycle simply stops adding.
+     *
+     * COUNTED IN NO DECISIONS CATEGORY. A cascade removal is not a dietary
+     * evaluation, and inflating dietaryRemovals with it would break ruling 4.
+     * §5c's "accessibility-predicate evaluations are counted in no category"
+     * is the precedent. This is also what keeps `reachedAgeGate` correct
+     * below: a cascade-removed item DID reach the age and pet gates, because
+     * applyHardFilters() kept it. */
+    var predicateFiltered = trip.days.map(function (day) {
+      return filterItems(day.items, engineInput);
+    });
+
+    var removedIds = {};
+    var itemsById = {};
+    predicateFiltered.forEach(function (f) {
+      f.removed.forEach(function (entry) {
+        if (entry.item && entry.item.id) removedIds[entry.item.id] = entry.item;
+      });
+      f.kept.forEach(function (item) { if (item.id) itemsById[item.id] = item; });
+    });
+    trip.days.forEach(function (day) {
+      (day.items || []).forEach(function (item) {
+        if (item && item.id && !itemsById[item.id]) itemsById[item.id] = item;
+      });
+    });
+
+    var cascadeRemovals = {};
+    var totalItems = trip.days.reduce(function (n, d) { return n + d.items.length; }, 0);
+    for (var pass = 0; pass < totalItems; pass++) {
+      var addedThisPass = 0;
+      predicateFiltered.forEach(function (f) {
+        f.kept.forEach(function (item) {
+          if (!item.included_with || cascadeRemovals[item.id]) return;
+          var parentId = item.included_with;
+          /* A self-reference needs no special case, and a line guarding
+           * against one would be UNREACHABLE — which is worse than absent,
+           * because it reads as coverage. Proven by biting: removing such a
+           * guard changed nothing. An item pointing at itself is either in
+           * `kept`, in which case its own id is by definition not in
+           * `removedIds` and the test below is simply false, or it was removed
+           * by a predicate, in which case it is not in `kept` and this loop
+           * never sees it. Mutual cycles are handled by the fixpoint instead:
+           * a pass that adds nothing ends it. */
+          if (removedIds[parentId] || cascadeRemovals[parentId]) {
+            var parent = removedIds[parentId] || itemsById[parentId];
+            cascadeRemovals[item.id] = {
+              parentId: parentId,
+              parentName: (parent && parent.name) || parentId
+            };
+            addedThisPass++;
+          }
+        });
+      });
+      if (!addedThisPass) break;
+    }
+
     trip.days.forEach(function (day, di) {
       // (2) hard-constraint post-filter, before anything is scored. An option
       // failing a hard predicate never appears at all (PDF rule 41).
-      var filtered = filterItems(day.items, engineInput);
+      var filtered = predicateFiltered[di];
+
+      /* Ruling AJ item 6: move the cascaded children out of `kept` and into
+       * `removed`, with the parent named, so every downstream reader — the
+       * day note, the trip-level audit trail, the packer and the ledger —
+       * sees exactly one removal set and needs no knowledge of the cascade. */
+      var cascaded = [];
+      filtered.kept = filtered.kept.filter(function (item) {
+        var hit = cascadeRemovals[item.id];
+        if (!hit) return true;
+        var entry = {
+          item: item,
+          reason: 'included with a removed item',
+          parentId: hit.parentId,
+          parentName: hit.parentName
+        };
+        entry.detail = explainRemoval(entry, engineInput);
+        cascaded.push(entry);
+        return false;
+      });
+      filtered.removed = filtered.removed.concat(cascaded);
+
       var removedBy = { dietary: 0, accessibility: 0, age: 0, pet: 0 };
       filtered.removed.forEach(function (entry) {
         entry.day = di;
@@ -1297,6 +1552,25 @@ var LiveSliceScoring = (function (Engines, Blueprint) {
         result.decisions.interventionCount + '), so no breakdown can both be honest and sum to its total.');
     }
 
+    /* RULING AJ, founder addition 1. The wholesale case: a model that drops
+     * `contains` from every dining item hollows the itinerary out through a
+     * different door from the one AJ closed. One removal does not make that
+     * visible — the count does, and it is stated on every run rather than only
+     * when it bites, so the signal exists before a traveller with a
+     * restriction ever hits it. */
+    if (rep.diningTotal > 0) {
+      var missing = rep.diningWithoutContains || 0;
+      if (missing > 0) {
+        warn('Live Slice: ' + missing + ' of ' + rep.diningTotal +
+          ' dining items did not state what they contain. Each is unverified, so a ' +
+          'declared dietary restriction removes it (ruling AJ). All ' + rep.diningTotal +
+          ' would be removed on a restricted trip if this reads ' + rep.diningTotal + '.');
+      } else {
+        info('Live Slice: all ' + rep.diningTotal +
+          ' dining items stated what they contain (ruling AJ).');
+      }
+    }
+
     // §5a: weather_fit still has no source, so weather-sensitive items are
     // evaluated but never penalised. Stated every run rather than buried.
     if (result.work && result.work.weatherSensitiveEvaluated > 0) {
@@ -1341,7 +1615,9 @@ var LiveSliceScoring = (function (Engines, Blueprint) {
     _stayShapeFromItem: stayShapeFromItem,
     _hasWellnessTag: hasWellnessTag,
     _itemRows: itemRows,
-    _matchedDietaryTerm: matchedDietaryTerm
+    _matchedDietaryTerm: matchedDietaryTerm,
+    _dietaryConflict: dietaryConflict,   // ruling AJ
+    CONTAINS_MAX: CONTAINS_MAX
   };
 })(typeof require === 'function' ? require('./engines.js')
    : (typeof window !== 'undefined' ? window.Engines : undefined),
