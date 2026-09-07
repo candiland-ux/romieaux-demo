@@ -511,6 +511,7 @@ var LiveSliceAPI = (function (root, Blueprint) {
     '          "tags": [],',
     '          "accessibility": { "wheelchair": true, "limited_mobility": true, "visual": true, "hearing": true, "sensory": true },',
     '          "suits": [],',
+    '          "meal": "breakfast|lunch|dinner",',
     '          "included_with": "",',
     '          "notes": ""',
     '        }',
@@ -531,7 +532,8 @@ var LiveSliceAPI = (function (root, Blueprint) {
     '    "accessibility": { "wheelchair": true, "limited_mobility": true, "visual": true, "hearing": true, "sensory": true },',
     '    "tags": [],',
     '    "pet_friendly": true,',
-    '    "min_age_years": 0',
+    '    "min_age_years": 0,',
+    '    "includes_breakfast": false',
     '  },',
     '  "transport_segments": [',
     '    { "name": "", "direct_usd": 0, "portal_usd": 0, "tickets": 0, "single_fare_usd": 0, "planned_rides": 0, "pass_price_usd": 0 }',
@@ -603,7 +605,42 @@ var LiveSliceAPI = (function (root, Blueprint) {
     lines.push('  Leave out any need whose suitability you cannot state. That is honest, and it means the venue is REMOVED from the itinerary on any trip carrying that need, so state everything you can genuinely stand behind.');
     lines.push('  Dish-level dining items — a tasting menu, a cooking class, a picnic — use the same field to the same standard. A boat trip is not a dining item and carries no "suits" at all.');
     lines.push('  A dining item with no "suits" is treated as UNVERIFIED and is REMOVED on any trip with a dietary need. State it on every dining item.');
+    /* RULING AP ruling 2. THE MEAL SLOT — PDF rule 6's own structure, which
+     * work order §5 dropped on its way from the PDF and AP restores.
+     *
+     * Stated on every request rather than only on trips that need it, for the
+     * same reason ruling AL states the `suits` standard on every request: the
+     * field has to be habitual for the count in the validation report to mean
+     * anything, and a slot the model fills only when reminded is a slot that
+     * empties the day the reminder is not there.
+     *
+     * The consequence is stated plainly, on RULING R's precedent — a model
+     * told what omission costs has a reason to be complete — and it is a REAL
+     * consequence in the code rather than an unenforced threat, which is the
+     * distinction ruling AQ drew when it rejected a "titles that restate the
+     * settings are DROPPED" claim nothing would have enforced. Here the day
+     * card genuinely does say the slot is empty. */
+    lines.push('- meal: which meal a dining item IS, one of breakfast|lunch|dinner. Set it on every restaurant, cafe or meal booking that fills one of those three.');
+    lines.push('  Omit it on dining that is not a meal — a gelato stop, a wine tasting, a cooking class. Those are still dining items and are still scheduled; they simply do not fill a slot.');
+    lines.push('  EVERY DAY NEEDS ALL THREE. Plan breakfast, lunch and dinner for each day of the trip. A slot you leave empty is stated on the day as having nothing scheduled — it is never filled with a substitute, so an itinerary that skips lunch shows a gap where lunch should be.');
+    lines.push('  When a meal comes with something else — lunch on a boat trip, the tasting at the end of a tour, breakfast at the hotel — still emit it as its own dining item with "est_price_usd": 0 and "included_with" set to the item it comes with. It is part of the day and the traveller needs to see it.');
     lines.push('- included_with: when an item is only available as part of another item on the itinerary (the meal eaten at a cooking class, the tasting at the end of a tour), set this to that other item\'s "id". If the parent is removed, the child is removed with it. Omit it for anything independently bookable.');
+    /* RULING AP ruling 2 — the stay's breakfast, and ABSENCE MEANS NOT
+     * INCLUDED. Verified-or-drop on an eighth field, and the prompt says what
+     * silence costs so the model has a reason to answer. */
+    lines.push('- stay.includes_breakfast: true only when breakfast is genuinely included in the stay\'s rate. If you are not sure, leave it out — it is read as NOT included, and the traveller is shown breakfast as something they still need to plan. Never set it true to be helpful.');
+    /* RULING AP. `crowd_shift` has been in this schema since P3 with NO
+     * guidance line at all, so the model was shown the shape and told nothing
+     * about when to fill it — which is why many items came back with no
+     * suggested start and the day card had nothing to show.
+     *
+     * It is PDF rule 12, and it is NOT the schedule: ruling 1's start and end
+     * times are assigned by the packer, from DAY_START and each item's own
+     * duration and transit. This field is the crowd-avoidance shift, and
+     * conflating the two would repurpose a field that answers a different
+     * question — the mistake ruling AL had to unpick when `contains` was
+     * asked an ingredient question and answered a suitability one. */
+    lines.push('- crowd_shift: only for a venue with real queues. "suggested_start" is the time of day the queue is genuinely shortest, as HH:MM, and "queue_min_saved" is the minutes of queueing that avoids. Omit the whole object when the venue does not queue. This is a crowd-avoidance note, NOT the item\'s place in the day — the itinerary\'s own times are worked out here from your durations and transit.');
     lines.push('- min_age_years: the venue\'s own minimum age, when it has one. Omit if there is none.');
     /* RULING AL item 6 — the stay list deliberately omits "suits". A hotel
      * with no restaurant would honestly declare [], and a subset test against
@@ -739,8 +776,22 @@ var LiveSliceAPI = (function (root, Blueprint) {
     lines.push('');
     lines.push('TASTE AND PACE');
     if (bp.mindset && bp.mindset.length) lines.push('- Mindset: ' + bp.mindset.join(', '));
+    /* RULING AP. THE PACE BUDGET IS SCOPED TO ACTIVITIES, and this is half of
+     * the fix — the other half is in packDay().
+     *
+     * This sentence used to read "Schedule NO MORE THAN N hours of ACTIVITY
+     * per day, transit included" while meaning the whole day, so the model
+     * fitted meals inside the same N hours and then packDay() charged those
+     * meals against the same N hours a second time. MEALS WERE SQUEEZED
+     * TWICE, once in the request and once in the packer, which is why no day
+     * on a live trip had breakfast and most had one meal.
+     *
+     * PDF rule 11 names this budget inside the ACTIVITIES module; the Dining
+     * module has its own envelope and its own slots (rule 6). Saying so is
+     * what lets a slow trip carry three meals a day without going over. */
     if (bp.pace && bp.pace_hours) {
-      lines.push('- Pace: ' + bp.pace + '. Schedule NO MORE THAN ' + bp.pace_hours + ' hours of activity per day, transit included.');
+      lines.push('- Pace: ' + bp.pace + '. Schedule NO MORE THAN ' + bp.pace_hours + ' hours of ACTIVITIES AND TRANSPORT per day, transit included.');
+      lines.push('- MEALS DO NOT COUNT AGAINST THAT. Breakfast, lunch and dinner sit outside the pace budget, so a slow day still has all three. Do not drop a meal to stay under the hours.');
     }
     if (bp.cuisine_loves && bp.cuisine_loves.length) lines.push('- Cuisine loves: ' + bp.cuisine_loves.join(', '));
     if (bp.dining_adventurousness) lines.push('- Dining adventurousness: ' + bp.dining_adventurousness);

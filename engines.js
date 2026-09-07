@@ -56,6 +56,38 @@ var Engines = (function () {
    *    rendered literal. The one reconciliation-verdict em dash below is
    *    ruling AH's named exemption. See `harness.js` §22.
    *
+   * AP. (2026-09-07) THE DAY HAS MEAL SLOTS AND CLOCK TIMES, and AP
+   *    SUPERSEDES packDay()'s single-ranking behaviour.
+   *
+   *    The PDF specifies TWO ranking algorithms in two structures, and this
+   *    file implemented one of them and applied it to both. Rule 11 is the
+   *    ACTIVITIES module: ExperienceROI, ranked descending, packed against
+   *    the pace budget. Rule 6 is the DINING module: `For each meal slot`,
+   *    ranked by 0.5*IdentityFit + 0.2*BudgetFit + 0.2*ROAMsignal +
+   *    0.1*Novelty. Work order §5 carried rule 11 and DROPPED rule 6, so
+   *    packDay() ranked meals by the Activities formula and charged them to
+   *    the Activities budget. Because ExperienceROI divides by price, and a
+   *    meal is the one item that always has one, meals lost every day:
+   *    a FREE rest block at fit 50 cannot be beaten by any $95 dinner at any
+   *    fit up to 100. Work order §5 is amended; see RULINGS.md AP.
+   *
+   *    - Meals are placed FIRST, in MEAL_WINDOWS, and are OUTSIDE the pace
+   *      budget. `hoursUsed` stays the pace-consuming figure so the OVER
+   *      BUDGET signal ruling AM item 1 moved to the console keeps its
+   *      meaning; `mealHours` is reported beside it.
+   *    - Two meals claiming one slot are decided by REDUCED RULE 6, which is
+   *      IdentityFit ALONE. BudgetFit, ROAMsignal and Novelty have no source
+   *      in this bundle and are NOT approximated - see §5a for the route back
+   *      to each. Approximating one would put a Romieaux-chosen number under
+   *      a scheduling decision, which is ruling AN's rejected reading (iii).
+   *    - Activities keep RULE 11 UNCHANGED, by founder ruling. The provisional
+   *      fit tie-break was withdrawn on the trace: the fault was never a tie.
+   *    - Every scheduled item gets a start and an end. DAY_START opens the
+   *      day and each next item starts at the previous end plus its transit.
+   *    - A meal never competes with a rest block for anything, so there is no
+   *      rest-block vocabulary to invent. Rulings AJ and AL both refused an
+   *      invented taxonomy on this reasoning.
+   *
    * Engine-input-only fields — the generation schema must NOT ask the model
    * for these, and the model never supplies them:
    *   card_scenario      EARNS rows. The Blueprint captures no card facts, so
@@ -73,7 +105,58 @@ var Engines = (function () {
   var TASTE_DIMS = ['romantic', 'adventurous', 'cultural', 'restful', 'family', 'luxury'];
 
   // PDF rule 11: pace profile sets max scheduled hours/day.
+  //
+  // RULING AP. This is the ACTIVITIES budget and nothing else. PDF rule 11
+  // names it inside the Activities module; the Dining module has its own
+  // envelope (rule 6's daily_food_envelope) and its own slots. Meals do not
+  // spend it. The prompt says so too - `liveslice-api.js` scopes the pace
+  // sentence to activities, which is what stops the model squeezing meals out
+  // in the request and the packer squeezing them out again afterwards.
   var PACE_HOURS = { slow: 5, moderate: 7, full: 9 };
+
+  /* RULING AP ruling 4 — INVENTED CONVENTIONS OF RECORD (RULINGS.md §5c).
+   *
+   * The PDF's support for meal SLOTS is explicit and its support for meal
+   * TIMES is thinner, and the difference is stated rather than blurred: rule
+   * 6's "that slot's anchor" is GEOGRAPHIC ("shortlist by geography, <=15 min
+   * from that slot's anchor"), and the only temporal meal rule in the
+   * document is 94, "Meal windows locked to home meal-times +/-45 min",
+   * scoped to under-8s in the Family module. So the times below are OURS.
+   *
+   * They join IMPLAUSIBLE_RATE, WELLNESS_TAGS, AGE_GATE_SIGNALS, the
+   * coordinated-trip rule and DEFAULT_LEAD_DAYS as invented conventions, and
+   * like all five they ATTRIBUTE NO DOLLAR: they shape the schedule, never a
+   * ledger row, so the Ledger Law is untouched.
+   *
+   * Named MEAL_WINDOWS and not MEAL_ANCHORS for RULING I's reason: "anchor"
+   * already means the geographic one inside rule 6, and "window" is the PDF's
+   * own word for a time range in rule 94. Two meanings for one word inside
+   * one module is the collision ruling I exists to stop.
+   *
+   * DERIVATION, so none of these reads as a preference:
+   *   DAY_START            founder ruling, AP Gate 0 (ii).
+   *   breakfast.earliest   IS DAY_START. One value, not two, so the day's
+   *                        opening and breakfast's window cannot drift apart.
+   *   breakfast.latest     the outer edge of a hotel breakfast service, and
+   *                        the latest the word still means breakfast.
+   *   lunch                14:30 because the canonical corpus is
+   *                        Mediterranean-weighted - Amalfi, Lisbon, Paris,
+   *                        Rio - where a 14:00 lunch is ordinary.
+   *   dinner               DERIVED FROM SHIPPED CANONICAL CONTENT:
+   *                        index.html:1438 "the anniversary dinner snuck in
+   *                        at 8:00" and index.html:793 "a dinner reservation
+   *                        at golden hour". 20:00 sits inside the window.
+   *                        Ruling AM took the badge word off the intake
+   *                        labels and ruling AN took the subline vocabulary
+   *                        off the canonical corpus by the same method.
+   */
+  var DAY_START = '08:00';
+  var MEAL_SLOTS = ['breakfast', 'lunch', 'dinner'];
+  var MEAL_WINDOWS = {
+    breakfast: { earliest: DAY_START, latest: '10:00' },
+    lunch:     { earliest: '12:00',   latest: '14:30' },
+    dinner:    { earliest: '19:00',   latest: '21:00' }
+  };
 
   // PDF shared constants: engagement-mode proactivity multiplier P.
   // Ruling F maps the canonical onboarding's three paid tiers plus the free
@@ -374,30 +457,194 @@ var Engines = (function () {
     return (fit * durationHours * weatherFit) / denominator;
   }
 
-  /* Greedy day packing: highest ROI first, respecting the pace energy budget.
-   * Scheduled hours count duration plus transit, matching rule 11's
-   * "max scheduled hours/day". */
+  /* ---------------------------------------------------------------------
+   * Clock arithmetic. Minutes since midnight, so a day is a number line and
+   * nothing depends on a Date object or a timezone — the schedule is local
+   * wall-clock by construction, which is what PDF rule 39 asks for and what
+   * a static bundle with no timezone data can honestly provide.
+   * ------------------------------------------------------------------- */
+
+  function minutesOf(hhmm) {
+    var m = /^(\d{1,2}):(\d{2})$/.exec(String(hhmm || ''));
+    if (!m) return null;
+    var h = Number(m[1]), min = Number(m[2]);
+    if (h > 23 || min > 59) return null;
+    return h * 60 + min;
+  }
+
+  function clockOf(minutes) {
+    var t = Math.round(num(minutes, 0));
+    // A day that runs past midnight keeps counting rather than wrapping to a
+    // smaller number, which would make an end time read as before its start.
+    var h = Math.floor(t / 60), m = t - h * 60;
+    return (h < 10 ? '0' : '') + h + ':' + (m < 10 ? '0' : '') + m;
+  }
+
+  /* RULING AP. A meal is a dining item that declared which slot it fills.
+   * `module` alone is not enough: a cooking class and a gelato stop are both
+   * dining and neither is a meal, which is why AP asks the model for the slot
+   * rather than inferring one. An undeclared dining item is not a meal and is
+   * packed as an ordinary candidate — it is never GUESSED into a slot. */
+  function mealSlot(item) {
+    var it = item || {};
+    if (it.module !== 'dining') return null;
+    return MEAL_SLOTS.indexOf(it.meal) === -1 ? null : it.meal;
+  }
+
+  /* Greedy day packing — PDF rule 11 for activities, PDF rule 6 for meals.
+   *
+   * RULING AP SUPERSEDES the single-ranking version of this function. It
+   * ranked EVERY module by ExperienceROI and charged EVERY module to the pace
+   * budget, which is rule 11 applied to a module rule 11 does not govern. See
+   * the AP block in the AMENDMENTS header for why that emptied the day of
+   * meals, and RULINGS.md AP for the trace.
+   *
+   * Three things happen here, in this order, and the order is the ruling:
+   *
+   *   1. MEALS ARE PLACED FIRST, in MEAL_WINDOWS, OUTSIDE the pace budget.
+   *      Two meals claiming one slot are decided by REDUCED RULE 6 — which is
+   *      IdentityFit ALONE, by founder ruling, because BudgetFit, ROAMsignal
+   *      and Novelty have no source in this bundle and approximating one
+   *      would put a Romieaux-chosen number under a scheduling decision.
+   *   2. EVERYTHING ELSE RANKS BY ExperienceROI — rule 11, UNCHANGED.
+   *   3. The day is walked from DAY_START and each item gets a start and an
+   *      end. An activity that would overrun the next meal's window is HELD
+   *      BACK rather than pushing the meal out of it.
+   *
+   * A meal therefore never competes with a rest block for anything, so ruling
+   * 4's "a meal outranks a rest block" holds BY CONSTRUCTION and no
+   * rest-block vocabulary has to be invented to enforce it.
+   */
   function packDay(items, ctx) {
     var context = ctx || {};
     var budget = PACE_HOURS[context.pace];
     if (budget === undefined) budget = PACE_HOURS.moderate;
 
-    var ranked = (items || []).map(function (item) {
+    var fitOf = function (item) {
+      return context.identityFit !== undefined
+        ? clamp(num(context.identityFit, 0), 0, 100)
+        : identityFit(item, context.tasteVector);
+    };
+    var costOf = function (item) {
+      return num(item.duration_hours, 0) + num(item.transit_min_from_prev, 0) / 60;
+    };
+
+    var all = (items || []).slice();
+
+    /* (1) Meals into slots. Reduced rule 6: IdentityFit alone. A loser does
+     * not vanish — it rejoins the ordinary pool and competes on rule 11 like
+     * any other candidate, which is what keeps a second good restaurant on
+     * the day instead of deleting it for arriving second. */
+    var claimed = {}, rest = [];
+    all.forEach(function (item) {
+      var slot = mealSlot(item);
+      if (!slot) { rest.push(item); return; }
+      var held = claimed[slot];
+      if (!held) { claimed[slot] = item; return; }
+      if (fitOf(item) > fitOf(held)) { claimed[slot] = item; rest.push(held); }
+      else rest.push(item);
+    });
+
+    /* (2) Rule 11, untouched: rank the rest by ExperienceROI descending. */
+    var ranked = rest.map(function (item) {
       return { item: item, roi: experienceROI(item, context) };
     }).sort(function (a, b) { return b.roi - a.roi; });
 
-    var scheduled = [], skipped = [], used = 0;
-    for (var i = 0; i < ranked.length; i++) {
-      var entry = ranked[i];
-      var cost = num(entry.item.duration_hours, 0) + num(entry.item.transit_min_from_prev, 0) / 60;
-      if (used + cost <= budget) {
-        scheduled.push(entry.item);
-        used += cost;
-      } else {
-        skipped.push(entry.item);
+    /* (3) Walk the day. Meals hold their windows; activities fill the gaps in
+     * ROI order while the pace budget has room. */
+    var placed = [];
+    MEAL_SLOTS.forEach(function (slot) {
+      var item = claimed[slot];
+      if (!item) return;
+      var start = minutesOf(MEAL_WINDOWS[slot].earliest);
+      placed.push({ item: item, slot: slot, start: start,
+        end: start + Math.round(num(item.duration_hours, 0) * 60) });
+    });
+    placed.sort(function (a, b) { return a.start - b.start; });
+
+    var scheduled = [], skipped = [], used = 0, mealHours = 0;
+    var cursor = minutesOf(DAY_START);
+    var queue = ranked.slice();
+    /* RULING AP ruling 1, exactly as worded: "the first item starts at the
+     * day's start time, each NEXT item starts at the previous end plus
+     * transit." Transit is the gap BETWEEN two items, so there is none before
+     * the first one — charging it would make every day start late by however
+     * long the model guessed it takes to reach the first stop from nowhere.
+     * It still costs the pace budget, which is rule 11's own arithmetic and
+     * is unchanged. */
+    var first = true;
+
+    function fillUntil(limit) {
+      for (var i = 0; i < queue.length; i++) {
+        var item = queue[i].item;
+        var transit = first ? 0 : Math.round(num(item.transit_min_from_prev, 0));
+        var length = Math.round(num(item.duration_hours, 0) * 60);
+        var start = cursor + transit;
+        // Rule 11's budget, and the meal's window, are both hard.
+        if (used + costOf(item) > budget) continue;
+        if (limit !== null && start + length > limit) continue;
+        queue.splice(i--, 1);
+        scheduled.push({ item: item, slot: null, start: start, end: start + length });
+        used += costOf(item);
+        cursor = start + length;
+        first = false;
       }
     }
-    return { scheduled: scheduled, skipped: skipped, hoursUsed: used, energyBudget: budget };
+
+    placed.forEach(function (meal) {
+      /* THE FILL LIMIT IS THE MEAL'S `earliest`, NOT ITS `latest`, and the
+       * difference is a real defect this was built with first: with `latest`
+       * as the limit, the highest-ROI activity took 08:00 to 10:00 and pushed
+       * BREAKFAST to 10:00 — the walk before the coffee. `earliest` is when
+       * the meal wants to start, so it is the wall the gap fills up to. */
+      var window = MEAL_WINDOWS[meal.slot];
+      var earliest = minutesOf(window.earliest);
+      fillUntil(earliest);
+      if (meal.start < cursor) {
+        /* The day ran long — a previous meal or a long activity overran. The
+         * meal KEEPS ITS SLOT and slides to the end of what came before it
+         * rather than being dropped: ruling 2 says every day accounts for
+         * three meals, and a meal moved is still a meal. */
+        meal.end += (cursor - meal.start);
+        meal.start = cursor;
+      }
+      /* `latest` is what makes the slide visible instead of silent. A meal
+       * pushed past the hour its own name stops meaning anything is reported
+       * to the console — AK class (a): the diagnostic goes where the build
+       * side reads it, and no traveller copy is invented for an edge the
+       * model can only reach with a wildly overlong item. */
+      meal.late = meal.start > minutesOf(window.latest);
+      scheduled.push(meal);
+      mealHours += num(meal.item.duration_hours, 0);
+      cursor = meal.end;
+      first = false;
+    });
+    fillUntil(null);
+
+    queue.forEach(function (entry) { skipped.push(entry.item); });
+    scheduled.sort(function (a, b) { return a.start - b.start || a.end - b.end; });
+
+    /* The times ride ALONGSIDE the item, never on it. Writing start/end onto
+     * the model's own object would put a Romieaux-computed value inside a
+     * field the validator governs, and §7's untrusted-input contract owns
+     * that shape. `scheduled` keeps its array-of-items contract for every
+     * existing caller; `times` is the new, additive channel. */
+    var times = scheduled.map(function (e) {
+      return { id: e.item.id, slot: e.slot, start: clockOf(e.start),
+        end: clockOf(e.end), startMin: e.start, endMin: e.end, late: !!e.late };
+    });
+
+    return {
+      scheduled: scheduled.map(function (e) { return e.item; }),
+      skipped: skipped,
+      times: times,
+      // RULING AP. hoursUsed stays the PACE-CONSUMING figure, so
+      // logResult()'s OVER BUDGET branch - the one signal ruling AM item 1
+      // moved off the badge and into the console - still means what it says.
+      hoursUsed: used,
+      mealHours: mealHours,
+      energyBudget: budget
+    };
   }
 
   /* ---------------------------------------------------------------------
@@ -1066,6 +1313,11 @@ var Engines = (function () {
     // constants
     TASTE_DIMS: TASTE_DIMS,
     PACE_HOURS: PACE_HOURS,
+    // RULING AP — §5c invented conventions. None attributes a dollar.
+    DAY_START: DAY_START,
+    MEAL_SLOTS: MEAL_SLOTS,
+    MEAL_WINDOWS: MEAL_WINDOWS,
+    mealSlot: mealSlot,
     ENGAGEMENT_P: ENGAGEMENT_P,
     FIT_SUPPRESS: FIT_SUPPRESS,
     FIT_RECOMMEND: FIT_RECOMMEND,

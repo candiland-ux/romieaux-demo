@@ -481,13 +481,31 @@ var LiveSliceResults = (function (root) {
       return '<div class="af bs">' + esc(row.kind) + ' ' + money(row.amount) + ' ' + tooltipTrigger(key) + '</div>';
     }).join(' ');
 
-    var time = item.duration_hours ? hoursLabel(item.duration_hours) : '·';
+    /* RULING AP ruling 1. THE DURATION COLUMN IS DROPPED AND THE CLOCK
+     * REPLACES IT. It read `2.5 h`, sometimes with `start 07:30` buried in the
+     * grey meta line below, and never an end — so a traveller could see how
+     * long a thing took and not when it happened.
+     *
+     * The times come from the packer, keyed by id onto `entry.time`, so
+     * nothing here computes one. The break is emitted rather than left to a
+     * 56px box, which would wrap `07:30 to` / `10:30`. */
+    var t = entry.time;
+    var time = t
+      ? esc(t.start) + '<br>to ' + esc(t.end)
+      : (item.duration_hours ? esc(hoursLabel(item.duration_hours)) : '·');
+
     var meta = [MODULE_LABEL[item.module] || item.module];
     if (item.transit_min_from_prev) meta.push(Math.round(item.transit_min_from_prev) + ' min transit');
-    if (item.crowd_shift && item.crowd_shift.suggested_start) meta.push('start ' + item.crowd_shift.suggested_start);
+    /* Ruling AP. PDF rule 12's crowd-avoidance note, which is NOT the item's
+     * place in the day — the times above are. The label says which it is now
+     * that the card carries both; before AP `start 07:30` was the only clock
+     * on the screen and read as the schedule. */
+    if (item.crowd_shift && item.crowd_shift.suggested_start) {
+      meta.push('quietest around ' + item.crowd_shift.suggested_start);
+    }
 
     return '<div class="ar"' + (extra || '') + '>' +
-      '<div class="at">' + esc(time) + '</div><div class="adot"></div>' +
+      '<div class="at">' + time + '</div><div class="adot"></div>' +
       '<div class="ab2">' +
       '<div style="display:flex;align-items:baseline;justify-content:space-between;gap:10px;">' +
       '<div class="an" style="min-width:0;overflow-wrap:anywhere;">' + esc(item.name || item.id) + '</div>' +
@@ -605,6 +623,94 @@ var LiveSliceResults = (function (root) {
       'screen and can be loosened.</div></div>';
   }
 
+  /* RULING AP ruling 2 — EVERY DAY ACCOUNTS FOR ALL THREE MEALS.
+   *
+   * Either a meal is scheduled, or the day says why not, in the traveller's
+   * words. And §5f RULING 5 IS ABSOLUTE HERE: a slot the model did not fill
+   * is STATED, NEVER INVENTED. There is no best match, no nearest option and
+   * no padding — the same rule §5f drew for a day the hard filters emptied,
+   * applied to a slot nothing was ever offered for.
+   *
+   * NAMING, per the founder's ruling at the checkpoint: name the place when
+   * the model gave a name, and use a plain locative when it did not. Never
+   * "at your stay" — that is the record's word for the booking, not a place a
+   * traveller can picture standing in.
+   */
+  function includedLead(slot) {
+    return slot.charAt(0).toUpperCase() + slot.slice(1) + ' is included';
+  }
+
+  function mealCoverage(result, day) {
+    var stay = result.stay || {};
+    var byId = {};
+    (day.scheduled || []).forEach(function (e) { byId[e.item.id] = e.item; });
+
+    /* THE LEGACY BRANCH, on the AK item 6 / AL precedent, at the TRIP level.
+     * A generation cached before ruling AP named no slot anywhere, so every
+     * day would otherwise read "no breakfast, no lunch, no dinner" and blame
+     * a model that was answering a question nobody had asked yet. Ruling S's
+     * convention governs the wording: it says the TRIP predates the check,
+     * never that the meals were found wanting. */
+    var declaredAnywhere = (result.days || []).some(function (d) {
+      return (d.scheduled || []).some(function (e) { return !!e.item.meal; });
+    });
+
+    var lines = [];
+    Engines.MEAL_SLOTS.forEach(function (slot) {
+      var entry = (day.scheduled || []).filter(function (e) { return e.item.meal === slot; })[0];
+
+      if (entry) {
+        /* Scheduled, and it came with something else. It is already in the
+         * day above with its own times and its own zero price; this names
+         * what it came with, which is the "Lunch on board" case ruling 2
+         * gives by name.
+         *
+         * The zero is written as words deliberately. §9.13's Ledger Law grep
+         * is a RAW-SOURCE scan and cannot tell a comment from code, so the
+         * first draft of this comment failed it — correctly. The scan only
+         * ever over-reports, which is the safe direction and is why it is not
+         * being taught to skip comments to accommodate one sentence. */
+        var parentId = entry.item.included_with;
+        if (parentId) {
+          var parent = byId[parentId];
+          var parentName = parent && parent.name;
+          lines.push(includedLead(slot) + (parentName
+            ? ' with ' + esc(parentName) + '.'
+            : ' with something else on this day.'));
+        }
+        return;
+      }
+
+      /* Not scheduled. Breakfast is the one slot the stay itself can cover,
+       * and absence of the claim means NOT included (ruling AP ruling 2), so
+       * this branch is reached only on a true declaration. */
+      if (slot === 'breakfast' && stay.includes_breakfast) {
+        lines.push(includedLead(slot) + (stay.name
+          ? ' at ' + esc(stay.name) + '.'
+          : ' where you are staying.'));
+        return;
+      }
+
+      if (!declaredAnywhere) return;   // the legacy sentence below says it once
+      lines.push('No ' + slot + ' is scheduled for this day.');
+    });
+
+    if (!declaredAnywhere) {
+      lines.push('This trip was saved before Romieaux started planning meals by ' +
+        'the day, so its breakfasts, lunches and dinners are not marked. ' +
+        'Generate a trip live to see them.');
+    }
+
+    if (!lines.length) return '';
+
+    return '<div style="padding:10px 16px;border-top:1px solid var(--bd);">' +
+      '<div style="font-family:var(--fm);font-size:8px;letter-spacing:2px;color:var(--rg);' +
+      'text-transform:uppercase;margin-bottom:4px;">Meals</div>' +
+      lines.map(function (line) {
+        return '<div style="font-size:12px;color:var(--tm);line-height:1.6;">' + line + '</div>';
+      }).join('') + '</div>';
+  }
+
   function renderDays(result) {
     if (!result.days.length) {
       html('ls-res-days', '<div style="padding:18px 20px;font-size:13px;color:var(--tm);">The generation returned no days.</div>');
@@ -676,6 +782,12 @@ var LiveSliceResults = (function (root) {
         stays +
         dayRemovalNote(result, day) +
         day.scheduled.map(function (entry) { return renderItem(entry); }).join('') +
+        /* RULING AP ruling 2, positioned AFTER the day and BEFORE what was
+         * held back: a traveller reads the day, then what the day does not
+         * have, then what did not fit. The removal note stays where §5f put
+         * it, above the items, because it explains a gap in the list that
+         * follows; this explains a gap in the list above. */
+        mealCoverage(result, day) +
         skipped +
         '</div>';
     }).join(''));

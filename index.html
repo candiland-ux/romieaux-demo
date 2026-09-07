@@ -9465,6 +9465,21 @@ document.addEventListener('click', function(){
 /* In the day header the date may wrap; the pacing badge may not shrink. */
 #s-ls-results .dcb { flex-shrink: 0; }
 
+/* RULING AP ruling 1. The .at gutter carried a DURATION (`2.5 h`) and now
+   carries the clock times the packer assigns. The P6 comment below already
+   calls it "the time gutter"; this is the first release where that is true.
+
+   .at IS CANONICAL — index.html:128, `width:42px`, inside the <head> <style>
+   block ruling AC was the first amendment to reach. It is overridden through
+   a Live Slice id and NEVER edited, exactly as ruling AM item 3 declined to
+   edit hideFab and overrode with padding instead. Zero canonical bytes.
+
+   56px is DERIVED, not chosen: the longer of the two rendered lines is
+   `to 10:30`, eight characters of the canonical .at declaration's own
+   `font-size:10px` monospace, and the render emits the break rather than
+   leaving a 62px box to wrap `07:30 to` / `10:30` on its own. */
+#s-ls-results .at { width: 56px; line-height: 1.45; }
+
 /* RULING AM item 3. Two fixed-position controls sit over the scroll region and
    NEITHER IS MOVED OR RESTYLED, which is the whole scope of the ruling: the
    canonical search FAB (index.html:2650, bottom:80px + height:50px) and the
@@ -9506,7 +9521,7 @@ document.addEventListener('click', function(){
 
   /* The 42px time gutter is the widest fixed dimension on the screen. */
   #s-ls-results .ar { gap: 8px; padding-left: 13px; padding-right: 13px; }
-  #s-ls-results .at { width: 34px; }
+  #s-ls-results .at { width: 50px; }
   #s-ls-results .dch { gap: 8px; }
 
   /* Two-up button rows wrap their labels rather than overflow; less side

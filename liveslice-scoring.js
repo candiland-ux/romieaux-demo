@@ -138,7 +138,10 @@ var LiveSliceScoring = (function (Engines, Blueprint) {
     'tickets', 'min_age_years', 'pet_friendly',
     // ruling AL — the venue-suitability claim (supersedes AJ's `contains`),
     // and ruling AJ's parent link, which is unchanged
-    'suits', 'included_with'
+    'suits', 'included_with',
+    // ruling AP — which meal slot a dining item fills. PDF rule 6's own
+    // structure, dropped by work order §5 and restored here.
+    'meal'
   ];
   var STAY_KEYS = [
     'name', 'nightly_direct_usd', 'nightly_portal_usd', 'nights',
@@ -155,7 +158,14 @@ var LiveSliceScoring = (function (Engines, Blueprint) {
      * stakes — refusing every hotel on every restricted trip is the
      * hollowing-out failure at the worst possible place. The stay keeps
      * accessibility, age and pet; `suits` is not asked of it and not read. */
-    'pet_friendly', 'min_age_years'
+    'pet_friendly', 'min_age_years',
+    /* RULING AP ruling 2 — whether the stay includes breakfast. It is asked
+     * for, and ABSENCE MEANS NOT INCLUDED, never assumed. That is the
+     * verified-or-drop direction rulings P, Q, R, U, AJ, AL and AN all share,
+     * on an eighth field, and here it is the safe direction for the same
+     * reason it always is: a day that says breakfast is included when it is
+     * not sends the traveller down to an empty dining room. */
+    'includes_breakfast'
   ];
   var SEGMENT_KEYS = ['name', 'direct_usd', 'portal_usd', 'tickets',
                       'single_fare_usd', 'planned_rides', 'pass_price_usd'];
@@ -192,7 +202,13 @@ var LiveSliceScoring = (function (Engines, Blueprint) {
        * Counted on EVERY run, not only on restricted trips, so the signal is
        * available before a traveller with a need ever hits it. */
       diningWithoutSuits: 0,
-      diningTotal: 0
+      diningTotal: 0,
+      /* RULING AP. Option (i)'s own failure mode, on AJ founder addition 1's
+       * mechanism: a model that drops `meal` wholesale empties every slot on
+       * every day, and the day cards would then read "no lunch is scheduled"
+       * across the whole trip with nothing to point at. That is caught by a
+       * NUMBER here rather than by a hollow itinerary. */
+      mealsDeclared: 0
     };
   }
 
@@ -517,8 +533,37 @@ var LiveSliceScoring = (function (Engines, Blueprint) {
     item.suits = suits.list;
     item._suits_declared = suits.declared;
 
+    /* RULING AP — the meal slot. PDF rule 6 organises dining by slot; work
+     * order §5 dropped the whole Dining algorithm and this restores its
+     * structure. Scoped to dining, on ruling AJ's module scoping: a boat is
+     * not a meal and must never be routed into one.
+     *
+     * A dining item that is NOT a meal is ordinary and stays ordinary — a
+     * cooking class, a gelato stop, a wine tasting. The slot is asked for
+     * rather than inferred, and an undeclared one is never GUESSED, which is
+     * the same discipline rulings Q, R, U, AJ, AL and AN share on their own
+     * fields: what the model did not state, the bundle does not invent. */
+    if (module === 'dining') {
+      var meal = oneOf(raw.meal, Engines.MEAL_SLOTS, null);
+      if (meal) {
+        item.meal = meal;
+        item._meal_declared = true;
+      } else if (raw.meal !== undefined && raw.meal !== null) {
+        note(rep.dropped, path + '.meal',
+          JSON.stringify(raw.meal) + ' is not one of ' + Engines.MEAL_SLOTS.join('|') +
+          ' — the item is kept and scheduled as an ordinary dining item (ruling AP)');
+      }
+    } else if (raw.meal !== undefined && raw.meal !== null) {
+      /* Dropped BY NAME rather than by the generic unknown-field rule, so the
+       * console says which rule fired — ruling AO's own reason for dropping
+       * money keys by name in the intel validator. */
+      note(rep.dropped, path + '.meal',
+        'only a dining item can fill a meal slot — dropped (ruling AP)');
+    }
+
     if (module === 'dining') {
       rep.diningTotal++;
+      if (item.meal) rep.mealsDeclared++;
       if (!suits.declared) {
         rep.diningWithoutSuits++;
         /* Not an error and not a drop: on a trip with no dietary need this
@@ -602,6 +647,19 @@ var LiveSliceScoring = (function (Engines, Blueprint) {
       min_age_years: raw.min_age_years === undefined || raw.min_age_years === null
         ? undefined
         : bounded(raw.min_age_years, path + '.min_age_years', rep, Blueprint.KID_AGE_MAX_MONTHS / 12),
+
+      /* RULING AP ruling 2 — breakfast. `bool()` is `value === true`, so
+       * every other value, and absence, mean NOT INCLUDED. That is the
+       * ruling's own words and it is the safe direction: telling a traveller
+       * breakfast is included when it is not sends them down to an empty
+       * dining room, and the opposite error costs them one search.
+       *
+       * `_includes_breakfast_declared` is the AK/AL legacy signal on a ninth
+       * field: a trip cached before AP declared nothing, and ruling S's
+       * convention says the wording must place that on the TRIP's age rather
+       * than on the hotel. */
+      includes_breakfast: bool(raw.includes_breakfast),
+      _includes_breakfast_declared: raw.includes_breakfast !== undefined,
 
       /* Which of the three were DECLARED at all. An empty answer and a
        * missing one both refuse the booking, but they are different facts
@@ -1482,13 +1540,30 @@ var LiveSliceScoring = (function (Engines, Blueprint) {
         }
       });
 
+      /* RULING AP ruling 1. The clock times ride BESIDE the entries, keyed by
+       * id, rather than being written onto the model's own item objects: §7's
+       * untrusted-input contract owns that shape, and a Romieaux-computed
+       * value inside a validated field is the kind of blurring rulings Q and
+       * AL each had to unpick later. `entry.time` is the render's channel. */
+      var timeById = {};
+      (packed.times || []).forEach(function (t) { timeById[t.id] = t; });
+      scheduled.forEach(function (entry) {
+        entry.time = timeById[entry.item.id] || null;
+      });
+
       days.push({
         index: di,
         date: day.date,
         scheduled: scheduled,
         skipped: skipped,
         stays: stays,
+        times: packed.times || [],
         hoursUsed: packed.hoursUsed,
+        // RULING AP ruling 3. Meals sit OUTSIDE the pace budget, so their
+        // hours are reported beside it rather than inside it. hoursUsed keeps
+        // its meaning and logResult()'s OVER BUDGET branch still means what
+        // it says — ruling AM item 1's one console-only signal.
+        mealHours: packed.mealHours || 0,
         energyBudget: packed.energyBudget
       });
     });
@@ -1667,12 +1742,63 @@ var LiveSliceScoring = (function (Engines, Blueprint) {
      * style this is now the only place it is stated. */
     (result.days || []).forEach(function (day, i) {
       var over = Engines._num(day.hoursUsed, 0) > Engines._num(day.energyBudget, 0);
+      /* RULING AP ruling 3. `hoursUsed` is the PACE-CONSUMING half and keeps
+       * its meaning, so the OVER BUDGET branch ruling AM item 1 moved here is
+       * unchanged. The meal hours are stated BESIDE it, not folded into it —
+       * folding them in would make every slow day read as over budget the day
+       * meals stopped spending it. */
       var line = 'Live Slice: day ' + (i + 1) + (day.date ? ' (' + day.date + ')' : '') +
         ' packed ' + day.hoursUsed + ' h of a ' + day.energyBudget + ' h pace budget, ' +
+        'plus ' + Engines._num(day.mealHours, 0) + ' h of meals outside it, ' +
         day.scheduled.length + ' item' + (day.scheduled.length === 1 ? '' : 's') +
         ' scheduled, ' + day.skipped.length + ' held back.';
       over ? warn(line + ' OVER BUDGET — packDay() should have held this back.') : info(line);
+
+      /* The schedule itself, at the same detail the badge never carried. */
+      (day.times || []).forEach(function (t) {
+        info('Live Slice: day ' + (i + 1) + ' ' + t.start + ' to ' + t.end + '  ' +
+          (t.slot || 'activity') + '  ' + t.id);
+      });
+
+      /* Ruling AP's `late` flag — a meal pushed past the hour its own name
+       * stops meaning anything. Reachable only when the model sends a wildly
+       * overlong item, which is why it is a console line and not traveller
+       * copy: AK class (a), the diagnostic goes where the build side reads
+       * it, and nothing is invented for the traveller. */
+      (day.times || []).filter(function (t) { return t.late; }).forEach(function (t) {
+        warn('Live Slice: day ' + (i + 1) + ' ' + t.slot + ' slid to ' + t.start +
+          ', past the ' + Engines.MEAL_WINDOWS[t.slot].latest +
+          ' end of its window — the day ahead of it ran long.');
+      });
+
+      /* Ruling AP ruling 2. Every day accounts for all three slots, so the
+       * count is stated on EVERY run including a complete one — a number that
+       * appears only when it is interesting cannot be read as a baseline,
+       * which is AJ's reasoning for the omission count and AK's for the
+       * field-drop count. */
+      var filled = (day.times || []).filter(function (t) { return t.slot; })
+        .map(function (t) { return t.slot; });
+      var missing = Engines.MEAL_SLOTS.filter(function (s) { return filled.indexOf(s) === -1; });
+      (missing.length ? warn : info)('Live Slice: day ' + (i + 1) + ' meal coverage ' +
+        filled.length + ' of 3' +
+        (filled.length ? ' (' + filled.join(', ') + ')' : '') +
+        (missing.length ? ', no item for ' + missing.join(', ') + '.' : '.'));
     });
+
+    /* RULING AP — option (i)'s wholesale failure mode, caught by a number.
+     * AJ founder addition 1's mechanism on a second field: a model that drops
+     * `meal` everywhere leaves every day saying nothing is scheduled for any
+     * slot, and only a count makes that visible as a MODEL failure rather
+     * than as a trip with no restaurants in it. */
+    var mrep = result.validation || {};
+    if (mrep.diningTotal > 0) {
+      var withSlot = mrep.mealsDeclared || 0;
+      (withSlot === 0 ? warn : info)('Live Slice: ' + withSlot + ' of ' +
+        mrep.diningTotal + ' dining items named a meal slot' +
+        (withSlot === 0
+          ? ' — NONE did, so no day can account for a single meal. A trip cached before ruling AP looks exactly like this; so does a model that ignored the field.'
+          : '.'));
+    }
 
     var rep = result.validation || {};
     (rep.errors || []).forEach(function (n) { warn('Live Slice: generation error at ' + n.path + ' — ' + n.detail); });
