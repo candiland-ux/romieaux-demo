@@ -810,12 +810,34 @@ var LiveSliceAPI = (function (root, Blueprint) {
    * CONSOLE-ONLY, per §5f, and it keeps the build-side vocabulary. The
    * literals stay INSIDE the console call, which is what lets §20.5's lexer
    * tell them from rendered copy. */
-  function logUsage(label, body) {
+  /* RULING AQ item 3 ADDS elapsed_ms, and it is AQ's one stated exception to
+   * its own copy-and-prompt-wording scope.
+   *
+   * AO ruled this log INSTEAD of a one-off measurement precisely so the cost
+   * figure could not rot the way AB's 5,780 characters did — and then logged
+   * TOKENS ONLY. So when the founder asked AQ to re-check
+   * liveslice-results.js's LIVENESS_SLOW_S against a real generation, there
+   * was nothing to read: no wall-clock figure exists anywhere in this bundle,
+   * the record or the log, and harness §11.3 times only the local half
+   * against a stubbed fetch. The threshold was uncheckable by construction.
+   *
+   * It rides on the SHARED transport, so both callers get it and neither had
+   * to ask — the property ruling AO extracted postJSON() for.
+   *
+   * CONSOLE-ONLY per §5f, and it keeps the build-side vocabulary. The
+   * literals stay INSIDE the console call, which is what lets §20.5's lexer
+   * tell them from rendered copy. */
+  function nowMs() {
+    try { return Date.now ? Date.now() : new Date().getTime(); } catch (e) { return null; }
+  }
+
+  function logUsage(label, body, elapsedMs) {
     var u = body && body.usage;
     if (!u || !root.console || !root.console.info) return false;
     root.console.info('Live Slice: ' + label + ' token usage',
       { input_tokens: u.input_tokens, output_tokens: u.output_tokens,
-        cache_read_input_tokens: u.cache_read_input_tokens });
+        cache_read_input_tokens: u.cache_read_input_tokens,
+        elapsed_ms: (typeof elapsedMs === 'number' && isFinite(elapsedMs)) ? elapsedMs : null });
     return true;
   }
 
@@ -838,6 +860,9 @@ var LiveSliceAPI = (function (root, Blueprint) {
         'This browser cannot make the request (fetch is unavailable).', '', null));
     }
     var key = getKey();
+    // RULING AQ item 3. The round trip is timed here, on the one transport
+    // both callers share, so neither has to time itself.
+    var startedAt = nowMs();
 
     return doFetch(API_URL, {
       method: 'POST',
@@ -856,7 +881,11 @@ var LiveSliceAPI = (function (root, Blueprint) {
             'Claude returned a response this demo could not read.',
             String(raw).slice(0, 300), response.status);
         }
-        logUsage(label || 'request', parsed);
+        // Either end unreadable means no figure rather than a wrong one — §7's
+        // own direction, applied to an instrument instead of an attribution.
+        var endedAt = nowMs();
+        logUsage(label || 'request', parsed,
+          (startedAt === null || endedAt === null) ? null : endedAt - startedAt);
         return parsed;
       });
     }, function (networkError) {

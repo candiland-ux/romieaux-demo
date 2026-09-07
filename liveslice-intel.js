@@ -128,7 +128,7 @@ var LiveSliceIntel = (function (root, Blueprint, API) {
     '{',
     '  "destination": "the destination, as you understand it",',
     '  "playlist": {',
-    '    "title": "a short name for this playlist, five words or fewer",',
+    '    "title": "what a person would call this playlist, five words or fewer. See THE TITLE below.",',
     '    "note": "one plain sentence about how this playlist fits the trip",',
     '    "tracks": [',
     '      {',
@@ -171,6 +171,20 @@ var LiveSliceIntel = (function (root, Blueprint, API) {
       'Between 6 and ' + TRACKS_MAX + ' tracks. Real artists, real tracks.',
       'Do not invent either. Fewer honest tracks is the right answer; a made-up',
       'one is never the right answer.',
+      '',
+      'EVERY TRACK APPEARS ONCE. A song with two artists is ONE track, not one',
+      'entry per artist, and the same recording never appears under two names.',
+      'A repeated track name is collapsed to the first before the traveller',
+      'sees it, so a duplicate costs you a slot rather than filling one.',
+      '',
+      'THE TITLE.',
+      'Name it the way a person names a playlist: short, evocative, something',
+      'you would want to press play on. Five words or fewer.',
+      'Do NOT restate the trip settings. The pace, the party size and the',
+      'travel mode are context for your picks, never the name. "Slow Icelandic',
+      'Adventure Duo" is a description of a booking, not a playlist.',
+      'If you cannot name it in that spirit, leave "title" empty. The playlist',
+      'renders with no title at all, which is better than a label.',
       '',
       'DO NOT INCLUDE ANY PRICE, COST, FEE OR CURRENCY FIELD OF ANY KIND, on',
       'any object, under any name. There is no money in this schema and any',
@@ -259,8 +273,22 @@ var LiveSliceIntel = (function (root, Blueprint, API) {
        * wholesale, and the answer is that it is caught by a NUMBER rather
        * than by an empty playlist a reader would blame on the model's taste. */
       tracksTotal: 0,
-      tracksUngrounded: 0
+      tracksUngrounded: 0,
+      /* RULING AQ item 5, on the same mechanism one field along. A model that
+       * repeats itself wholesale is caught by a NUMBER rather than by a
+       * playlist a reader would blame on the model's taste. */
+      tracksDuplicate: 0
     };
+  }
+
+  /* RULING AQ item 5. The normalisation, stated in one place so the predicate
+   * and the record cannot drift: lowercase, trimmed, internal whitespace
+   * collapsed. Nothing else — no punctuation stripping and no diacritic
+   * folding, because each of those is a judgement about two DIFFERENT strings
+   * and this rule is only ever about the same string written twice. */
+  function normalisedTrackName(name) {
+    return String(name === null || name === undefined ? '' : name)
+      .toLowerCase().replace(/\s+/g, ' ').trim();
   }
 
   function note(list, path, detail) {
@@ -342,11 +370,43 @@ var LiveSliceIntel = (function (root, Blueprint, API) {
         tracksRaw.length + ' tracks supplied — kept the first ' + TRACKS_MAX);
     }
 
+    /* RULING AQ item 5. THE SAME TRACK NEVER APPEARS TWICE, and the case that
+     * produced it is a duet the model listed once per artist: same song, two
+     * rows, both honestly grounded, both surviving every other check.
+     *
+     * COLLAPSED TO THE FIRST, and keyed on the NORMALISED TRACK NAME ALONE.
+     * That key is what makes the duet fall out, because artist plus track
+     * would let it straight through — which is the defect.
+     *
+     * ITS COST IS NAMED RATHER THAN HIDDEN, on ruling AL item 6's precedent:
+     * it also collapses two genuinely different songs that happen to share a
+     * title. That is accepted deliberately. One "Blue" where there were two
+     * costs the traveller one row; the duet costs them the belief that this
+     * list was checked. Every collapse is counted and named in the console,
+     * so the loss is visible rather than silent.
+     *
+     * A duplicate consumes NO slot: it is skipped before the push, so
+     * TRACKS_MAX still admits that many distinct tracks. */
     var tracks = [];
+    var seen = {};
     for (var i = 0; i < tracksRaw.length && tracks.length < TRACKS_MAX; i++) {
       rep.tracksTotal++;
-      var t = cleanTrack(tracksRaw[i], 'playlist.tracks[' + i + ']', rep);
-      if (t) tracks.push(t);
+      var path = 'playlist.tracks[' + i + ']';
+      var t = cleanTrack(tracksRaw[i], path, rep);
+      if (!t) continue;
+
+      var norm = normalisedTrackName(t.track);
+      // hasOwnProperty, not truthiness: a track legitimately named
+      // "constructor" or "toString" would otherwise collide with Object's
+      // prototype and be dropped as a duplicate of nothing.
+      if (Object.prototype.hasOwnProperty.call(seen, norm)) {
+        rep.tracksDuplicate++;
+        note(rep.dropped, path + '.track',
+          'the same track name as ' + seen[norm] + ', collapsed to the first, per ruling AQ');
+        continue;
+      }
+      seen[norm] = path;
+      tracks.push(t);
     }
 
     /* ZERO SURVIVING TRACKS IS NOT AN ERROR. It is the empty state, and it
@@ -384,6 +444,7 @@ var LiveSliceIntel = (function (root, Blueprint, API) {
     root.console.info('Live Slice: playlist validated', {
       tracks_supplied: rep.tracksTotal,
       tracks_ungrounded_and_dropped: rep.tracksUngrounded,
+      tracks_duplicate_and_collapsed: rep.tracksDuplicate,
       dropped: rep.dropped.length,
       clamped: rep.clamped.length,
       defaulted: rep.defaulted.length,

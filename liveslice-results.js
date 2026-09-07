@@ -264,11 +264,30 @@ var LiveSliceResults = (function (root) {
    * written immediately before the step it names.
    * ================================================================== */
 
+  /* RULING AQ item 2. THE CENTRE EYEBROW IS GONE, and this is ruling AM item
+   * 4's rule applied to a second screen.
+   *
+   * The generation wait carried the name FOUR times: the toolbar `.wm`
+   * (index.html:9335), the hero `.ib-eye` (#ls-res-eye), this eyebrow, and
+   * the launcher pill (index.html:9181). AM ruled the toolbar and the pill
+   * for the results screen and ruled `.ib-eye` OUT of scope because it is the
+   * trip's source state and §5g's parked cold-link phase reserves its third
+   * value. All three of those stay. This one was the repetition.
+   *
+   * THE TWO NODES ARE DISTINCT and it was proven before the byte moved:
+   * `.ib-eye` is #ls-res-eye inside the `.ib` hero block, this was an unnamed
+   * div inside #ls-res-progress, a sibling within `.scr`. Both were on screen
+   * at once, which is what made it repetition rather than a second state.
+   *
+   * stage() has four callers — the asking, the scoring, the ledger and the
+   * re-score — so one removal covers all four states of the same screen.
+   * stageError() and failedToStart() KEEP their eyebrows: they are the
+   * refusal panels, not the wait, and ruling AI put the approved form on them
+   * deliberately. §20.6 asserts the count on the rendered wait screen. */
   function stage(title, detail) {
     html('ls-res-progress',
       '<div style="padding:34px 24px;text-align:center;">' +
       '<div style="font-family:var(--fd);font-size:42px;font-style:italic;color:var(--sd);opacity:.8;margin-bottom:16px;">R</div>' +
-      '<div style="font-family:var(--fm);font-size:9px;letter-spacing:4px;color:var(--sd);text-transform:uppercase;margin-bottom:10px;">Generated live</div>' +
       '<div style="font-family:var(--fd);font-size:20px;font-weight:700;color:var(--ink);margin-bottom:6px;">' + esc(title) + '</div>' +
       '<div style="font-size:12px;color:var(--tm);line-height:1.6;">' + esc(detail || '') + '</div>' +
       '<div id="ls-res-liveness" style="font-size:11px;color:var(--tm);line-height:1.6;margin-top:12px;min-height:16px;"></div>' +
@@ -285,16 +304,49 @@ var LiveSliceResults = (function (root) {
    * a REAL elapsed count, and lines that are true for the whole wait. No
    * invented stages — decisions ruling 3's honesty applies to the wait as much
    * as to the ledger. The elapsed thresholds are wall-clock, not estimates of
-   * progress, and the last one names Replay because at 25 seconds the useful
-   * thing to tell someone is how to get out.
+   * progress, and the last one names Replay because past the threshold the
+   * useful thing to tell someone is how to get out.
+   *
+   * RULING AQ item 3 REWROTE BOTH THRESHOLD LINES AND LEFT THE THRESHOLDS
+   * ALONE, and the reasons are worth carrying because they are not the same.
+   *
+   * The 25s line used to add "Hotel wifi is usually the reason", which is a
+   * claim about the traveller's circumstances that this bundle has no way to
+   * know and which was WRONG on the founder's own deploy-11 phone test: the
+   * generation took about 68 seconds on a good connection, so the line
+   * diagnosed a fault where there was none. Replay STAYS, by founder ruling
+   * and for the reason stated above; the wifi sentence was never what carried
+   * it.
+   *
+   * The 12s line used to say "about 20 seconds", which the new 25s line
+   * falsifies thirteen seconds later. It states no duration now. What it says
+   * instead is the one thing a traveller actually wants explained about a
+   * blank screen: the response is not streamed, so there is no partial result
+   * to show.
+   *
+   * LIVENESS_SLOW_S STAYS 25. Ruling AO's second call does NOT lengthen this
+   * wait — stopLiveness() fires in run()'s first .then, the moment the
+   * generation reply lands, and renderIntelPanel() is called last inside
+   * render(), after the progress panel is hidden, with its promise
+   * deliberately unawaited. And the founder's 68 seconds is one observation
+   * on one trip, not an instrumented figure: moving a threshold on it would
+   * be the DCC_RATIO_HIGH_PCT mistake ruling AN rejected. liveslice-api.js's
+   * logUsage() gains elapsed_ms under the same ruling so the next reader has
+   * a real measurement to move it on.
    * ================================================================== */
 
   /* RULING AK. `Blueprint` is the work order's word for the traveller's own
    * answers; it reaches the canonical prototype exactly once, inside an HTML
-   * comment. Same class as AH's "Live Slice" and banned on the same terms. */
+   * comment. Same class as AH's "Live Slice" and banned on the same terms.
+   *
+   * RULING AQ item 1 rewrote the second line. It used to end "Every dollar is
+   * worked out here, after the reply" — the same claim as stage()'s own
+   * detail line, rotating in about four seconds later and five pixels lower,
+   * which is ruling AM item 4's density defect. The half that duplicated the
+   * detail goes; the half that is this line's own subject stays. */
   var LIVENESS_LINES = [
     'Your answers are with Claude.',
-    'Nothing is priced yet. Every dollar is worked out here, after the reply.',
+    'Nothing is priced yet. Prices come after the places do.',
     'One request, not many. Nothing else leaves this browser.'
   ];
   var LIVENESS_ROTATE_MS = 4000;
@@ -305,11 +357,11 @@ var LiveSliceResults = (function (root) {
 
   function livenessText(seconds) {
     if (seconds >= LIVENESS_SLOW_S) {
-      return 'Taking longer than usual. Hotel wifi is usually the reason. ' +
+      return 'Still working. A full trip usually takes about a minute. ' +
         'Replay runs your last trip with no network at all.';
     }
     if (seconds >= LIVENESS_SETTLED_S) {
-      return 'Still working. A full trip takes about 20 seconds.';
+      return 'Still working. The whole reply arrives at once, so there is nothing to show yet.';
     }
     return LIVENESS_LINES[Math.floor(seconds / (LIVENESS_ROTATE_MS / 1000)) % LIVENESS_LINES.length];
   }
@@ -1135,7 +1187,11 @@ var LiveSliceResults = (function (root) {
         : 'Asking Claude for trip ideas: venues, activities, stays…',
       source === 'replay'
         ? 'No network call. Your saved trip is priced again against the answers it came from.'
-        : 'Every dollar is worked out here, afterwards.');
+        /* RULING AQ item 1. The same claim, in the order it happens: the model
+         * proposes, Romieaux prices. Work order §6 and ruling AD both turn on
+         * this sentence, said forwards. AMENDED ONCE BEFORE, at ruling AK
+         * (`computed` -> `worked out`); the claim has not moved either time. */
+        : 'Claude suggests the places. Romieaux works out every dollar once the reply is back.');
 
     // Only the generate path waits on a network call, so only it needs liveness.
     if (source !== 'replay') startLiveness();
