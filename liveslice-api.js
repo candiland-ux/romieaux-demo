@@ -19,9 +19,12 @@
 var LiveSliceAPI = (function (root, Blueprint) {
   'use strict';
 
-  /* RULING AJ. The schema quotes the dietary vocabulary and the family tokens,
-   * both of which are DERIVED in blueprint.js from DIETARY_PRESETS — so the
-   * prompt and the filter read one definition and cannot drift apart. That
+  /* RULING AJ, as amended by RULING AL. The schema quotes the dietary
+   * vocabulary, which is DERIVED in blueprint.js from DIETARY_PRESETS — so the
+   * prompt and the filter read one definition and cannot drift apart. AJ
+   * quoted DIETARY_VOCAB and DIETARY_FAMILIES; AL retires both and this file
+   * now quotes SUITS_VOCAB, the ten preset keys. The dependency and the reason
+   * for it are unchanged, only the constant. That
    * makes blueprint.js a real dependency of this file for the first time, and
    * it is taken as an IIFE parameter on exactly the pattern blueprint.js and
    * liveslice-scoring.js already use for theirs, rather than reached for off
@@ -449,7 +452,7 @@ var LiveSliceAPI = (function (root, Blueprint) {
     '          "pet_friendly": true,',
     '          "tags": [],',
     '          "accessibility": { "wheelchair": true, "limited_mobility": true, "visual": true, "hearing": true, "sensory": true },',
-    '          "contains": [],',
+    '          "suits": [],',
     '          "included_with": "",',
     '          "notes": ""',
     '        }',
@@ -469,7 +472,6 @@ var LiveSliceAPI = (function (root, Blueprint) {
     '    "attributes": { "romantic": 0.0, "adventurous": 0.0, "cultural": 0.0, "restful": 0.0, "family": 0.0, "luxury": 0.0 },',
     '    "accessibility": { "wheelchair": true, "limited_mobility": true, "visual": true, "hearing": true, "sensory": true },',
     '    "tags": [],',
-    '    "contains": [],',
     '    "pet_friendly": true,',
     '    "min_age_years": 0',
     '  },',
@@ -513,28 +515,45 @@ var LiveSliceAPI = (function (root, Blueprint) {
     lines.push('- accessibility: true means the item MEETS that need. Omit any key you are unsure of rather than guessing true.');
     lines.push('- tags: short lowercase descriptors (cuisine, style, "wellness", "spa", "outdoor"). Used for filtering.');
 
-    /* RULING AJ — the structured dietary claim replaces the prose scan.
+    /* RULING AL — the VENUE-SUITABILITY claim replaces AJ's ingredient claim.
      *
-     * The old instruction was "these terms must not appear in any dining
-     * item's name, notes or tags", which a model CANNOT follow while writing
-     * an honest description of a compliant venue — "no meat" contains "meat".
-     * The filter read that prose and removed the very options that satisfied
-     * the restriction. Both halves are replaced here: the model states what an
-     * item CONTAINS, in a closed vocabulary, and the filter reads only that.
+     * AJ replaced ruling P's prose scan with a structured `contains` array and
+     * kept P's question. The question was the remaining defect: an honest
+     * model marks nearly every Italian restaurant as containing meat and fish,
+     * so an intersection removes all of them for a vegetarian and the trip
+     * hollows out again. AJ's own instruction here already asked for a
+     * SUITABILITY answer — "a vegetarian tasting menu is [] even though its
+     * description says no meat" — in a field named for INGREDIENTS. AL closes
+     * that gap by moving the field to where the instruction already was.
+     *
+     * THE STANDARD IS STATED, not implied by the field name, because the two
+     * strictness levels are the whole of the ruling and a model asked only for
+     * "suits" would apply the loose one to kosher and halal.
      *
      * Stated on every request, not only on restricted trips, because the field
      * has to be habitual for the count in the validation report to mean
-     * anything on the run before the traveller declares a restriction. */
-    lines.push('- contains: which EXCLUDED-INGREDIENT tokens the item\'s food actually contains, drawn ONLY from this closed vocabulary: ' +
-      (Blueprint.DIETARY_VOCAB || []).join(', ') + '.');
-    lines.push('  REQUIRED on every dining item. Emit [] when the food contains none of them. An empty array is a positive statement that none are present, and it is what keeps a vegetarian restaurant on the itinerary.');
-    lines.push('  Whenever you name a SPECIFIC (beef, prosciutto, crab, shrimp, cheese), you MUST also name its FAMILY token in the same array: ' +
-      (Blueprint.DIETARY_FAMILIES || []).join(', ') + '. So a beef dish is ["meat","beef"], a crab dish is ["seafood","shellfish","crab"], a cheese dish is ["dairy","cheese"].');
-    lines.push('  Describe the FOOD, never the prose about it. A vegetarian tasting menu is [] even though its description says "no meat". A boat trip is not food and carries no "contains" at all.');
-    lines.push('  A dining item with no "contains", or with specifics and no family token, is treated as UNVERIFIED and is REMOVED from the itinerary on any trip with a dietary restriction. State it on every dining item.');
+     * anything on the run before the traveller declares a need. */
+    lines.push('- suits: which DIETARY AND ALLERGY NEEDS this venue can satisfy, drawn ONLY from this closed vocabulary: ' +
+      (Blueprint.SUITS_VOCAB || []).join(', ') + '.');
+    lines.push('  REQUIRED on every dining item. Emit [] when it can satisfy none of them.');
+    lines.push('  The question is NOT what the food contains. It is whether the venue SUITS the need. A restaurant that also serves meat can suit a vegetarian, and you should say so.');
+    lines.push('  Apply this standard exactly:');
+    lines.push('    vegetarian, vegan, gluten_free, dairy_free, no_alcohol and similar diets: include the token when the venue OFFERS SUITABLE DISHES ON ITS MENU.');
+    lines.push('    kosher: include it only when the venue ITSELF IS KOSHER-CERTIFIED under rabbinic supervision. "Kosher options" and unsupervised vegetarian restaurants do NOT qualify.');
+    lines.push('    halal: include it only when the venue STATES IT SERVES HALAL MEAT OR IS HALAL-CERTIFIED. "Has a chicken dish" does NOT qualify.');
+    lines.push('    nut_allergy, peanut_allergy, shellfish_allergy and similar allergies: include the token when the venue STATES IT CAN ACCOMMODATE THE ALLERGY SAFELY. A restaurant that serves nuts can still suit a nut allergy if it accommodates.');
+    lines.push('  Leave out any need whose suitability you cannot state. That is honest, and it means the venue is REMOVED from the itinerary on any trip carrying that need, so state everything you can genuinely stand behind.');
+    lines.push('  Dish-level dining items — a tasting menu, a cooking class, a picnic — use the same field to the same standard. A boat trip is not a dining item and carries no "suits" at all.');
+    lines.push('  A dining item with no "suits" is treated as UNVERIFIED and is REMOVED on any trip with a dietary need. State it on every dining item.');
     lines.push('- included_with: when an item is only available as part of another item on the itinerary (the meal eaten at a cooking class, the tasting at the end of a tour), set this to that other item\'s "id". If the parent is removed, the child is removed with it. Omit it for anything independently bookable.');
     lines.push('- min_age_years: the venue\'s own minimum age, when it has one. Omit if there is none.');
-    lines.push('- stay: the stay carries attributes, accessibility, tags, pet_friendly and min_age_years on exactly the same terms as an item above. The traveller sleeps there every night, so it is scored and filtered like any other option — and it faces the same hard constraints.');
+    /* RULING AL item 6 — the stay list deliberately omits "suits". A hotel
+     * with no restaurant would honestly declare [], and a subset test against
+     * any stated need would then refuse the booking, which is the
+     * hollowing-out failure at the worst possible place. The stay faces
+     * accessibility, age and pet; the dietary need is carried for the stay by
+     * the absolute below instead of by a predicate. */
+    lines.push('- stay: the stay carries attributes, accessibility, tags, pet_friendly and min_age_years on exactly the same terms as an item above. The traveller sleeps there every night, so it is scored and filtered like any other option. It carries no "suits" — that field is for dining items only.');
     lines.push('- stay.locked_rate_usd / stay.flexible_rate_at_decision_usd: include BOTH only when the stay genuinely has a flexible rate that is currently higher than a lockable rate. Otherwise omit both.');
     lines.push('- transport_segments: one entry per intercity or repeated-transit leg. single_fare_usd / planned_rides / pass_price_usd only where a transit pass genuinely exists.');
     lines.push('');
@@ -609,21 +628,39 @@ var LiveSliceAPI = (function (root, Blueprint) {
       if (bp.accessibility_notes) lines.push('- Traveller\'s note: ' + bp.accessibility_notes);
     }
 
-    if (bp.dietary_hard_lines && bp.dietary_hard_lines.length) {
+    /* RULING AL. The block below is rewritten twice over. Ruling P's version
+     * listed forbidden terms and told the model they "must not appear in any
+     * dining item's name, notes or tags" — an instruction no honest
+     * description of a compliant venue can obey. Ruling AJ freed the prose and
+     * asked instead what the food CONTAINS, which removed every truthful
+     * Italian restaurant from a vegetarian's trip. AL asks the only question
+     * that has a useful answer: WHICH VENUES SUIT THIS TRAVELLER.
+     *
+     * The needs are the preset keys, so this block and the `suits` guidance
+     * above speak one vocabulary, derived once in blueprint.js. */
+    if (bp.dietary_needs && bp.dietary_needs.length) {
       lines.push('');
-      /* RULING AJ. The instruction here used to be "these terms must not
-       * appear in any dining item's name, notes or tags" — which the model
-       * cannot obey while describing a compliant venue honestly, because "no
-       * meat" contains "meat". The filter then read that prose and removed
-       * exactly the options that satisfied the restriction. The constraint is
-       * now expressed against the structured field, and the prose is
-       * explicitly freed. */
-      lines.push('DIETARY RESTRICTIONS — ABSOLUTE');
-      lines.push('- The traveller cannot eat: ' + bp.dietary_hard_lines.join(', ') + '.');
-      lines.push('- Do not recommend any dining item whose food contains one of those. A venue that cannot reliably accommodate the restriction is simply not included.');
-      lines.push('- Declare this in the "contains" array on EVERY dining item, using the closed vocabulary and the family-token rule above. A compliant restaurant carries "contains": [], which is what keeps it on the itinerary.');
-      lines.push('- A dining item with no "contains" is unverified and will be REMOVED, so state it on every one of them.');
-      lines.push('- Write the names and descriptions naturally. You may say "no meat" or "vegetarian tasting menu" — the prose is not scanned, only "contains" is.');
+      lines.push('DIETARY NEEDS — ABSOLUTE');
+      lines.push('- The traveller needs every dining item to suit: ' + bp.dietary_needs.join(', ') + '.');
+      lines.push('- Recommend only venues that genuinely suit all of those, to the standard set out under "suits" above. A venue you cannot vouch for is simply not included.');
+      lines.push('- Declare it in the "suits" array on EVERY dining item. A venue that suits this traveller must name each of those needs there, or it is removed from the itinerary.');
+      lines.push('- This is the point of the field: a restaurant that also serves meat but has a real vegetarian menu SUITS a vegetarian, and naming it is what keeps it on the trip. Do not leave it out because the kitchen also cooks something else.');
+      lines.push('- Write names and descriptions naturally. The prose is never scanned; only "suits" is read.');
+      lines.push('- The stay is checked against these needs by a person, not by a field. Choose one that works for this traveller.');
+    }
+
+    /* RULING AL item 8 — free text is carried VERBATIM and is never split into
+     * need tokens. Under AJ the box was comma-split into terms, and a token
+     * outside the ingredient vocabulary was harmlessly inert. Under AL's
+     * subset test the same token could never appear in `suits`, so it would
+     * remove EVERY dining item — a traveller typing "no restrictions" would
+     * empty their own itinerary. It therefore reaches the model as guidance
+     * and stops there; the intake screen says so under the box. */
+    if (bp.dietary_notes) {
+      lines.push('');
+      lines.push('DIETARY NOTE FROM THE TRAVELLER, IN THEIR OWN WORDS');
+      lines.push('- "' + String(bp.dietary_notes).replace(/"/g, '\'') + '"');
+      lines.push('- Treat this as guidance when choosing venues. It is not one of the tokens above and nothing is filtered on it, so honour it in what you choose rather than by adding anything to "suits".');
     }
 
     lines.push('');
@@ -997,7 +1034,22 @@ var LiveSliceAPI = (function (root, Blueprint) {
     row('Pace', bp.pace);
     row('Budget', bp.budget_mode === 'agnostic' ? 'budget-agnostic'
       : (bp.budget_total_usd ? '$' + bp.budget_total_usd + ' per person' : null));
-    row('Dietary lines', (bp.dietary_hard_lines || []).join(', '));
+    /* RULING AL. Was `Dietary lines`, listing ruling P's expanded forbidden
+     * terms — a field that no longer exists. It names the needs the traveller
+     * actually chose, in the chips' own words.
+     *
+     * §5b's rule is live because this renders inside the consent modal, so
+     * ruling AH's descriptive-label test was applied rather than assumed: the
+     * question is whether the DISCLOSURE changed, not whether the modal did.
+     * It did not. The same answers are sent to the same recipient; the free
+     * text was already disclosed on the `Notes` row below and still is. This
+     * is the sender's own label for data already covered, so CONSENT_VERSION
+     * STAYS AT 1 — bumping it would re-prompt every returning visitor for
+     * nothing. Same disposition, and same reasoning, as ruling AK item 5. */
+    row('Dietary needs', (bp.dietary_needs || []).map(function (k) {
+      var preset = Blueprint.presetFor(k);
+      return preset ? preset.label : k;
+    }).join(', '));
     row('Accessibility', (bp.accessibility_needs || []).join(', '));
     row('Notes', [bp.dietary_notes, bp.accessibility_notes].filter(Boolean).join(' · '));
 

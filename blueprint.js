@@ -12,7 +12,7 @@
  *
  * Field names at the top level match the flat contract engines.js already
  * reads (`mindset`, `trip_type`, `travel_mode`, `kid_ages_months`,
- * `dietary_hard_lines`, `accessibility_needs`, `has_pet`, `party_size`,
+ * `dietary_needs`, `accessibility_needs`, `has_pet`, `party_size`,
  * `has_no_fx_card`, `hourly_rate`), so a Blueprint can be handed straight to
  * buildTasteVector(), applyHardFilters() and buildLedger() with no adapter.
  */
@@ -85,67 +85,87 @@ var Blueprint = (function (Engines) {
   ];
   var ACCESSIBILITY_KEYS = ACCESSIBILITY_NEEDS.map(function (n) { return n.key; });
 
-  /* Dietary presets.
+  /* Dietary presets — RULING AL. A preset is a NEED THE VENUE MUST SUIT.
    *
-   * engines.js violatesDietary() drops an item when a hard line appears as a
-   * substring of its name / notes / tags — so a hard line is a FORBIDDEN TERM,
-   * not a diet label. "Vegetarian" as a literal line would match items
-   * advertised as vegetarian, which is backwards; each preset therefore
-   * expands to the terms that must not appear.
+   * SUPERSEDES ruling P's forbidden-term expansion and ruling AJ's re-targeting
+   * of it. P ruled that a hard line is a forbidden TERM and not a diet label,
+   * because "vegetarian" as a literal line would have matched the very items a
+   * vegetarian wants — sound reasoning for a substring scan over prose, which
+   * is what P had. AJ moved the scan onto a structured `contains` claim and
+   * kept P's question. AL rules the QUESTION wrong: a venue's food containing
+   * meat is not what a vegetarian needs to know, because nearly every Italian
+   * restaurant honestly contains meat and fish, and removing all of them
+   * hollows the trip out exactly as P's scan did.
    *
-   * The expansions bias toward over-removal ('nut' also catches "coconut").
-   * That is the safe direction: work order §7 requires that an option failing
-   * a hard predicate never renders at all, and P4 logs every removal to the
-   * console for QA. */
+   * So "vegetarian" IS the right token after all — not as a term that must not
+   * appear, but as a need the venue declares it SUITS. The ten keys below are
+   * the whole vocabulary: the traveller's needs are drawn from it and so is
+   * the model's `suits` array, which is what keeps the predicate a plain set
+   * operation with no mapping layer to drift.
+   *
+   * THE EXPANSIONS ARE GONE, and the kosher preset is why they had to go
+   * rather than merely go unused. It read `pork, ham, bacon, prosciutto,
+   * shellfish, shrimp, lobster, crab` — an ingredient list standing in for a
+   * rule that is RABBINIC CERTIFICATION. An unsupervised vegetarian restaurant
+   * contains none of those and is not kosher; a certified deli serves none of
+   * them and is. Leaving the data in the file as unread decoration would leave
+   * the next reader a definition of kosher this record has ruled wrong.
+   *
+   * `unstated` and `unsuited` are the traveller's words for the two ways a
+   * need goes unmet (§5f: only prose the traveller reads lives here; the
+   * internal reason token is untouched). They are held BESIDE the keys so
+   * there is one definition, and harness §21 asserts every key carries both —
+   * which is what makes this a closed map rather than the specific-to-family
+   * TAXONOMY ruling AJ refused. AJ's objection was that such a map "would need
+   * an entry for every ingredient on earth to be sound, and its gaps would
+   * fail silently". This one cannot have a gap: its keys ARE the vocabulary. */
   var DIETARY_PRESETS = [
     { key: 'vegetarian', label: 'Vegetarian',
-      terms: ['meat', 'beef', 'pork', 'ham', 'bacon', 'chicken', 'lamb', 'veal', 'fish', 'seafood', 'shellfish'] },
+      unstated: 'does not say whether it suits a vegetarian',
+      unsuited: 'does not offer vegetarian dishes' },
     { key: 'vegan', label: 'Vegan',
-      terms: ['meat', 'beef', 'pork', 'ham', 'bacon', 'chicken', 'lamb', 'veal', 'fish', 'seafood', 'shellfish',
-              'dairy', 'cheese', 'milk', 'cream', 'butter', 'egg', 'honey'] },
+      unstated: 'does not say whether it suits a vegan',
+      unsuited: 'does not offer vegan dishes' },
     { key: 'gluten_free', label: 'Gluten-free',
-      terms: ['gluten', 'wheat', 'bread', 'pasta', 'pastry', 'beer'] },
+      unstated: 'does not say whether it has gluten-free dishes',
+      unsuited: 'does not offer gluten-free dishes' },
     { key: 'dairy_free', label: 'Dairy-free',
-      terms: ['dairy', 'cheese', 'milk', 'cream', 'butter', 'gelato', 'yogurt'] },
+      unstated: 'does not say whether it has dairy-free dishes',
+      unsuited: 'does not offer dairy-free dishes' },
     { key: 'nut_allergy', label: 'Tree nut allergy',
-      terms: ['nut', 'almond', 'walnut', 'pistachio', 'hazelnut', 'pecan', 'cashew'] },
+      unstated: 'does not say whether it can handle a tree nut allergy',
+      unsuited: 'does not say it can handle a tree nut allergy safely' },
     { key: 'peanut_allergy', label: 'Peanut allergy',
-      terms: ['peanut', 'groundnut'] },
+      unstated: 'does not say whether it can handle a peanut allergy',
+      unsuited: 'does not say it can handle a peanut allergy safely' },
     { key: 'shellfish_allergy', label: 'Shellfish allergy',
-      terms: ['shellfish', 'shrimp', 'prawn', 'crab', 'lobster', 'oyster', 'clam', 'mussel', 'scallop'] },
+      unstated: 'does not say whether it can handle a shellfish allergy',
+      unsuited: 'does not say it can handle a shellfish allergy safely' },
     { key: 'halal', label: 'Halal',
-      terms: ['pork', 'ham', 'bacon', 'prosciutto', 'lard', 'alcohol', 'wine'] },
+      unstated: 'does not say whether it is halal',
+      unsuited: 'is not halal' },
     { key: 'kosher', label: 'Kosher',
-      terms: ['pork', 'ham', 'bacon', 'prosciutto', 'shellfish', 'shrimp', 'lobster', 'crab'] },
+      unstated: 'does not say whether it is kosher',
+      unsuited: 'is not kosher-certified' },
     { key: 'no_alcohol', label: 'No alcohol',
-      terms: ['alcohol', 'wine', 'beer', 'cocktail', 'brewery', 'distillery', 'sake'] }
+      unstated: 'does not say whether it serves an alcohol-free menu',
+      unsuited: 'does not offer an alcohol-free option' }
   ];
   var DIETARY_KEYS = DIETARY_PRESETS.map(function (p) { return p.key; });
 
-  /* RULING AJ — the vocabulary the model's `contains` field is drawn from.
+  /* RULING AL — the closed vocabulary the model's `suits` field is drawn from,
+   * and the same one the traveller's needs are expressed in.
    *
-   * DERIVED from DIETARY_PRESETS rather than re-typed, because that is already
-   * the exact token set a restriction is expressed in: `dietaryHardLines()`
-   * builds the restriction list out of these same terms, so the conflict test
-   * downstream is a plain set intersection with no mapping layer to drift.
-   * Add a preset term and the schema vocabulary follows it in the same edit.
+   * DERIVED from DIETARY_PRESETS rather than re-typed, on ruling AJ's own
+   * reasoning for DIETARY_VOCAB — one definition, so the request and the
+   * filter cannot drift apart. What changed is WHICH set it is: AJ derived 51
+   * ingredient tokens from the preset expansions, AL derives the ten preset
+   * KEYS, because a venue can suit `vegetarian` and cannot suit `pork`.
    *
-   * 51 tokens as of AJ. Order follows preset order, deduplicated. */
-  var DIETARY_VOCAB = (function () {
-    var out = [];
-    DIETARY_PRESETS.forEach(function (p) {
-      p.terms.forEach(function (t) { if (out.indexOf(t) === -1) out.push(t); });
-    });
-    return out;
-  })();
-
-  /* RULING AJ, item 4 — the family tokens are DEFINED IN engines.js, beside
-   * the predicate that enforces them, and are re-exported here so the schema
-   * and the prompt have one place to read them from. One definition, two
-   * readers: the filter and the request. See the block above
-   * `violatesDietary()` in engines.js for why the rule exists and why it is
-   * not a specific-to-family map. */
-  var DIETARY_FAMILIES = (Engines && Engines.DIETARY_FAMILIES) || [];
+   * DIETARY_VOCAB and DIETARY_FAMILIES are DELETED, not left unread. See the
+   * preset block above for the expansions, and RULINGS AL items 3 and 5 for
+   * why an unread constant is worse than a missing one. */
+  var SUITS_VOCAB = DIETARY_KEYS.slice();
 
   /* ---------------------------------------------------------------------
    * Bounds
@@ -285,8 +305,9 @@ var Blueprint = (function (Engines) {
       cuisine_loves: [],
       dining_adventurousness: null,        // familiar | balanced | adventurous
       dietary_selections: [],              // preset keys, for UI restore
-      dietary_notes: '',                   // free text, ruling G screen
-      dietary_hard_lines: [],              // derived: forbidden terms fed to engines
+      dietary_notes: '',                   // free text, ruling G screen — RULING AL:
+                                           //   prompt guidance ONLY, never tokenised
+      dietary_needs: [],                   // derived: the need tokens fed to engines
 
       // §3 engagement_mode ----------------------------------------------
       engagement_mode: 'curated',          // ruling F; canonical S.mode default
@@ -323,16 +344,35 @@ var Blueprint = (function (Engines) {
     return Math.round(LUXURY_QUARTILE * (total / n));
   }
 
-  /* Hard lines = every forbidden term the selected presets expand to, plus
-   * anything typed in the free-text box (comma or newline separated). */
-  function dietaryHardLines(selections, notes) {
-    var terms = [];
+  /* RULING AL — the traveller's stated needs. The selected preset keys, and
+   * NOTHING ELSE.
+   *
+   * SUPERSEDES dietaryHardLines(), which returned every forbidden term the
+   * presets expanded to PLUS the free-text box split on commas. Both halves
+   * are retired, and the second half is the one that had to be ruled rather
+   * than dropped in passing.
+   *
+   * FREE TEXT IS NEVER TOKENISED — RULING AL item 8, and it is the one place
+   * this amendment could have recreated the very defect it fixes. Under AJ a
+   * free-text token outside the 51-token vocabulary was INERT: `cleanContains`
+   * dropped it from the model's array, so it never intersected and nothing was
+   * removed. Under AL's SUBSET test the same token can never appear in
+   * `suits`, so it would remove EVERY DINING ITEM ON THE TRIP — a traveller
+   * typing "no restrictions" would empty their own itinerary. The direction
+   * flips from inert to catastrophic on exactly the input a real traveller
+   * types.
+   *
+   * So `dietary_notes` is carried into the prompt VERBATIM as guidance and
+   * never reaches this function. The intake screen says so under the box, so
+   * a traveller who types an allergy there is told it is not what gets
+   * enforced. See index.html 9133. */
+  function dietaryNeeds(selections) {
+    var needs = [];
     (selections || []).forEach(function (key) {
       var preset = presetFor(key);
-      if (preset) terms = terms.concat(preset.terms);
+      if (preset) needs.push(preset.key);
     });
-    str(notes).split(/[,\n;]+/).forEach(function (t) { terms.push(t); });
-    return uniqueStrings(terms);
+    return uniqueStrings(needs);
   }
 
   function presetFor(key) {
@@ -349,7 +389,7 @@ var Blueprint = (function (Engines) {
     bp.pace_hours = paceHours(bp);
     bp.proactivity_p = proactivityP(bp);
     bp.luxury_threshold_usd = luxuryThreshold(bp.budget_total_usd, bp.nights);
-    bp.dietary_hard_lines = dietaryHardLines(bp.dietary_selections, bp.dietary_notes);
+    bp.dietary_needs = dietaryNeeds(bp.dietary_selections);
     bp.party_size = clamp(
       Math.max(1, num(bp.adults, 1)) + (bp.kid_ages_months || []).length,
       1, PARTY_SIZE_MAX
@@ -632,7 +672,10 @@ var Blueprint = (function (Engines) {
       trip_type: bp.trip_type || null,
       travel_mode: bp.travel_mode || null,
       kid_ages_months: (bp.kid_ages_months || []).slice(),
-      dietary_hard_lines: (bp.dietary_hard_lines || []).slice(),
+      dietary_needs: (bp.dietary_needs || []).slice(),
+      /* RULING AL item 8 — carried VERBATIM for the prompt, never tokenised.
+       * The engines never read it; it reaches liveslice-api.js and stops. */
+      dietary_notes: str(bp.dietary_notes),
       accessibility_needs: (bp.accessibility_needs || []).slice(),
       has_pet: !!bp.has_pet,
       party_size: Math.max(1, num(bp.party_size, 1)),
@@ -678,8 +721,7 @@ var Blueprint = (function (Engines) {
     ACCESSIBILITY_KEYS: ACCESSIBILITY_KEYS,
     DIETARY_PRESETS: DIETARY_PRESETS,
     DIETARY_KEYS: DIETARY_KEYS,
-    DIETARY_VOCAB: DIETARY_VOCAB,          // ruling AJ
-    DIETARY_FAMILIES: DIETARY_FAMILIES,    // ruling AJ, item 4
+    SUITS_VOCAB: SUITS_VOCAB,              // ruling AL
 
     // bounds
     HOURLY_RATE_MIN: HOURLY_RATE_MIN,
@@ -717,7 +759,7 @@ var Blueprint = (function (Engines) {
     paceHours: paceHours,
     proactivityP: proactivityP,
     luxuryThreshold: luxuryThreshold,
-    dietaryHardLines: dietaryHardLines,
+    dietaryNeeds: dietaryNeeds,
     presetFor: presetFor,
     nightsBetween: nightsBetween,
 

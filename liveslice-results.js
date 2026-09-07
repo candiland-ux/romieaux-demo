@@ -432,7 +432,12 @@ var LiveSliceResults = (function (root) {
    * and this is the only place it becomes something a traveller reads. Since
    * amendment AA the intake says "dietary restrictions", so this does too. */
   var REMOVAL_LABEL = {
-    'dietary hard line': 'dietary restriction',
+    /* RULING AL. The token stays 'dietary hard line' — it is a branch key and
+     * the console's word, and §5f rules that the build side keeps it. What the
+     * traveller reads becomes "dietary need", because AL's question is what
+     * the venue must SUIT rather than what it must not contain, and the intake
+     * screen now says the same. */
+    'dietary hard line': 'dietary need',
     'accessibility predicate': 'accessibility need',
     'kids age gate': 'age restriction',
     'pet constraint': 'pet requirement',
@@ -696,7 +701,9 @@ var LiveSliceResults = (function (root) {
      * the field on some items is a different fact and does not read this. */
     if (result.legacyDietary) {
       parts.push('<div style="font-size:12px;color:var(--tx);line-height:1.6;margin-top:10px;">' +
-        'This trip was saved before Romieaux started checking dishes against your dietary needs, ' +
+        /* RULING AL amends AK's wording here: dishes are no longer what is
+         * checked, venue suitability is. The sentence's job is unchanged. */
+        'This trip was saved before Romieaux started checking which venues suit you, ' +
         'so none of its restaurants can be checked now. Generate a fresh trip and they will be.</div>');
     }
 

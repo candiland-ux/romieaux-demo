@@ -9127,9 +9127,10 @@ document.addEventListener('click', function(){
     <!-- DIETARY HARD LINES -->
     <div style="margin-top:22px;border-top:1px solid var(--bd);padding-top:18px;">
       <div style="font-family:var(--fm);font-size:9px;letter-spacing:2px;color:var(--rg);text-transform:uppercase;margin-bottom:4px;">Dietary restrictions</div>
-      <div style="font-size:12px;color:var(--ts);line-height:1.6;margin-bottom:10px;">Select anything that must never appear on your trip. Romieaux removes any venue or dish that conflicts — strictly, no exceptions. Choose these for allergies and firm requirements; skip them for mere preferences.</div>
+      <div style="font-size:12px;color:var(--ts);line-height:1.6;margin-bottom:10px;">Select anything your trip must suit. Romieaux keeps only the places that say they suit it and removes the rest, strictly, no exceptions. Choose these for allergies and firm requirements; skip them for mere preferences.</div>
       <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px;" id="ls-diet-chips"></div>
-      <input type="text" id="ls-diet-notes" placeholder="Anything else — separate with commas" oninput="LiveSlice.onDietaryNotes(this.value)" style="width:100%;padding:8px 0;background:transparent;border:none;border-bottom:1.5px solid var(--bd);font-family:var(--fs);font-size:13px;color:var(--tx);outline:none;box-sizing:border-box;">
+      <input type="text" id="ls-diet-notes" placeholder="Anything else worth knowing" oninput="LiveSlice.onDietaryNotes(this.value)" style="width:100%;padding:8px 0;background:transparent;border:none;border-bottom:1.5px solid var(--bd);font-family:var(--fs);font-size:13px;color:var(--tx);outline:none;box-sizing:border-box;">
+      <div style="font-size:11px;color:var(--ts);line-height:1.6;margin-top:8px;">Anything typed here is passed to the planner as guidance. Use the options above for anything that must be enforced.</div>
     </div>
 
     <!-- ACCESSIBILITY DETAIL — shown only when the canonical toggle was set -->
