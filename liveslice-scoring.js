@@ -732,16 +732,47 @@ var LiveSliceScoring = (function (Engines, Blueprint) {
       }
     }
 
-    // §3: DCC-exposed spend is a DISTINCT AND SMALLER quantity than total
-    // foreign spend. Incoherence is clamped; being outside the 36–55% band is
-    // only a warning, because the band is calibration, not a hard rule.
+    /* §3: DCC-exposed spend is a DISTINCT AND SMALLER quantity than total
+     * foreign spend. Being outside the 36-55% band is only a warning, because
+     * the band is calibration, not a hard rule.
+     *
+     * RULING AN — THE SUBSET IS STRICT, AND `>=` IS THE WHOLE POINT.
+     *
+     * This clamped on `dcc > foreign` and let EQUALITY through with a console
+     * warning. §3's prompt forbids it in terms ("must never be set equal to
+     * it"), but a prompt is not an enforcement: a model that sent the two
+     * equal put BOTH payment rows on the SAME dollars, and the ledger
+     * attributed 3% + 3.5% = 6.5% against one dollar of spend, twice. The
+     * founder's own trip passed on the model's good manners, not on a
+     * guarantee.
+     *
+     * Ruled (i): equality is not a smaller quantity, so there is no exposed
+     * spend to attribute against. The field goes to zero, avoidedDcc() then
+     * returns null on `spend <= 0`, and the row is WITHHELD. That is work
+     * order §7's own default — a malformed field defaults to a value that
+     * produces zero attribution, never a fabricated saving — and it is the
+     * verified-or-drop direction rulings P, Q, R, U, AJ and AL all share,
+     * applied to a sixth field.
+     *
+     * Readings (ii) keep-and-warn and (iii) clamp to DCC_RATIO_HIGH_PCT were
+     * both put and REJECTED. (iii) is the tempting one, because the band
+     * constant already exists so it invents no constant — but it invents the
+     * FIGURE, and a Romieaux-chosen ratio underneath an attributed dollar is
+     * exactly what the Ledger Law exists to prevent.
+     *
+     * The FX row is untouched by this. Total foreign spend is still a real
+     * estimate of real spending; it is the SUBSET that could not be verified.
+     */
     var foreign = trip.foreign_card_spend_estimate_usd;
     var dcc = trip.dcc_exposed_spend_usd;
-    if (foreign > 0 && dcc > foreign) {
-      note(rep.clamped, 'dcc_exposed_spend_usd',
-        'DCC-exposed spend ($' + dcc + ') exceeded total foreign spend ($' + foreign + ') — clamped to it (§3)');
-      trip.dcc_exposed_spend_usd = foreign;
-      dcc = foreign;
+    if (foreign > 0 && dcc >= foreign) {
+      note(rep.dropped, 'dcc_exposed_spend_usd',
+        'DCC-exposed spend ($' + dcc + ') is not smaller than total foreign spend ($' + foreign +
+        ') — §3 requires a distinct, smaller quantity, so it cannot be told apart from the foreign ' +
+        'spend the FX row already claims. Dropped to zero attribution (work order §7); the DCC row ' +
+        'is withheld rather than counted against dollars twice (ruling AN)');
+      trip.dcc_exposed_spend_usd = 0;
+      dcc = 0;
     }
     if (foreign > 0 && dcc > 0) {
       var ratioPct = Math.round((dcc / foreign) * 100);

@@ -37,6 +37,24 @@ var Engines = (function () {
    *    `min_age_years` fails on a trip with kids wherever an age gate is
    *    plausible. All four hard filters (P, Q, R) now share one direction:
    *    unverified is removed. See the block above violatesAgeGate().
+   * AL. (2026-09-07) The dietary predicate asks whether the VENUE SUITS THE
+   *    NEED. See the block above violatesDietary().
+   * AN. (2026-09-07) Every percentage row's `baseline` states BASE, RATE and
+   *    RESULT, so a traveller can reproduce the figure from the row's own
+   *    visible subline instead of only from the formula behind the tooltip.
+   *    The two percentage-of-SPEND rows multiply DIFFERENT bases on purpose
+   *    (§3: DCC-exposed spend is a documented subset of foreign spend at
+   *    36-55%), and the DCC baseline now NAMES its parent, because the subset
+   *    is the whole reason the two rows read as inconsistent to anyone who
+   *    divides. Vocabulary is the canonical corpus's own: `card spend` and
+   *    `eligible`. avoidedDcc() takes the foreign spend as a SECOND argument
+   *    for naming only; it takes no part in the arithmetic.
+   *
+   *    AN ALSO PUT THIS FILE INSIDE THE TRAVELLER CORPUS. Labels, formulas
+   *    and baselines are rendered verbatim, so `harness.js` §20.5/§20.6 now
+   *    lex this file too: no em dash and no banned developer term in a
+   *    rendered literal. The one reconciliation-verdict em dash below is
+   *    ruling AH's named exemption. See `harness.js` §22.
    *
    * Engine-input-only fields — the generation schema must NOT ask the model
    * for these, and the model never supplies them:
@@ -406,6 +424,35 @@ var Engines = (function () {
    * (work order §7: "never pad").
    * ------------------------------------------------------------------- */
 
+  /* RULING AN — the baseline is a SENTENCE A TRAVELLER CAN CHECK.
+   *
+   * `formula` and `baseline` are both rendered verbatim: `formula` behind the
+   * tooltip trigger, `baseline` on the row's own visible subline
+   * (`liveslice-ledger.js` cashBlock(), `liveslice-results.js`
+   * interventionTooltip()). The founder read two rows off that subline, did
+   * the division, and got two different spend bases with nothing on screen to
+   * say why — because the base reached the page ONLY inside the formula, as
+   * the raw schema field name.
+   *
+   * So every percentage row's baseline now states BASE, RATE and RESULT. The
+   * two are deliberately different registers and that is not an oversight:
+   *
+   *   formula   the mechanical trace, in the schema's own terms. Work order
+   *             §6 asks for it and AK ruled it class (c) keep.
+   *   baseline  the traveller's sentence. Reproducible with a calculator.
+   *
+   * The result printed in a baseline is the ROUNDED amount, computed once and
+   * handed to both this function and the string, so the sentence can never
+   * disagree with the figure beside it. `row()` re-rounds, which is
+   * idempotent.
+   *
+   * NOTE FOR WHOEVER EDITS A STRING HERE: since ruling AN this file is inside
+   * the §20.5/§20.6 traveller corpus. An em dash or a banned developer term in
+   * a label or a baseline fails `harness.js` §20. */
+  function usd(n) {
+    return '$' + roundMoney(n).toLocaleString('en-US');
+  }
+
   function row(kind, label, amount, formula, baseline, inputs) {
     var rounded = roundMoney(amount);
     if (rounded <= 0) return null;
@@ -483,12 +530,17 @@ var Engines = (function () {
     var singles = rides * fare;
     if (!(singles > pass * PASS_ARBITRAGE_FACTOR)) return null;
     if (singles <= pass) return null;
+    /* RULING AN: the subline carried the singles side only, so a traveller
+     * could see $18 × 6 rides and $13 saved and had no way to reach the $95
+     * that closes the arithmetic. It was in the formula and nowhere else. */
+    var passSaved = roundMoney(singles - pass);
     return row(
       'SAVES',
       'Day-pass vs single fares' + (seg.name ? ' (' + seg.name + ')' : ''),
-      singles - pass,
+      passSaved,
       'Σ singles − pass_price = (' + rides + ' × $' + fare + ') − $' + pass,
-      'Single fares $' + fare + ' × ' + rides + ' rides',
+      'Single fares ' + usd(fare) + ' × ' + rides + ' rides = ' + usd(singles) +
+        ', less the ' + usd(pass) + ' Day-pass = ' + usd(passSaved),
       { rides: rides, fare: fare, pass: pass, singles: singles }
     );
   }
@@ -502,12 +554,15 @@ var Engines = (function () {
     if (discount > 1) discount = discount / 100;
     var count = num(tickets, 1);
     if (list <= 0 || count <= 0 || discount < ADVANCE_DISCOUNT_MIN) return null;
+    // RULING AN: the base was already named here; the rate and the result were not.
+    var advSaved = roundMoney(list * discount * count);
     return row(
       'SAVES',
       'Advance-purchase discount' + (it.name ? ' (' + it.name + ')' : ''),
-      list * discount * count,
+      advSaved,
       'list × d% × tickets = $' + list + ' × ' + (discount * 100).toFixed(0) + '% × ' + count,
-      'List price $' + list,
+      'List price ' + usd(list) + ' at ' + (discount * 100).toFixed(0) + '% off × ' +
+        count + (count === 1 ? ' ticket = ' : ' tickets = ') + usd(advSaved),
       { list: list, discount: discount, tickets: count }
     );
   }
@@ -521,27 +576,36 @@ var Engines = (function () {
     var price = num(it.est_price_usd, 0);
     var count = num(covers, 0);
     if (channel.type !== 'platform' || feeRate <= 0 || price <= 0 || count <= 0) return null;
+    // RULING AN: the rate was named, the price it applies to was not.
+    var platSaved = roundMoney(feeRate * count * price);
     return row(
       'AVOIDED',
       'Booking platform per-cover fee' + (it.name ? ' (' + it.name + ')' : ''),
-      feeRate * count * price,
+      platSaved,
       'fee_rate × covers × price = ' + (feeRate * 100).toFixed(0) + '% × ' + count + ' × $' + price,
-      'Platform channel at ' + (feeRate * 100).toFixed(0) + '% per cover',
+      'Platform channel at ' + (feeRate * 100).toFixed(0) + '% of ' + usd(price) + ' × ' +
+        count + (count === 1 ? ' cover = ' : ' covers = ') + usd(platSaved),
       { feeRate: feeRate, covers: count, price: price }
     );
   }
 
   /* AVOIDED FX = foreign_spend x 3%
-   * Ruling D gate: only when the traveler holds a 0-FX card. */
+   * Ruling D gate: only when the traveler holds a 0-FX card.
+   *
+   * RULING AN: this row and avoidedDcc() below are the two percentage-of-SPEND
+   * rows, and they multiply DIFFERENT bases on purpose (§3). The baseline says
+   * which base, in the canonical corpus's own words — the seven shipped trips
+   * already read `FX fees avoided (~$2,800 group spend)`. */
   function avoidedFxFees(foreignSpendUsd, hasNoFxCard) {
     var spend = num(foreignSpendUsd, 0);
     if (spend <= 0 || !hasNoFxCard) return null;
+    var fxSaved = roundMoney(spend * FX_FEE_RATE);
     return row(
       'AVOIDED',
       'Foreign transaction fees',
-      spend * FX_FEE_RATE,
+      fxSaved,
       'foreign_spend × 3% = $' + spend + ' × 3%',
-      'Wrong-card FX fee at 3%',
+      'Wrong-card FX fee at 3% of ' + usd(spend) + ' in card spend = ' + usd(fxSaved),
       { spend: spend, rate: FX_FEE_RATE }
     );
   }
@@ -557,17 +621,32 @@ var Engines = (function () {
    * but the canonical corpus actually varies (3.0% Amalfi, 3.6% Iceland,
    * 3.75% Lisbon, 4.5% Paris and Tulum). This engine uses the pinned 3.5%,
    * so it reproduces Iceland exactly but not every canonical DCC row. FX, by
-   * contrast, is uniformly 3.0% across all seven trips and matches exactly. */
-  function avoidedDcc(exposedSpendUsd) {
+   * contrast, is uniformly 3.0% across all seven trips and matches exactly.
+   *
+   * RULING AN — THE BASELINE NAMES ITS PARENT, because the subset is the whole
+   * reason the two payment rows look inconsistent to anyone who divides. The
+   * canonical corpus's word for this quantity is `eligible`
+   * (`DCC declined (~$900 eligible)`), so that is the word used rather than a
+   * new one.
+   *
+   * `foreignSpendUsd` is passed only so the sentence can name the parent. It
+   * takes no part in the arithmetic, and when it is absent or not larger than
+   * the exposed spend the clause is simply omitted rather than guessed at —
+   * the strict-subset check in liveslice-scoring.js is what guarantees the two
+   * are distinct before either row is built. */
+  function avoidedDcc(exposedSpendUsd, foreignSpendUsd) {
     var spend = num(exposedSpendUsd, 0);
     if (spend <= 0) return null;
+    var foreign = num(foreignSpendUsd, 0);
+    var dccSaved = roundMoney(spend * DCC_MARKUP_RATE);
+    var ofWhich = foreign > spend ? ', part of ' + usd(foreign) + ' in card spend' : '';
     return row(
       'AVOIDED',
       'Dynamic currency conversion declined',
-      spend * DCC_MARKUP_RATE,
+      dccSaved,
       'exposed_spend × 3.5% = $' + spend + ' × 3.5%',
-      'DCC markup at 3.5%',
-      { spend: spend, rate: DCC_MARKUP_RATE }
+      'DCC markup at 3.5% of ' + usd(spend) + ' eligible' + ofWhich + ' = ' + usd(dccSaved),
+      { spend: spend, rate: DCC_MARKUP_RATE, foreignSpend: foreign }
     );
   }
 
@@ -874,7 +953,9 @@ var Engines = (function () {
 
     // Payment-level interventions
     push(avoidedFxFees(t.foreign_card_spend_estimate_usd, bp.has_no_fx_card !== false));
-    push(avoidedDcc(t.dcc_exposed_spend_usd));
+    // RULING AN: the DCC row is handed the foreign spend so its baseline can
+    // name the quantity it is a part of. It is a naming input, not a term.
+    push(avoidedDcc(t.dcc_exposed_spend_usd, t.foreign_card_spend_estimate_usd));
     push(avoidedExpediterFees(t.pet_paperwork, !!bp.has_pet));
 
     // EARNS — engine-input-only. `card_scenario` is deliberately absent from
