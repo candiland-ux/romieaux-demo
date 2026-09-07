@@ -70,6 +70,10 @@ var LiveSliceResults = (function (root) {
   var lastParts = null;
   var lastPayload = null;
   var running = false;
+  /* RULING AO. The intel block's promise, kept so the harness can await the
+   * branch it took rather than race it. Nothing in the render path reads it
+   * back — the block reports itself, in place. */
+  var lastIntel = null;
 
   /* =====================================================================
    * DOM helpers
@@ -1015,6 +1019,31 @@ var LiveSliceResults = (function (root) {
     return false;
   }
 
+  /* RULING AO. The intel block, on renderLedgerPanel()'s exact pattern and
+   * for §5d's exact reason: reached through root.LiveSliceIntel at RENDER
+   * time, never at load time, and wrapped in try/catch — so with
+   * liveslice-intel.js absent, or throwing, the results screen is precisely
+   * what ruling AM shipped.
+   *
+   * IT IS FIRED LAST AND ITS PROMISE IS NOT AWAITED. The itinerary, the
+   * ledger and both reconciliations are already on screen by the time this
+   * runs; a second call must never be able to delay them, and it must never
+   * be able to take them down. The block reports its own outcome in place —
+   * pending, playlist, empty, keyless, predates-the-playlist, or failed —
+   * which is §19's rule on a surface §19 did not reach. */
+  function renderIntelPanel(result) {
+    try {
+      if (root.LiveSliceIntel && typeof root.LiveSliceIntel.run === 'function') {
+        return root.LiveSliceIntel.run(result);
+      }
+    } catch (e) {
+      if (root.console && root.console.error) {
+        root.console.error('Live Slice: the playlist block failed to render.', e);
+      }
+    }
+    return null;
+  }
+
   function render(result) {
     lastResult = result;
     lastFingerprint = blueprintFingerprint(result.blueprint);
@@ -1040,6 +1069,10 @@ var LiveSliceResults = (function (root) {
 
     hide('ls-res-progress');
     show('ls-res-body');
+
+    // RULING AO — last, after the screen is up, and deliberately not awaited.
+    lastIntel = renderIntelPanel(result);
+
     return result;
   }
 
@@ -1431,6 +1464,8 @@ var LiveSliceResults = (function (root) {
     openSettings: function () { if (API) API.openSettings(); },
     lastResult: function () { return lastResult; },
     isRunning: function () { return running; },
+    /* RULING AO — the intel block's promise, for harness §23. */
+    lastIntel: function () { return lastIntel; },
 
     // referenced by the appended markup and by the harness
     init: init,

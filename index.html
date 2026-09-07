@@ -9250,7 +9250,7 @@ document.addEventListener('click', function(){
   <div style="width:100%;max-width:440px;max-height:88vh;overflow-y:auto;background:var(--pn);border:1px solid var(--bd);border-radius:16px;padding:22px;box-sizing:border-box;box-shadow:0 18px 48px rgba(46,30,14,.32);">
     <div style="font-family:var(--fm);font-size:8px;letter-spacing:4px;color:var(--rg);text-transform:uppercase;margin-bottom:10px;">Generated live - Before we send anything</div>
     <div style="font-size:17px;font-weight:600;color:var(--ink);line-height:1.35;margin-bottom:6px;">This sends your trip details to Anthropic.</div>
-    <div style="font-size:12px;color:var(--tm);line-height:1.6;margin-bottom:14px;">Claude suggests stays, restaurants, activities and transport as structured data. Every dollar figure you then see is worked out here by Romieaux. Claude is never asked for one.</div>
+    <div style="font-size:12px;color:var(--tm);line-height:1.6;margin-bottom:14px;">Claude suggests stays, restaurants, activities and transport as structured data, and builds a playlist from the genres you picked. Every dollar figure you then see is worked out here by Romieaux. Claude is never asked for one.</div>
 
     <div style="font-family:var(--fm);font-size:9px;letter-spacing:2px;color:var(--rg);text-transform:uppercase;margin-bottom:8px;">Exactly what is sent</div>
     <div id="ls-consent-payload" style="background:var(--nt);border-radius:12px;padding:12px 14px;margin-bottom:14px;"></div>
@@ -9357,6 +9357,14 @@ document.addEventListener('click', function(){
            Engines.buildLedger() result at render time — there is no dollar
            figure in this markup, and none can be added to it. -->
       <div id="ls-res-ledger"></div>
+      <!-- AO · RULING Y, third application: one pure addition at this line,
+           between the ledger panel and the removals audit trail, so the money
+           story stays contiguous — summary, days, ledger — and the intel sits
+           below it, above the audit trail and the footer. No P4 and no P5
+           markup is modified or reordered. Filled by liveslice-intel.js. It
+           holds no dollar figure and none can be added to it: the intel
+           schema carries no price field at all (RULINGS §5g). -->
+      <div id="ls-res-intel"></div>
       <div id="ls-res-notes"></div>
       <div id="ls-res-footer"></div>
       <!-- The canonical toggleTtip() reads a NODE with the tooltip's id while
@@ -9518,5 +9526,28 @@ document.addEventListener('click', function(){
   #ls-lg-rate-slider { height: 34px; }
 }
 </style>
+
+<!-- ===================================================================
+     LIVE SLICE — AO additions (destination intel, playlist first).
+     Everything below this line is new. No canonical markup, and no P2, P3,
+     P4, P5 or P6 markup, is modified — ruling J is additive only, and the
+     §8 step-5 byte proof still strips the whole Live Slice region, from the
+     P2 banner to the last </body>, back to the 4a9c0e3 baseline.
+
+     AO adds NO screen and NO overlay. It adds ONE script, and one render
+     target inserted above under ruling Y — located between #ls-res-ledger
+     and #ls-res-notes, by anchor and not by line number (ruling AL).
+
+     LOAD ORDER, and it is the P5 pattern deliberately: this tag sits AFTER
+     liveslice-results.js, and liveslice-results.js reaches the module
+     through root.LiveSliceIntel at RENDER time, never at load time. With
+     this file absent the results screen is exactly what AM shipped — the
+     same guarantee §5d records for the ledger panel.
+
+     It produces NO dollar figure. The intel schema carries no price field
+     at all (RULINGS §5g), so there is nothing here for the Ledger Law to
+     govern and nothing for the no-hardcoded-dollar grep to find.
+     =================================================================== -->
+<script src="liveslice-intel.js"></script>
 </body>
 </html>

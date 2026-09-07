@@ -181,6 +181,14 @@ var Blueprint = (function (Engines) {
   var PARTY_SIZE_MAX = 24;
   var BUDGET_MAX_USD = 1000000;
 
+  /* RULING AO. §7 bounds on the genre list, not a vocabulary — see
+   * setMusicGenres(). Twelve is one more than the canonical screen's eleven
+   * chips, so a chip added later is carried rather than silently truncated;
+   * forty characters matches TAG_MAX_CHARS in liveslice-scoring.js, which is
+   * the bound every other free-form token in this bundle already carries. */
+  var MUSIC_GENRES_MAX = 12;
+  var MUSIC_GENRE_MAX_CHARS = 40;
+
   /* Ruling G: "Luxury threshold is derived, not asked — top quartile of the
    * budget envelope."
    *
@@ -300,6 +308,11 @@ var Blueprint = (function (Engines) {
 
       // §3 mindset ------------------------------------------------------
       mindset: [],
+
+      // RULING AO — the canonical s-bp-music answers, read for the first
+      // time. Prompt-only: no engine reads a genre, so this is deliberately
+      // NOT in toEngineInput(). See setMusicGenres().
+      music_genres: [],
 
       // §3 pace ---------------------------------------------------------
       pace: null,                          // ruling G screen
@@ -514,6 +527,36 @@ var Blueprint = (function (Engines) {
 
   function setPace(bp, pace) {
     bp.pace = oneOf(pace, PACES, null);
+    return derive(bp);
+  }
+
+  /* RULING AO. The genres the traveller picked on the canonical s-bp-music
+   * screen, which sits ON the Live Slice path (start() enters at s-bp-energy
+   * and the canonical chain runs s-bp-mode -> s-bp-music -> s-dest) and whose
+   * answers, until now, nothing in the bundle read back.
+   *
+   * NO CLOSED VOCABULARY, and that is deliberate. The eleven chips are
+   * canonical markup and their text IS the traveller's own word for what they
+   * listen to; declaring a list here would be a SIXTH invented vocabulary
+   * (after IMPLAUSIBLE_RATE, WELLNESS_TAGS, AGE_GATE_SIGNALS, the
+   * coordinated-trip rule and DEFAULT_LEAD_DAYS — RULINGS §5c) that could
+   * silently drift from the screen it claims to mirror. So this is §7 hygiene
+   * only: trimmed, capped, deduplicated, empties dropped. Ruling AL's
+   * dietary_notes is the precedent — a field carried for the prompt, cleaned
+   * but not tokenised against a vocabulary we maintain.
+   *
+   * IT IS NOT AN ENGINE INPUT. No engine reads a genre, so it is deliberately
+   * absent from toEngineInput() and tests.js §14.14's eleven-key lock stays
+   * green on its own reasoning rather than by having its count bumped.
+   * intelPrompt() reads it off the Blueprint directly, the way userPrompt()
+   * already reads destination, nights and pace. */
+  function setMusicGenres(bp, genres) {
+    var list = [];
+    (genres || []).forEach(function (g) {
+      var name = str(g).slice(0, MUSIC_GENRE_MAX_CHARS);
+      if (name && list.length < MUSIC_GENRES_MAX && list.indexOf(name) === -1) list.push(name);
+    });
+    bp.music_genres = list;
     return derive(bp);
   }
 
@@ -757,6 +800,8 @@ var Blueprint = (function (Engines) {
     HOURLY_RATE_MIN: HOURLY_RATE_MIN,
     HOURLY_RATE_MAX: HOURLY_RATE_MAX,
     HOURLY_RATE_DEFAULT: HOURLY_RATE_DEFAULT,
+    MUSIC_GENRES_MAX: MUSIC_GENRES_MAX,      // ruling AO
+    MUSIC_GENRE_MAX_CHARS: MUSIC_GENRE_MAX_CHARS,
     NIGHTS_MIN: NIGHTS_MIN,
     NIGHTS_MAX: NIGHTS_MAX,
     KID_AGE_MAX_MONTHS: KID_AGE_MAX_MONTHS,
@@ -779,6 +824,7 @@ var Blueprint = (function (Engines) {
     setAccessibility: setAccessibility,
     setMindset: setMindset,
     setPace: setPace,
+    setMusicGenres: setMusicGenres,          // ruling AO
     setBudget: setBudget,
     setDining: setDining,
     setEngagementMode: setEngagementMode,

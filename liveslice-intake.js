@@ -82,6 +82,21 @@ var LiveSlice = (function () {
     Blueprint.setTripTypes(bp, types);
   }
 
+  /* s-bp-music — RULING AO. The canonical tg() handler writes the selected
+   * chips' own text into S.musicGenres and nothing has ever read it back.
+   * This is that reader.
+   *
+   * IT FIRES harness.js §17.1's TRIPWIRE, and that is the point rather than a
+   * side effect: ruling AF forbade the music module's personalisation claims
+   * "only for as long as S.musicGenres has no reader", and said in terms that
+   * the day one appeared the lock had outlived its purpose. §17.1 SPLITS here
+   * (ruling AO 3) — the reader premise retires, and the CLAIMS bans stay,
+   * re-scoped to the canonical s-mod-music screen, whose three hand-authored
+   * track lists are still shaped by no genre at all. */
+  function readMusicGenres() {
+    Blueprint.setMusicGenres(bp, canonicalState().musicGenres);
+  }
+
   /* s-bp-who — travel mode, the two toggles, and the pet card. */
   function readTravelMode() {
     var s = canonicalState();
@@ -196,6 +211,7 @@ var LiveSlice = (function () {
 
   function syncAll() {
     readMindset();
+    readMusicGenres();          // ruling AO
     readTripTypes();
     readTravelMode();
     readKids();
@@ -361,6 +377,11 @@ var LiveSlice = (function () {
    * canonical inline handler has already run by the time we read state. */
   var WATCHED_SCREENS = [
     's-bp-energy', 's-bp-triptype', 's-bp-who', 's-bp-kids', 's-bp-mode',
+    /* RULING AO. The genre screen joins the watched list so a chip tapped on
+     * it reaches the Blueprint on the same delegated bubble-phase listener
+     * every other canonical screen uses — after tg() has already run, which
+     * is what guarantees post-click state. */
+    's-bp-music',
     's-bp-budget', 's-dest', 's-discover', 's-tripdetails', 's-blueprint'
   ];
 

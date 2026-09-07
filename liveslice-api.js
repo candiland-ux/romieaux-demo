@@ -101,8 +101,23 @@ var LiveSliceAPI = (function (root, Blueprint) {
   var STORE_CACHE = 'romieaux.liveSlice.lastGeneration';
 
   /* Bump when the disclosure text materially changes: a traveller who
-   * consented to an older disclosure is re-asked rather than assumed. */
-  var CONSENT_VERSION = 1;
+   * consented to an older disclosure is re-asked rather than assumed.
+   *
+   * 1 -> 2 AT RULING AO, and it is the FIRST bump since P3 shipped this
+   * constant. It is the genuine one the record reserved, and three amendments
+   * held at 1 by naming it: AH, AK and AM each ran AH's descriptive-label test
+   * — the question is whether the DISCLOSURE changed, not whether the modal
+   * changed — and each recorded that this phase would be different. AK's
+   * words: "Contrast the scheduled destination-intel phase, which §5g records
+   * as a real bump."
+   *
+   * WHY IT IS REAL. The intel call sends the traveller's MUSIC GENRES, and
+   * music genres are in no part of the v1 disclosure — not a relabelling of a
+   * covered field (AK), not a frequency change on a covered category (AM), not
+   * a pointer label (AH). A new category of answer leaves the browser. §5b:
+   * a stale version is not consent to a changed disclosure, so every traveller
+   * who consented under v1 is re-asked exactly once. */
+  var CONSENT_VERSION = 2;
 
   var CACHE_VERSION = 1;
 
@@ -783,9 +798,40 @@ var LiveSliceAPI = (function (root, Blueprint) {
     return headers;
   }
 
-  /* One HTTP round trip. Resolves with the parsed response body, or rejects
-   * with a typed LiveSliceError. */
-  function callOnce(blueprint, withReminder) {
+  /* RULING AO item 8. The founder ruled AB's "roughly 10-20 cents" copy
+   * UNCHANGED — AO measured both calls at about 10.6 cents against Sonnet 5's
+   * $2/$10 per MTok, inside the shipped range — and ruled this INSTEAD of a
+   * one-off measurement: if the response carries a usage field, every call
+   * logs its input and output tokens, so the real figure is readable off any
+   * real generation forever rather than measured once and left to rot. Which
+   * is exactly what happened to AB's own 5,780 characters: by AO it was 7,885
+   * and nobody had looked.
+   *
+   * CONSOLE-ONLY, per §5f, and it keeps the build-side vocabulary. The
+   * literals stay INSIDE the console call, which is what lets §20.5's lexer
+   * tell them from rendered copy. */
+  function logUsage(label, body) {
+    var u = body && body.usage;
+    if (!u || !root.console || !root.console.info) return false;
+    root.console.info('Live Slice: ' + label + ' token usage',
+      { input_tokens: u.input_tokens, output_tokens: u.output_tokens,
+        cache_read_input_tokens: u.cache_read_input_tokens });
+    return true;
+  }
+
+  /* One HTTP round trip against an already-built request body.
+   *
+   * EXTRACTED AT RULING AO, and the extraction is the whole of how a second
+   * call stays honest: §15 asserts that the API layer holds the ONE reference
+   * to the global fetch and invokes it against the API_URL constant. AO adds
+   * a second caller, not a second transport — so key header, browser-access
+   * opt-in, error typing, network wording and usage logging are written once
+   * and both calls get all of them. A copy of this function in the intel file
+   * is exactly the drift §15 exists to fail on.
+   *
+   * Resolves with the parsed response body, or rejects with a typed
+   * LiveSliceError. */
+  function postJSON(body, label) {
     var doFetch = currentFetch();
     if (!doFetch) {
       return Promise.reject(apiError('no_fetch',
@@ -796,21 +842,22 @@ var LiveSliceAPI = (function (root, Blueprint) {
     return doFetch(API_URL, {
       method: 'POST',
       headers: requestHeaders(key),
-      body: JSON.stringify(requestBody(blueprint, withReminder))
+      body: JSON.stringify(body)
     }).then(function (response) {
       return response.text().then(function (raw) {
-        var body = null;
-        try { body = JSON.parse(raw); } catch (e) { body = null; }
+        var parsed = null;
+        try { parsed = JSON.parse(raw); } catch (e) { parsed = null; }
 
         if (!response.ok) {
-          throw describeHttpError(response.status, body);
+          throw describeHttpError(response.status, parsed);
         }
-        if (!body) {
+        if (!parsed) {
           throw apiError('bad_response',
             'Claude returned a response this demo could not read.',
             String(raw).slice(0, 300), response.status);
         }
-        return body;
+        logUsage(label || 'request', parsed);
+        return parsed;
       });
     }, function (networkError) {
       // A CORS rejection and a dead wifi connection are indistinguishable to
@@ -818,6 +865,70 @@ var LiveSliceAPI = (function (root, Blueprint) {
       throw apiError('network',
         'Could not reach the Anthropic API. Check the connection, or use Replay to show the last generated trip with no network call.',
         networkError && networkError.message ? networkError.message : '', null);
+    });
+  }
+
+  function callOnce(blueprint, withReminder) {
+    return postJSON(requestBody(blueprint, withReminder),
+      withReminder ? 'generation retry' : 'generation');
+  }
+
+  /* RULING AO. The second caller's door, and everything on the far side of it
+   * is the SAME door the generation uses.
+   *
+   * Key gate, the ref-based consent gate read at call time, the current model
+   * string, the browser-access header, fence-strip, one retry with the §2
+   * reminder, plain-language typed errors, usage logging. The intel layer
+   * supplies a system prompt, a user prompt and an output bound; it supplies
+   * no transport, no headers and no key handling, and it never touches fetch.
+   *
+   * IT DOES NOT OPEN THE SETTINGS PANEL on a missing key, and generate() does.
+   * That difference is deliberate: generate() is the traveller's own gesture
+   * and the panel is the answer, while intel fires AFTER a trip has rendered,
+   * where throwing a modal over a finished itinerary to report a missing
+   * playlist would be the tail wagging the dog. The intel layer checks
+   * hasKey() first and renders ruling AO 2's keyless state instead; this
+   * guard is the belt behind that brace. */
+  function requestJSON(opts) {
+    var o = opts || {};
+    var label = o.label || 'request';
+    var maxTokens = o.max_tokens > 0 ? o.max_tokens : MAX_TOKENS;
+    var user = String(o.user || '');
+
+    function body(userText) {
+      return {
+        model: MODEL,
+        max_tokens: maxTokens,
+        thinking: { type: 'disabled' },     // ruling K note (c), as at requestBody()
+        system: String(o.system || ''),
+        messages: [{ role: 'user', content: userText }]
+      };
+    }
+
+    if (!hasKey()) {
+      return Promise.reject(apiError('no_key',
+        'No API key saved yet. Add one in Generated live settings. It is stored in this browser only.', '', null));
+    }
+
+    return requestConsent().then(function () {
+      if (!hasConsent()) {
+        throw apiError('no_consent',
+          'Generating a trip needs your go-ahead to send your answers to Anthropic.', '', null);
+      }
+      return postJSON(body(user), label);
+    }).then(function (response) {
+      var parsed = parseGeneration(textFromResponse(response));
+      if (parsed.ok) return parsed.value;
+
+      if (root.console && root.console.warn) {
+        root.console.warn('Live Slice: ' + label + ' did not parse — retrying once with a JSON-only reminder.', parsed.reason);
+      }
+      return postJSON(body(user + RETRY_REMINDER), label + ' retry').then(function (retryResponse) {
+        var retried = parseGeneration(textFromResponse(retryResponse));
+        if (retried.ok) return retried.value;
+        throw apiError('unparseable',
+          'The reply could not be read, twice in a row.', retried.reason, null);
+      });
     });
   }
 
@@ -1113,6 +1224,18 @@ var LiveSliceAPI = (function (root, Blueprint) {
     }
     if (bp.has_pet) row('Pet', (bp.pet_size || '') + ' ' + (bp.pet_type || 'pet'));
     row('Mindset', (bp.mindset || []).join(', '));
+    /* RULING AO. THE ROW THIS WHOLE CONSENT BUMP EXISTS FOR.
+     *
+     * It renders only when the traveller picked genres — row() already omits
+     * an empty value, and s-bp-music's own "Skip for now" leaves the list
+     * empty, so a traveller who skipped is not shown a row about an answer
+     * they declined to give.
+     *
+     * Unlike the AH, AK and AM rows before it, this one is a NEW CATEGORY of
+     * answer rather than a relabelling or a frequency change, which is why
+     * CONSENT_VERSION moved to 2 above and every returning traveller is
+     * re-asked once. */
+    row('Genres', (bp.music_genres || []).join(', '));
     row('Pace', bp.pace);
     row('Budget', bp.budget_mode === 'agnostic' ? 'budget-agnostic'
       : (bp.budget_total_usd ? '$' + bp.budget_total_usd + ' per person' : null));
@@ -1253,6 +1376,11 @@ var LiveSliceAPI = (function (root, Blueprint) {
 
     // the call
     generate: generate,
+
+    /* RULING AO. The shared door for a second data-carrying call. Gated,
+     * typed and logged exactly as generate() is, because it is the same
+     * transport — see postJSON(). */
+    requestJSON: requestJSON,
 
     // cache + replay
     replay: replay,
