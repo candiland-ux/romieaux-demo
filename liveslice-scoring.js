@@ -239,7 +239,38 @@ var LiveSliceScoring = (function (Engines, Blueprint) {
        * AJ founder addition 1's mechanism, on a fourth field: a model ignoring
        * the instruction is caught by a count rather than by a traveller
        * reading a made-up removal. Console-only, per §5f. */
-      placeholderDining: 0
+      placeholderDining: 0,
+      /* RULING AT item 1 — THE ITEMS THAT DECLARED NO VECTOR AT ALL, counted
+       * beside `diningWithoutSuits` above because it is the same failure on a
+       * different field, and caught the same way: by a NUMBER, on every run.
+       *
+       * `cleanAttributes()` notes a MISSING `attributes` in `rep.defaulted`,
+       * but an EMPTY OBJECT is an object — it passes `isObject`, normalises to
+       * six zeros and says nothing. The post-deploy-15 capture sent `{}` on
+       * fourteen of fifty-five items and produced not one note. An all-zero
+       * vector scores IdentityFit 0 against any taste vector whatsoever, so a
+       * model drifting toward empty vectors hollows a trip out silently — the
+       * defect ruling AJ's count exists to catch, arriving on a fourth field.
+       *
+       * Counted on EVERY run including zero, on AJ's, AK's, AM's, AR's and
+       * AS's shared reasoning: a number that appears only when it is
+       * interesting cannot be read as a baseline. Console-only, per §5f. */
+      itemsWithoutAttributes: 0,
+      itemsTotal: 0,
+      /* RULING AT item 2 — A DAY ITEM ARRIVING AS A STAY.
+       *
+       * A SIBLING of `placeholderDining`, deliberately not folded into it: AS
+       * scoped that count to dining and built it on a three-signal
+       * conjunction precisely so it could not fire on something else, and the
+       * check-in row matches none of the three. It is a different shape with a
+       * different cause and it gets its own number.
+       *
+       * The model sent "Check-in and settle at ryokan" as a day item with
+       * `module: 'stays'`. The stay is not an event in a day and the traveller
+       * has exactly one, so the day card no longer renders it (ruling AT item
+       * 2) — but a day card that quietly drops something is the state this
+       * count exists to make visible. */
+      stayModuleDayItems: 0
     };
   }
 
@@ -656,6 +687,28 @@ var LiveSliceScoring = (function (Engines, Blueprint) {
       note(rep.dropped, path + '.leg',
         'only a transportation item can be a trip leg — dropped (ruling AS)');
     }
+
+    /* RULING AT items 1 and 2 — the two counts, taken here because this is the
+     * one place every day item passes through exactly once.
+     *
+     * NEITHER DROPS ANYTHING AND NO BEHAVIOUR HANGS ON EITHER. They are counts
+     * and nothing else, on ruling AS's own words for the count beside them:
+     * what was missing was any way to KNOW. */
+    rep.itemsTotal++;
+
+    /* Both shapes of "declared no vector" together, because both produce the
+     * same all-zero result and neither is visible downstream: `attributes`
+     * absent (already noted by cleanAttributes) and `attributes` present but
+     * carrying nothing — `{}`, or six explicit zeros. Read off the CLEANED
+     * vector rather than the raw one, so a model sending `{"cultural": 0}`
+     * counts the same as one sending `{}`. */
+    var declaredFit = false;
+    for (var ai = 0; ai < Engines.TASTE_DIMS.length; ai++) {
+      if (item.attributes[Engines.TASTE_DIMS[ai]] > 0) { declaredFit = true; break; }
+    }
+    if (!declaredFit) rep.itemsWithoutAttributes++;
+
+    if (module === 'stays') rep.stayModuleDayItems++;
 
     if (module === 'dining') {
       rep.diningTotal++;
@@ -2124,6 +2177,37 @@ var LiveSliceScoring = (function (Engines, Blueprint) {
           'dietary removal, which is what this count exists to catch.');
       } else {
         info('Live Slice: no placeholder dining items in the reply (ruling AS ruling 6).');
+      }
+    }
+
+    /* RULING AT items 1 and 2. OUTSIDE the dining guard above, deliberately:
+     * both counts are trip-wide, and a reply carrying no dining item at all is
+     * exactly when a hollow one most needs reporting. Stated on every run
+     * including zero, on the same reasoning as every count above it. */
+    if (rep.itemsTotal > 0) {
+      var noVector = rep.itemsWithoutAttributes || 0;
+      if (noVector > 0) {
+        warn('Live Slice: ' + noVector + ' of ' + rep.itemsTotal +
+          ' items declared no taste vector — absent, empty, or all zeroes. ' +
+          'Each scores IdentityFit 0 against ANY traveller, so each loses its ' +
+          'fit badge (ruling AT item 1) and every one that is not holding a ' +
+          'meal slot is suppressed. If this reads close to ' + rep.itemsTotal +
+          ', the reply is hollow and the trip is being scored on nothing.');
+      } else {
+        info('Live Slice: every one of the ' + rep.itemsTotal +
+          ' items declared a taste vector (ruling AT item 1).');
+      }
+
+      var stayItems = rep.stayModuleDayItems || 0;
+      if (stayItems > 0) {
+        warn('Live Slice: ' + stayItems + ' day item(s) arrived with module ' +
+          '"stays". The traveller has one stay and it has its own block, so ' +
+          'no day card renders these (ruling AT item 2). They are still ' +
+          'scored and still carried as stay candidates — but a check-in is ' +
+          'not something that happens at a time, and the prompt asks for day ' +
+          'items the traveller does.');
+      } else {
+        info('Live Slice: no day item arrived as a stay (ruling AT item 2).');
       }
     }
 

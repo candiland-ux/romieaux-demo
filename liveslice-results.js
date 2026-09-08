@@ -255,7 +255,38 @@ var LiveSliceResults = (function (root) {
     alternative: { cls: 'bs',  label: 'Alternative' }
   };
 
+  /* RULING AT item 1. A FIT OF ZERO IS NOT A MEASUREMENT, SO IT IS NOT SHOWN.
+   *
+   * Traced against the post-deploy-15 capture, not inferred: 26 of 55 items
+   * scored 0, and 14 of them reached the screen reading "Alternative · fit 0"
+   * — every breakfast on an eleven-day trip among them. The phase opened on
+   * the reading that those items had no vector. THE CAPTURE SAYS OTHERWISE and
+   * the correction is the ruling: only 14 items sent an empty one, NONE sent
+   * an absent or an all-zero one, and the eleven breakfasts each sent a real
+   * `{restful: 0.5}`. They read 0 because they declare no `cultural`, not
+   * because they declare nothing.
+   *
+   * IdentityFit is cosine similarity, and this traveller chose ONE mindset
+   * chip, so the taste vector is one-hot. Against a one-hot vector cosine
+   * collapses to a presence test on that single dimension: an item scores 0
+   * for declaring nothing the traveller asked for, which is a fact about the
+   * OVERLAP and not about the item. "Alternative · fit 0" states it as a
+   * verdict on the breakfast.
+   *
+   * So the badge is withheld whenever the score is 0, from either cause, and
+   * the band goes with it — `BAND_BADGE[band] || BAND_BADGE.alternative` is
+   * the silent fallback ruling AR named, and 'Alternative' is rule 11's word
+   * for a tier rule 6 does not have. Withheld, never replaced: nothing is put
+   * in its place, on §7's rule and §5f's.
+   *
+   * THE NUMBER IS NOT LOST, IT MOVES — logResult() prints every fit, and the
+   * validator now counts the items that declared no vector at all. AK class
+   * (a)'s disposition, exactly as ruling AM took it for the pace hours.
+   *
+   * PLACEMENT IS UNTOUCHED. This is the badge and only the badge: the item
+   * still holds the slot AR's ruling gave it, and packDay() is not opened. */
   function fitBadge(fit, band) {
+    if (Math.round(Engines._num(fit, 0)) === 0) return '';
     var badge = BAND_BADGE[band] || BAND_BADGE.alternative;
     /* RULING AK. The badge is the first thing a traveller reads on every item,
      * and its hover said `IdentityFit NN — cosine similarity against your
@@ -573,7 +604,10 @@ var LiveSliceResults = (function (root) {
       '<div style="font-family:var(--fd);font-size:13px;color:var(--tx);flex-shrink:0;">' + priceOrIncluded(item, dayById) + '</div>' +
       '</div>' +
       '<div class="as2">' + esc(meta.join(' · ')) + (item.notes ? ' - ' + esc(item.notes) : '') + '</div>' +
-      '<div style="margin-top:5px;">' + fitBadge(entry.fit, entry.band) + '</div>' +
+      /* RULING AT item 1. The wrapper goes with the badge — an empty div here
+       * would leave the row's spacing describing a badge that is not there. */
+      (function (b) { return b ? '<div style="margin-top:5px;">' + b + '</div>' : ''; })(
+        fitBadge(entry.fit, entry.band)) +
       (flags ? '<div style="margin-top:4px;">' + flags + '</div>' : '') +
       '</div></div>';
   }
@@ -648,7 +682,14 @@ var LiveSliceResults = (function (root) {
 
     var dietary = mine.filter(function (e) { return e.reason === 'dietary hard line'; });
     var cascaded = mine.filter(function (e) { return e.reason === 'included with a removed item'; });
-    var everythingWent = !day.scheduled.length && !day.skipped.length && !day.stays.length;
+    /* RULING AT item 2. `day.stays.length` was a third term here, and it has
+     * to go with the row it described. This sentence branches on whether the
+     * traveller can see ANYTHING left on the day; with the stay row no longer
+     * rendered, a day holding only a stay candidate shows an empty card, and
+     * counting that candidate would have said "what remains is scheduled as
+     * normal" over nothing. The candidate is still carried and still decided,
+     * in the stay block — it is just not something this day card can show. */
+    var everythingWent = !day.scheduled.length && !day.skipped.length;
 
     /* RULING AJ item 6. A cascade removal is not an independent failure — it
      * is the consequence of the one above it, and §5f's four branches all read
@@ -905,16 +946,41 @@ var LiveSliceResults = (function (root) {
       var pacing = nothingScheduled ? 'nothing scheduled' : paceBadge(result.blueprint);
       var withinBudget = !nothingScheduled;
 
-      var stays = day.stays.length
-        ? '<div style="padding:10px 16px;border-bottom:1px solid var(--bd);">' +
-          '<div style="font-family:var(--fm);font-size:8px;letter-spacing:2px;color:var(--rg);text-transform:uppercase;margin-bottom:6px;">' +
-          'Stay options compared</div>' +
-          day.stays.map(function (entry) {
-            return '<div style="display:flex;justify-content:space-between;gap:10px;font-size:12px;color:var(--tm);padding:3px 0;flex-wrap:wrap;">' +
-              '<span style="min-width:0;overflow-wrap:anywhere;">' + esc(entry.item.name || entry.item.id) + '</span>' +
-              '<span style="color:var(--ink);">score ' + Math.round(entry.stayScore.score) + ' · ' + price(entry.item.est_price_usd) + '</span></div>';
-          }).join('') + '</div>'
-        : '';
+      /* RULING AT item 2. THE DAY CARD RENDERS NO STAY ROW, AND NO "SCORE".
+       *
+       * Traced against the post-deploy-15 capture: the model sent `d1-a1` as a
+       * day item with `module: 'stays'` — "Check-in and settle at ryokan", at
+       * no price — and the pipeline routes a stays-module day item into
+       * `day.stays` (liveslice-scoring.js), which this block rendered INSIDE
+       * day 1 as the eyebrow `Stay options compared` over a row carrying the
+       * word `score`, the engine's figure of 76, and a zero estimate.
+       *
+       * The figure is written out rather than shown as a price literal on
+       * purpose: §9.13's Ledger Law scan is a RAW-SOURCE grep and correctly
+       * cannot tell a comment from code, so the first draft of this block
+       * failed it. The grep is not being taught to skip comments — it only
+       * ever over-reports, which is the safe direction, and accommodating one
+       * sentence is how a Ledger Law check stops being one. Rulings AP and AS
+       * each took the identical decision on the identical scan.
+       *
+       * Three things were wrong with it and the ruling is one sentence. The
+       * traveller has ONE stay, and it has its own block; a comparison of
+       * candidates is the work behind the stay, not an item on a Tuesday. The
+       * eyebrow announced a comparison of options the traveller never sees the
+       * other side of. And "score" is the engine's word for its own output —
+       * the internal name AK's sweep took off every other surface, arriving on
+       * a fourth one through a door the sweep could not see, because this
+       * string is assembled here and never read as copy.
+       *
+       * THE CANDIDATE IS NOT LOST. `result.stayCandidates` still carries every
+       * one and the stay block still owns the decision; logResult() still
+       * names them for the build side. What goes is a day card claiming a
+       * stay is something that happens at a time.
+       *
+       * The count is the validator's, not this file's: a day item arriving
+       * with `module: 'stays'` is counted there beside AS's placeholder count,
+       * so a model doing this wholesale is caught by a NUMBER rather than by a
+       * traveller reading a check-in as an activity. */
 
       var skipped = day.skipped.length
         ? '<div style="padding:10px 16px;background:rgba(0,0,0,.015);">' +
@@ -936,7 +1002,6 @@ var LiveSliceResults = (function (root) {
         '<div class="dch"><div><div class="dcn">Day ' + (i + 1) + '</div>' +
         '<div class="dcl">' + esc(label) + '</div></div>' +
         '<div class="dcb ' + (withinBudget ? 'bok' : 'bwn') + '">' + esc(pacing) + '</div></div>' +
-        stays +
         dayRemovalNote(result, day) +
         day.scheduled.map(function (entry) { return renderItem(entry, '', scheduledById(day)); }).join('') +
         /* RULING AP ruling 2, positioned AFTER the day and BEFORE what was

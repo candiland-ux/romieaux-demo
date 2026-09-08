@@ -1264,6 +1264,30 @@ var Engines = (function () {
     return '$' + roundMoney(n).toLocaleString('en-US');
   }
 
+  /* RULING AT item 3. A PER-UNIT FIGURE IS NOT A ROW AMOUNT, and usd() is
+   * built for the second.
+   *
+   * roundMoney() to the whole dollar is CORRECT for a row and must stay: it is
+   * what makes ruling E's headline-equals-its-rows equality exact rather than
+   * approximate, and rounding the sum instead of the rows can disagree with
+   * it. But a subline also carries the INPUTS a row was computed from, and a
+   * $2.30 single fare printed through usd() reads "$2" — so the day-pass line
+   * said "Single fares $2 × 20 rides = $46" and the arithmetic on the traveller's
+   * own screen did not work. The figure was right; the sentence explaining it
+   * was not, which is the one failure the traceability sublines exist to
+   * prevent.
+   *
+   * Whole dollars still print as whole dollars, so nothing that reads
+   * correctly today changes: this is reached only where the cents are real.
+   * Row amounts do NOT come through here. */
+  function usdExact(n) {
+    var v = num(n, 0);
+    var cents = Math.round(v * 100);
+    if (cents % 100 === 0) return usd(v);
+    return '$' + (cents / 100).toLocaleString('en-US',
+      { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  }
+
   function row(kind, label, amount, formula, baseline, inputs) {
     var rounded = roundMoney(amount);
     if (rounded <= 0) return null;
@@ -1349,9 +1373,15 @@ var Engines = (function () {
       'SAVES',
       'Day-pass vs single fares' + (seg.name ? ' (' + seg.name + ')' : ''),
       passSaved,
-      'Σ singles − pass_price = (' + rides + ' × $' + fare + ') − $' + pass,
-      'Single fares ' + usd(fare) + ' × ' + rides + ' rides = ' + usd(singles) +
-        ', less the ' + usd(pass) + ' Day-pass = ' + usd(passSaved),
+      /* RULING AT item 3. Both halves carry the fare, and both printed it
+       * wrong in their own way: the baseline rounded $2.30 to "$2" through
+       * usd(), and the formula interpolated the raw number as "$2.3". The
+       * fare is a per-unit input, so both now go through usdExact(). */
+      'Σ singles − pass_price = (' + rides + ' × ' + usdExact(fare) + ') − ' + usdExact(pass),
+      /* `passSaved` stays on usd(): it IS the row amount, and ruling E's
+       * equality is over rounded rows. The two INPUTS beside it are not. */
+      'Single fares ' + usdExact(fare) + ' × ' + rides + ' rides = ' + usd(singles) +
+        ', less the ' + usdExact(pass) + ' Day-pass = ' + usd(passSaved),
       { rides: rides, fare: fare, pass: pass, singles: singles }
     );
   }
