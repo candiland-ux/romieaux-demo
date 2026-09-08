@@ -145,7 +145,34 @@ var LiveSliceResults = (function (root) {
    * The other three call sites (renderRun, rescore, wireIntake) still discard
    * this return. They are outside §5a's four, and they are no longer silent:
    * navTo speaks for itself now, wherever it is called from. */
+  /* RULING AS ruling 5, THE BELT. The canonical `#toast` is a single fixed
+   * node outside every `.screen` whose ONLY dismissal is its own 2,600 ms
+   * timer — `nav()` moves the `active` class between screens and does not
+   * touch it. So a toast raised on one screen is still on the page after the
+   * traveller has left it, and `run()` navigates to `s-ls-results` as its
+   * first statement, which is how an intake toast reached the results screen.
+   *
+   * Ruling 5 retires the one Live Slice caller AND clears the node here, and
+   * the belt is not redundant: it covers every route onto a Live Slice screen,
+   * including a canonical toast raised on the way in and any future caller
+   * nobody has written yet.
+   *
+   * `showToast` ITSELF IS UNTOUCHED, which is the ruling. It has 165 canonical
+   * call sites; wrapping it would change the behaviour of all of them to fix
+   * one leak, and that is the canonical edit ruling AM declined for `hideFab`
+   * and ruling AO declined for `sub()`. This only hides a node the Live Slice
+   * is navigating away from, on its way to a Live Slice screen, in Live Slice
+   * code. It reads the class list the canonical `showToast` writes, so a
+   * pending timer removing an already-removed class is a no-op. */
+  function dismissToast() {
+    try {
+      var node = el('toast');
+      if (node && node.classList && node.classList.remove) node.classList.remove('show');
+    } catch (e) { /* a page with no toast node is not a failure to report */ }
+  }
+
   function navTo(id) {
+    dismissToast();
     try {
       if (typeof root.nav === 'function') { root.nav(id); return true; }
       return sinkError('navTo("' + id + '") found no canonical nav() on this page, so the '
@@ -178,6 +205,40 @@ var LiveSliceResults = (function (root) {
     return '<span style="white-space:nowrap;">' + money(amount) +
       ' <span style="font-family:var(--fm);font-size:8px;letter-spacing:1px;text-transform:uppercase;color:var(--ts);">' +
       ESTIMATE_LABEL + '</span></span>';
+  }
+
+  /* RULING AS ruling 4 — THE MARKER ON THE ROW, and it is where the signal
+   * ruling 4 took off the Meals block MOVES to rather than where it dies.
+   *
+   * Ruling 4 stops the Meals block restating a meal that is already a
+   * scheduled row, and the row it stops restating carried a figure of zero
+   * with the word "estimate" beside it — which is true and says nothing. The
+   * fact worth carrying is not that the number is zero; it is that the
+   * traveller is not paying for it, and that fact belongs on the row.
+   *
+   * NO DOLLAR MOVES INTO RENDER CODE, and the distinction matters because
+   * CLAUDE.md's rule is absolute. This emits a LABEL IN PLACE OF A FIGURE. It
+   * computes nothing, it reads nothing back, and there is no arithmetic here
+   * for a figure to come out of — which is a narrower thing than even ruling
+   * W's count-up, since that at least interpolates. §9.13's grep stays clean
+   * because there is no numeral to find.
+   *
+   * "Resolves" is exactly ruling 3's own word: the stay sentinel, or an item
+   * on the same day. An `included_with` that names neither is the case ruling
+   * 4 leaves to the Meals block, so it keeps the ordinary price. */
+  var INCLUDED_LABEL = 'Included';
+
+  function includedResolves(item, byId) {
+    var parentId = item && item.included_with;
+    if (!parentId) return false;
+    if (parentId === 'stay') return true;
+    return !!(byId && byId[parentId]);
+  }
+
+  function priceOrIncluded(item, byId) {
+    if (!includedResolves(item, byId)) return price(item.est_price_usd);
+    return '<span style="font-family:var(--fm);font-size:8px;letter-spacing:1px;' +
+      'text-transform:uppercase;color:var(--ts);">' + INCLUDED_LABEL + '</span>';
   }
 
   function hoursLabel(hours) {
@@ -473,7 +534,7 @@ var LiveSliceResults = (function (root) {
       '</div></div>');
   }
 
-  function renderItem(entry, extra) {
+  function renderItem(entry, extra, dayById) {
     var item = entry.item;
     var rows = entry.rows || [];
     var flags = rows.map(function (row) {
@@ -509,7 +570,7 @@ var LiveSliceResults = (function (root) {
       '<div class="ab2">' +
       '<div style="display:flex;align-items:baseline;justify-content:space-between;gap:10px;">' +
       '<div class="an" style="min-width:0;overflow-wrap:anywhere;">' + esc(item.name || item.id) + '</div>' +
-      '<div style="font-family:var(--fd);font-size:13px;color:var(--tx);flex-shrink:0;">' + price(item.est_price_usd) + '</div>' +
+      '<div style="font-family:var(--fd);font-size:13px;color:var(--tx);flex-shrink:0;">' + priceOrIncluded(item, dayById) + '</div>' +
       '</div>' +
       '<div class="as2">' + esc(meta.join(' · ')) + (item.notes ? ' - ' + esc(item.notes) : '') + '</div>' +
       '<div style="margin-top:5px;">' + fitBadge(entry.fit, entry.band) + '</div>' +
@@ -640,10 +701,26 @@ var LiveSliceResults = (function (root) {
     return slot.charAt(0).toUpperCase() + slot.slice(1) + ' is included';
   }
 
-  function mealCoverage(result, day) {
-    var stay = result.stay || {};
+  /* RULING AS ruling 1. "No breakfast", "No lunch", "No dinner" — the lead of
+   * a sentence the day window closed, kept beside includedLead() so the two
+   * openings a Meals line can have sit in one place. */
+  function noMealLead(slot) {
+    return 'No ' + slot;
+  }
+
+  /* One definition of "the items on this day", read by the row's price marker
+   * and by the Meals block alike, so the two cannot disagree about whether a
+   * parent resolves — which is the same reason ruling AJ derived the dietary
+   * vocabulary once and ruling AR put bandFor() in one place. */
+  function scheduledById(day) {
     var byId = {};
     (day.scheduled || []).forEach(function (e) { byId[e.item.id] = e.item; });
+    return byId;
+  }
+
+  function mealCoverage(result, day) {
+    var stay = result.stay || {};
+    var byId = scheduledById(day);
 
     /* THE LEGACY BRANCH, on the AK item 6 / AL precedent, at the TRIP level.
      * A generation cached before ruling AP named no slot anywhere, so every
@@ -655,29 +732,58 @@ var LiveSliceResults = (function (root) {
       return (d.scheduled || []).some(function (e) { return !!e.item.meal; });
     });
 
+    /* RULING AS ruling 1 — the slots the DAY WINDOW shut, keyed by slot.
+     * §5f RULING 5 IS THE WHOLE OF THIS: the slot is STATED, NEVER FILLED.
+     * Romieaux does not move a breakfast to lunchtime because the traveller
+     * landed at ten, and it does not substitute one. It says so. */
+    var shut = {};
+    (day.outside || []).forEach(function (o) { shut[o.slot] = o; });
+    var shutLines = [];
+
     var lines = [];
     var unfilled = 0;                       // ruling AR item 7
     Engines.MEAL_SLOTS.forEach(function (slot) {
+      /* Ruled BEFORE the scheduled test, because a slot outside the day window
+       * was never placed and there is nothing to find in `scheduled`. Kept in
+       * its own list rather than folded into the per-slot lines, so ruling AR
+       * item 7's collapse cannot eat a sentence that says something different
+       * from the one it collapses. */
+      if (shut[slot]) {
+        shutLines.push(noMealLead(slot) + (shut[slot].reason === 'arrival'
+          ? ': you arrive at ' + esc(shut[slot].at) + '.'
+          : ': you leave at ' + esc(shut[slot].at) + '.'));
+        return;
+      }
       var entry = (day.scheduled || []).filter(function (e) { return e.item.meal === slot; })[0];
 
       if (entry) {
-        /* Scheduled, and it came with something else. It is already in the
-         * day above with its own times and its own zero price; this names
-         * what it came with, which is the "Lunch on board" case ruling 2
-         * gives by name.
+        /* RULING AS ruling 4. A MEAL THAT IS ALREADY A SCHEDULED ROW IS NOT
+         * RESTATED, and this branch is where the restatement used to happen.
          *
-         * The zero is written as words deliberately. §9.13's Ledger Law grep
-         * is a RAW-SOURCE scan and cannot tell a comment from code, so the
-         * first draft of this comment failed it — correctly. The scan only
-         * ever over-reports, which is the safe direction and is why it is not
-         * being taught to skip comments to accommodate one sentence. */
-        var parentId = entry.item.included_with;
-        if (parentId) {
-          var parent = byId[parentId];
-          var parentName = parent && parent.name;
-          lines.push(includedLead(slot) + (parentName
-            ? ' with ' + esc(parentName) + '.'
-            : ' with something else on this day.'));
+         * Before AS it pushed a line for every scheduled meal carrying an
+         * `included_with`, so Day 1's card read `08:00 Hotel breakfast` and,
+         * twelve lines below, "Breakfast is included with something else on
+         * this day." — a sentence about the row above it that could not say
+         * so, because `included_with: "stay"` names no item on the day and the
+         * lookup missed BY CONSTRUCTION. That was AP's defensible design for
+         * the "Lunch on board" case and it stopped being defensible the moment
+         * the parent was the stay.
+         *
+         * What the line was carrying that the row was not — that the traveller
+         * is not paying for this — MOVES ONTO THE ROW as `Included`, per
+         * ruling 4's second half. AK class (a)'s rule exactly: nothing is
+         * lost, it moves.
+         *
+         * THE ONE LINE THAT SURVIVES is the case ruling 4 names: an
+         * `included_with` that resolves to neither the stay nor an item on
+         * this day — a parent the model put on a different day. The row cannot
+         * say `Included` for it, because nothing here can confirm it is, so
+         * the slot is named and the relationship stated without a name
+         * attached to it. That is the honest residual, not the retired
+         * fallback: it no longer fires on the stay, which is what made the old
+         * sentence say "something else" about the traveller's own hotel. */
+        if (entry.item.included_with && !includedResolves(entry.item, byId)) {
+          lines.push(includedLead(slot) + ' with another item on this day.');
         }
         return;
       }
@@ -694,8 +800,26 @@ var LiveSliceResults = (function (root) {
 
       if (!declaredAnywhere) return;   // the legacy sentence below says it once
       unfilled++;
-      lines.push('No ' + slot + ' is scheduled for this day.');
+      lines.push(noMealLead(slot) + ' is scheduled for this day.');
     });
+
+    /* RULING AS ruling 1, on RULING AR ITEM 7's rule. Three slots shut by one
+     * arrival is one fact said three times, which is the density defect AR
+     * closed for the unfilled case and AM named first. The collapse fires only
+     * when every shut slot was shut for the SAME reason at the SAME time,
+     * because "you arrive at 22:00" and "you leave at 06:00" on one day are
+     * two facts and collapsing them would delete one. */
+    if (shutLines.length === Engines.MEAL_SLOTS.length) {
+      var reasons = {};
+      (day.outside || []).forEach(function (o) { reasons[o.reason + '@' + o.at] = o; });
+      var only = Object.keys(reasons);
+      if (only.length === 1) {
+        var o = reasons[only[0]];
+        shutLines = ['No meals are scheduled: you ' +
+          (o.reason === 'arrival' ? 'arrive' : 'leave') + ' at ' + esc(o.at) + '.'];
+      }
+    }
+    lines = shutLines.concat(lines);
 
     /* RULING AR item 7. THREE SENTENCES SAYING THE SAME THING IS ONE FACT SAID
      * THREE TIMES, which is ruling AM item 4's density defect on a third
@@ -814,7 +938,7 @@ var LiveSliceResults = (function (root) {
         '<div class="dcb ' + (withinBudget ? 'bok' : 'bwn') + '">' + esc(pacing) + '</div></div>' +
         stays +
         dayRemovalNote(result, day) +
-        day.scheduled.map(function (entry) { return renderItem(entry); }).join('') +
+        day.scheduled.map(function (entry) { return renderItem(entry, '', scheduledById(day)); }).join('') +
         /* RULING AP ruling 2, positioned AFTER the day and BEFORE what was
          * held back: a traveller reads the day, then what the day does not
          * have, then what did not fit. The removal note stays where §5f put
@@ -1674,6 +1798,10 @@ var LiveSliceResults = (function (root) {
     renderEntryReplay: renderEntryReplay,
 
     // pure-ish helpers the suite asserts directly
+    // RULING AS ruling 5 — §26.6 drives the belt through the real navTo()
+    // rather than through run(), so the assertion is on the navigation itself
+    // and not on whatever else a run happens to do.
+    _navTo: navTo,
     _price: price,
     _money: money,
     _fitBadge: fitBadge,

@@ -207,6 +207,23 @@ var Engines = (function () {
     dinner:    { earliest: '19:00',   latest: '21:00' }
   };
 
+  /* RULING AS ruling 1 — THE DAY WINDOW, and it is an INVENTED CONVENTION OF
+   * RECORD in the same family as MEAL_WINDOWS above (RULINGS.md §5c).
+   *
+   * The TIMES are model output: `trip.arrival_time` and `trip.departure_time`.
+   * The RULE that reads them is ours - nothing is placed before the arrival
+   * leg ends on the arrival day, and nothing after the departure leg begins on
+   * the departure day - and like DAY_START, MEAL_WINDOWS, IMPLAUSIBLE_RATE,
+   * WELLNESS_TAGS, AGE_GATE_SIGNALS, the coordinated-trip rule and
+   * DEFAULT_LEAD_DAYS it ATTRIBUTES NO DOLLAR. It shapes the schedule, never a
+   * ledger row, so the Ledger Law is untouched.
+   *
+   * ABSENCE MEANS DAY_START TO END OF DAY, AS BEFORE AS, NEVER ASSUMED. That
+   * is ruling 1's own wording and the verified-or-drop direction rulings P, Q,
+   * R, U, AJ, AL, AN and AP all share, on a tenth field: a trip that states no
+   * arrival time is packed exactly as it was packed yesterday. */
+  var TRIP_LEGS = ['arrival', 'departure'];
+
   // PDF shared constants: engagement-mode proactivity multiplier P.
   // Ruling F maps the canonical onboarding's three paid tiers plus the free
   // "I'll plan it" tier onto these, so no canonical screen changes.
@@ -573,6 +590,35 @@ var Engines = (function () {
     return MEAL_SLOTS.indexOf(it.meal) === -1 ? null : it.meal;
   }
 
+  /* RULING AS. Which leg of the trip a transportation item is, if it is one.
+   *
+   * The same shape as mealSlot() one letter earlier, and for the same reason:
+   * `module` alone cannot tell an airport transfer from a local train, and the
+   * ONLY other signal the model emits is the item's NAME. Reading a leg out of
+   * "Airport limousine bus KIX to Kyoto Station" would be ruling AL's mistake a
+   * third time - a field asked one question and answered with another - and it
+   * would fail SILENTLY on every airport code a pattern does not know. So AS
+   * asks for the leg and never infers one.
+   *
+   * Scoped to transportation the way mealSlot() is scoped to dining. A museum
+   * is not an arrival, whatever it declares. */
+  function legOf(item) {
+    var it = item || {};
+    if (it.module !== 'transportation') return null;
+    return TRIP_LEGS.indexOf(it.leg) === -1 ? null : it.leg;
+  }
+
+  /* RULING AS. Is this a transport item the packer ANCHORS rather than ranks?
+   *
+   * Every transportation item is anchored, legs included. Ruling 2 reads the
+   * model's own day order as the intended sequence for transport, so a
+   * transport item never competes on ExperienceROI for a position - it takes
+   * the position its own itinerary already gave it. It still SPENDS the pace
+   * budget, which is rule 11's arithmetic and is deliberately unchanged. */
+  function isTransport(item) {
+    return !!item && item.module === 'transportation';
+  }
+
   /* Greedy day packing — PDF rule 11 for activities, PDF rule 6 for meals.
    *
    * RULING AP SUPERSEDES the single-ranking version of this function. It
@@ -613,10 +659,23 @@ var Engines = (function () {
 
     var all = (items || []).slice();
 
+    /* RULING AS. THE MODEL'S OWN DAY ORDER, captured before anything reorders
+     * it. Before AS this array's order survived NOWHERE in this function: it
+     * was split, ROI-sorted and walked, and a control that reversed it
+     * produced a byte-identical schedule. Ruling 2 makes it the intended
+     * sequence for transport, so it has to be read before it is lost. */
+    var modelIndex = {};
+    all.forEach(function (item, i) { if (item && item.id) modelIndex[item.id] = i; });
+
     /* (1) Meals into slots. Reduced rule 6: IdentityFit alone. A loser does
      * not vanish — it rejoins the ordinary pool and competes on rule 11 like
      * any other candidate, which is what keeps a second good restaurant on
-     * the day instead of deleting it for arriving second. */
+     * the day instead of deleting it for arriving second.
+     *
+     * RULING AS: a leg is transportation, so mealSlot() already returns null
+     * for it and no extra guard is needed here. Stated rather than left to be
+     * rediscovered — a guard that cannot fire is the thing rulings AH, AJ and
+     * AR each removed rather than leave looking like coverage. */
     var claimed = {}, rest = [];
     all.forEach(function (item) {
       var slot = mealSlot(item);
@@ -627,25 +686,229 @@ var Engines = (function () {
       else rest.push(item);
     });
 
-    /* (2) Rule 11, untouched: rank the rest by ExperienceROI descending. */
-    var ranked = rest.map(function (item) {
+    /* RULING AS ruling 2 + ruling 3 — THE ATTACHMENTS, and this is the layer
+     * that did not exist.
+     *
+     * An attachment binds one item to another and says which side of it to
+     * sit on. Two rules build the map, and neither invents an order: both read
+     * something the model already stated.
+     *
+     *   TRANSPORT (ruling 2) is bound to the next NON-TRANSPORT item after it
+     *   in the model's own day order, on the `before` side. A transport item
+     *   with no non-transport item after it is a RETURN LEG, and is bound to
+     *   the last non-transport item BEFORE it, on the `after` side. Those are
+     *   ruling 2's two sentences, in that order.
+     *
+     *   AN INCLUDED ITEM (ruling 3) is bound to the parent its own
+     *   `included_with` names, on the `after` side, and its start is the
+     *   parent's end. `included_with: "stay"` names no item on this day, so it
+     *   resolves to nothing, no attachment is made, and the meal goes to its
+     *   window exactly as it did before AS — which is ruling 3's own wording.
+     *
+     * Ruling 3 wins where both could apply, because a stated parent is a
+     * stronger claim than a positional inference: the model said THIS item
+     * comes with THAT one. */
+    var byId = {};
+    all.forEach(function (item) { if (item && item.id) byId[item.id] = item; });
+
+    var attach = {};
+    all.forEach(function (item, i) {
+      /* A LEG IS EXCLUDED HERE, and the exclusion is load-bearing rather than
+       * tidy: a leg is transportation, so without it the arrival bus would be
+       * bound "before breakfast" by the positional rule and then placed a
+       * second time by ruling 1's own anchor. Ruling 1 owns the legs; ruling 2
+       * owns every other transport item. */
+      if (!item || !item.id || !isTransport(item) || legOf(item) !== null) return;
+
+      /* Ruling 2's two sentences, and the SECOND one is the hard half.
+       *
+       *   "placed immediately before the next non-transport item in the
+       *    model's own day order"                                  — forward
+       *   "and its return leg immediately after the last item it serves"
+       *                                                            — backward
+       *
+       * WHAT MAKES A RETURN LEG A RETURN LEG is the question, and adjacency
+       * alone cannot answer it: on `breakfast, train-out, temple, train-back,
+       * lunch` the train back is immediately followed by a non-transport item
+       * exactly as the train out is, so a forward-only rule binds it before
+       * LUNCH and the packer then runs lunch ahead of the temple. That was the
+       * first build, and §26.3 caught it: the day came out `breakfast,
+       * train-back, lunch, train-out, temple` — a return from a place the
+       * traveller had not been to yet.
+       *
+       * The answer is in the ruling's own words. "The last item it serves" is
+       * the thing it brings them back FROM, and the thing it brings them back
+       * from is the thing they were TAKEN to. So:
+       *
+       *   A TRANSPORT ITEM IS A RETURN LEG WHEN THE NON-TRANSPORT ITEM BEFORE
+       *   IT WAS ITSELF REACHED BY TRANSPORT.
+       *
+       * The train back follows the temple because the temple was reached by
+       * the train out. A single transfer with nothing but a meal behind it is
+       * not a return, and binds forward. No pairing table, no vocabulary, no
+       * inference from a name — one look at the model's own order. */
+      var j, prevNonTransport = -1;
+      for (j = i - 1; j >= 0; j--) {
+        if (!isTransport(all[j])) { prevNonTransport = j; break; }
+      }
+      var isReturn = prevNonTransport > 0 && isTransport(all[prevNonTransport - 1]);
+
+      var target = null, side = 'before';
+      if (!isReturn) {
+        for (j = i + 1; j < all.length; j++) {
+          if (!isTransport(all[j])) { target = all[j]; break; }
+        }
+      }
+      /* Either a return leg, or a forward one with nothing left to serve —
+       * the last transfer of the day. Both go after what came before them. */
+      if (!target) {
+        side = 'after';
+        target = prevNonTransport === -1 ? null : all[prevNonTransport];
+      }
+      if (target && target.id) attach[item.id] = { toId: target.id, side: side };
+    });
+    all.forEach(function (item) {
+      if (!item || !item.id || !item.included_with) return;
+      var parent = byId[item.included_with];
+      // A self-reference resolves to the item itself and would attach it to
+      // its own placement, so it is refused here rather than looping.
+      if (!parent || parent.id === item.id) return;
+      attach[item.id] = { toId: parent.id, side: 'after' };
+    });
+
+    /* Attachments never rank. A transport item takes the position the model's
+     * own order gave it, and an included child takes its parent's end, so
+     * neither is a candidate competing on ExperienceROI for a slot. */
+    var attachedTo = {};
+    Object.keys(attach).forEach(function (id) {
+      var toId = attach[id].toId;
+      if (!attachedTo[toId]) attachedTo[toId] = { before: [], after: [] };
+      attachedTo[toId][attach[id].side].push(byId[id]);
+    });
+    // Within one side, the model's own order again — two trains before one
+    // museum come out in the order the model listed them.
+    Object.keys(attachedTo).forEach(function (toId) {
+      ['before', 'after'].forEach(function (side) {
+        attachedTo[toId][side].sort(function (a, b) {
+          return (modelIndex[a.id] || 0) - (modelIndex[b.id] || 0);
+        });
+      });
+    });
+
+    /* (2) Rule 11, untouched: rank the rest by ExperienceROI descending.
+     *
+     * RULING AS narrows WHAT is ranked and changes NOTHING about how. An
+     * attached item is not a candidate, and neither is a leg — ruling 2 states
+     * that plainly: an arrival or departure leg is not a candidate rule 11
+     * ranks. Everything still in `ranked` is exactly what rule 11 governed
+     * before AS, ranked by exactly the formula it was ranked by before AS. */
+    var ranked = rest.filter(function (item) {
+      return !attach[item.id] && legOf(item) === null;
+    }).map(function (item) {
       return { item: item, roi: experienceROI(item, context) };
     }).sort(function (a, b) { return b.roi - a.roi; });
 
-    /* (3) Walk the day. Meals hold their windows; activities fill the gaps in
-     * ROI order while the pace budget has room. */
+    /* (3) THE DAY WINDOW — RULING AS ruling 1.
+     *
+     * The arrival day begins when the traveller arrives and the departure day
+     * ends when they leave. `arrivalMin` and `departureMin` are the trip's own
+     * stated times in minutes since midnight, handed in by the caller for the
+     * first and last day only; a null on either side means the day is open at
+     * that end, WHICH IS EXACTLY THE BEHAVIOUR BEFORE AS.
+     *
+     * The arrival leg BEGINS at the stated arrival time, because that is when
+     * the traveller is there to board it. The departure leg ENDS at the stated
+     * departure time, because that is when they leave. Those two sentences are
+     * the whole of the arithmetic below. */
+    var arrivalMin = context.arrivalMin === null || context.arrivalMin === undefined
+      ? null : Math.round(num(context.arrivalMin, 0));
+    var departureMin = context.departureMin === null || context.departureMin === undefined
+      ? null : Math.round(num(context.departureMin, 0));
+
+    var arrivalLeg = null, departureLeg = null;
+    all.forEach(function (item) {
+      var leg = legOf(item);
+      // First wins. A model sending two arrival legs has sent one arrival leg
+      // and one transport item, and the second is packed as ordinary transport.
+      if (leg === 'arrival' && !arrivalLeg) arrivalLeg = item;
+      else if (leg === 'departure' && !departureLeg) departureLeg = item;
+    });
+
+    var lengthOf = function (item) {
+      return Math.round(num(item.duration_hours, 0) * 60);
+    };
+
+    var dayOpen = minutesOf(DAY_START);
+    var dayClose = null;
+    var legPlaced = [];
+
+    if (arrivalLeg) {
+      var aStart = arrivalMin === null ? minutesOf(DAY_START) : arrivalMin;
+      legPlaced.push({ item: arrivalLeg, slot: null, leg: 'arrival',
+        start: aStart, end: aStart + lengthOf(arrivalLeg) });
+      dayOpen = aStart + lengthOf(arrivalLeg);
+    } else if (arrivalMin !== null) {
+      dayOpen = arrivalMin;
+    }
+
+    /* A departure leg with NO stated time has no anchor to hang on, so it is
+     * placed LAST by the walk instead and imposes no close — which is honest:
+     * without a time there is nothing to say the day ends before. */
+    if (departureLeg && departureMin !== null) {
+      var dEnd = departureMin;
+      legPlaced.push({ item: departureLeg, slot: null, leg: 'departure',
+        start: dEnd - lengthOf(departureLeg), end: dEnd });
+      dayClose = dEnd - lengthOf(departureLeg);
+    } else if (!departureLeg && departureMin !== null) {
+      dayClose = departureMin;
+    }
+
+    /* (4) Meals into their windows, CLAMPED TO THE DAY WINDOW.
+     *
+     * A slot whose window falls outside the day is STATED, NEVER FILLED —
+     * §5f ruling 5's rule on a new cause. It is reported separately from
+     * `skipped`, because "you arrive at 10:00" is not "held back by your pace
+     * budget" and rendering one as the other would be the mislabelling ruling
+     * AK exists to stop. */
+    var outside = [];
     var placed = [];
     MEAL_SLOTS.forEach(function (slot) {
+      var window = MEAL_WINDOWS[slot];
+      var earliest = minutesOf(window.earliest);
+      var latest = minutesOf(window.latest);
+      var shutByArrival = latest <= dayOpen;
+      var shutByDeparture = dayClose !== null && earliest >= dayClose;
+      if (shutByArrival || shutByDeparture) {
+        /* `at` IS THE TRAVELLER'S OWN TIME, NOT THE PACKER'S EDGE, and the
+         * difference is the whole sentence. A traveller who lands at 10:00 and
+         * rides a ninety-minute transfer has a day that OPENS at 11:30, and
+         * "No breakfast: you arrive at 11:30" would be false — they arrived at
+         * ten. The stated time is what the traveller stated it by; the edge is
+         * how the packer used it, and only one of the two is a fact about
+         * their morning. Ruling 1's own example says 10:00. */
+        outside.push({ item: claimed[slot] || null, slot: slot,
+          reason: shutByArrival ? 'arrival' : 'departure',
+          at: clockOf(shutByArrival
+            ? (arrivalMin === null ? dayOpen : arrivalMin)
+            : (departureMin === null ? dayClose : departureMin)) });
+        return;
+      }
       var item = claimed[slot];
       if (!item) return;
-      var start = minutesOf(MEAL_WINDOWS[slot].earliest);
-      placed.push({ item: item, slot: slot, start: start,
-        end: start + Math.round(num(item.duration_hours, 0) * 60) });
+      /* RULING AS ruling 3 WINS OVER THE WINDOW, and it has to. The wagashi
+       * tasting is `meal: "lunch"` AND `included_with` the class, so it is
+       * both a slot holder and an attachment; placing it here as well would
+       * put it on the day twice. A stated parent is a stronger claim than a
+       * window, so it rides with its parent and still holds its slot. */
+      if (attach[item.id]) return;
+      var start = Math.max(earliest, dayOpen);
+      placed.push({ item: item, slot: slot, start: start, end: start + lengthOf(item) });
     });
     placed.sort(function (a, b) { return a.start - b.start; });
 
-    var scheduled = [], skipped = [], used = 0, mealHours = 0;
-    var cursor = minutesOf(DAY_START);
+    var scheduled = [], skipped = [], orphaned = [], used = 0, mealHours = 0;
+    var anchorSpend = 0;
+    var cursor = dayOpen;
     var queue = ranked.slice();
     /* RULING AP ruling 1, exactly as worded: "the first item starts at the
      * day's start time, each NEXT item starts at the previous end plus
@@ -656,55 +919,265 @@ var Engines = (function () {
      * is unchanged. */
     var first = true;
 
-    function fillUntil(limit) {
+    /* RULING AS. Meals stay OUTSIDE the pace budget however they are placed —
+     * AP ruling 2, unchanged, and now stated as one predicate rather than as
+     * a property of which loop happened to place the item. A meal that rides
+     * in as an included child is still a meal. */
+    /* `times[].slot` MEANS "THIS ITEM HOLDS THIS SLOT", NOT "THIS ITEM DECLARES
+     * THIS MEAL", and the distinction is the contract AP shipped. Reduced rule
+     * 6's LOSER rejoins the ordinary pool and can still be scheduled by rule
+     * 11 — it just does not hold the slot, and it DOES spend the budget,
+     * because it is competing as an ordinary candidate. Keying either fact off
+     * `mealSlot()` would have put both dinners in the dinner slot and exempted
+     * the loser from the budget, which is exactly what `tests.js` §16's
+     * two-direction lock caught here. */
+    var holderSlot = {};
+    MEAL_SLOTS.forEach(function (slot) {
+      if (claimed[slot] && claimed[slot].id) holderSlot[claimed[slot].id] = slot;
+    });
+
+    function holdsSlot(item) { return !!holderSlot[item.id]; }
+    function spendOf(item) { return holdsSlot(item) ? 0 : costOf(item); }
+
+    var placedIds = {};
+
+    function put(item, startAt) {
+      var end = startAt + lengthOf(item);
+      scheduled.push({ item: item, slot: holderSlot[item.id] || null, leg: legOf(item),
+        start: startAt, end: end });
+      placedIds[item.id] = true;
+      if (holdsSlot(item)) mealHours += num(item.duration_hours, 0);
+      else used += costOf(item);
+      cursor = end;
+      first = false;
+      return end;
+    }
+
+    function attachmentsOf(item, side) {
+      var a = attachedTo[item.id];
+      return (a && a[side]) || [];
+    }
+
+    /* RULING AS ruling 3: an included item's START IS ITS PARENT'S END. No
+     * transit is charged between them, because they are the same place — the
+     * tasting at the end of the class is not a journey. Transport attached by
+     * ruling 2 keeps its own transit, because it is one. */
+    function gapBefore(att, anchorItem) {
+      if (first) return 0;
+      if (att.included_with && att.included_with === anchorItem.id) return 0;
+      return Math.round(num(att.transit_min_from_prev, 0));
+    }
+
+    /* How much earlier a block must start for its anchor to land on time.
+     * Mirrors placeBlock() exactly, including its `first` handling, because a
+     * lead that disagrees with the placement is a meal that misses its own
+     * window by the width of its transfer. */
+    function leadOf(item) {
+      var lead = 0, isFirst = first;
+      attachmentsOf(item, 'before').forEach(function (att) {
+        if (!isFirst) lead += Math.round(num(att.transit_min_from_prev, 0));
+        lead += lengthOf(att);
+        isFirst = false;
+      });
+      if (!isFirst) lead += Math.round(num(item.transit_min_from_prev, 0));
+      return lead;
+    }
+
+    function trailOf(item) {
+      var trail = 0;
+      attachmentsOf(item, 'after').forEach(function (att) {
+        trail += gapBefore(att, item) + lengthOf(att);
+      });
+      return trail;
+    }
+
+    function blockSpend(item) {
+      var cost = spendOf(item);
+      attachmentsOf(item, 'before').concat(attachmentsOf(item, 'after'))
+        .forEach(function (att) { cost += spendOf(att); });
+      return cost;
+    }
+
+    /* The block emitter. It ranks nothing and decides nothing: ruling 1, ruling
+     * 2 and ruling 3 have already fixed every position by the time it runs, and
+     * all it does is turn a decided order into a clock. */
+    function placeBlock(item, blockStartAt, anchored, absolute) {
+      var t = blockStartAt;
+      attachmentsOf(item, 'before').forEach(function (att) {
+        if (!first && !absolute) t += Math.round(num(att.transit_min_from_prev, 0));
+        /* AN ATTACHMENT IS ALWAYS ANCHORED, whatever its host is. It never
+         * entered `ranked`, so it never competed on ExperienceROI for its
+         * place — which is the definition ruling 2 gives. Gating this on the
+         * host's own flag counted only the legs, and §26.3c then measured
+         * zero anchored hours on a day carrying two anchored trains. */
+        anchorSpend += spendOf(att);
+        t = put(att, t);
+        absolute = false;
+      });
+      /* `absolute` is RULING 1's anchor, and it is not a convenience: a leg
+       * placed at a stated time starts AT that time. Charging its own transit
+       * on top would put the departure bus ten minutes past the flight it is
+       * catching — which is what the first build did, and what reading the
+       * schedule rather than an assertion caught. Transit is the gap BETWEEN
+       * two items, and there is no item before a stated clock time. */
+      if (!first && !absolute) t += Math.round(num(item.transit_min_from_prev, 0));
+      if (anchored) anchorSpend += spendOf(item);
+      var end = put(item, t);
+      attachmentsOf(item, 'after').forEach(function (att) {
+        anchorSpend += spendOf(att);          // as above: always anchored
+        end = put(att, end + gapBefore(att, item));
+      });
+      return end;
+    }
+
+    /* THE GAP IS A START WINDOW, NOT AN END WINDOW, and the difference is a
+     * real defect this was built with first — §26.3 caught it.
+     *
+     * AP's rule was `blockEnd > earliest -> skip`: an activity had to FINISH
+     * before the next meal's window opened. That is exactly right for
+     * breakfast, whose window opens at DAY_START, and it is what stops the
+     * walk taking 08:00-10:00 and pushing breakfast to ten. It is wrong for
+     * every later meal, because a block that overruns lunch's opening by five
+     * minutes was deferred past lunch ENTIRELY — and with ruling 2 attaching a
+     * return leg to the far side of an activity, the Uji trip grew by its
+     * return train and fell off the far side of lunch. The day came out
+     * `breakfast, lunch, train, temple, return` : lunch in Uji before going
+     * there.
+     *
+     * So the test is split in two, and both halves are honest:
+     *
+     *   startBefore — the item must be able to BEGIN in the gap. Nothing can
+     *                 begin before the day begins, which is why breakfast
+     *                 still cannot be displaced: its gap has zero width.
+     *   endBefore   — it may OVERRUN the gap, and the meal slides, but never
+     *                 so far that the meal leaves its own window. The activity
+     *                 yields to the meal; the meal does not leave its hour.
+     *
+     * AP's defect stays fixed BY CONSTRUCTION rather than by a limit that
+     * happens to be tight enough, which is the stronger form. */
+    function fillUntil(startBefore, endBefore) {
       for (var i = 0; i < queue.length; i++) {
         var item = queue[i].item;
-        var transit = first ? 0 : Math.round(num(item.transit_min_from_prev, 0));
-        var length = Math.round(num(item.duration_hours, 0) * 60);
-        var start = cursor + transit;
-        // Rule 11's budget, and the meal's window, are both hard.
-        if (used + costOf(item) > budget) continue;
-        if (limit !== null && start + length > limit) continue;
+        var blockEnd = cursor + leadOf(item) + lengthOf(item) + trailOf(item);
+        // Rule 11's budget is unchanged and is still hard. The budget test
+        // spans the WHOLE block, so an activity is never scheduled on the
+        // strength of a transfer that will not fit.
+        if (used + blockSpend(item) > budget) continue;
+        if (startBefore !== null && cursor >= startBefore) continue;
+        if (endBefore !== null && blockEnd > endBefore) continue;
+        if (dayClose !== null && blockEnd > dayClose) continue;
         queue.splice(i--, 1);
-        scheduled.push({ item: item, slot: null, start: start, end: start + length });
-        used += costOf(item);
-        cursor = start + length;
-        first = false;
+        placeBlock(item, cursor, false);
       }
     }
+
+    /* RULING AS ruling 1. The arrival leg opens the day, at the time the
+     * traveller actually arrives. Nothing above it in ROI can precede it,
+     * because it is not a candidate rule 11 ranks. */
+    legPlaced.forEach(function (lp) {
+      if (lp.leg !== 'arrival') return;
+      // `absolute`: the leg starts AT the stated arrival time, not at that
+      // time plus its own transit. See placeBlock().
+      placeBlock(lp.item, lp.start, true, true);
+    });
 
     placed.forEach(function (meal) {
       /* THE FILL LIMIT IS THE MEAL'S `earliest`, NOT ITS `latest`, and the
        * difference is a real defect this was built with first: with `latest`
        * as the limit, the highest-ROI activity took 08:00 to 10:00 and pushed
        * BREAKFAST to 10:00 — the walk before the coffee. `earliest` is when
-       * the meal wants to start, so it is the wall the gap fills up to. */
+       * the meal wants to start, so it is the wall the gap fills up to.
+       *
+       * RULING AS: the wall is the meal's BLOCK, not the meal. Filling up to
+       * the meal itself would let the highest-ROI activity take the transfer's
+       * own slot and push the transfer past the thing it serves — the same
+       * defect one layer along, which is why the lead is subtracted here. */
       var window = MEAL_WINDOWS[meal.slot];
-      var earliest = minutesOf(window.earliest);
-      fillUntil(earliest);
-      if (meal.start < cursor) {
-        /* The day ran long — a previous meal or a long activity overran. The
-         * meal KEEPS ITS SLOT and slides to the end of what came before it
-         * rather than being dropped: ruling 2 says every day accounts for
-         * three meals, and a meal moved is still a meal. */
-        meal.end += (cursor - meal.start);
-        meal.start = cursor;
-      }
-      /* `latest` is what makes the slide visible instead of silent. A meal
-       * pushed past the hour its own name stops meaning anything is reported
-       * to the console — AK class (a): the diagnostic goes where the build
-       * side reads it, and no traveller copy is invented for an edge the
-       * model can only reach with a wildly overlong item. */
-      meal.late = meal.start > minutesOf(window.latest);
-      scheduled.push(meal);
-      mealHours += num(meal.item.duration_hours, 0);
-      cursor = meal.end;
-      first = false;
+      var earliest = Math.max(minutesOf(window.earliest), dayOpen);
+      var lead = leadOf(meal.item);
+      fillUntil(earliest - lead, minutesOf(window.latest) - lead);
+      var blockStart = Math.max(cursor, earliest - lead);
+      var end = placeBlock(meal.item, blockStart, false);
+      /* The day ran long — a previous meal or a long activity overran. The
+       * meal KEEPS ITS SLOT and slides rather than being dropped: AP ruling 2
+       * says every day accounts for three meals, and a meal moved is still a
+       * meal. `latest` is what makes the slide visible instead of silent, and
+       * it goes to the console on AK class (a) rather than inventing traveller
+       * copy for an edge only a wildly overlong item can reach. */
+      var entry = null;
+      scheduled.forEach(function (e) { if (e.item.id === meal.item.id) entry = e; });
+      if (entry) entry.late = entry.start > minutesOf(window.latest);
+      cursor = end;
     });
-    fillUntil(null);
+    // No meal left to make room for, so the day's own close is the only bound
+    // and fillUntil() applies it itself.
+    fillUntil(null, null);
+
+    /* RULING AS ruling 1. The departure leg closes the day. With a stated time
+     * it sits at that time; without one it is simply last, which is the
+     * honest reading — there is nothing to say the day ends before. */
+    legPlaced.forEach(function (lp) {
+      if (lp.leg !== 'departure') return;
+      // `absolute`, as above: the leg ENDS at the stated departure time, so
+      // it starts exactly one duration before it.
+      placeBlock(lp.item, lp.start, true, true);
+    });
+    if (departureLeg && departureMin === null) {
+      placeBlock(departureLeg, cursor + (first ? 0
+        : Math.round(num(departureLeg.transit_min_from_prev, 0))), true);
+    }
 
     queue.forEach(function (entry) { skipped.push(entry.item); });
+
+    /* RULING AS ruling 3, THE ORPHAN, and the founder ruled it at the gate.
+     *
+     * An attachment is emitted with its anchor, so an attachment whose anchor
+     * never reached the day was never placed at all. AJ's cascade fires only
+     * on hard-filter REMOVALS and has never seen a pace-budget skip, so before
+     * AS a $0 "class inclusion" stayed on the card at 12:00 with no class —
+     * §5f's orphaned meal on Day 8, arriving through the budget rather than
+     * through a filter.
+     *
+     * Ruled: THE CHILD IS DROPPED WITH ITS PARENT. It joins `skipped`, so the
+     * day's existing held-back block names it beside the parent and NO NEW
+     * TRAVELLER STRING IS INVENTED — which is also why it is counted as
+     * neither a dietary nor a fit removal: it is neither, and inflating either
+     * counter would break decisions ruling 4, on §5c's own precedent that an
+     * accessibility evaluation is counted in no category. `orphaned` carries
+     * the pair out for a caller to log.
+     *
+     * That last sentence is worded around a lock rather than through it.
+     * §20.6's AN exemption asserts `engines.js` makes no logging call of its
+     * own, and it scans RAW SOURCE, so it cannot tell a comment from code —
+     * a sentence ending in the word followed by a full stop failed it. The
+     * scan was NOT taught to skip comments: it only ever over-reports, which
+     * is the safe direction, and teaching it to accommodate one sentence is
+     * how a lock stops being one. Ruling AP took the identical decision when
+     * §9.13's Ledger Law grep bit one of its own comments. */
+    Object.keys(attach).forEach(function (id) {
+      if (placedIds[id]) return;
+      var child = byId[id];
+      var parent = byId[attach[id].toId];
+      if (!child) return;
+      skipped.push(child);
+      if (child.included_with && parent && parent.id === child.included_with) {
+        orphaned.push({ item: child, parent: parent });
+      }
+    });
+
     scheduled.sort(function (a, b) { return a.start - b.start || a.end - b.end; });
+
+    /* RULING AS ruling 2. An anchored leg or transfer is not a candidate rule
+     * 11 ranks, so it takes its position and SPENDS the budget — which can
+     * cost a ranked activity its place. The founder ruled that displacement is
+     * reported BY NAME to the console, on AK class (a): the diagnostic goes
+     * where the build side reads it, and no traveller copy is invented.
+     *
+     * "Displaced" means exactly this and says so: the item would have fitted
+     * had the anchors spent nothing. It is not a claim about greedy ordering. */
+    var displaced = skipped.filter(function (item) {
+      return (used - anchorSpend) + spendOf(item) <= budget;
+    });
 
     /* The times ride ALONGSIDE the item, never on it. Writing start/end onto
      * the model's own object would put a Romieaux-computed value inside a
@@ -712,7 +1185,7 @@ var Engines = (function () {
      * that shape. `scheduled` keeps its array-of-items contract for every
      * existing caller; `times` is the new, additive channel. */
     var times = scheduled.map(function (e) {
-      return { id: e.item.id, slot: e.slot, start: clockOf(e.start),
+      return { id: e.item.id, slot: e.slot, leg: e.leg, start: clockOf(e.start),
         end: clockOf(e.end), startMin: e.start, endMin: e.end, late: !!e.late };
     });
 
@@ -725,7 +1198,16 @@ var Engines = (function () {
       // moved off the badge and into the console - still means what it says.
       hoursUsed: used,
       mealHours: mealHours,
-      energyBudget: budget
+      energyBudget: budget,
+      // RULING AS. Three additive channels, none of which any existing caller
+      // has to read: the slots the day window shut, the children dropped with
+      // their parents, and the activities an anchor cost a place.
+      outside: outside,
+      orphaned: orphaned,
+      displaced: displaced,
+      anchorHours: anchorSpend,
+      dayOpen: clockOf(dayOpen),
+      dayClose: dayClose === null ? null : clockOf(dayClose)
     };
   }
 
@@ -1400,6 +1882,13 @@ var Engines = (function () {
     MEAL_SLOTS: MEAL_SLOTS,
     MEAL_WINDOWS: MEAL_WINDOWS,
     mealSlot: mealSlot,
+    // RULING AS — the leg vocabulary and the two readers that decide which of
+    // ruling 1, ruling 2 and rule 11 reaches an item.
+    TRIP_LEGS: TRIP_LEGS,
+    legOf: legOf,
+    isTransport: isTransport,
+    minutesOf: minutesOf,
+    clockOf: clockOf,
     ENGAGEMENT_P: ENGAGEMENT_P,
     FIT_SUPPRESS: FIT_SUPPRESS,
     FIT_RECOMMEND: FIT_RECOMMEND,

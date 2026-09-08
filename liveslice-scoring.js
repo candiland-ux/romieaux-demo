@@ -128,7 +128,15 @@ var LiveSliceScoring = (function (Engines, Blueprint) {
 
   /* Allow-lists. Anything not on one of these is an unknown field and is
    * dropped — the third clause of §7. */
-  var TRIP_KEYS = ['destination', 'start', 'end', 'currency'];
+  /* RULING AS ruling 1 — `arrival_time` and `departure_time` join the trip
+   * block. Both optional, both local wall-clock `HH:MM`, and ABSENCE MEANS
+   * DAY_START TO END OF DAY, NEVER ASSUMED — the verified-or-drop direction
+   * rulings P, Q, R, U, AJ, AL, AN and AP all share, on a tenth field, and
+   * here the safe direction is the same one it always is: a trip that says
+   * nothing about when the traveller lands is packed exactly as it was packed
+   * before AS rather than having a landing time guessed for it. */
+  var TRIP_KEYS = ['destination', 'start', 'end', 'currency',
+                   'arrival_time', 'departure_time'];
   var ITEM_KEYS = [
     'id', 'module', 'name', 'est_price_usd', 'est_price_local', 'duration_hours',
     'transit_min_from_prev', 'attributes', 'alt_channel', 'flexibility',
@@ -141,7 +149,12 @@ var LiveSliceScoring = (function (Engines, Blueprint) {
     'suits', 'included_with',
     // ruling AP — which meal slot a dining item fills. PDF rule 6's own
     // structure, dropped by work order §5 and restored here.
-    'meal'
+    'meal',
+    /* ruling AS — which leg of the trip a transportation item is. The model
+     * marks it; the packer never infers it from a name, because reading `KIX`
+     * out of free text is ruling AL's `contains` mistake a third time and it
+     * fails SILENTLY on every airport code a pattern does not know. */
+    'leg'
   ];
   var STAY_KEYS = [
     'name', 'nightly_direct_usd', 'nightly_portal_usd', 'nights',
@@ -208,7 +221,25 @@ var LiveSliceScoring = (function (Engines, Blueprint) {
        * every day, and the day cards would then read "no lunch is scheduled"
        * across the whole trip with nothing to point at. That is caught by a
        * NUMBER here rather than by a hollow itinerary. */
-      mealsDeclared: 0
+      mealsDeclared: 0,
+      /* RULING AS ruling 6 — THE PLACEHOLDER NON-ITEM, and the count exists
+       * because NOTHING IN THIS BUNDLE COULD SEE ONE.
+       *
+       * The model was emitting "Hotel arrival breakfast (in-flight/none)" and
+       * "No dinner scheduled (departure day)" — items that answer "there is no
+       * dinner" by supplying a dinner. `diningWithoutSuits` above counts an
+       * UNDECLARED `suits`, so a declared EMPTY array is compliant by that
+       * test; zero duration is not a violation of anything; and a name is free
+       * text. So the departure-day placeholder passed validation with zero
+       * warnings, was removed by AL's subset test, and reached the traveller
+       * as a DIETARY removal on a day they had no dietary problem with.
+       *
+       * The prompt now asks for real items only and states the consequence on
+       * ruling R's precedent. This is the number that says whether it worked —
+       * AJ founder addition 1's mechanism, on a fourth field: a model ignoring
+       * the instruction is caught by a count rather than by a traveller
+       * reading a made-up removal. Console-only, per §5f. */
+      placeholderDining: 0
     };
   }
 
@@ -235,6 +266,39 @@ var LiveSliceScoring = (function (Engines, Blueprint) {
   function isoDate(value) {
     var s = text(value, 10);
     return /^\d{4}-\d{2}-\d{2}$/.test(s) ? s : '';
+  }
+
+  /* RULING AS ruling 1. A local wall-clock time, `HH:MM`, and nothing else.
+   *
+   * No timezone, no date, no `Date` object — PDF rule 39 asks for local
+   * wall-clock and `engines.js` already treats a day as minutes since
+   * midnight for exactly that reason, so a static bundle with no timezone
+   * data is not being asked to pretend otherwise. Anything that is not the
+   * shape returns '', which is §7's zero-attribution default expressed as a
+   * schedule: the day falls back to DAY_START, which is where it was before
+   * AS. */
+  function clockTime(value) {
+    var s = text(value, 5);
+    var m = /^(\d{1,2}):(\d{2})$/.exec(s);
+    if (!m) return '';
+    var h = Number(m[1]), min = Number(m[2]);
+    if (h > 23 || min > 59) return '';
+    return (h < 10 ? '0' : '') + h + ':' + m[2];
+  }
+
+  /* The reporting half of clockTime(). Absence is silent, because absence is
+   * the ruled default and a note on every trip that did not state a landing
+   * time would be noise. A value that was SENT and is not a time is a model
+   * that tried and failed, and that is worth a line. */
+  function tripTime(value, path, rep) {
+    if (value === null || value === undefined || value === '') return '';
+    var t = clockTime(value);
+    if (!t) {
+      note(rep.dropped, path,
+        JSON.stringify(String(value).slice(0, 20)) +
+        ' is not a local HH:MM time — dropped, and the day runs from its usual start (ruling AS)');
+    }
+    return t;
   }
 
   function bool(value) { return value === true; }
@@ -561,9 +625,68 @@ var LiveSliceScoring = (function (Engines, Blueprint) {
         'only a dining item can fill a meal slot — dropped (ruling AP)');
     }
 
+    /* RULING AS ruling 1 — the trip leg, on ruling AP's exact shape one letter
+     * later. Scoped to transportation the way `meal` is scoped to dining, and
+     * dropped BY NAME off a non-transport item so the console says which rule
+     * fired: a museum is not an arrival, whatever it declares.
+     *
+     * Asked for rather than inferred. The only other signal is the item's
+     * NAME, and reading a leg out of "Airport limousine bus KIX to Kyoto
+     * Station" would be the mistake ruling AL unpicked and ruling AP refused —
+     * a field asked one question and answered with another — a third time,
+     * failing silently on every airport code a pattern does not know. */
+    if (module === 'transportation') {
+      var leg = oneOf(raw.leg, Engines.TRIP_LEGS, null);
+      if (leg) {
+        /* NO `_leg_declared` STAMP, deliberately, and it is worth a line
+         * because the field beside it has one. Rulings S, U, AJ and AL each
+         * added a `_*_declared` stamp to carry a DECLARED-versus-ABSENT
+         * distinction past validation, and each has a reader that needs it.
+         * Nothing needs it here: absent means ordinary transport, declared
+         * means a leg, and `item.leg` already says which. Adding a second
+         * unread stamp beside AP's `_meal_declared` would be a thing that
+         * looks like coverage — rulings AH, AJ and AR each deleted one. */
+        item.leg = leg;
+      } else if (raw.leg !== undefined && raw.leg !== null) {
+        note(rep.dropped, path + '.leg',
+          JSON.stringify(raw.leg) + ' is not one of ' + Engines.TRIP_LEGS.join('|') +
+          ' — the item is kept and placed as ordinary transport (ruling AS)');
+      }
+    } else if (raw.leg !== undefined && raw.leg !== null) {
+      note(rep.dropped, path + '.leg',
+        'only a transportation item can be a trip leg — dropped (ruling AS)');
+    }
+
     if (module === 'dining') {
       rep.diningTotal++;
       if (item.meal) rep.mealsDeclared++;
+      /* RULING AS ruling 6. THREE SIGNALS TOGETHER, never one alone, and the
+       * conjunction is what keeps this from firing on honest items: a real
+       * hotel breakfast at no price still has a duration, a real venue that
+       * suits nobody still has a duration, and a restaurant genuinely called
+       * "No. 5" has both a duration and a suits claim. All three at once is a
+       * non-item.
+       *
+       * "at no price" rather than the figure, and that is deliberate: §9.13's
+       * Ledger Law scan is a RAW-SOURCE grep and correctly cannot tell a
+       * comment from code, so the first draft of this sentence failed it. The
+       * grep is not being taught to skip comments — it only ever over-reports,
+       * which is the safe direction, and accommodating one sentence is how a
+       * Ledger Law check stops being one. Ruling AP took the identical
+       * decision on the identical scan.
+       *
+       * It is a COUNT and nothing else. The item is not dropped here and no
+       * behaviour hangs on it — AL's subset test already removes it on a
+       * restricted trip, and on an unrestricted one it is the model's own
+       * answer to leave standing. What was missing was any way to KNOW. */
+      if (!item.duration_hours && suits.declared && !suits.list.length &&
+          /^no\s/i.test(item.name || '')) {
+        rep.placeholderDining++;
+        note(rep.warnings, path,
+          'a dining item with no duration, no suitability and a name that ' +
+          'begins by saying there is none — the prompt asks for real items ' +
+          'only and states the gap itself (ruling AS)');
+      }
       if (!suits.declared) {
         rep.diningWithoutSuits++;
         /* Not an error and not a drop: on a trip with no dietary need this
@@ -721,7 +844,12 @@ var LiveSliceScoring = (function (Engines, Blueprint) {
         destination: tripBlock ? text(tripBlock.destination) : '',
         start: tripBlock ? isoDate(tripBlock.start) : '',
         end: tripBlock ? isoDate(tripBlock.end) : '',
-        currency: tripBlock ? text(tripBlock.currency, 8) : ''
+        currency: tripBlock ? text(tripBlock.currency, 8) : '',
+        // RULING AS ruling 1. A malformed time is DROPPED BY NAME rather than
+        // by the generic unknown-field rule, so the console says which rule
+        // fired — ruling AO's own reason for dropping money keys by name.
+        arrival_time: tripBlock ? tripTime(tripBlock.arrival_time, 'trip.arrival_time', rep) : '',
+        departure_time: tripBlock ? tripTime(tripBlock.departure_time, 'trip.departure_time', rep) : ''
       },
       days: [],
       stay: cleanStay(raw.stay, 'stay', rep),
@@ -1541,10 +1669,27 @@ var LiveSliceScoring = (function (Engines, Blueprint) {
        * The placement is not counted again: for an activity it IS the pacing
        * decision already counted above, and for anything else it belongs to
        * that candidate's own category (amendment 2). */
+      /* RULING AS ruling 1 — THE DAY WINDOW, resolved HERE and not in the
+       * packer, because the packer is a pure function of one day and only this
+       * loop knows which day is the first and which is the last.
+       *
+       * The arrival time belongs to the FIRST day and the departure time to
+       * the LAST, which is ruling 1's own sentence: the arrival day begins
+       * when the traveller arrives, the departure day ends when they leave. On
+       * a one-day trip both apply to the same day, which is correct and needs
+       * no special case. A trip that states neither hands the packer two
+       * nulls, and the packer runs exactly as it ran before AS. */
+      var isFirstDay = di === 0;
+      var isLastDay = di === trip.days.length - 1;
+      var arrivalMin = isFirstDay ? Engines.minutesOf(trip.trip.arrival_time) : null;
+      var departureMin = isLastDay ? Engines.minutesOf(trip.trip.departure_time) : null;
+
       var packed = Engines.packDay(scored.map(function (e) { return e.item; }), {
         tasteVector: ctx.tasteVector,
         hourlyRate: ctx.hourlyRate,
-        pace: ctx.pace
+        pace: ctx.pace,
+        arrivalMin: arrivalMin,
+        departureMin: departureMin
       });
 
       function entryFor(item) {
@@ -1592,7 +1737,19 @@ var LiveSliceScoring = (function (Engines, Blueprint) {
         // its meaning and logResult()'s OVER BUDGET branch still means what
         // it says — ruling AM item 1's one console-only signal.
         mealHours: packed.mealHours || 0,
-        energyBudget: packed.energyBudget
+        energyBudget: packed.energyBudget,
+        /* RULING AS. Three additive channels off the packer, none of which any
+         * pre-AS caller reads. `outside` is the slots the day window shut, and
+         * it is kept SEPARATE from `skipped` deliberately: "you arrive at
+         * 10:00" is not "held back by your pace budget", and rendering one as
+         * the other is the mislabelling ruling AK exists to stop. `orphaned`
+         * and `displaced` are console-bound diagnostics on AK class (a). */
+        outside: packed.outside || [],
+        orphaned: packed.orphaned || [],
+        displaced: packed.displaced || [],
+        anchorHours: packed.anchorHours || 0,
+        dayOpen: packed.dayOpen,
+        dayClose: packed.dayClose
       });
     });
 
@@ -1831,6 +1988,56 @@ var LiveSliceScoring = (function (Engines, Blueprint) {
         filled.length + ' of 3' +
         (filled.length ? ' (' + filled.join(', ') + ')' : '') +
         (missing.length ? ', no item for ' + missing.join(', ') + '.' : '.'));
+
+      /* RULING AS ruling 1. The day window, stated whenever it is not the
+       * default, so a missing breakfast can be read as an arrival rather than
+       * as a model that skipped one. */
+      if (day.dayOpen !== Engines.DAY_START || day.dayClose) {
+        info('Live Slice: day ' + (i + 1) + ' window ' + day.dayOpen +
+          (day.dayClose ? ' to ' + day.dayClose : ' to end of day') +
+          ' (ruling AS: the arrival day begins when the traveller arrives and ' +
+          'the departure day ends when they leave).');
+      }
+      (day.outside || []).forEach(function (o) {
+        info('Live Slice: day ' + (i + 1) + ' ' + o.slot + ' falls outside the day window — ' +
+          'the traveller ' + (o.reason === 'arrival' ? 'arrives' : 'leaves') + ' at ' + o.at +
+          '. The slot is STATED on the card, never filled (§5f ruling 5)' +
+          (o.item ? ', and the model\'s "' + (o.item.name || o.item.id) + '" is not placed.' : '.'));
+      });
+
+      /* RULING AS ruling 2, THE FOUNDER'S OWN RIDER. An anchored leg or
+       * transfer is not a candidate rule 11 ranks, so it takes its position
+       * and SPENDS the budget, which can cost a ranked activity its place.
+       * The displacement is reported BY NAME — AK class (a): the diagnostic
+       * goes where the build side reads it, and no traveller copy is invented
+       * for it, because the day card already says the item was held back. */
+      var anchorHours = Engines._num(day.anchorHours, 0);
+      if (anchorHours > 0 && (day.displaced || []).length) {
+        warn('Live Slice: day ' + (i + 1) + ' — ' + anchorHours +
+          ' h of the ' + day.energyBudget + ' h pace budget went to anchored transport, ' +
+          'and ' + day.displaced.length + ' activity(ies) would have fitted without it: ' +
+          day.displaced.map(function (item) {
+            return '"' + (item.name || item.id) + '"';
+          }).join(', ') +
+          '. Ruling AS ruling 2: an arrival or departure leg is not a candidate ' +
+          'rule 11 ranks, so it is anchored and allowed to spend. PDF rule 16 and ' +
+          'the transport budget question are §5a, not this.');
+      } else if (anchorHours > 0) {
+        info('Live Slice: day ' + (i + 1) + ' — ' + anchorHours +
+          ' h of anchored transport, displacing nothing.');
+      }
+
+      /* RULING AS ruling 3. The orphan, named as a PAIR, which is the founder's
+       * own wording. AJ's cascade fires on hard-filter removals; this is its
+       * extension to a pace-budget skip, and the child is counted as neither a
+       * dietary nor a fit removal because it is neither. */
+      (day.orphaned || []).forEach(function (o) {
+        warn('Live Slice: day ' + (i + 1) + ' — "' + (o.item.name || o.item.id) +
+          '" is included with "' + (o.parent.name || o.parent.id) +
+          '", which the pace budget held back, so the child is held back with it ' +
+          '(ruling AS ruling 3: AJ\'s cascade extends to a pace-budget skip). ' +
+          'It is counted in no removal category.');
+      });
     });
 
     /* RULING AP — option (i)'s wholesale failure mode, caught by a number.
@@ -1893,6 +2100,30 @@ var LiveSliceScoring = (function (Engines, Blueprint) {
       } else {
         info('Live Slice: all ' + rep.diningTotal +
           ' dining items said who they suit (ruling AL).');
+      }
+
+      /* RULING AS ruling 6. THE PLACEHOLDER COUNT, on AJ founder addition 1's
+       * mechanism and stated on EVERY run including zero, because a number
+       * that appears only when it is interesting cannot be read as a baseline
+       * — AJ's reasoning for the omission count, AK's for the field-drop
+       * count, AM's for the day hours and AR's for the meal-slot count.
+       *
+       * Before AS nothing in this bundle could see one: `diningWithoutSuits`
+       * above counts an UNDECLARED claim, so a declared EMPTY one is compliant
+       * by that test, and "No dinner scheduled (departure day)" passed with no
+       * warning at all before AL's subset test removed it and the traveller
+       * read a dietary removal on a day they had no dietary problem with. */
+      var placeholders = rep.placeholderDining || 0;
+      if (placeholders > 0) {
+        warn('Live Slice: ' + placeholders + ' of ' + rep.diningTotal +
+          ' dining items are PLACEHOLDER NON-ITEMS — no duration, no ' +
+          'suitability, and a name that begins by saying there is none. The ' +
+          'prompt asks for real items only and states that Romieaux says so ' +
+          'itself (ruling AS ruling 6). Each is then removed by the dietary ' +
+          'subset test on a restricted trip and reads to the traveller as a ' +
+          'dietary removal, which is what this count exists to catch.');
+      } else {
+        info('Live Slice: no placeholder dining items in the reply (ruling AS ruling 6).');
       }
     }
 

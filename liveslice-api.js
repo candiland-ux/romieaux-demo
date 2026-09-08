@@ -484,7 +484,8 @@ var LiveSliceAPI = (function (root, Blueprint) {
 
   var SCHEMA_TEXT = [
     '{',
-    '  "trip": { "destination": "", "start": "YYYY-MM-DD", "end": "YYYY-MM-DD", "currency": "" },',
+    '  "trip": { "destination": "", "start": "YYYY-MM-DD", "end": "YYYY-MM-DD", "currency": "",',
+    '            "arrival_time": "HH:MM", "departure_time": "HH:MM" },',
     '  "days": [',
     '    {',
     '      "date": "YYYY-MM-DD",',
@@ -512,6 +513,7 @@ var LiveSliceAPI = (function (root, Blueprint) {
     '          "accessibility": { "wheelchair": true, "limited_mobility": true, "visual": true, "hearing": true, "sensory": true },',
     '          "suits": [],',
     '          "meal": "breakfast|lunch|dinner",',
+    '          "leg": "arrival|departure",',
     '          "included_with": "",',
     '          "notes": ""',
     '        }',
@@ -623,8 +625,42 @@ var LiveSliceAPI = (function (root, Blueprint) {
     lines.push('- meal: which meal a dining item IS, one of breakfast|lunch|dinner. Set it on every restaurant, cafe or meal booking that fills one of those three.');
     lines.push('  Omit it on dining that is not a meal — a gelato stop, a wine tasting, a cooking class. Those are still dining items and are still scheduled; they simply do not fill a slot.');
     lines.push('  EVERY DAY NEEDS ALL THREE. Plan breakfast, lunch and dinner for each day of the trip. A slot you leave empty is stated on the day as having nothing scheduled — it is never filled with a substitute, so an itinerary that skips lunch shows a gap where lunch should be.');
+    /* RULING AS ruling 6 — THE PROMPT RIDER, on ruling R's shape.
+     *
+     * The model was answering "there is no dinner" by SUPPLYING a dinner:
+     * "Hotel arrival breakfast (in-flight/none)" and "No dinner scheduled
+     * (departure day)", both with all-zero attributes and an empty suits
+     * claim. AL's subset test then removed them, correctly, and the traveller
+     * read a DIETARY removal on a day they had no dietary problem with.
+     *
+     * The consequence stated here is real rather than threatened — the day
+     * card genuinely does say the slot is empty, which is ruling AQ's own test
+     * for whether an instruction may state a consequence at all — and the
+     * validator counts what comes back, so a model that ignores it is caught
+     * by a NUMBER and not by a made-up removal on a phone. */
+    lines.push('  SEND REAL ITEMS ONLY. If there is nothing worth suggesting for a slot, leave it out entirely — do not send a placeholder saying there is none. Romieaux states the gap itself, in the traveller\'s own words, on the day it falls on. An item named "No dinner scheduled" is worse than no item, because it reads as a dinner until it is taken away again.');
     lines.push('  When a meal comes with something else — lunch on a boat trip, the tasting at the end of a tour, breakfast at the hotel — still emit it as its own dining item with "est_price_usd": 0 and "included_with" set to the item it comes with. It is part of the day and the traveller needs to see it.');
     lines.push('- included_with: when an item is only available as part of another item on the itinerary (the meal eaten at a cooking class, the tasting at the end of a tour), set this to that other item\'s "id". If the parent is removed, the child is removed with it. Omit it for anything independently bookable.');
+    /* RULING AS ruling 3 — THE `"stay"` SENTINEL, stated so it stops being an
+     * inert string. Before AS `included_with` had exactly one reader and it
+     * was AJ's removal cascade, so a value naming no item on the day did
+     * nothing at all: it was accepted by the validator, matched nothing in the
+     * cascade, and reached the render only to make the Meals block say
+     * "included with something else on this day". Naming it here is what lets
+     * ruling 4 say WHICH stay instead. */
+    lines.push('  A meal that comes with the room rather than with another item on the day uses "included_with": "stay" — the one value that is not an item id. Set it on a hotel breakfast the rate covers.');
+    /* RULING AS ruling 1 and ruling 2 — THE DAY'S OWN ORDER AND ITS EDGES.
+     *
+     * Ruling 2 reads the model's within-day array order as the intended
+     * SEQUENCE for transport, so the request has to say that the order is read
+     * — before AS it was discarded, and a model with no reason to think it
+     * mattered had no reason to get it right. The consequence is stated on
+     * ruling R's precedent and it is REAL in the code rather than an
+     * unenforced threat, which is the distinction ruling AQ drew: the packer
+     * genuinely places a transfer against the item that follows it. */
+    lines.push('- ORDER THE ITEMS IN EACH DAY THE WAY THE TRAVELLER WILL DO THEM. The order inside "items" is read as the intended sequence: a transfer is placed immediately before the thing it takes them to, and a return leg immediately after the last thing it brings them back from. Put the train to a town BEFORE the sight in that town, and the train home after it.');
+    lines.push('- leg: on the ONE transportation item that brings the traveller into the destination set "leg": "arrival", and on the ONE that takes them away set "leg": "departure". Omit it on every other transport item. Do not put the direction in the name and expect it to be read — the name is never parsed.');
+    lines.push('- trip.arrival_time / trip.departure_time: the local clock time, as HH:MM, that the traveller ARRIVES in the destination and LEAVES it. Nothing is scheduled before they arrive on the first day or after they leave on the last. If you leave these out the day simply runs from its usual start, so state them when you know them — a breakfast planned before the traveller has landed is the thing this prevents.');
     /* RULING AP ruling 2 — the stay's breakfast, and ABSENCE MEANS NOT
      * INCLUDED. Verified-or-drop on an eighth field, and the prompt says what
      * silence costs so the model has a reason to answer. */

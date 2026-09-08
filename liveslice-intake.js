@@ -350,11 +350,30 @@ var LiveSlice = (function () {
     var result = Blueprint.validate(bp);
     if (!result.ok) {
       showErrors(result.errors);
-      // RULING AK. A traveller-visible toast, in a file neither AH's nor AK's
-      // ruling named — found by §20.5's own assertion, exactly as AH's §20.2
-      // found two outside its file list. The ruling's words govern: no surface
-      // a traveller reads speaks the workshop's vocabulary.
-      if (typeof showToast === 'function') showToast('A few answers are still missing');
+      /* RULING AS ruling 5 — THE TOAST IS RETIRED, and the reason is that it
+       * was a duplicate that outlived its own screen.
+       *
+       * It read "A few answers are still missing" — ruling AK's rewording of
+       * a line that had said "Blueprint answers", found by §20.5's own
+       * assertion in a file neither AH's nor AK's ruling named. AK fixed the
+       * WORDS. What AS found is that the sentence should not have been there
+       * at all: showErrors() one line above already renders `Still needed`
+       * IN PLACE, naming every field, on the screen the traveller is looking
+       * at and staying there until they fix it.
+       *
+       * And the toast could not stay on that screen. It is the CANONICAL
+       * `#toast`, a single fixed node at index.html:3935 sitting OUTSIDE every
+       * `.screen`, whose only dismissal is its own 2,600 ms timer — nav() does
+       * not touch it. run()'s FIRST statement navigates to `s-ls-results`,
+       * because the wait screen is the results screen, so a toast raised by a
+       * failed continue was still on the page when the next tap succeeded.
+       * That is what the founder read on the results screen.
+       *
+       * Ruling AM item 4's density rule on a sixth surface: one fact, once,
+       * where the traveller can act on it. `showToast` ITSELF IS UNTOUCHED —
+       * 165 canonical call sites, and changing its behaviour for all of them
+       * to close one Live Slice leak is the `hideFab` edit ruling AM declined
+       * and the `sub()` edit ruling AO declined. navTo() carries the belt. */
       console.warn('Live Slice: Blueprint incomplete', result.errors);
       return false;
     }
