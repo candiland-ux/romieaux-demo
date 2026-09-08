@@ -284,8 +284,27 @@ var LiveSliceResults = (function (root) {
    * (a)'s disposition, exactly as ruling AM took it for the pace hours.
    *
    * PLACEMENT IS UNTOUCHED. This is the badge and only the badge: the item
-   * still holds the slot AR's ruling gave it, and packDay() is not opened. */
-  function fitBadge(fit, band) {
+   * still holds the slot AR's ruling gave it, and packDay() is not opened.
+   *
+   * RULING AU ADDS THE SECOND WITHHOLDING, AND IT IS NOT A SPECIAL CASE OF
+   * THE FIRST. AT withholds a NUMBER that is not a measurement. AU withholds
+   * a JUDGEMENT the software is not entitled to make: PDF rule 16 ranks
+   * transportation by cost, time, comfort, carbon and reliability and carries
+   * no IdentityFit term at all, so a fit score on a bus is not a weaker
+   * verdict, it is a verdict from the wrong rule. A bus is not chosen on
+   * identity, and the row must not imply it was.
+   *
+   * SO IT IS WITHHELD REGARDLESS OF FIT, and the two rules are deliberately
+   * not folded together. On the capture every transport item scores 0, so
+   * AT's guard alone would hide all eleven and this arm would look redundant
+   * — which is exactly how it would have been born vacuous. `harness.js`
+   * §28.5 drives a transport item with a REAL fit for that reason.
+   *
+   * WITHHELD, NOT REPLACED, on AT's own rule and §5f's: nothing is put in its
+   * place, and the module label the row already carries is what says what the
+   * item is. `logResult()` still prints every fit. */
+  function fitBadge(fit, band, item) {
+    if (item && item.module === 'transportation') return '';   // ruling AU
     if (Math.round(Engines._num(fit, 0)) === 0) return '';
     var badge = BAND_BADGE[band] || BAND_BADGE.alternative;
     /* RULING AK. The badge is the first thing a traveller reads on every item,
@@ -607,7 +626,7 @@ var LiveSliceResults = (function (root) {
       /* RULING AT item 1. The wrapper goes with the badge — an empty div here
        * would leave the row's spacing describing a badge that is not there. */
       (function (b) { return b ? '<div style="margin-top:5px;">' + b + '</div>' : ''; })(
-        fitBadge(entry.fit, entry.band)) +
+        fitBadge(entry.fit, entry.band, item)) +
       (flags ? '<div style="margin-top:4px;">' + flags + '</div>' : '') +
       '</div></div>';
   }

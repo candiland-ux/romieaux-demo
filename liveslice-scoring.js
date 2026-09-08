@@ -1542,6 +1542,21 @@ var LiveSliceScoring = (function (Engines, Blueprint) {
      * the results footer counts `suppressed` to tell the traveller what is
      * not. Folding them in would say a scheduled breakfast was removed. */
     var mealSlotsHeld = [];
+    /* RULING AU — THE SAME COUNT FOR THE SECOND MODULE, AND IT IS A SEPARATE
+     * ARRAY BY RULING RATHER THAN BY CONVENIENCE.
+     *
+     * Ruling AR's arm holds a MEAL SLOT below the floor; AU's holds a
+     * TRANSPORT item. Both survive `bandFor()` where `fitBand()` would have
+     * dropped them, so a single array would have collected both and every
+     * entry AU adds would arrive with `meal: null` inside a structure whose
+     * whole purpose is to name which slot was held. Ruling AT took exactly
+     * this decision one letter earlier when `stayModuleDayItems` was kept
+     * separate from AS's placeholder count: two counts that mean different
+     * things stay two counts.
+     *
+     * Kept OUT of `suppressed` for AR's reason, unchanged: these items ARE on
+     * the trip, and the footer counts `suppressed` to say what is not. */
+    var transportHeld = [];
     var stayCandidates = [];
     var days = [];
 
@@ -1669,8 +1684,17 @@ var LiveSliceScoring = (function (Engines, Blueprint) {
          * PDF rule 6 and rule 6 has no suppression step, so a meal slot never
          * comes back 'suppress'. Everything else is fitBand() unchanged. */
         var band = Engines.bandFor(item, fit);
+        /* RULING AU. `bandFor()` now has two arms, so the item it saved has to
+         * be routed to the count that describes it. A meal slot names the slot
+         * it held; a transport item has no slot to name, and saying `meal:
+         * null` on a transport row would be a structure answering a question
+         * that was not asked — ruling AL's own diagnosis, in a console line. */
         if (band !== 'suppress' && Engines.fitBand(fit) === 'suppress') {
-          mealSlotsHeld.push({ item: item, fit: fit, day: di, meal: Engines.mealSlot(item) });
+          if (Engines.mealSlot(item) !== null) {
+            mealSlotsHeld.push({ item: item, fit: fit, day: di, meal: Engines.mealSlot(item) });
+          } else {
+            transportHeld.push({ item: item, fit: fit, day: di, leg: Engines.legOf(item) });
+          }
         }
         var category = candidateCategory(item);
         var entry = {
@@ -1883,6 +1907,7 @@ var LiveSliceScoring = (function (Engines, Blueprint) {
       removals: removals,
       suppressed: suppressed,
       mealSlotsHeld: mealSlotsHeld,          // ruling AR
+      transportHeld: transportHeld,          // ruling AU
       work: work,
       ledger: ledger,
       decisions: decisions,
@@ -1980,6 +2005,42 @@ var LiveSliceScoring = (function (Engines, Blueprint) {
         ' slot on reduced rule 6. Before ruling AR this was deleted.');
     });
 
+    /* RULING AU. The same line for the second module, on the same reasoning
+     * AR gave for its own: stated on EVERY run including zero, so the number
+     * reads as a baseline rather than as an event. Before AU this figure was
+     * eleven of eleven on a real Kyoto trip and reached nobody at all — the
+     * items simply were not there, and the traveller was told twelve options
+     * were too far from what they asked for.
+     *
+     * IT ALSO CARRIES WHAT AU DID NOT BUILD, and that is the founder's ruling
+     * (c) rather than a note somebody added. PDF rule 16's ranking is logged
+     * with its TWO SCHEMA PRECONDITIONS NAMED, so the next reader does not
+     * have to re-derive why a module with a published formula has no
+     * implementation. Console-only per §5f, and no traveller string. */
+    var tHeld = result.transportHeld || [];
+    info('Live Slice: ' + tHeld.length + ' transport item(s) scored below the ' +
+      Engines.FIT_SUPPRESS + ' IdentityFit floor and STAYED ON THE TRIP anyway ' +
+      '(ruling AU: PDF rule 16 ranks transportation by CostFit, TimeFit, ' +
+      'ComfortFit, CO2Fit and Reliability and carries no IdentityFit term, so ' +
+      'the Activities floor does not decide whether a bus is on the trip). ' +
+      'Ruling AS anchors them in the order the model sent, and they still ' +
+      'spend the pace budget, which is rule 11 arithmetic and is unchanged.');
+    tHeld.forEach(function (entry) {
+      info('Live Slice: transport "' + (entry.item.name || entry.item.id) +
+        '" — IdentityFit ' + Math.round(entry.fit) + ' is below ' + Engines.FIT_SUPPRESS +
+        (entry.leg ? ', and it is the ' + entry.leg + ' leg of day ' : ', and it stays on day ') +
+        (entry.day + 1) + '. Before ruling AU this was deleted.');
+    });
+    info('Live Slice: reduced rule 16 is NOT implemented and no transport ' +
+      'ranking runs (ruling AU). Four of its five terms have no source: ' +
+      'ComfortFit, CO2Fit, Reliability, and CostFit, whose ' +
+      'area_median_rate_usd arrived on none of the captured items. TimeFit has ' +
+      'inputs and nothing to rank. TWO SCHEMA PRECONDITIONS come first: a ' +
+      'segment structure that links to day items, since transport_segments[] ' +
+      'carries no day, no time and no item id; and mode alternatives per ' +
+      'segment, since rule 16 scores mode options and the model sends one mode ' +
+      'per journey. See RULINGS.md §5a.');
+
     /* RULING AM item 1. THE DAY-CARD HOURS MOVE HERE, they are not lost.
      *
      * The badge printed `3.9 h of 9 h scheduled` on every day card — correct,
@@ -2073,8 +2134,10 @@ var LiveSliceScoring = (function (Engines, Blueprint) {
             return '"' + (item.name || item.id) + '"';
           }).join(', ') +
           '. Ruling AS ruling 2: an arrival or departure leg is not a candidate ' +
-          'rule 11 ranks, so it is anchored and allowed to spend. PDF rule 16 and ' +
-          'the transport budget question are §5a, not this.');
+          'rule 11 ranks, so it is anchored and allowed to spend. RULING AU ' +
+          'SETTLED THE BUDGET HALF: rule 11 caps the hours scheduled in a DAY ' +
+          'and PDF rule 16 names no budget at all, so transport keeps spending ' +
+          'this one. Rule 16 ranking stays §5a.');
       } else if (anchorHours > 0) {
         info('Live Slice: day ' + (i + 1) + ' — ' + anchorHours +
           ' h of anchored transport, displacing nothing.');

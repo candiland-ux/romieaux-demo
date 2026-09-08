@@ -570,6 +570,28 @@ var LiveSliceAPI = (function (root, Blueprint) {
     lines.push('- attributes: each dimension 0.0–1.0, describing what the item IS, not how well it matches the traveller. The engine does the matching.');
     lines.push('- alt_channel: the cheapest realistic third-party channel for the same item (portal, platform, resale), with its own price and any booking fee rate as a decimal (0.15 = 15%). Use type "none" when the item is only bookable direct.');
     lines.push('- area_median_rate_usd: the typical price for a comparable item in that area, so the engine can judge value.');
+    /* RULING AU — THE FIRST STEP OF PDF RULE 16'S ROUTE BACK, and it is a
+     * prompt line and nothing else. Rule 16 scores a mode by
+     * 0.35*CostFit + 0.30*TimeFit + 0.15*ComfortFit + 0.10*CO2Fit +
+     * 0.10*Reliability, and AU implements NONE of it. CostFit was tabled as
+     * the one term the schema could compute, and the trace disproved that: on
+     * the post-deploy-15 capture `area_median_rate_usd` arrives on ZERO of 55
+     * items, so the generic line above is addressed to every module and
+     * answered by none, and the only other comparator a transport item
+     * carries is an alt-channel price identical to its own.
+     *
+     * So CostFit joins the not-implemented list with a named route back, and
+     * this line IS that route back's first step: ask for the field where rule
+     * 16 would read it, so the NEXT capture carries the data a later letter
+     * needs. NOTHING READS IT YET, and that is stated here rather than left to
+     * be discovered — a field asked for and unread is dead weight unless the
+     * record says which ruling is coming for it.
+     *
+     * Scoped to transportation and stated on RULING R's shape, with the
+     * consequence of omission named, because a model told what silence costs
+     * has a reason to answer. The consequence is honest rather than a threat:
+     * it costs nothing on the traveller's trip today, and it says so. */
+    lines.push('- area_median_rate_usd on a TRANSPORTATION item: the typical fare a traveller would pay for that same journey by the ordinary means, so the fare you quote can be judged against something. Give it on every transport item you send. If you leave it out, the fare is shown as an estimate and compared with nothing.');
     lines.push('- flexibility: "free" = free cancellation, "partial" = partial refund, "prepaid" = non-refundable.');
     lines.push('- advance_discount_pct: whole percent off list for booking ahead (12 means 12%). 0 when there is none.');
     lines.push('- covers: number of diners for a dining item; use the party size.');

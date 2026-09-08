@@ -137,6 +137,68 @@ var Engines = (function () {
    *      candidate` to attach to, and unsuppressing one would put it into
    *      rule 11's budget with no rule 16 behind it. See RULINGS.md §5a.
    *
+   * AU. (2026-09-07) TRANSPORTATION LEAVES THE IDENTITY-FIT GATE, and the
+   *    AS RETURN-LEG RULE IS AMENDED. AU SUPERSEDES the AR paragraph directly
+   *    above, which held transportation out of scope on the strength of a
+   *    premise the capture disproved.
+   *
+   *    PDF rule 16 is the TRANSPORTATION module and it reads, verbatim:
+   *
+   *      Mode score = 0.35*CostFit + 0.30*TimeFit + 0.15*ComfortFit(party)
+   *                 + 0.10*CO2Fit + 0.10*Reliability.
+   *      Family/pet parties re-weight Comfort to 0.30 and Time to 0.20.
+   *
+   *    IdentityFit appears NOWHERE in it. So a bus removed by an IdentityFit
+   *    floor is the ACTIVITIES gate reaching a module the PDF ranks by a
+   *    different formula - ruling AR's finding, one module over, and the
+   *    third time this collapse has been found after AP's budget and AR's own
+   *    floor. The re-weight clause is quoted because AR's own summary of rule
+   *    16 omitted it; nothing reads it, because ComfortFit is not implemented.
+   *
+   *    AR SAID `A BUS HAS NO SLOT AND NO RANK, SO THERE IS NOTHING FOR WHICH
+   *    CANDIDATE TO ATTACH TO`, AND THAT IS STILL TRUE AND IS NO LONGER THE
+   *    POINT. Ruling AS had already taken transport out of rule 11's ranking
+   *    entirely: every transport item is ANCHORED, placed by the model's own
+   *    day order, and never a candidate ExperienceROI ranks. So scoping the
+   *    floor does not hand a bus to the wrong algorithm - it hands it to
+   *    ruling AS, which is a structure that already exists, exactly as AR
+   *    handed a meal slot to AP's MEAL_WINDOWS.
+   *
+   *    Traced against the post-deploy-15 capture banked in RULINGS.md AT:
+   *    ALL ELEVEN transport items scored fit 0 and were suppressed BEFORE
+   *    packDay() ran, both trip legs among them, so AS's arrival-and-departure
+   *    anchoring had never once executed on real output. Scoping the floor
+   *    takes the suppressed count from 12 to 1, opens day 1 with the airport
+   *    bus at the stated arrival time and closes day 11 with the departure bus
+   *    at the stated departure time.
+   *
+   *    - REDUCED RULE 16 IS NOT IMPLEMENTED, and that is a ruling rather than
+   *      a gap left open. FOUR of its five terms have no source, not three:
+   *      ComfortFit, CO2Fit and Reliability have none, and CostFit has none
+   *      either, because `area_median_rate_usd` arrives on ZERO of the
+   *      capture's 55 items and no transport item carries an alt-channel
+   *      delta. TimeFit's inputs are present and TimeFit has nothing to rank:
+   *      rule 16 scores MODE OPTIONS for one segment, and the largest set of
+   *      alternatives for any journey in the capture is ONE. Approximating a
+   *      term would be ruling AN's rejected reading (iii); building a ranker
+   *      with nothing to rank would be `entry.roi`, which §5a already carries
+   *      as dead weight. See RULINGS.md §5a for the route back to each term
+   *      and for the two schema preconditions the ranking needs.
+   *    - TRANSPORT STILL SPENDS THE PACE BUDGET, and the PDF was checked
+   *      rather than assumed. Rule 11 caps `max scheduled hours/day`, which is
+   *      a property of the DAY; rule 16 names no budget of any kind. AP could
+   *      take meals out because rule 6 supplies an alternative envelope; rule
+   *      16 supplies none, so taking transport out would invent an exemption
+   *      the document does not support.
+   *    - THE RETURN-LEG RULE IS AMENDED. See the attachment block in
+   *      packDay() for what it was, why it never fired on real output, and
+   *      what replaces it.
+   *    - The hard filters are UNTOUCHED and already carry the module's own
+   *      guardrail. `applyHardFilters()` runs accessibility, age and pet on
+   *      every item whatever its module, which is PDF rule 41 and rule 16's
+   *      `never route a pet or accessibility case onto a non-qualifying mode`.
+   *      Only the DIETARY predicate is dining-scoped, by ruling AJ.
+   *
    * Engine-input-only fields — the generation schema must NOT ask the model
    * for these, and the model never supplies them:
    *   card_scenario      EARNS rows. The Blueprint captures no card facts, so
@@ -461,10 +523,36 @@ var Engines = (function () {
    * it is: shown, and not a strong match. It is not padding and it is not a
    * substitution - §5f is untouched - because the model offered exactly this
    * item for exactly this slot and Romieaux is not putting anything in its
-   * place. It is the traveller's breakfast. */
+   * place. It is the traveller's breakfast.
+   *
+   * RULING AU ADDS THE SECOND ARM, and it is the same ruling in a second
+   * module. PDF rule 16 ranks Transportation by
+   * 0.35*CostFit + 0.30*TimeFit + 0.15*ComfortFit + 0.10*CO2Fit +
+   * 0.10*Reliability, and IdentityFit appears nowhere in it, so an
+   * IdentityFit floor deciding whether a bus is on the trip is the Activities
+   * module's gate reaching a module that is not ranked by it. On the
+   * post-deploy-15 capture that deleted ALL ELEVEN transport items, both trip
+   * legs included, before packDay() could see one.
+   *
+   * WHERE A SCOPED MEAL SLOT GOES TO REDUCED RULE 6, A SCOPED TRANSPORT ITEM
+   * GOES TO RULING AS, and that is what makes this arm safe rather than a
+   * floor deleted for a module. AS anchors every transport item in the
+   * model's own day order and takes it out of ExperienceROI's ranking
+   * altogether, so nothing here hands a bus to rule 11. It still spends the
+   * pace budget, which is rule 11's arithmetic and is deliberately unchanged.
+   *
+   * THE BAND IT COMES BACK WITH IS NOT SHOWN. `alternative` is rule 11's word
+   * for a tier rule 16 does not have, and a bus is not chosen on identity, so
+   * liveslice-results.js withholds the badge on a transport row REGARDLESS OF
+   * FIT. The band is returned rather than invented away because the packer and
+   * the pipeline read this one function and a third value would be a third
+   * vocabulary; what a screen may say about it is a render ruling and lives
+   * where the render is. */
   function bandFor(item, fit) {
     var band = fitBand(fit);
-    if (band === 'suppress' && mealSlot(item) !== null) return 'alternative';
+    if (band !== 'suppress') return band;
+    if (mealSlot(item) !== null) return 'alternative';        // ruling AR
+    if (isTransport(item)) return 'alternative';              // ruling AU
     return band;
   }
 
@@ -712,6 +800,20 @@ var Engines = (function () {
     all.forEach(function (item) { if (item && item.id) byId[item.id] = item; });
 
     var attach = {};
+    /* RULING AU, amending RULING AS ruling 2 — THE OUTBOUND TALLY.
+     *
+     * `unmatchedOutbound` is how many non-leg transport items on this day have
+     * taken the traveller somewhere and not yet brought them back. It is
+     * carried across the walk below because a return can only be recognised
+     * from what came before it, and it is reset per day because packDay()
+     * receives one day.
+     *
+     * LEGS ARE NOT COUNTED. An arrival leg takes the traveller somewhere and
+     * is matched by the departure leg on ANOTHER day, so counting it here
+     * would make the first ordinary transfer of the arrival day read as a
+     * return. Ruling AS ruling 1 owns the legs and ruling 2 owns everything
+     * else, and that division is what keeps this tally about excursions. */
+    var unmatchedOutbound = 0;
     all.forEach(function (item, i) {
       /* A LEG IS EXCLUDED HERE, and the exclusion is load-bearing rather than
        * tidy: a leg is transportation, so without it the arrival bus would be
@@ -736,22 +838,45 @@ var Engines = (function () {
        * train-back, lunch, train-out, temple` — a return from a place the
        * traveller had not been to yet.
        *
-       * The answer is in the ruling's own words. "The last item it serves" is
-       * the thing it brings them back FROM, and the thing it brings them back
-       * from is the thing they were TAKEN to. So:
+       * AS ANSWERED IT WITH `THE NON-TRANSPORT ITEM BEFORE IT WAS ITSELF
+       * REACHED BY TRANSPORT`, AND RULING AU AMENDS THAT, on ruling X point
+       * 3's protocol: the test is not deleted, it is replaced, and the reason
+       * is recorded beside it rather than left in a diff.
        *
-       *   A TRANSPORT ITEM IS A RETURN LEG WHEN THE NON-TRANSPORT ITEM BEFORE
-       *   IT WAS ITSELF REACHED BY TRANSPORT.
+       * AS's test was written against §26's fixture, where the model lists
+       * `breakfast, train-out, temple, train-back, lunch` and the item before
+       * the return IS the temple. THE FIRST REAL CAPTURE TO REACH THIS CODE
+       * ORDERS THE DAY DIFFERENTLY, and it does so on every excursion day it
+       * has: `breakfast, train-out, temple, LUNCH, train-back, dinner`,
+       * because the traveller eats at the place they travelled to. The item
+       * before the return is then the lunch, the item before THAT is the
+       * temple rather than a transfer, and the test returns false. All three
+       * out-and-back days failed it, every return bound FORWARD to dinner,
+       * and the Uji train came out at 17:55 with a four-hour-forty hole behind
+       * it. AS's own words are what it got wrong: "immediately after the last
+       * item it serves", and the last item it serves is the lunch in Uji.
        *
-       * The train back follows the temple because the temple was reached by
-       * the train out. A single transfer with nothing but a meal behind it is
-       * not a return, and binds forward. No pairing table, no vocabulary, no
-       * inference from a name — one look at the model's own order. */
+       * SO THE TEST BECOMES A TALLY, and it reads the same fact one level up:
+       *
+       *   A NON-LEG TRANSPORT ITEM BINDS BACKWARD WHENEVER AN EARLIER
+       *   OUTBOUND TRANSPORT ON THE SAME DAY HAS NOT YET BEEN MATCHED BY A
+       *   RETURN.
+       *
+       * It is strictly more general than what it replaces: on §26's fixture
+       * the item before the return is the temple and the tally says return, so
+       * that section's subject is unmoved; on the capture the item before it
+       * is the lunch and the tally still says return, which AS's test could
+       * not. Nothing is inferred from a name and no pairing table exists — it
+       * is one counter over the model's own order. */
       var j, prevNonTransport = -1;
       for (j = i - 1; j >= 0; j--) {
         if (!isTransport(all[j])) { prevNonTransport = j; break; }
       }
-      var isReturn = prevNonTransport > 0 && isTransport(all[prevNonTransport - 1]);
+      var isReturn = unmatchedOutbound > 0;
+      /* The tally moves whichever way this item went, and it moves HERE, before
+       * the binding below can fail to find a target: an outbound with nothing
+       * after it to serve is still an outbound the traveller took. */
+      unmatchedOutbound += isReturn ? -1 : 1;
 
       var target = null, side = 'before';
       if (!isReturn) {
@@ -760,7 +885,15 @@ var Engines = (function () {
         }
       }
       /* Either a return leg, or a forward one with nothing left to serve —
-       * the last transfer of the day. Both go after what came before them. */
+       * the last transfer of the day. Both go after what came before them.
+       *
+       * RULING AU. `prevNonTransport` is the previous NON-transport item, and
+       * that IS "the item that precedes it in the model's order" for every
+       * case the binding can express: two adjacent returns both attach to the
+       * same host on the same side, and `attachedTo` sorts each side by the
+       * model's own index, so they come out in the order the model listed
+       * them. Binding a return to another attachment would need a host that
+       * is itself attached, which the map has no way to say. */
       if (!target) {
         side = 'after';
         target = prevNonTransport === -1 ? null : all[prevNonTransport];
