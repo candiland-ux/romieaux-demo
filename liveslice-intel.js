@@ -63,7 +63,14 @@ var LiveSliceIntel = (function (root, Blueprint, API) {
    * ------------------------------------------------------------------- */
 
   var STORE_INTEL = 'romieaux.liveSlice.intel';
-  var INTEL_VERSION = 1;
+  /* RULING AR item 8 bumps this 1 -> 2, and the bump IS the re-fetch:
+   * readStore() returns null on a version mismatch, so every playlist cached
+   * under the old schema is regenerated rather than served under a card that
+   * now promises a place the cached tracks do not carry. A cache key change
+   * would not have done it — the key is destination and genres, and neither
+   * moved. Note this is NOT CONSENT_VERSION, which stays at 2: grounding_place
+   * is model OUTPUT, so nothing new is collected and nothing new is sent. */
+  var INTEL_VERSION = 2;
 
   /* The output bound, and it is what keeps ruling AO item 8's cost figure
    * honest rather than hopeful. A playlist is not an itinerary: the
@@ -136,6 +143,7 @@ var LiveSliceIntel = (function (root, Blueprint, API) {
     '        "track": "",',
     '        "genre": "one of the genres the traveller chose, or the closest one",',
     '        "grounding": "local" | "genre",',
+    '        "grounding_place": "when grounding is local, the place you can actually attribute the artist to: city, region or country. See GROUNDING.",',
     '        "why": "one short clause, no more than about twelve words"',
     '      }',
     '    ]',
@@ -167,6 +175,19 @@ var LiveSliceIntel = (function (root, Blueprint, API) {
       'OUT. An item with no grounding is removed from the playlist before the',
       'traveller ever sees it, so an invented local artist costs you the slot',
       'rather than earning one.',
+      '',
+      'NAME THE PLACE YOU CAN ACTUALLY ATTRIBUTE.',
+      'When you set "grounding" to "local", also set "grounding_place" to the',
+      'place the attribution is honestly true of: a city, a region, or a whole',
+      'country. Write it the way a person would say it, and DO NOT reach for a',
+      'smaller place than you can stand behind. An artist from Tokyo on a trip',
+      'to Kyoto is "Japan", not "Kyoto". An artist genuinely of the city is the',
+      'city. If the honest answer is the country, the country is the right',
+      'answer and it is not a weaker one.',
+      'If you set "grounding" to "local" and leave "grounding_place" out, the',
+      'track is NOT removed: it is presented as a genre pick instead, and the',
+      'local claim is dropped. So an unplaceable local claim costs you the',
+      'claim rather than the slot.',
       '',
       'Between 6 and ' + TRACKS_MAX + ' tracks. Real artists, real tracks.',
       'Do not invent either. Fewer honest tracks is the right answer; a made-up',
@@ -257,7 +278,7 @@ var LiveSliceIntel = (function (root, Blueprint, API) {
    * generic drop would not say which rule fired. */
   var MONEY_KEY = /price|cost|usd|eur|gbp|fee|amount|currency|\bspend\b/i;
 
-  var TRACK_KEYS = ['artist', 'track', 'genre', 'grounding', 'why'];
+  var TRACK_KEYS = ['artist', 'track', 'genre', 'grounding', 'grounding_place', 'why'];
   var PLAYLIST_KEYS = ['title', 'note', 'tracks'];
   var ROOT_KEYS = ['destination', 'playlist'];
 
@@ -277,7 +298,12 @@ var LiveSliceIntel = (function (root, Blueprint, API) {
       /* RULING AQ item 5, on the same mechanism one field along. A model that
        * repeats itself wholesale is caught by a NUMBER rather than by a
        * playlist a reader would blame on the model's taste. */
-      tracksDuplicate: 0
+      tracksDuplicate: 0,
+      /* RULING AR item 8, on the same mechanism a third field along. This one
+       * counts a DEMOTION rather than a removal: the track is kept and the
+       * local claim is dropped, so nothing else in the report would move and
+       * the change would otherwise be invisible. */
+      tracksUnplaced: 0
     };
   }
 
@@ -336,11 +362,42 @@ var LiveSliceIntel = (function (root, Blueprint, API) {
       return null;
     }
 
+    /* RULING AR item 8. THE MODEL STATES THE PLACE; THE CARD PRINTS THAT.
+     *
+     * Before AR the render printed `Local to ` + the TRAVELLER'S OWN
+     * destination string for any track marked local, which turned the model's
+     * claim — "from this destination, or strongly and specifically associated
+     * with it" — into a CITY-LEVEL ASSERTION IT NEVER MADE. Japanese artists
+     * who are not from Kyoto were rendered "Local to Kyoto, Japan".
+     *
+     * ABSENCE DEMOTES, IT DOES NOT DROP, and the difference from ruling AO's
+     * disposition one field along is deliberate rather than a softening. AO's
+     * drop rule governs `grounding` itself, which has no honest fallback: a
+     * track whose provenance the model cannot state at all is unverified in
+     * the way rulings P, Q, R, U, AJ, AL and AN all mean. `grounding_place`
+     * DOES have an honest fallback — the track is still a real track the
+     * model picked from the traveller's genres, and saying so is true. So an
+     * unplaceable local claim costs the CLAIM, not the slot, and the prompt
+     * says exactly that.
+     *
+     * Counted either way, on AJ founder addition 1's mechanism: a model that
+     * stops sending the field wholesale is caught by a NUMBER rather than by
+     * a playlist that quietly stops claiming anything. */
+    var place = text(raw.grounding_place, NAME_MAX);
+    if (grounding === 'local' && !place) {
+      rep.tracksUnplaced++;
+      note(rep.defaulted, path + '.grounding_place',
+        'a local claim with no place stated — the claim is dropped and the track is ' +
+        'presented as a genre pick, per ruling AR. The track itself is kept.');
+      grounding = 'genre';
+    }
+
     return {
       artist: artist,
       track: track,
       genre: text(raw.genre, NAME_MAX),
       grounding: grounding,
+      grounding_place: grounding === 'local' ? place : '',
       why: text(raw.why, TEXT_MAX)
     };
   }
@@ -445,6 +502,7 @@ var LiveSliceIntel = (function (root, Blueprint, API) {
       tracks_supplied: rep.tracksTotal,
       tracks_ungrounded_and_dropped: rep.tracksUngrounded,
       tracks_duplicate_and_collapsed: rep.tracksDuplicate,
+      tracks_local_without_a_place_demoted_to_genre: rep.tracksUnplaced,
       dropped: rep.dropped.length,
       clamped: rep.clamped.length,
       defaulted: rep.defaulted.length,
@@ -557,9 +615,19 @@ var LiveSliceIntel = (function (root, Blueprint, API) {
     return (bp && bp.music_genres && bp.music_genres.length) ? 'Your genres' : 'Playlist';
   }
 
+  /* RULING AR item 8. The place comes from the MODEL, never from the
+   * traveller's destination string.
+   *
+   * `destination` is still the function's second argument and is still what
+   * the surrounding block is about, but it is no longer what this line
+   * asserts. A track can only reach the local branch with a place on it now —
+   * cleanTrack() demotes a placeless local claim to `genre` — so the fallback
+   * that used to substitute the destination has nothing left to fire on and
+   * is gone rather than left looking like coverage. Rulings AH and AJ both
+   * removed a branch on that reasoning. */
   function trackRow(t, destination) {
-    var tail = t.grounding === 'local'
-      ? 'Local to ' + esc(destination || 'this destination')
+    var tail = (t.grounding === 'local' && t.grounding_place)
+      ? 'Local to ' + esc(t.grounding_place)
       : esc(t.genre || '');
     return '<div style="display:flex;gap:10px;padding:6px 0;border-top:1px solid var(--bd);">' +
       '<div style="flex:1;min-width:0;">' +

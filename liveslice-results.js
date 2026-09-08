@@ -656,6 +656,7 @@ var LiveSliceResults = (function (root) {
     });
 
     var lines = [];
+    var unfilled = 0;                       // ruling AR item 7
     Engines.MEAL_SLOTS.forEach(function (slot) {
       var entry = (day.scheduled || []).filter(function (e) { return e.item.meal === slot; })[0];
 
@@ -692,8 +693,40 @@ var LiveSliceResults = (function (root) {
       }
 
       if (!declaredAnywhere) return;   // the legacy sentence below says it once
+      unfilled++;
       lines.push('No ' + slot + ' is scheduled for this day.');
     });
+
+    /* RULING AR item 7. THREE SENTENCES SAYING THE SAME THING IS ONE FACT SAID
+     * THREE TIMES, which is ruling AM item 4's density defect on a third
+     * surface — AM counted a name repeated seven times on the results screen
+     * and AQ counted it four times on the wait screen.
+     *
+     * THE TEST IS `unfilled` ALONE, AND A SECOND CLAUSE WAS REMOVED RATHER
+     * THAN LEFT LOOKING LIKE COVERAGE. The first draft read
+     * `unfilled === MEAL_SLOTS.length && lines.length === unfilled`, and the
+     * second half is UNREACHABLE: each slot pushes at most one line, and
+     * `unfilled` is incremented only in the branch that also pushes one, so
+     * `lines.length >= unfilled` always and `unfilled === 3` already implies
+     * no other branch ran. Ruling AJ deleted its own self-reference guard on
+     * exactly this reasoning, and ruling AH removed an over-broad regex on
+     * it: a condition that cannot be false is not a guard.
+     *
+     * Found by biting — the break that dropped the clause failed ZERO
+     * assertions, which is how an unreachable condition announces itself.
+     * A day with two of three missing keeps both per-slot lines because
+     * `unfilled` is 2, and a stay-covered breakfast never increments it at
+     * all, so ruling AP item 2's "Breakfast is included at ..." cannot be
+     * eaten by this collapse.
+     *
+     * §5f RULING 5 IS UNDISTURBED. The slot is still stated and still never
+     * filled; what changes is how many times the day says so. Romieaux does
+     * not substitute and does not pad, and saying that once is not saying it
+     * less. The legacy branch below is untouched — it fires when the trip
+     * named no slot anywhere, where `unfilled` is 0 and this cannot run. */
+    if (unfilled === Engines.MEAL_SLOTS.length) {
+      lines = ['No meals are scheduled for this day.'];
+    }
 
     if (!declaredAnywhere) {
       lines.push('This trip was saved before Romieaux started planning meals by ' +

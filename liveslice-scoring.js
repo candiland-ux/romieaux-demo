@@ -1347,6 +1347,20 @@ var LiveSliceScoring = (function (Engines, Blueprint) {
 
     var removals = [];
     var suppressed = [];
+    /* RULING AR. The meal slots the floor WOULD have emptied, counted
+     * separately from `suppressed` and never folded into it.
+     *
+     * This is AJ founder addition 1's mechanism on a fourth field, and AO's on
+     * its ungrounded tracks: ruling AR's own failure mode is a model that
+     * describes every meal honestly and low, and the answer is that it is
+     * caught by a NUMBER rather than by a hollow itinerary. Ten identical
+     * breakfasts at fit 18 is a fact somebody should be able to read off one
+     * console line, not reconstruct from a screenshot.
+     *
+     * Kept OUT of `suppressed` deliberately: these items ARE on the trip, and
+     * the results footer counts `suppressed` to tell the traveller what is
+     * not. Folding them in would say a scheduled breakfast was removed. */
+    var mealSlotsHeld = [];
     var stayCandidates = [];
     var days = [];
 
@@ -1469,7 +1483,14 @@ var LiveSliceScoring = (function (Engines, Blueprint) {
       var scored = [], stays = [];
       filtered.kept.forEach(function (item) {
         var fit = Engines.identityFit(item, ctx.tasteVector);
-        var band = Engines.fitBand(fit);
+        /* RULING AR. bandFor() knows which module's rule reaches the item;
+         * fitBand() only knows the two thresholds. A meal slot is ranked by
+         * PDF rule 6 and rule 6 has no suppression step, so a meal slot never
+         * comes back 'suppress'. Everything else is fitBand() unchanged. */
+        var band = Engines.bandFor(item, fit);
+        if (band !== 'suppress' && Engines.fitBand(fit) === 'suppress') {
+          mealSlotsHeld.push({ item: item, fit: fit, day: di, meal: Engines.mealSlot(item) });
+        }
         var category = candidateCategory(item);
         var entry = {
           item: item,
@@ -1480,9 +1501,16 @@ var LiveSliceScoring = (function (Engines, Blueprint) {
           rows: []
         };
 
-        // Work order §7: no item below IdentityFit 35 is rendered as a
-        // recommendation. Suppressed items leave the pipeline here — they are
-        // never packed, never priced on screen and never produce a ledger row.
+        /* Work order §7: no item below IdentityFit 35 is rendered as a
+         * recommendation. Suppressed items leave the pipeline here — they are
+         * never packed, never priced on screen and never produce a ledger row.
+         *
+         * RULING AR SCOPES §7's SENTENCE, and does not amend it. §7 states the
+         * floor globally; PDF rule 6 ranks a meal slot and names no
+         * suppression step. `band` is now bandFor()'s, so a meal slot cannot
+         * reach this branch and the slot is decided by REDUCED RULE 6 in
+         * packDay() — which is where AP put that decision and where it stays.
+         * FIT_SUPPRESS is unmoved at 35 and still gates rule 11 here. */
         if (band === 'suppress') {
           // The fit score was real work, so it still counts once, in the one
           // category that owns it — except for a stay, whose decision is the
@@ -1644,6 +1672,7 @@ var LiveSliceScoring = (function (Engines, Blueprint) {
       stayCandidates: stayCandidates,
       removals: removals,
       suppressed: suppressed,
+      mealSlotsHeld: mealSlotsHeld,          // ruling AR
       work: work,
       ledger: ledger,
       decisions: decisions,
@@ -1720,6 +1749,25 @@ var LiveSliceScoring = (function (Engines, Blueprint) {
     (result.suppressed || []).forEach(function (entry) {
       info('Live Slice: suppressed "' + (entry.item.name || entry.item.id) + '" — IdentityFit ' +
         Math.round(entry.fit) + ' is below the ' + Engines.FIT_SUPPRESS + ' floor, so it is not shown.');
+    });
+
+    /* RULING AR. The meal slots the floor would have emptied, stated on every
+     * run including zero, on the same reasoning AM gave the day hours and AJ
+     * gave the omission count: a number that appears only when it is
+     * interesting cannot be read as a baseline.
+     *
+     * The console keeps the build-side vocabulary — IdentityFit, the floor,
+     * rule 6 — per §5f. Nothing here reaches a traveller. */
+    var held = result.mealSlotsHeld || [];
+    info('Live Slice: ' + held.length + ' meal-slot candidate(s) scored below the ' +
+      Engines.FIT_SUPPRESS + ' IdentityFit floor and HELD THEIR SLOT anyway ' +
+      '(ruling AR: PDF rule 6 ranks within a slot and has no suppression step, ' +
+      'so the floor decides which candidate holds a slot, never whether it is filled).');
+    held.forEach(function (entry) {
+      info('Live Slice: ' + entry.meal + ' "' + (entry.item.name || entry.item.id) +
+        '" — IdentityFit ' + Math.round(entry.fit) + ' is below ' + Engines.FIT_SUPPRESS +
+        ', and it holds day ' + (entry.day + 1) + '\'s ' + entry.meal +
+        ' slot on reduced rule 6. Before ruling AR this was deleted.');
     });
 
     /* RULING AM item 1. THE DAY-CARD HOURS MOVE HERE, they are not lost.

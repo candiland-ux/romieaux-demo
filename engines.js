@@ -88,6 +88,55 @@ var Engines = (function () {
    *      rest-block vocabulary to invent. Rulings AJ and AL both refused an
    *      invented taxonomy on this reasoning.
    *
+   * AR. (2026-09-07) THE FLOOR DECIDES WHICH CANDIDATE HOLDS A MEAL SLOT,
+   *    NEVER WHETHER THE SLOT IS FILLED. AR SUPERSEDES the unconditional use
+   *    of fitBand() as a gate. See bandFor() below.
+   *
+   *    This is AP's defect one layer down. AP found that work order §5 carried
+   *    rule 11 and dropped rule 6, so packDay() charged meals to the
+   *    ACTIVITIES pace budget. AP fixed the budget half. The SUPPRESSION half
+   *    survived, because work order §7 states the floor globally - "No item
+   *    below IdentityFit 35 is rendered as a recommendation" - and nobody
+   *    re-read rule 6 against it. PDF rule 6 is a RANK WITHIN A SLOT and
+   *    names NO suppression step, and a rank cannot leave a slot empty. So
+   *    the Activities module's GATE stayed applied to a module the PDF ranks
+   *    by a different formula, exactly as its BUDGET had.
+   *
+   *    Traced against a real cached generation, not a fixture: a Kyoto trip
+   *    for a traveller whose one mindset chip made the taste vector one-hot
+   *    cultural. Of 55 candidates 16 were suppressed, 12 of them dining, 12
+   *    carrying a meal slot, and TEN OF THOSE TWELVE WERE THE SAME HOTEL
+   *    BREAKFAST at fit 18 on ten different days:
+   *
+   *      {romantic .1, adventurous 0, cultural .1, restful .4, family .2,
+   *       luxury .3}   ->  cultural .1 over a norm of .56  ->  fit 18
+   *
+   *    A hotel breakfast is not a cultural experience and the model correctly
+   *    said so. THE INPUT IS NOT WRONG; THE RULE APPLIED TO IT IS. Eleven of
+   *    eleven days had no breakfast. Scoping the floor takes the removal rate
+   *    from 29.1% to 7.3% and puts breakfast back on ten days.
+   *
+   *    - FIT_SUPPRESS STAYS 35 and governs activities under rule 11 UNCHANGED.
+   *      Work order §7's sentence is SCOPED, not amended, on AP's precedent.
+   *    - fitBand() is BYTE-UNCHANGED. It is the PDF's band function over a
+   *      number, tests.js locks all four of its boundaries, and AR has no
+   *      quarrel with it. What AR adds is bandFor(), which knows which
+   *      module's rule reaches the item.
+   *    - There is NO SUPPRESS TIER FOR A MEAL SLOT, because rule 6 has none.
+   *      A meal slot's band is drawn from {recommend, alternative}, which the
+   *      shipped badge vocabulary already covers, so AR adds no traveller
+   *      string. Without this, liveslice-results.js's BAND_BADGE - which has
+   *      no `suppress` key - would have fallen back to `Alternative` SILENTLY
+   *      on a path AR made reachable for the first time. Ruling AI's class.
+   *    - TRANSPORTATION IS NOT IN SCOPE, and it is a separate phase rather
+   *      than an oversight. PDF rule 16 gives Transportation its own ranking,
+   *      0.35*CostFit + 0.30*TimeFit + 0.15*ComfortFit + 0.10*CO2Fit +
+   *      0.10*Reliability, and IdentityFit appears NOWHERE in it - so work
+   *      order §5 dropped rule 16 as well, the third algorithm it lost. But a
+   *      bus has no slot and no rank, so there is nothing for `which
+   *      candidate` to attach to, and unsuppressing one would put it into
+   *      rule 11's budget with no rule 16 behind it. See RULINGS.md §5a.
+   *
    * Engine-input-only fields — the generation schema must NOT ask the model
    * for these, and the model never supplies them:
    *   card_scenario      EARNS rows. The Blueprint captures no card facts, so
@@ -363,10 +412,43 @@ var Engines = (function () {
     return clamp(cosineSimilarity(attrs, tasteVector) * 100, 0, 100);
   }
 
+  /* The PDF's band function over a NUMBER, and nothing else. It knows the two
+   * thresholds and does not know what kind of item it is looking at. RULING AR
+   * leaves it byte-unchanged deliberately: tests.js locks all four of its
+   * boundaries, the PDF owns it, and AR's quarrel is with where it was USED as
+   * a gate, not with what it computes. */
   function fitBand(fit) {
     if (fit < FIT_SUPPRESS) return 'suppress';
     if (fit <= FIT_RECOMMEND) return 'alternative';
     return 'recommend';
+  }
+
+  /* bandFor(item, fit) -> the band under the rule that actually governs the
+   * item. RULING AR.
+   *
+   * PDF rule 11 gives Activities three tiers and the bottom one is a gate:
+   * below FIT_SUPPRESS an item is never rendered. PDF rule 6 gives Dining a
+   * RANK WITHIN A MEAL SLOT and names no suppression step at all, so a meal
+   * slot has two outcomes - held, or not held - and which one is decided by
+   * REDUCED RULE 6 in packDay(), never by the floor.
+   *
+   * So: a meal slot cannot return 'suppress'. Everything else is fitBand().
+   *
+   * THIS IS THE WHOLE OF AR IN ONE FUNCTION, and it is one function on purpose
+   * - the packer and the scoring pipeline read ONE definition of which rule
+   * reaches an item, on the same reasoning ruling AJ gave for deriving the
+   * dietary vocabulary in one place: two definitions are two definitions that
+   * drift apart.
+   *
+   * A meal slot at fit 18 therefore renders as an `alternative`, which is what
+   * it is: shown, and not a strong match. It is not padding and it is not a
+   * substitution - §5f is untouched - because the model offered exactly this
+   * item for exactly this slot and Romieaux is not putting anything in its
+   * place. It is the traveller's breakfast. */
+  function bandFor(item, fit) {
+    var band = fitBand(fit);
+    if (band === 'suppress' && mealSlot(item) !== null) return 'alternative';
+    return band;
   }
 
   /* ---------------------------------------------------------------------
@@ -1338,6 +1420,7 @@ var Engines = (function () {
     cosineSimilarity: cosineSimilarity,
     identityFit: identityFit,
     fitBand: fitBand,
+    bandFor: bandFor,                        // ruling AR
 
     // stays
     locationTimeCost: locationTimeCost,
